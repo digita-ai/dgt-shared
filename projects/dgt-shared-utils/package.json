@@ -1,0 +1,26 @@
+{
+  "name": "@digita/dgt-shared-utils",
+  "version": "0.0.5",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "build:watch": "ng build --watch",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "publish": "npm publish"
+  },
+  "dependencies": {
+    "@angular/http": "^7.2.7",
+    "@angular/common": "^7.2.7",
+    "@angular/core": "^7.2.7"
+  },
+  "devDependencies": {
+    "@types/node": "~11.9.5"
+  },
+  "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
+  "main": "src/public_api.ts",
+  "author": "Wouter Janssens",
+  "license": "ISC"
+}
