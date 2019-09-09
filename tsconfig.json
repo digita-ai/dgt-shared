@@ -19,11 +19,26 @@
       "dom"
     ],
     "paths": {
-      "dgt-shared-utils": [
+      "@digita/dgt-shared-utils": [
         "dist/dgt-shared-utils"
       ],
-      "dgt-shared-utils/*": [
+      "@digita/dgt-shared-utils/*": [
         "dist/dgt-shared-utils/*"
+      ],
+      "@digita/dgt-shared-web": [
+        "dist/dgt-shared-web"
+      ],
+      "@digita/dgt-shared-web/*": [
+        "dist/dgt-shared-web/*"
+      ],
+      "@angular/*": [
+        "./node_modules/@angular/*"
+      ],
+      "dgt-shared-data": [
+        "dist/dgt-shared-data"
+      ],
+      "dgt-shared-data/*": [
+        "dist/dgt-shared-data/*"
       ]
     }
   }
