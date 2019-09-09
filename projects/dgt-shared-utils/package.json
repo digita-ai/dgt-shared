@@ -20,7 +20,7 @@
     "@types/node": "~11.9.5"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
-  "main": "src/public_api.ts",
+  "main": "src/public-api.ts",
   "author": "Wouter Janssens",
   "license": "ISC"
 }

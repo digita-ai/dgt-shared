@@ -1,12 +1,18 @@
 {
-  "name": "@digita/dgt-shared-data",
+  "name": "@digita/dgt-shared-venture",
   "version": "0.0.1",
   "dependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
-    "@digita/dgt-shared-utils": "^0.0.7",
-    "@nestjs/common": "^6.0.0",
-    "rdflib": "^1.0.4"
+    "@angular/http": "^7.2.7",
+    "@digita/dgt-shared-data": "^0.0.1",
+    "@digita/dgt-shared-utils": "^0.0.8",
+    "@digita/dgt-shared-web": "^0.0.4",
+    "@ngrx/store": "^7.3.0",
+    "@ngx-translate/core": "11.0.1",
+    "@ngx-translate/http-loader": "4.0.0",
+    "angularfire2": "5.1.1",
+    "firebase": "5.8.4"
   },
   "devDependencies": {
     "@types/node": "~11.9.5"

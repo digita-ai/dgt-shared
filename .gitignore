@@ -12,6 +12,7 @@
 /projects/dgt-shared-utils/node_modules
 /projects/dgt-shared-web/node_modules
 /projects/dgt-shared-data/node_modules
+/projects/dgt-shared-venture/node_modules
 
 # profiling files
 chrome-profiler-events.json

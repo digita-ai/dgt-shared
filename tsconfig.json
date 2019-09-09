@@ -31,14 +31,20 @@
       "@digita/dgt-shared-web/*": [
         "dist/dgt-shared-web/*"
       ],
-      "@angular/*": [
-        "./node_modules/@angular/*"
-      ],
-      "dgt-shared-data": [
+      "@digita/dgt-shared-data": [
         "dist/dgt-shared-data"
       ],
-      "dgt-shared-data/*": [
+      "@digita/dgt-shared-data/*": [
         "dist/dgt-shared-data/*"
+      ],
+      "@digita/dgt-shared-venture": [
+        "dist/dgt-shared-venture"
+      ],
+      "@digita/dgt-shared-venture/*": [
+        "dist/dgt-shared-venture/*"
+      ],
+      "@angular/*": [
+        "./node_modules/@angular/*"
       ]
     }
   }

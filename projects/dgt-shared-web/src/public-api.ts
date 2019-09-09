@@ -2,7 +2,7 @@
  * Public API Surface of dgt-shared-web
  */
 
-export * from './lib/dgt-shared-web.module';
+export { DGTSharedWebModule } from './lib/dgt-shared-web.module';
 export { DGTAbstractAction } from './lib/state/models/dgt-abstract-action.model';
 export { DGTAction } from './lib/state/models/dgt-action.model';
 export { DGTBaseAppState } from './lib/state/models/dgt-base-app-state.model';
