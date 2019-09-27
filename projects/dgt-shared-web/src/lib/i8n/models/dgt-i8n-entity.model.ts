@@ -1,5 +1,6 @@
 import { DGTEntity } from '@digita/dgt-shared-data';
-import { DGTI8NLocale, DGTI8NReference } from '@digita/dgt-shared-web';
+import { DGTI8NLocale } from './dgt-i8n-locale.model';
+import { DGTI8NReference } from './dgt-i8n-reference.model';
 
 export interface DGTI8NEntity extends DGTEntity {
     locale: DGTI8NLocale;

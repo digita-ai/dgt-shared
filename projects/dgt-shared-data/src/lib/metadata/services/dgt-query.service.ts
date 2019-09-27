@@ -1,5 +1,7 @@
 import { DGTQuery } from '../models/dgt-query.model';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DGTQueryService {
     public execute<T>(entities: T, query: DGTQuery): T {
         let res = entities;

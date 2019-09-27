@@ -1,5 +1,5 @@
 import { DGTLDField } from './dgt-ld-field.model';
-import { DGTEntity } from '@digita/dgt-shared-utils';
+import { DGTEntity } from '../../metadata/models/dgt-entity.model';
 
 export interface DGTLDValue extends DGTEntity {
     exchange: string;

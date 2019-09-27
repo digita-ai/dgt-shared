@@ -1,13 +1,13 @@
 {
   "name": "@digita/dgt-shared-venture",
-  "version": "0.0.1",
+  "version": "0.0.14",
   "dependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
     "@angular/http": "^7.2.7",
-    "@digita/dgt-shared-data": "^0.0.1",
-    "@digita/dgt-shared-utils": "^0.0.8",
-    "@digita/dgt-shared-web": "^0.0.4",
+    "@digita/dgt-shared-data": "latest",
+    "@digita/dgt-shared-utils": "latest",
+    "@digita/dgt-shared-web": "latest",
     "@ngrx/store": "^7.3.0",
     "@ngx-translate/core": "11.0.1",
     "@ngx-translate/http-loader": "4.0.0",

@@ -1,4 +1,4 @@
-import { DGTEntity } from '@digita/dgt-shared-utils';
+import { DGTEntity } from '../../metadata/models/dgt-entity.model';
 
 export interface DGTExchange extends DGTEntity {
     justification: string;

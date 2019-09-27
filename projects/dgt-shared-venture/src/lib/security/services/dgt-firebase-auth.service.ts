@@ -9,7 +9,7 @@ import { SetUser, SetProfile } from '../../state/models/dgt-actions.model';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTBaseRootState, DGTAuthService, DGTStoreService } from '@digita/dgt-shared-web';
-import { LoadEntity } from '@digita/dgt-shared-web/lib/state/models/dgt-actions.model';
+import { LoadEntity } from '@digita/dgt-shared-web';
 import { DGTFirebaseBaseAppState } from '../../state/models/dgt-firebase-base-app-state.model';
 
 @Injectable()

@@ -16,7 +16,6 @@ export { DGTEmailAttachment } from './lib/email/models/dgt-email-attachment.mode
 export { DGTEmailTemplateProfile } from './lib/email/models/dgt-email-template-profile.model';
 export { DGTEmailTemplateType } from './lib/email/models/dgt-email-template-type.model';
 export { DGTFirebaseAuthService } from './lib/security/services/dgt-firebase-auth.service';
-export { DGTI8NEntity } from './lib/domain/models/dgt-i8n-entity.model';
 export { DGTIdentity } from './lib/domain/models/dgt-identity.model';
 export { DGTIndividual } from './lib/domain/models/dgt-individual.model';
 export { DGTInvite } from './lib/domain/models/dgt-invite.model';
@@ -34,3 +33,6 @@ export { DGTUpdateType } from './lib/domain/models/dgt-update-type.model';
 export { DGTValidation } from './lib/domain/models/dgt-validation.model';
 export { DGTValidationState } from './lib/domain/models/dgt-validation-state.model';
 export { DGTValidationType } from './lib/domain/models/dgt-validation-type.model';
+export { DGTFirebaseBaseAppState } from './lib/state/models/dgt-firebase-base-app-state.model';
+export { DGTVentureFileService } from './lib/file/services/dgt-venture-file.service';
+export * from './lib/state/models/dgt-actions.model';

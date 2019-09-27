@@ -1,11 +1,11 @@
 {
   "name": "@digita/dgt-shared-web",
-  "version": "0.0.4",
+  "version": "0.0.14",
   "dependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
-    "@digita/dgt-shared-data": "^0.0.1",
-    "@digita/dgt-shared-utils": "^0.0.7",
+    "@digita/dgt-shared-data": "latest",
+    "@digita/dgt-shared-utils": "latest",
     "@ngrx/effects": "^7.3.0",
     "@ngrx/router-store": "^7.3.0",
     "@ngrx/store": "^7.3.0",

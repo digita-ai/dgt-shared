@@ -1,1 +1,3 @@
-export interface DGTUser {}
+export interface DGTUser {
+    uid: string;
+}

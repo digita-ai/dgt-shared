@@ -25,3 +25,5 @@ export { DGTI8NLocale } from './lib/i8n/models/dgt-i8n-locale.model';
 export { DGTI8NService } from './lib/i8n/services/dgt-i8n.service';
 export { DGTI8NReference } from './lib/i8n/models/dgt-i8n-reference.model';
 export { DGTUser } from './lib/security/models/dgt-user.model';
+export { DGTI8NEntity } from './lib/i8n/models/dgt-i8n-entity.model';
+export * from './lib/state/models/dgt-actions.model';

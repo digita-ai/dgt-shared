@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { DGTLDValue } from '../models/dgt-ld-value.model';
 import { DGTLDMapping } from '../models/dgt-ld-mapping.model';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DGTLDMappingService {

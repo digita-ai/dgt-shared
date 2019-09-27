@@ -1,7 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import { Observable, forkJoin, of } from 'rxjs';
 import { DGTSubject } from '../models/dgt-subject.model';
-import { DGTDataService } from '@digita/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTSource } from '../../source/models/dgt-source.model';
@@ -10,6 +8,8 @@ import { DGTExchange } from '../models/dgt-subject-exchange.model';
 import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import * as _ from 'lodash';
 import { DGTLDMapping } from '../../linked-data/models/dgt-ld-mapping.model';
+import { DGTDataService } from '../../metadata/services/dgt-data.service';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DGTSubjectService {

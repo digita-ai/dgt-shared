@@ -1,9 +1,13 @@
 import { Observable } from 'rxjs';
 import { DGTLDResponse } from '../models/dgt-ld-response.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { Injectable } from '@nestjs/common';
 import * as rdf from 'rdflib';
-import { DGTLDParser } from '../models/dgt-ld-parser.model';
+import { DGTLDValue } from '../models/dgt-ld-value.model';
+import { DGTSource } from '../../source/models/dgt-source.model';
+import { DGTJustification } from '../../justification/models/dgt-justification.model';
+import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
+import { DGTLDField } from '../models/dgt-ld-field.model';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DGTLDService {
@@ -17,25 +21,99 @@ export class DGTLDService {
         this.fetcher = new rdf.Fetcher(this.store, fetcherOptions);
     }
 
-    public query<T>(webId: string, parser: DGTLDParser<T>): Observable<DGTLDResponse<T>> {
-        return new Observable<DGTLDResponse<T>>((subscriber) => {
-            this.logger.debug(DGTLDService.name, 'Starting to query data', { webId, parser });
+    public query(
+        webId: string,
+        exchange: DGTExchange,
+        justification: DGTJustification,
+        source: DGTSource
+    ): Observable<DGTLDResponse> {
+        return new Observable<DGTLDResponse>((subscriber) => {
+            this.logger.debug(DGTLDService.name, 'Starting to query data', { webId });
 
             this.fetcher.load(webId).finally(
                 () => {
                     this.logger.debug(DGTLDService.name, 'Load finished');
 
-                    parser.parse(webId, this.store)
+                    this.parse(webId, this.store, exchange, justification, source)
                         .subscribe(data => {
-                                this.logger.debug(DGTLDService.name, 'Parsed data', data);
-                                subscriber.next(({ data }));
-                                subscriber.complete();
-                            },
+                            this.logger.debug(DGTLDService.name, 'Parsed data', data);
+                            subscriber.next(({ data }));
+                            subscriber.complete();
+                        },
                         );
                 },
             );
         });
 
+    }
+
+    private parse(
+        webId: string,
+        store: rdf.IndexedFormula,
+        exchange: DGTExchange,
+        justification: DGTJustification,
+        source: DGTSource
+    ): Observable<DGTLDValue[]> {
+        return new Observable<DGTLDValue[]>((subscriber) => {
+            let res: DGTLDValue[] = [];
+
+            if (justification && justification.fields) {
+                res = justification.fields
+                    .map((field) => this.getLinkedValue(webId, store, field, justification, source, exchange))
+                    .filter(value => value.value !== null);
+            }
+
+            subscriber.next(res);
+            subscriber.complete();
+        });
+    }
+
+    private getLinkedValue(
+        webId: string,
+        store: rdf.IndexedFormula,
+        field: DGTLDField,
+        justification: DGTJustification,
+        source: DGTSource,
+        exchange: DGTExchange
+    ): DGTLDValue {
+        const res: DGTLDValue = {
+            exchange: exchange.id,
+            field,
+            justification: justification.id,
+            source: source.id,
+            subject: source.subject,
+            value: null,
+        };
+
+        const namespace = rdf.Namespace(field.namespace);
+
+        const node = store.any(rdf.sym(webId), namespace(field.name));
+
+        if (node) {
+            const nodeValue = node.value;
+            res.value = nodeValue;
+
+            if (nodeValue && this.isValidURL(nodeValue)) {
+                res.value = store.any(rdf.sym(nodeValue), namespace('value')).value;
+            }
+        }
+
+        // if (res.value !== null && res.value !== undefined && (typeof res.value === 'string' || res.value instanceof String)) {
+        //     res.value = res.value.split('mailto:').length > 0 ? res.value.split('mailto:')[1] : res.value;
+        //     res.value = res.value.split('tel:').length > 0 ? res.value.split('tel:')[1] : res.value;
+        // }
+
+        return res;
+    }
+
+    private isValidURL(str): boolean {
+        const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        return !!pattern.test(str);
     }
 
     // public query(webId: string, query: string): Observable<DGTLinkedDataResponse<any>> {

@@ -88,33 +88,34 @@ export class DGTFile {
         return res;
     }
 
-    private constructor(public type: string, public data: ArrayBuffer) { }
+    constructor(public type: string, public data: ArrayBuffer) { }
 
-    // public get asBase64(): string {
-    //     let res = null;
+    public get asBase64(): string {
+        let res = null;
 
-    //     if (this.data) {
-    //         // res = this.base64ArrayBuffer(this.data);
-    //         // res = btoa(String.fromCharCode.apply(null, new Uint8Array(this.data)));
+        if (this.data) {
+            // res = this.base64ArrayBuffer(this.data);
+            // res = btoa(String.fromCharCode.apply(null, new Uint8Array(this.data)));
 
-    //         let binary = '';
-    //         const bytes = new Uint8Array(this.data);
-    //         const len = bytes.byteLength;
-    //         for (let i = 0; i < len; i++) {
-    //             binary += String.fromCharCode(bytes[i]);
-    //         }
+            let binary = '';
+            const bytes = new Uint8Array(this.data);
+            const len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
 
-    //         if (!window || !window.btoa) {
-    //             res = btoa(binary);
-    //         } else {
-    //             res = window.btoa(binary);
-    //         }
-    //     }
+            if (!window || !window.btoa) {
+                // res = btoa(binary);
+                res = Buffer.from(binary).toString('base64');
+            } else {
+                res = window.btoa(binary);
+            }
+        }
 
-    //     this.logger.debug(DGTFile.name, 'Parsed file as base 64.');
+        this.logger.debug(DGTFile.name, 'Parsed file as base 64.');
 
-    //     return res;
-    // }
+        return res;
+    }
 
     public get asBlob(): Blob {
         let res: Blob = null;
@@ -128,17 +129,17 @@ export class DGTFile {
         return res;
     }
 
-    // public get asDataUrl(): string {
-    //     let res: string = null;
+    public get asDataUrl(): string {
+        let res: string = null;
 
-    //     if (this.type && this.data) {
-    //         res = `data:${this.type};base64,${this.asBase64}`;
-    //     }
+        if (this.type && this.data) {
+            res = `data:${this.type};base64,${this.asBase64}`;
+        }
 
-    //     this.logger.debug(DGTFile.name, 'Parsed file as data url.');
+        this.logger.debug(DGTFile.name, 'Parsed file as data url.');
 
-    //     return res;
-    // }
+        return res;
+    }
 
     private base64ArrayBuffer(arrayBuffer: ArrayBuffer) {
         let base64 = '';

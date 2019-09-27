@@ -6,6 +6,8 @@ import { DGTCompareValidator } from './validation/validators/dgt-compare.validat
 import { DGTI8NService } from './i8n/services/dgt-i8n.service';
 import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
 import { DGTNGRXStoreService } from './state/services/dgt-ngrx-store.service';
+import { DGTStoreService } from './state/services/dgt-store.service';
+import { DGTSharedDataModule } from '@digita/dgt-shared-data';
 
 @NgModule({
   declarations: [
@@ -17,10 +19,14 @@ import { DGTNGRXStoreService } from './state/services/dgt-ngrx-store.service';
     DGTI8NService,
     DGTPhoneValidator,
     DGTCompareValidator,
-    DGTNGRXStoreService,
+    {
+      provide: DGTStoreService,
+      useClass: DGTNGRXStoreService
+    }
   ],
   imports: [
-    DGTSharedUtilsModule
+    DGTSharedUtilsModule,
+    DGTSharedDataModule
   ],
   exports: [
 

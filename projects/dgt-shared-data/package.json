@@ -1,11 +1,10 @@
 {
   "name": "@digita/dgt-shared-data",
-  "version": "0.0.1",
+  "version": "0.0.14",
   "dependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
-    "@digita/dgt-shared-utils": "^0.0.7",
-    "@nestjs/common": "^6.0.0",
+    "@digita/dgt-shared-utils": "latest",
     "rdflib": "^1.0.4"
   },
   "devDependencies": {
