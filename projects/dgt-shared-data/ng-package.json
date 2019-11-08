@@ -9,6 +9,7 @@
     "@angular/core",
     "@angular/common",
     "@digita/dgt-shared-utils",
-    "rdflib"
+    "rdflib",
+    "mssql"
   ]
 }

@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:utils": "ng build dgt-shared-utils",
+    "build:data": "ng build dgt-shared-data",
     "build:web": "ng build dgt-shared-web",
     "publish:utils": "npm publish dist/dgt-shared-utils",
     "publish:web": "npm publish dist/dgt-shared-web",
