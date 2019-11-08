@@ -1,13 +1,8 @@
 import { Observable } from 'rxjs';
-import { DGTLDResponse } from '../models/dgt-ld-response.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import * as rdf from 'rdflib';
-import { DGTLDValue } from '../models/dgt-ld-value.model';
-import { DGTSource } from '../../source/models/dgt-source.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
-import { DGTLDField } from '../models/dgt-ld-field.model';
 import { Injectable } from '@angular/core';
+import { DGTExchange, DGTJustification, DGTSource, DGTLDResponse, DGTLDValue, DGTLDField } from '@digita/dgt-shared-data';
 
 @Injectable()
 export class DGTLDService {

@@ -1,6 +1,6 @@
 {
   "name": "@digita/dgt-shared-utils",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

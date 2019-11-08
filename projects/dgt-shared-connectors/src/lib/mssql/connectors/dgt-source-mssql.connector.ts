@@ -1,11 +1,6 @@
-import { DGTSourceConnector } from '../models/dgt-source-connector.model';
-import { DGTLDResponse } from '../../linked-data/models/dgt-ld-response.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
-import { Observable, from, of } from 'rxjs';
-import { DGTSource } from '../models/dgt-source.model';
+import { Observable } from 'rxjs';
 import * as sql from 'mssql';
-import { switchMap, map } from 'rxjs/operators';
+import { DGTLDResponse, DGTExchange, DGTJustification, DGTSource, DGTSourceConnector } from '@digita/dgt-shared-data';
 
 export class DGTSourceMSSQLConnector implements DGTSourceConnector {
     public query(

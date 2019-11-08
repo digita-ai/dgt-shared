@@ -45,6 +45,12 @@
       ],
       "@angular/*": [
         "./node_modules/@angular/*"
+      ],
+      "@digita/dgt-shared-connectors": [
+        "dist/dgt-shared-connectors"
+      ],
+      "@digita/dgt-shared-connectors/*": [
+        "dist/dgt-shared-connectors/*"
       ]
     }
   }

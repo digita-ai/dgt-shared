@@ -142,6 +142,41 @@
           }
         }
       }
+    },
+    "dgt-shared-connectors": {
+      "root": "projects/dgt-shared-connectors",
+      "sourceRoot": "projects/dgt-shared-connectors/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dgt-shared-connectors/tsconfig.lib.json",
+            "project": "projects/dgt-shared-connectors/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dgt-shared-connectors/src/test.ts",
+            "tsConfig": "projects/dgt-shared-connectors/tsconfig.spec.json",
+            "karmaConfig": "projects/dgt-shared-connectors/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dgt-shared-connectors/tsconfig.lib.json",
+              "projects/dgt-shared-connectors/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "dgt-shared-utils"

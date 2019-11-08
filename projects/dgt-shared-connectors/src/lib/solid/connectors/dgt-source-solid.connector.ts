@@ -1,9 +1,5 @@
-import { DGTSourceConnector } from '../models/dgt-source-connector.model';
-import { DGTLDResponse } from '../../linked-data/models/dgt-ld-response.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { Observable } from 'rxjs';
-import { DGTSource } from '../models/dgt-source.model';
+import { DGTSourceConnector, DGTExchange, DGTSource, DGTJustification, DGTLDResponse } from '@digita/dgt-shared-data';
 import { DGTLDService } from '../../linked-data/services/dgt-ld.service';
 
 export class DGTSourceSolidConnector implements DGTSourceConnector {
