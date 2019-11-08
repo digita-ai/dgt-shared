@@ -10,7 +10,9 @@ import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DGTWorkflowService {
 
     private workflows: DGTWorkflow[];

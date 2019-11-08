@@ -35,4 +35,8 @@ export { DGTLDResponse } from './lib/linked-data/models/dgt-ld-response.model';
 export { DGTLDMapping } from './lib/linked-data/models/dgt-ld-mapping.model';
 export { DGTLDField } from './lib/linked-data/models/dgt-ld-field.model';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
-
+export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
+export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
+export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
+export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
+export { DGTWorkflowTrigger } from './lib/workflow/models/dgt-workflow-trigger.model';

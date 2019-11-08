@@ -4,6 +4,7 @@ import { DGTSubjectService } from './subject/services/dgt-subject.service';
 import { DGTLDMappingService } from './linked-data/services/dgt-ld-mapping.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTSourceService } from './source/services/dgt-source.service';
+import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { DGTSourceService } from './source/services/dgt-source.service';
     DGTMockDataService,
     DGTLDMappingService,
     DGTSourceService,
-    DGTSubjectService
+    DGTSubjectService,
+    DGTWorkflowService
   ],
   imports: [
 
