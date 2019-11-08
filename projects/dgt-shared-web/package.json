@@ -1,6 +1,6 @@
 {
   "name": "@digita/dgt-shared-web",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "dependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
@@ -11,8 +11,11 @@
     "@ngrx/store": "^7.3.0",
     "@ngrx/store-devtools": "^7.3.0",
     "@ngx-translate/core": "11.0.1",
+    "@redux-beacon/google-analytics": "^1.1.1",
+    "@redux-beacon/google-tag-manager": "^1.0.1",
     "awesome-phonenumber": "^2.5.0",
-    "locale2": "^2.3.1"
+    "locale2": "^2.3.1",
+    "redux-beacon": "^2.0.3"
   },
   "peerDependencies": {},
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",

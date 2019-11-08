@@ -17,6 +17,9 @@
     "@ngrx/store-devtools",
     "@ngx-translate/core",
     "awesome-phonenumber",
-    "locale2"
+    "locale2",
+    "redux-beacon",
+    "@redux-beacon/google-analytics",
+    "@redux-beacon/google-tag-manager"
   ]
 }
