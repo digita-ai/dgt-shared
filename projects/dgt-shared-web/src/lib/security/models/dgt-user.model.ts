@@ -1,3 +1,7 @@
 export interface DGTUser {
-    uid: string;
+    id?: string;
+    type: string;
+    emailValidated: boolean;
+    phone: string;
+    email: string;
 }
