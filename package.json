@@ -7,6 +7,7 @@
     "build": "ng build",
     "build:utils": "ng build dgt-shared-utils",
     "build:data": "ng build dgt-shared-data",
+    "build:test": "ng build dgt-shared-test",
     "build:web": "ng build dgt-shared-web",
     "build:connectors": "ng build dgt-shared-connectors",
     "publish:utils": "npm publish dist/dgt-shared-utils",

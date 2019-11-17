@@ -15,33 +15,37 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
 }
 
-@NgModule({
-  declarations: [],
-  imports: [
-    CommonModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    DGTSharedUtilsModule,
-    DGTSharedDataModule,
-    DGTSharedWebModule,
-    AngularFireAuthModule,
-    AngularFireStorageModule
-  ],
-  providers: [
-    {
-      provide: DGTFileService,
-      useClass: DGTVentureFileService
-    },
-    {
-      provide: DGTAuthService,
-      useClass: DGTFirebaseAuthService
+export const declarations = [];
+export const imports = [
+  CommonModule,
+  TranslateModule.forChild({
+    loader: {
+      provide: TranslateLoader,
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient]
     }
-  ],
+  }),
+  DGTSharedUtilsModule,
+  DGTSharedDataModule,
+  DGTSharedWebModule,
+  AngularFireAuthModule,
+  AngularFireStorageModule
+];
+export const providers = [
+  {
+    provide: DGTFileService,
+    useClass: DGTVentureFileService
+  },
+  {
+    provide: DGTAuthService,
+    useClass: DGTFirebaseAuthService
+  }
+];
+
+@NgModule({
+  declarations,
+  imports,
+  providers,
   exports: [
   ]
 })

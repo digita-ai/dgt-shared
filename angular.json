@@ -177,6 +177,41 @@
           }
         }
       }
+    },
+    "dgt-shared-test": {
+      "root": "projects/dgt-shared-test",
+      "sourceRoot": "projects/dgt-shared-test/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/dgt-shared-test/tsconfig.lib.json",
+            "project": "projects/dgt-shared-test/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/dgt-shared-test/src/test.ts",
+            "tsConfig": "projects/dgt-shared-test/tsconfig.spec.json",
+            "karmaConfig": "projects/dgt-shared-test/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/dgt-shared-test/tsconfig.lib.json",
+              "projects/dgt-shared-test/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "dgt-shared-utils"

@@ -5,22 +5,25 @@ import { DGTLDMappingService } from './linked-data/services/dgt-ld-mapping.servi
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTSourceService } from './source/services/dgt-source.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
+import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
+
+export const declarations = [];
+export const imports = [
+  DGTSharedUtilsModule
+];
+export const providers = [
+  DGTQueryService,
+  DGTMockDataService,
+  DGTLDMappingService,
+  DGTSourceService,
+  DGTSubjectService,
+  DGTWorkflowService
+];
 
 @NgModule({
-  declarations: [
-
-  ],
-  providers: [
-    DGTQueryService,
-    DGTMockDataService,
-    DGTLDMappingService,
-    DGTSourceService,
-    DGTSubjectService,
-    DGTWorkflowService
-  ],
-  imports: [
-
-  ],
+  declarations,
+  providers,
+  imports,
   exports: [
 
   ]

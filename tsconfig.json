@@ -51,6 +51,12 @@
       ],
       "@digita/dgt-shared-connectors/*": [
         "dist/dgt-shared-connectors/*"
+      ],
+      "@digita/dgt-shared-test": [
+        "dist/dgt-shared-test"
+      ],
+      "@digita/dgt-shared-test/*": [
+        "dist/dgt-shared-test/*"
       ]
     }
   }
