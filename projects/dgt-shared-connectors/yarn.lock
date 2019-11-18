@@ -126,6 +126,12 @@
   version "11.9.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.9.6.tgz#c632bbcc780a1349673a6e2e9b9dfa8c369d3c74"
 
+"@types/rdflib@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@types/rdflib/-/rdflib-1.0.5.tgz#cbd07c6e1d011ae7d15ae13639a4ebb454c99eab"
+  dependencies:
+    rdflib "*"
+
 "@types/tedious@*":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/tedious/-/tedious-4.0.0.tgz#1eed2823c4388b2473255153d0f68fb3efcdc5c9"
@@ -605,7 +611,7 @@ rdf-canonize@^1.0.2:
     node-forge "^0.8.1"
     semver "^5.6.0"
 
-rdflib@^1.0.4:
+rdflib@*, rdflib@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/rdflib/-/rdflib-1.0.6.tgz#d0531d39c8a519bb4353fb17d445fb8f634f02ff"
   dependencies:

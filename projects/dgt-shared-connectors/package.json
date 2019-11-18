@@ -11,9 +11,19 @@
   },
   "devDependencies": {
     "@types/mssql": "^4.3.1",
-    "@types/node": "~11.9.5"
+    "@types/node": "~11.9.5",
+    "@types/rdflib": "^1.0.5"
   },
   "main": "src/public-api.ts",
   "author": "Wouter Janssens",
-  "license": "ISC"
+  "license": "ISC",
+  "browser": {
+    "http": false,
+    "https": false,
+    "net": false,
+    "path": false,
+    "stream": false,
+    "tls": false,
+    "fs": false
+  }
 }

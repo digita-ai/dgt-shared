@@ -61,5 +61,14 @@
     "angularfire2": "5.1.1",
     "firebase": "5.8.4",
     "rdflib": "^1.0.4"
+  },
+  "browser": {
+    "http": false,
+    "https": false,
+    "net": false,
+    "path": false,
+    "stream": false,
+    "tls": false,
+    "fs": false
   }
 }

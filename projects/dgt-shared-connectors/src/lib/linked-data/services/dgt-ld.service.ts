@@ -25,8 +25,8 @@ export class DGTLDService {
         return new Observable<DGTLDResponse>((subscriber) => {
             this.logger.debug(DGTLDService.name, 'Starting to query data', { webId });
 
-            this.fetcher.load(webId).finally(
-                () => {
+            this.fetcher.nowOrWhenFetched(webId,
+                (ok, body, xhr) => {
                     this.logger.debug(DGTLDService.name, 'Load finished');
 
                     this.parse(webId, this.store, exchange, justification, source)
@@ -36,8 +36,7 @@ export class DGTLDService {
                             subscriber.complete();
                         },
                         );
-                },
-            );
+                });
         });
 
     }
