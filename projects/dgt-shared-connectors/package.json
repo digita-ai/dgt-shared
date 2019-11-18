@@ -1,18 +1,18 @@
 {
   "name": "@digita/dgt-shared-connectors",
   "version": "0.0.16",
-  "dependencies": {
+  "devDependencies": {
+    "@types/mssql": "^4.3.1",
+    "@types/node": "~11.9.5",
+    "@types/rdflib": "^1.0.5"
+  },
+  "peerDependencies": {
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0",
     "@digita/dgt-shared-data": "latest",
     "@digita/dgt-shared-utils": "latest",
     "mssql": "^5.1.0",
     "rdflib": "^1.0.4"
-  },
-  "devDependencies": {
-    "@types/mssql": "^4.3.1",
-    "@types/node": "~11.9.5",
-    "@types/rdflib": "^1.0.5"
   },
   "main": "src/public-api.ts",
   "author": "Wouter Janssens",

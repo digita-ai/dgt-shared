@@ -1,7 +1,7 @@
 {
   "name": "@digita/dgt-shared-data",
   "version": "0.0.17",
-  "dependencies": {
+  "peerDependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
     "@digita/dgt-shared-utils": "latest"
