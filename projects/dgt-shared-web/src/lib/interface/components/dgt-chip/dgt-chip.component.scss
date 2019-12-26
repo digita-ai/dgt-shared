@@ -1,0 +1,48 @@
+@import 'styles';
+
+.chip {
+    color: $color-foreground-normal;
+    border: 1px solid $color-foreground-normal;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 130px;
+    &.primary {
+        color: $color-blue-dark;
+        border-color: $color-blue-dark;
+        .chip-icon {
+            background-color: $color-blue-dark;
+        }
+    }
+    &.accent {
+        color: $color-orange-dark;
+        border-color: $color-orange-dark;
+        .chip-icon {
+            background-color: $color-orange-dark;
+        }
+    }
+    &.success {
+        color: $color-success-normal;
+        border-color: $color-success-normal;
+        .chip-icon {
+            background-color: $color-success-normal;
+        }
+    }
+    &.danger {
+        color: $color-danger-normal;
+        border-color: $color-danger-normal;
+        .chip-icon {
+            background-color: $color-danger-normal;
+        }
+    }
+
+    .chip-icon {
+        padding: $measure-gutter-normal;
+        color:$color-foreground-inverse;
+        border-top-left-radius: 15px;
+        border-bottom-left-radius: 15px;
+        min-width: 27px;
+    }
+    .chip-label {
+        padding: $measure-gutter-normal;
+    }
+}

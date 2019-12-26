@@ -1,0 +1,9 @@
+<button mat-raised-button [color]="colorBase" (click)="onClick()" [disabled]="disabled || loading" fxLayout="row"
+    fxLayoutGap="10px" fxLayoutAlign="center center">
+    <div fxFlex="initial" class="button-loading">
+        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+    </div>
+    <div fxFlex="initial" class="button-content">
+        <ng-content></ng-content>
+    </div>
+</button>

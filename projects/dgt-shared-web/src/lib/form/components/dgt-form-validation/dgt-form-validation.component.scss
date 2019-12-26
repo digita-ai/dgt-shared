@@ -1,0 +1,7 @@
+@import 'styles';
+.validation-message {
+    background-color: $color-danger-normal;
+    color: $color-foreground-inverse;
+    padding: $measure-gutter-normal;
+    margin-bottom: $measure-gutter-normal;
+}

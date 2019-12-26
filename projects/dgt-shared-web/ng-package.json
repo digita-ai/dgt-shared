@@ -3,12 +3,17 @@
   "dest": "../../dist/dgt-shared-web",
   "deleteDestPath": false,
   "lib": {
-    "entryFile": "src/public-api.ts"
+    "entryFile": "src/public-api.ts",
+    "styleIncludePaths": [
+      "theme"
+    ]
   },
   "whitelistedNonPeerDependencies": [
     "@angular/core",
     "@angular/common",
     "@angular/http",
+    "@angular/cdk",
+    "@angular/material",
     "@digita/dgt-shared-utils",
     "@digita/dgt-shared-data",
     "@ngrx/effects",
@@ -20,6 +25,7 @@
     "locale2",
     "redux-beacon",
     "@redux-beacon/google-analytics",
-    "@redux-beacon/google-tag-manager"
+    "@redux-beacon/google-tag-manager",
+    "moment"
   ]
 }

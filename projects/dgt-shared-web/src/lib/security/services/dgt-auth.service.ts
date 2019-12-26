@@ -9,7 +9,7 @@ export abstract class DGTAuthService {
   }
 
   public abstract signIn(email: string, password: string): Observable<DGTUser>;
-  public abstract signInWitEmailLink(email: string, link: string): Observable<{ user: DGTUser, isNew: boolean }>;
+  public abstract signInWitEmailLink(email: string, link: string): Observable<DGTUser>;
   public abstract sendEmailLink(email: string, returnUrl: string): Observable<void>;
   public abstract isSignInEmailLink(link: string): boolean;
   public abstract sendPasswordResetEmail(email: string): Observable<any>;

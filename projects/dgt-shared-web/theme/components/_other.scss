@@ -1,0 +1,100 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    display: flex;
+}
+
+body {
+    background-color: $color-background-normal;
+    margin: 0px;
+}
+
+.mat-drawer-container {
+    background-color: transparent !important;
+}
+
+.mat-tab-body .mat-tab-body-content {
+    padding: $measure-gutter-large;
+}
+
+dgt-split-page-sidenav {
+    color: $color-foreground-inverse;
+    .split-sidenav-primary-action {
+        padding: $measure-gutter-large;
+        background-color: $color-blue-light;
+        border-color: $color-blue-light;
+        height: auto;
+        margin-bottom: $measure-gutter-xxlarge;
+        .split-sidenav-primary-action-label {
+            white-space: normal;
+            word-wrap: break-word;
+            line-height: 1em;
+            font-size: 0.9em;
+        }
+    }
+    .mat-nav-list {
+        a.mat-list-item {
+            color: $color-foreground-inverse;
+            font-size: 1em;
+            height: $component-component-normal;
+            .mat-list-item-content {
+                padding-left: $measure-gutter-large;
+                padding-right: $measure-gutter-large;
+            }
+            i {
+                margin-right: $measure-gutter-normal;
+            }
+        }
+    }
+}
+
+mat-list.mat-list {
+    padding-top: $measure-gutter-large;
+    .mat-subheader {
+        color: $color-foreground-light;
+        font-size: 1em;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: $measure-gutter-large;
+        padding-bottom: $measure-gutter-large;
+    }
+    .mat-list-item {
+        color: $color-foreground-normal;
+        font-size: 1em;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-top: $measure-gutter-large;
+        padding-bottom: $measure-gutter-large;
+        height: auto;
+        .mat-list-item-content {
+            padding: 0px;
+            .mat-list-text {
+                h4.mat-line {
+                    font-weight: bold;
+                }
+                p.mat-line {
+                    font-size: 1em;
+                }
+                p.mat-line:nth-child(n+2) {
+                    font-size: 1em !important;
+                }
+            }
+        }
+    }
+}
+
+mat-expansion-panel {
+    .mat-expansion-panel-header {
+        font-size: 1em;
+        padding-left: $measure-gutter-large;
+        padding-right: $measure-gutter-large;
+    }
+    .mat-expansion-panel-content {
+        font-size: 1em;
+        .mat-expansion-panel-body {
+            padding-left: $measure-gutter-large;
+            padding-right: $measure-gutter-large;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 
 import { from as observableFrom, Observable, forkJoin, combineLatest } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { map, tap, catchError, switchMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
@@ -8,9 +8,10 @@ import * as _ from 'lodash';
 import { SetUser, SetProfile } from '../../state/models/dgt-actions.model';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTBaseRootState, DGTAuthService, DGTStoreService } from '@digita/dgt-shared-web';
+import { DGTBaseRootState, DGTAuthService, DGTStoreService, DGTUser } from '@digita/dgt-shared-web';
 import { LoadEntity } from '@digita/dgt-shared-web';
 import { DGTFirebaseBaseAppState } from '../../state/models/dgt-firebase-base-app-state.model';
+import { DGTDataService } from '@digita/dgt-shared-data';
 
 @Injectable()
 export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAppState>> extends DGTAuthService {
@@ -20,14 +21,14 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
   protected profiles: Array<DGTProfile>;
   public redirectResult: Observable<any>;
 
-  constructor(private authIntance: AngularFireAuth, private logger: DGTLoggerService, private store: DGTStoreService<T>) {
+  constructor(private data: DGTDataService, private authIntance: AngularFireAuth, private logger: DGTLoggerService, private store: DGTStoreService<T>) {
     super();
 
     this.redirectResult = observableFrom(this.authIntance.auth.getRedirectResult());
 
     this.redirectResult.pipe(
-      tap(data => {
-        this.logger.debug(DGTAuthService.name, 'Redirect result', data);
+      tap(result => {
+        this.logger.debug(DGTAuthService.name, 'Redirect result', result);
       }),
       catchError(err => {
         this.logger.error(DGTAuthService.name, 'Redirect result failed', err);
@@ -73,19 +74,20 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
       });
   }
 
-  public signIn(email: string, password: string): Observable<User> {
+  public signIn(email: string, password: string): Observable<DGTUser> {
     this.logger.debug(DGTFirebaseAuthService.name, 'Signing-in user.');
 
     return observableFrom(this.authIntance.auth.signInWithEmailAndPassword(email, password)).pipe(
-      map((userCredentials: firebase.auth.UserCredential) => userCredentials.user));
+      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid))
+    );
   }
 
-  public signInWitEmailLink(email: string, link: string): Observable<{ user: User, isNew: boolean }> {
+  public signInWitEmailLink(email: string, link: string): Observable<DGTUser> {
     this.logger.debug(DGTFirebaseAuthService.name, 'Signing-in user with email link.');
 
     return observableFrom(this.authIntance.auth.signInWithEmailLink(email, link)).pipe(
-      map((userCredentials: firebase.auth.UserCredential) =>
-        ({ user: userCredentials.user, isNew: userCredentials.additionalUserInfo.isNewUser })));
+      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid))
+    );
   }
 
   public sendEmailLink(email: string, returnUrl: string): Observable<void> {

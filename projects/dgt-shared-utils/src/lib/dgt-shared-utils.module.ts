@@ -12,7 +12,7 @@ export const providers = [
   DGTHttpService,
   DGTErrorService,
   DGTLoggerService,
-  DGTPlatformService
+  DGTPlatformService,
 ];
 
 @NgModule({

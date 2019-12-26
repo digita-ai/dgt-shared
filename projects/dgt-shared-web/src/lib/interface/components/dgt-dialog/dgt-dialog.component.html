@@ -1,0 +1,11 @@
+<div class="dialog" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxFlex="56px" class="dialog-icon">
+        <img src="assets/images/avatar/avatar.png" />
+    </div>
+    <div fxFlex class="dialog-description">
+        <ng-content select="dgt-dialog-content"></ng-content>
+    </div>
+    <div class="dialog-actions">
+        <ng-content select="dgt-dialog-action"></ng-content>
+    </div>
+</div>

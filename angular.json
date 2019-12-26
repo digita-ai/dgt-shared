@@ -7,7 +7,7 @@
       "root": "projects/dgt-shared-utils",
       "sourceRoot": "projects/dgt-shared-utils/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -42,13 +42,13 @@
       "root": "projects/dgt-shared-web",
       "sourceRoot": "projects/dgt-shared-web/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/dgt-shared-web/tsconfig.lib.json",
-            "project": "projects/dgt-shared-web/ng-package.json"
+            "project": "projects/dgt-shared-web/ng-package.json",
           }
         },
         "test": {
@@ -77,7 +77,7 @@
       "root": "projects/dgt-shared-data",
       "sourceRoot": "projects/dgt-shared-data/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -112,7 +112,7 @@
       "root": "projects/dgt-shared-venture",
       "sourceRoot": "projects/dgt-shared-venture/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -147,7 +147,7 @@
       "root": "projects/dgt-shared-connectors",
       "sourceRoot": "projects/dgt-shared-connectors/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -182,7 +182,7 @@
       "root": "projects/dgt-shared-test",
       "sourceRoot": "projects/dgt-shared-test/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "dgt",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",

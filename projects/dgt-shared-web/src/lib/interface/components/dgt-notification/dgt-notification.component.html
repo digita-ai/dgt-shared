@@ -1,0 +1,7 @@
+<div class="alert" [class.alert-info]="type === 'info'" [class.alert-warning]="type === 'warn'"
+  [class.alert-error]="type === 'danger'" [class.alert-success]="type === 'success'"
+  (click)="onNotificationDismissed()">
+  <span class="alert-text">
+    <ng-content></ng-content>
+  </span>
+</div>

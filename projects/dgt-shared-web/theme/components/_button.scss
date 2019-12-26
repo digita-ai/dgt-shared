@@ -1,0 +1,90 @@
+.mat-button {
+    height: $component-component-normal;
+    line-height: $component-component-normal;
+    border-width: $component-component-border;
+    border-radius: 0px;
+    box-shadow: initial;
+    color: $color-foreground-normal;
+}
+
+a.mat-raised-button,
+button.mat-raised-button,
+button.mat-raised-button:not([class*=mat-elevation-z]) {
+    height: $component-component-normal;
+    line-height: $component-component-normal;
+    border-width: $component-component-border;
+    border-radius: 0px;
+    box-shadow: initial;
+    background-color: $color-background-normal;
+    border: 1px solid $color-background-normal;
+    color: $color-foreground-normal;
+    &:disabled,
+    &.mat-primary:disabled,
+    &.mat-accent:disabled,
+    &.mat-warn:disabled,
+    &.mat-accent[disabled] {
+        background-color: $color-foreground-inverse;
+        border: 1px solid $color-background-normal;
+        color: $color-foreground-normal;
+        pointer-events: none;
+        cursor: default;
+    }
+    &.mat-primary {
+        box-shadow: initial;
+        border-radius: 0px;
+        border: 1px solid $color-blue-normal;
+        background-color: $color-blue-normal;
+        color: $color-foreground-inverse;
+    }
+    &.mat-accent {
+        box-shadow: initial;
+        border-radius: 0px;
+        background-color: $color-orange-dark;
+        border: 1px solid $color-orange-dark;
+        color: $color-foreground-inverse;
+    }
+    &.mat-warn {
+        border: 1px solid $color-danger-normal;
+        background-color: $color-danger-normal;
+        color: $color-foreground-inverse;
+    }
+    &.btn-facebook {
+        background-color: $color-facebook-normal;
+        border-color: $color-facebook-normal;
+        &:hover {
+            background-color: $color-facebook-dark;
+            border-color: $color-facebook-dark;
+        }
+        &:active {
+            background-color: $color-facebook-normal;
+            border-color: $color-facebook-dark;
+        }
+        &.btn-link {
+            color: $color-blue-normal;
+        }
+    }
+}
+
+a.mat-primary.inversed,
+button.mat-primary.inversed {
+    color: $color-foreground-inverse;
+}
+
+// clr-button-group.btn-primary button,
+// .btn-group.btn-primary .btn {
+//     height: $component-component-normal;
+//     border-width: $component-component-border;
+//     background-color: $color-blue-normal;
+//     border-color: $color-blue-normal;
+//     color: $color-foreground-inverse;
+//     border-style: solid;
+//     border-radius: 0px;
+//     cursor: pointer;
+//     &:hover, &.active {
+//         background-color: $color-blue-light;
+//         border-color: $color-blue-light;
+//     }
+// }
+// .card-footer .btn-group button.btn:not(:last-child) {
+//     margin-right: 1px;
+// }

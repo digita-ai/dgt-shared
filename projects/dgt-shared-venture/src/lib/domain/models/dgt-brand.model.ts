@@ -1,7 +1,7 @@
 import { DGTBrandState } from './dgt-brand-state.model';
-import { DGTI8NEntity } from './dgt-i8n-entity.model';
 import { DGTEmailTemplateProfile } from '../../email/models/dgt-email-template-profile.model';
 import { DGTUpdateType } from './dgt-update-type.model';
+import { DGTI8NEntity } from '@digita/dgt-shared-web';
 
 export interface DGTBrand extends DGTI8NEntity, DGTEmailTemplateProfile {
   category: string;

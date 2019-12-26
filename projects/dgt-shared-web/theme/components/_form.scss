@@ -1,0 +1,169 @@
+*,
+form {
+    .form-block {
+        margin-top: 0px;
+        margin-bottom: $measure-gutter-xxlarge;
+    }
+
+    .form-group {
+        margin: $measure-gutter-large 0;
+
+        &:first-child {
+            margin-top: 0px;
+        }
+
+        div[class^="col-"] {
+            padding: 0px;
+        }
+
+        // input {
+        //     border-color: $color-foreground-normal;
+        //     color: $color-foreground-normal;
+        //     height: $component-component-normal;
+        //     padding: $measure-gutter-normal;
+        //     margin: $measure-gutter-normal;
+        //     margin: 0;
+        //     &.ng-invalid:not(.ng-untouched) {
+        //         margin-bottom: 0px;
+        //         border-bottom-color: $color-danger-normal;
+        //     }
+        // }
+        &.row [class*=col-]>label {
+            color: $color-foreground-normal;
+            height: $component-component-normal;
+            padding: $measure-gutter-normal;
+            margin: $measure-gutter-normal;
+            margin-left: 0px;
+            padding-left: 0px;
+        }
+    }
+}
+
+mat-form-field {
+    span i.fas {
+        color: $color-foreground-normal;
+        padding-right: $measure-gutter-large;
+    }
+
+    &.inversed {
+        input {
+            color: $color-foreground-inverse;
+        }
+
+        .mat-form-field-underline,
+        .mat-form-field-ripple {
+            background-color: $color-foreground-inverse;
+        }
+
+        label.mat-form-field-label {
+            color: $color-foreground-inverse;
+        }
+    }
+
+    &.no-underline {
+        .mat-form-field-underline {
+            height: 0px;
+            background-color: transparent;
+
+            .mat-form-field-ripple {
+                display: none;
+            }
+        }
+
+        >.mat-form-field-wrapper {
+            padding-bottom: 0px;
+        }
+    }
+}
+
+.mat-form-field-outline-start, .mat-form-field-outline-end {
+    border-radius: 0 !important;
+}
+
+.mat-form-field-infix {
+    width: auto !important;
+}
+
+mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: 0px !important;
+    padding: 0px !important;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-flex, .mat-form-field-appearance-standard .mat-form-field-flex {
+    padding-top: 0px !important;
+}
+
+mat-slide-toggle {
+    /deep/ .mat-slide-toggle-content {
+        font-size: 1em;
+    }
+}
+
+mat-checkbox {
+    /deep/ .mat-checkbox-checkmark-path {
+        stroke: $color-foreground-inverse !important;
+    }
+
+    /deep/ .mat-checkbox-checkmark {
+        width: 80%;
+        left: 10%;
+        top: 10%;
+    }
+
+    &.inversed {
+
+        // .mat-checkbox-inner-container .mat-checkbox-frame {
+        //     border-color: $color-foreground-inverse;
+        // }
+        .mat-checkbox-label {
+            color: $color-foreground-inverse;
+        }
+
+        // .mat-checkbox-checked .mat-checkbox-background, .mat-checkbox-background {
+        //     background-color: $color-foreground-inverse;
+        // }
+        /deep/ .mat-checkbox-background {
+            background-color: transparent;
+        }
+
+        .mat-checkbox-frame {
+            border-color: $color-foreground-inverse;
+        }
+    }
+}
+
+mat-radio-button {
+    &.inversed {
+        color: $color-foreground-inverse;
+
+        .mat-radio-container .mat-radio-outer-circle {
+            border-color: $color-foreground-inverse;
+        }
+
+        &.mat-radio-checked {
+            .mat-radio-container .mat-radio-outer-circle {
+                border-color: $color-foreground-inverse;
+            }
+
+            .mat-radio-container .mat-radio-inner-circle {
+                background-color: $color-foreground-inverse;
+            }
+        }
+    }
+}
+
+input[type="search"] {
+    -webkit-appearance: none;
+}
+
+// mat-checkbox {
+//     color: rgb(0,178,0);
+//     /deep/ .mat-checkbox-background {
+//         background-color: rgb(0,178,0);
+//     }
+//     /deep/ &.mat-checkbox-focused{
+//         .mat-ink-ripple{
+//             background-color: rgba(0, 178, 0, .26);
+//         }
+//     }
+// }

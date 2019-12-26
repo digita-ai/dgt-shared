@@ -1,0 +1,24 @@
+@import 'styles';
+:host {
+    display: block;
+    margin-bottom: $measure-gutter-large;
+    &:last-child {
+        margin-bottom: 0px;
+    }
+}
+
+.section {
+    background-color: $color-foreground-inverse;
+    border: $measure-gutter-normal solid transparent;
+    padding: $measure-gutter-xlarge;
+    &.blue {
+        background-color: $color-blue-normal;
+        color: $color-foreground-inverse;
+    }
+    &.warning {
+        border-left: $measure-gutter-normal solid $color-danger-normal;
+    }
+    &.success {
+        border-left: $measure-gutter-normal solid $color-success-normal;
+    }
+}

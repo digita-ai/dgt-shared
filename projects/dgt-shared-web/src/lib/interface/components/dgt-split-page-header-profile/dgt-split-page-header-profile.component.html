@@ -1,0 +1,16 @@
+<a class="profile-individual" *ngIf="profile && profile.type === 1" [routerLink]="['/profile', 'identity']" mat-raised-button color="primary">
+  <i class="fas fa-user-circle"></i>
+  {{profile.email}}
+</a>
+<a class="profile-individual" *ngIf="profile && profile.type === 2" [routerLink]="['/profile', 'identity']" mat-raised-button color="primary">
+  <i class="fas fa-user-circle"></i>
+  {{profile.email}}
+</a>
+<a class="profile-company" *ngIf="profile && profile.type === 3" [routerLink]="['/profile', 'company']" mat-raised-button color="primary">
+  <i class="fas fa-user-circle"></i>
+  {{profile.email}}
+</a>
+<a class="profile-anonymous" *ngIf="!profile" [routerLink]="['/public', 'authenticate']" mat-raised-button color="primary">
+  <i class="fas fa-user-circle"></i>
+  {{'dashboard.pages.dashboard.sign-in' | translate}}
+</a>

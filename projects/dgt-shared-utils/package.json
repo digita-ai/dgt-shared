@@ -17,6 +17,7 @@
     "@angular/core": "^7.2.7"
   },
   "devDependencies": {
+    "@digita/dgt-shared-test": "latest",
     "@types/node": "~11.9.5"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",

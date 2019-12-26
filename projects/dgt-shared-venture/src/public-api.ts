@@ -35,4 +35,6 @@ export { DGTValidationState } from './lib/domain/models/dgt-validation-state.mod
 export { DGTValidationType } from './lib/domain/models/dgt-validation-type.model';
 export { DGTFirebaseBaseAppState } from './lib/state/models/dgt-firebase-base-app-state.model';
 export { DGTVentureFileService } from './lib/file/services/dgt-venture-file.service';
+export { DGTClientDataService } from './lib/integrations/services/dgt-client-data.service';
+export { DGTClientLogicService } from './lib/integrations/services/dgt-client-logic.service';
 export * from './lib/state/models/dgt-actions.model';
