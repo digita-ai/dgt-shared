@@ -11,16 +11,19 @@ import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
+import { DGTLoggerService } from '@digita/dgt-shared-utils';
 
 @Injectable()
 export class DGTWorkflowService {
 
     private workflows: DGTWorkflow[];
 
-    constructor(private data: DGTDataService, private sources: DGTSourceService) { }
+    constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
     public execute(exchange: DGTExchange, mappings: DGTLDMapping[])
         : Observable<DGTLDValue[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, mappings });
+
         return of({ exchange, mappings })
             .pipe(
                 switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
@@ -45,6 +48,8 @@ export class DGTWorkflowService {
 
 
     public get(field: DGTLDField): DGTWorkflow[] {
+        this.logger.debug(DGTWorkflowService.name, 'Getting workflow for field', { field });
+
         let res: DGTWorkflow[] = null;
 
         if (field && this.workflows && this.workflows.length > 0) {
@@ -58,6 +63,8 @@ export class DGTWorkflowService {
     }
 
     public register(workflow: DGTWorkflow) {
+        this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
+
         if (!this.workflows) {
             this.workflows = [];
         }
