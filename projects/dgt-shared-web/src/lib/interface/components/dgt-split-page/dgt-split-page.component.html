@@ -1,5 +1,5 @@
 <div class="split" fxLayout="column" fxFlexFill>
-  <div class="split-header" fxFlex="initial" fxLayout="row" fxLayoutAlign="start center">
+  <div class="split-header" fxFlex="initial" *ngIf="headerEnabled" fxLayout="row" fxLayoutAlign="start center">
     <button fxFlex="24px" mat-icon-button color="accent" *ngIf="sidenavEnabled && isSmallDevice" (click)="opened=!opened">
       <i class="fas fa-bars"></i>
     </button>
@@ -21,7 +21,7 @@
       <div fxFlex="initial" class="split-content-header" [hidden]="!subHeaderEnabled">
         <ng-content select="dgt-split-page-sub-header"></ng-content>
       </div>
-      <div fxFlex fxFlexFill class="split-content-details">
+      <div fxFlex fxFlexFill class="split-content-details" [class.split-content-details-padding]="contentPaddingEnabled">
         <ng-content select="dgt-split-page-content"></ng-content>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { DGTProfile } from '@digita/dgt-shared-venture';
+import { DGTUser } from '../../../security/models/dgt-user.model';
 
 @Component({
   selector: 'dgt-standard-page',
@@ -28,7 +28,7 @@ import { DGTProfile } from '@digita/dgt-shared-venture';
   ],
 })
 export class DGTStandardPageComponent implements OnInit {
-  @Input() public authenticatedProfile: DGTProfile;
+  @Input() public authenticatedProfile: DGTUser;
   @Input() public fabEnabled = false;
   @Output() public fabClicked: EventEmitter<void> = new EventEmitter<void>();
   @Input() public fabHelpSummary = '';
@@ -45,7 +45,7 @@ export class DGTStandardPageComponent implements OnInit {
         delay(15000),
         tap(() => this.isFabHelpSummaryShown = false)
       )
-      .subscribe(() => console.log('finished'))
+      .subscribe(() => console.log('finished'));
   }
 
   public onFabClicked() {

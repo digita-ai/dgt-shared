@@ -31,7 +31,9 @@ import { DGTLoggerService } from '@digita/dgt-shared-utils';
 export class DGTSplitPageComponent implements OnInit {
   @Input() public sidenavEnabled = true;
   @Input() public sidenavSize = '300px';
+  @Input() public headerEnabled = true;
   @Input() public subHeaderEnabled = true;
+  @Input() public contentPaddingEnabled = true;
   @Input() public fabEnabled = false;
   @Output() public fabClicked: EventEmitter<void> = new EventEmitter<void>();
   @Input() public fabHelpSummary = '';
@@ -48,8 +50,8 @@ export class DGTSplitPageComponent implements OnInit {
       this.opened = this.media.isActive('gt-sm');
       this.isSmallDevice = !this.media.isActive('gt-sm');
 
-      this.logger.debug(DGTSplitPageComponent.name, 'Captured media change', { opened: this.opened, isSmallDevice: this.isSmallDevice })
-    })
+      this.logger.debug(DGTSplitPageComponent.name, 'Captured media change', { opened: this.opened, isSmallDevice: this.isSmallDevice });
+    });
   }
 
   ngOnInit() {
@@ -61,7 +63,7 @@ export class DGTSplitPageComponent implements OnInit {
           delay(15000),
           tap(() => this.isFabHelpSummaryShown = false)
         )
-        .subscribe(() => console.log('finished'))
+        .subscribe(() => console.log('finished'));
     }
   }
 

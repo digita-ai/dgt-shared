@@ -43,6 +43,8 @@
             }
             .split-content-details {
                 overflow: scroll;
+            }
+            .split-content-details-padding {
                 padding: $measure-gutter-large;
             }
             @media only screen and (max-width: 599px) {
