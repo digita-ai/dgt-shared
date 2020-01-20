@@ -6,6 +6,7 @@ import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTSourceService } from './source/services/dgt-source.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
 import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
+import { DGTCacheService } from './cache/services/dgt-cache.service';
 
 export const declarations = [];
 export const imports = [
@@ -16,6 +17,7 @@ export const providers = [
   DGTMockDataService,
   DGTLDMappingService,
   DGTSourceService,
+  DGTCacheService,
   DGTSubjectService,
   DGTWorkflowService
 ];
