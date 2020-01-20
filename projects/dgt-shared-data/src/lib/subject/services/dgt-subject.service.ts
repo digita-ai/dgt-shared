@@ -39,10 +39,21 @@ export class DGTSubjectService {
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDValue[]> {
         return of({ exchange })
             .pipe(
-                switchMap((data) => this.data.getEntities<DGTLDMapping>('mapping', { conditions: [] })
-                    .pipe(map(mappings => ({ mappings, ...data })))),
-                switchMap((data) => this.workflow.execute(exchange, data.mappings)),
-                switchMap(data => this.cache.storeForExchange(exchange, data)),
+                switchMap(data => this.cache.getValuesForExchange(exchange)
+                    .pipe(map(values => ({ values, ...data })))),
+                switchMap(data => {
+                    let res = of(data.values);
+
+                    if (!data.values || data.values.length === 0) {
+                        res = this.data.getEntities<DGTLDMapping>('mapping', { conditions: [] })
+                            .pipe(
+                                switchMap((mappings) => this.workflow.execute(exchange, mappings)),
+                                switchMap((values) => this.cache.storeForExchange(exchange, values)),
+                            );
+                    }
+
+                    return res;
+                }),
             );
     }
 }
