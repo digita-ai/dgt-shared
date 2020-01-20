@@ -4,7 +4,6 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTLDMapping } from '../../linked-data/models/dgt-ld-mapping.model';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTSource } from '../../source/models/dgt-source.model';
@@ -20,11 +19,11 @@ export class DGTWorkflowService {
 
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
-    public execute(exchange: DGTExchange, mappings: DGTLDMapping[])
+    public execute(exchange: DGTExchange)
         : Observable<DGTLDValue[]> {
-        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, mappings });
+        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
 
-        return of({ exchange, mappings })
+        return of({ exchange })
             .pipe(
                 switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
                     .pipe(map(justification => ({ justification, ...data })))),
@@ -39,14 +38,14 @@ export class DGTWorkflowService {
                 })
                     .pipe(map(sources => ({ sources, ...data })))),
                 switchMap((data) => forkJoin(
-                    data.sources.map((source => this.sources.get(exchange, source, data.justification, data.mappings)))
+                    data.sources.map((source => this.sources.get(exchange, source, data.justification)))
                 )
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
                 map(data => {
                     const values: DGTLDValue[] = _.flatten(data.valuesPerSource);
 
                     this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
-                        { exchange, mappings, values });
+                        { exchange, values });
 
                     values.map((value) => {
                         if (value) {
@@ -79,9 +78,10 @@ export class DGTWorkflowService {
 
         if (field && this.workflows && this.workflows.length > 0) {
             res = this.workflows.filter(workflow =>
-                workflow && workflow.trigger && workflow.trigger.field
-                && workflow.trigger.field.namespace === field.namespace
-                && workflow.trigger.field.name === field.name);
+                workflow
+                && workflow.trigger
+                && workflow.trigger.fields
+                && workflow.trigger.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
         }
 
         return res;

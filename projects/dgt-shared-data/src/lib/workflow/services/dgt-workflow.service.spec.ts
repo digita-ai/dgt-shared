@@ -23,7 +23,7 @@ describe('DGTWorkflowService', () => {
 
         const workflow: DGTWorkflow = {
             trigger: {
-                field
+                fields: field
             },
             actions: []
         };

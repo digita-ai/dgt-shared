@@ -24,6 +24,7 @@ export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibi
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
 export { DGTSubjectService } from './lib/subject/services/dgt-subject.service';
 export { DGTExchange } from './lib/subject/models/dgt-subject-exchange.model';
+export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove-prefix.workflow-action';
 export { DGTSubject } from './lib/subject/models/dgt-subject.model';
 export { DGTSourceService } from './lib/source/services/dgt-source.service';
@@ -31,10 +32,8 @@ export { DGTSource } from './lib/source/models/dgt-source.model';
 export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.model';
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
 export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
-export { DGTLDMappingService } from './lib/linked-data/services/dgt-ld-mapping.service';
 export { DGTLDValue } from './lib/linked-data/models/dgt-ld-value.model';
 export { DGTLDResponse } from './lib/linked-data/models/dgt-ld-response.model';
-export { DGTLDMapping } from './lib/linked-data/models/dgt-ld-mapping.model';
 export { DGTLDField } from './lib/linked-data/models/dgt-ld-field.model';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';

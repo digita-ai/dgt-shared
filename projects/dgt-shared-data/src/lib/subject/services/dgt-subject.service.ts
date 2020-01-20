@@ -4,7 +4,6 @@ import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTExchange } from '../models/dgt-subject-exchange.model';
 import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import * as _ from 'lodash';
-import { DGTLDMapping } from '../../linked-data/models/dgt-ld-mapping.model';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { Injectable } from '@angular/core';
 import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
@@ -45,9 +44,8 @@ export class DGTSubjectService {
                     let res = of(data.values);
 
                     if (!data.values || data.values.length === 0) {
-                        res = this.data.getEntities<DGTLDMapping>('mapping', { conditions: [] })
+                        res = this.workflow.execute(exchange)
                             .pipe(
-                                switchMap((mappings) => this.workflow.execute(exchange, mappings)),
                                 switchMap((values) => this.cache.storeForExchange(exchange, values)),
                             );
                     }
