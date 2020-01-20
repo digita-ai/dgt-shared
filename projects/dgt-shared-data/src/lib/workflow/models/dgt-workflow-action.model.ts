@@ -3,5 +3,5 @@ import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 
 export interface DGTWorkflowAction {
     type: DGTWorkflowActionType;
-    execute(values: DGTLDValue[]): DGTLDValue[];
+    execute(values: DGTLDValue): DGTLDValue;
 }

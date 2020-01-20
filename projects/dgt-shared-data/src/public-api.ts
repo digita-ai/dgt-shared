@@ -24,6 +24,7 @@ export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibi
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
 export { DGTSubjectService } from './lib/subject/services/dgt-subject.service';
 export { DGTExchange } from './lib/subject/models/dgt-subject-exchange.model';
+export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove-prefix.workflow-action';
 export { DGTSubject } from './lib/subject/models/dgt-subject.model';
 export { DGTSourceService } from './lib/source/services/dgt-source.service';
 export { DGTSource } from './lib/source/models/dgt-source.model';

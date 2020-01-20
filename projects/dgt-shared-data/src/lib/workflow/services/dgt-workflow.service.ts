@@ -42,7 +42,32 @@ export class DGTWorkflowService {
                     data.sources.map((source => this.sources.get(exchange, source, data.justification, data.mappings)))
                 )
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
-                map(data => _.flatten(data.valuesPerSource)),
+                map(data => {
+                    const values: DGTLDValue[] = _.flatten(data.valuesPerSource);
+
+                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
+                        { exchange, mappings, values });
+
+                    values.map((value) => {
+                        if (value) {
+                            const workflows = this.get(value.field);
+
+                            if (workflows) {
+                                workflows.forEach((workflow) => {
+                                    if (workflow && workflow.actions) {
+                                        workflow.actions.forEach((action) => {
+                                            if (action) {
+                                                value = action.execute(value);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                    return values;
+                }),
             );
     }
 
