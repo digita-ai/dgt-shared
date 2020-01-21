@@ -1,6 +1,6 @@
 import { DGTDataService } from './dgt-data.service';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTQueryService } from './dgt-query.service';
@@ -8,6 +8,7 @@ import { DGTQuery } from '../models/dgt-query.model';
 import { DGTMockDatabase } from '../models/dgt-mock-database.model';
 import { DGTEntity } from '../models/dgt-entity.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class DGTMockDataService extends DGTDataService {
@@ -74,6 +75,10 @@ export class DGTMockDataService extends DGTDataService {
 
         this.convertUndefinedToNull(entity);
 
+        if (!entity.id) {
+            entity.id = uuid();
+        }
+
         res = of(this.database.get(entityType))
             .pipe(
                 tap(entities => entities ? this.database.set(entityType, entities.concat([entity]))
@@ -90,12 +95,7 @@ export class DGTMockDataService extends DGTDataService {
         this.logger.debug(DGTMockDataService.name, 'Creating entities for type ' + entityType, newEntities);
 
         if (newEntities) {
-            res = of(this.database.get(entityType))
-                .pipe(
-                    tap(entities => entities ? this.database.set(entityType, entities.concat(newEntities))
-                        : this.database.set(entityType, newEntities)),
-                    map(() => newEntities)
-                );
+            res = forkJoin(newEntities.map((entity) => this.createEntity(entityType, entity)));
         }
 
         return res;

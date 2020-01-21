@@ -36,6 +36,7 @@
     "redux-beacon": "^2.0.3",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
+    "uuid": "^3.4.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
@@ -50,6 +51,7 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
+    "@types/uuid": "3.4.3",
     "angularfire2": "5.1.1",
     "codelyzer": "~4.5.0",
     "firebase": "5.8.4",
