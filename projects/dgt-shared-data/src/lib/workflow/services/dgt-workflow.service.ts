@@ -27,19 +27,9 @@ export class DGTWorkflowService {
             .pipe(
                 switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
                     .pipe(map(justification => ({ justification, ...data })))),
-                switchMap((data) => this.data.getEntities<DGTSource>('source', {
-                    conditions: [
-                        {
-                            field: 'subject',
-                            operator: '==',
-                            value: exchange.subject,
-                        },
-                    ],
-                })
-                    .pipe(map(sources => ({ sources, ...data })))),
-                switchMap((data) => forkJoin(
-                    data.sources.map((source => this.sources.get(exchange, source, data.justification)))
-                )
+                switchMap((data) => this.data.getEntity<DGTSource>('source', exchange.source)
+                    .pipe(map(source => ({ source, ...data })))),
+                switchMap((data) => this.sources.get(exchange, data.source, data.justification)
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
                 map(data => {
                     const values: DGTLDValue[] = _.flatten(data.valuesPerSource);
@@ -49,7 +39,7 @@ export class DGTWorkflowService {
 
                     values.map((value) => {
                         if (value) {
-                            const workflows = this.get(value.field);
+                            const workflows = this.get(exchange.source, value.field);
 
                             if (workflows) {
                                 workflows.forEach((workflow) => {
@@ -71,7 +61,7 @@ export class DGTWorkflowService {
     }
 
 
-    public get(field: DGTLDField): DGTWorkflow[] {
+    public get(source: string, field: DGTLDField): DGTWorkflow[] {
         this.logger.debug(DGTWorkflowService.name, 'Getting workflow for field', { field });
 
         let res: DGTWorkflow[] = null;
@@ -79,9 +69,9 @@ export class DGTWorkflowService {
         if (field && this.workflows && this.workflows.length > 0) {
             res = this.workflows.filter(workflow =>
                 workflow
-                && workflow.trigger
-                && workflow.trigger.fields
-                && workflow.trigger.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
+                && workflow.source === source
+                && workflow.fields
+                && workflow.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
         }
 
         return res;

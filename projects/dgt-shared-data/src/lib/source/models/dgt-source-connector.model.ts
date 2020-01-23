@@ -6,9 +6,7 @@ import { Observable } from 'rxjs';
 
 export interface DGTSourceConnector {
     query(
-        webId: string,
         exchange: DGTExchange,
         justification: DGTJustification,
-        source: DGTSource
     ): Observable<DGTLDResponse>;
 }

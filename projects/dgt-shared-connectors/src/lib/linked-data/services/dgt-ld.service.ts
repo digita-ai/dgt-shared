@@ -19,8 +19,7 @@ export class DGTLDService {
     public query(
         webId: string,
         exchange: DGTExchange,
-        justification: DGTJustification,
-        source: DGTSource
+        justification: DGTJustification
     ): Observable<DGTLDResponse> {
         return new Observable<DGTLDResponse>((subscriber) => {
             this.logger.debug(DGTLDService.name, 'Starting to query data', { webId });
@@ -29,7 +28,7 @@ export class DGTLDService {
                 (ok, body, xhr) => {
                     this.logger.debug(DGTLDService.name, 'Load finished');
 
-                    this.parse(webId, this.store, exchange, justification, source)
+                    this.parse(webId, this.store, exchange, justification)
                         .subscribe(data => {
                             this.logger.debug(DGTLDService.name, 'Parsed data', data);
                             subscriber.next(({ data }));
@@ -46,14 +45,13 @@ export class DGTLDService {
         store: rdf.IndexedFormula,
         exchange: DGTExchange,
         justification: DGTJustification,
-        source: DGTSource
     ): Observable<DGTLDValue[]> {
         return new Observable<DGTLDValue[]>((subscriber) => {
             let res: DGTLDValue[] = [];
 
             if (justification && justification.fields) {
                 res = justification.fields
-                    .map((field) => this.getLinkedValue(webId, store, field, justification, source, exchange))
+                    .map((field) => this.getLinkedValue(webId, store, field, exchange))
                     .filter(value => value.value !== null);
             }
 
@@ -66,17 +64,13 @@ export class DGTLDService {
         webId: string,
         store: rdf.IndexedFormula,
         field: DGTLDField,
-        justification: DGTJustification,
-        source: DGTSource,
         exchange: DGTExchange
     ): DGTLDValue {
         const res: DGTLDValue = {
             exchange: exchange.id,
             field,
-            justification: justification.id,
-            source: source.id,
-            subject: source.subject,
             value: null,
+            subject: exchange.subject
         };
 
         const namespace = rdf.Namespace(field.namespace);

@@ -40,4 +40,3 @@ export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
-export { DGTWorkflowTrigger } from './lib/workflow/models/dgt-workflow-trigger.model';

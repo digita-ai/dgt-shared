@@ -1,16 +1,14 @@
 import { Observable } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTSource, DGTJustification, DGTLDResponse } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse } from '@digita/dgt-shared-data';
 import { DGTLDService } from '../../linked-data/services/dgt-ld.service';
 
 export class DGTSourceSolidConnector implements DGTSourceConnector {
     constructor(private linked: DGTLDService) { }
 
     public query(
-        webId: string,
         exchange: DGTExchange,
-        justification: DGTJustification,
-        source: DGTSource
+        justification: DGTJustification
     ): Observable<DGTLDResponse> {
-        return this.linked.query(webId, exchange, justification, source);
+        return this.linked.query(exchange.uri, exchange, justification);
     }
 }

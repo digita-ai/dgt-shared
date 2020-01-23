@@ -26,7 +26,7 @@ export class DGTSourceService {
             connector = this.connectors.get(source.type);
         }
 
-        return connector.query(source.uri, exchange, justification, source)
+        return connector.query(exchange, justification)
             .pipe(
                 map((response) => response.data),
             );

@@ -1,13 +1,11 @@
 import { Observable } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTLDResponse, DGTExchange, DGTJustification, DGTSource, DGTSourceConnector } from '@digita/dgt-shared-data';
+import { DGTLDResponse, DGTExchange, DGTJustification, DGTSourceConnector } from '@digita/dgt-shared-data';
 
 export class DGTSourceMSSQLConnector implements DGTSourceConnector {
     public query(
-        webId: string,
         exchange: DGTExchange,
-        justification: DGTJustification,
-        source: DGTSource
+        justification: DGTJustification
     ): Observable<DGTLDResponse> {
         // const config = {
         //     user: '...',

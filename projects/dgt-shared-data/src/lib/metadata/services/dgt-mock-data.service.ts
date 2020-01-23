@@ -19,7 +19,7 @@ export class DGTMockDataService extends DGTDataService {
     public getEntities<S extends DGTEntity>(entityType: string, query: DGTQuery): Observable<S[]> {
         let res: Observable<S[]> = null;
 
-        this.logger.debug(DGTMockDataService.name, 'Loading entities', { entityType, query });
+        this.logger.debug(DGTMockDataService.name, 'Getting multiple entities', { entityType, query });
 
         if (query) {
             res = of(this.database.get(entityType))
@@ -48,7 +48,7 @@ export class DGTMockDataService extends DGTDataService {
     }
 
     public getEntity<S extends DGTEntity>(entityType: string, entityId: string): Observable<S> {
-        this.logger.debug(DGTMockDataService.name, 'Loading DGTEntity for type ' + entityType + ' and ID ' + entityId);
+        this.logger.debug(DGTMockDataService.name, 'Getting single entity', { entityType, entityId });
 
         return of(this.database.get(entityType))
             .pipe(
@@ -61,7 +61,8 @@ export class DGTMockDataService extends DGTDataService {
                     }
 
                     return res;
-                })
+                }),
+                tap(entity => this.logger.debug(DGTMockDataService.name, 'Found entity', { entity, entityType, entityId }))
             );
     }
 
