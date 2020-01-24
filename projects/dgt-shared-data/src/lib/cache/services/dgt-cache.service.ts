@@ -7,33 +7,11 @@ import { DGTSubject } from '../../subject/models/dgt-subject.model';
 import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTQuery } from '../../metadata/models/dgt-query.model';
 import { Injectable } from '@angular/core';
+import * as _ from 'lodash';
 
 @Injectable()
 export class DGTCacheService {
     constructor(private data: DGTDataService, private logger: DGTLoggerService) { }
-
-    public getValues(): Observable<DGTLDValue[]> {
-        this.logger.debug(DGTCacheService.name, 'Retrieving all values from cache');
-
-        return this.data.getEntities<DGTLDValue>('value', null);
-    }
-
-    public getValuesForSubject(subject: DGTSubject): Observable<DGTLDValue[]> {
-        this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for subject', { subject });
-
-        return of({ subject })
-            .pipe(
-                switchMap(data => this.data.getEntities<DGTLDValue>('value', {
-                    conditions: [
-                        {
-                            field: 'subject',
-                            operator: '==',
-                            value: subject.id,
-                        },
-                    ],
-                })),
-            );
-    }
 
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDValue[]> {
         this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for exchange', { exchange });
@@ -71,18 +49,6 @@ export class DGTCacheService {
         return of({ values, exchange })
             .pipe(
                 switchMap(data => this.remove({ conditions: [{ field: 'exchange', operator: '==', value: data.exchange.id }] })
-                    .pipe(map(removal => data))),
-                tap(data => this.logger.debug(DGTCacheService.name, 'Removed old values, ready to store new ones', data)),
-                switchMap(data => this.data.createEntities<DGTLDValue>('value', data.values)),
-            );
-    }
-
-    public storeForSubject(subject: DGTSubject, values: DGTLDValue[]): Observable<DGTLDValue[]> {
-        this.logger.debug(DGTCacheService.name, 'Storing values for subject to cache', { subject, values });
-
-        return of({ values, subject })
-            .pipe(
-                switchMap(data => this.remove({ conditions: [{ field: 'subject', operator: '==', value: data.subject.id }] })
                     .pipe(map(removal => data))),
                 tap(data => this.logger.debug(DGTCacheService.name, 'Removed old values, ready to store new ones', data)),
                 switchMap(data => this.data.createEntities<DGTLDValue>('value', data.values)),
