@@ -1,6 +1,6 @@
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, concat, zip, merge } from 'rxjs';
 import { DGTSubject } from '../models/dgt-subject.model';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map, tap, concatAll } from 'rxjs/operators';
 import { DGTExchange } from '../models/dgt-subject-exchange.model';
 import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import * as _ from 'lodash';
@@ -31,11 +31,14 @@ export class DGTSubjectService {
                 switchMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
                     .pipe(map(valuesPerExchange => ({ valuesPerExchange, ...data })))),
                 map(data => _.flatten(data.valuesPerExchange)),
+                // switchMap(data => data.valuesPerExchange),
                 tap(data => this.logger.debug(DGTSubjectService.name, 'Retrieved values for subject', data)),
             );
     }
 
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDValue[]> {
+        this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
+
         return of({ exchange })
             .pipe(
                 switchMap(data => this.cache.getValuesForExchange(exchange)
