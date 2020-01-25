@@ -27,7 +27,7 @@ export class DGTWorkflowService {
             .pipe(
                 switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
                     .pipe(map(justification => ({ justification, ...data })))),
-                switchMap((data) => this.data.getEntity<DGTSource>('source', exchange.source)
+                switchMap((data) => this.data.getEntity<DGTSource<any>>('source', exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
                 switchMap((data) => this.sources.get(exchange, data.source, data.justification)
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),

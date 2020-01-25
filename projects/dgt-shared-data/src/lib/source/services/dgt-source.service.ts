@@ -12,29 +12,29 @@ import { DGTSourceType } from '../models/dgt-source-type.model';
 @Injectable()
 export class DGTSourceService {
 
-    private connectors: DGTMap<DGTSourceType, DGTSourceConnector>;
+    private connectors: DGTMap<DGTSourceType, DGTSourceConnector<any>>;
 
     constructor(private logger: DGTLoggerService) { }
 
-    public get(exchange: DGTExchange, source: DGTSource, justification: DGTJustification)
+    public get(exchange: DGTExchange, source: DGTSource<any>, justification: DGTJustification)
         : Observable<DGTLDValue[]> {
         this.logger.debug(DGTSourceService.name, 'Getting source', source);
 
-        let connector: DGTSourceConnector = null;
+        let connector: DGTSourceConnector<any> = null;
 
         if (this.connectors) {
             connector = this.connectors.get(source.type);
         }
 
-        return connector.query(exchange, justification)
+        return connector.query(exchange, justification, source)
             .pipe(
                 map((response) => response.data),
             );
     }
 
-    public register(sourceType: DGTSourceType, connector: DGTSourceConnector) {
+    public register(sourceType: DGTSourceType, connector: DGTSourceConnector<any>) {
         if (!this.connectors) {
-            this.connectors = new DGTMap<DGTSourceType, DGTSourceConnector>();
+            this.connectors = new DGTMap<DGTSourceType, DGTSourceConnector<any>>();
         }
 
         this.connectors.set(sourceType, connector);

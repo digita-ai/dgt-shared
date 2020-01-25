@@ -4,9 +4,10 @@ import { DGTJustification } from '../../justification/models/dgt-justification.m
 import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { Observable } from 'rxjs';
 
-export interface DGTSourceConnector {
+export interface DGTSourceConnector<T> {
     query(
         exchange: DGTExchange,
         justification: DGTJustification,
+        source: DGTSource<T>
     ): Observable<DGTLDResponse>;
 }
