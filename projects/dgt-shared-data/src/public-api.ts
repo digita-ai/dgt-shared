@@ -12,6 +12,7 @@ export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
 export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
+export { DGTCategory } from './lib/categories/models/dgt-category.model';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
 export { DGTFile } from './lib/file/models/dgt-file.model';
