@@ -9,4 +9,5 @@ export { DGTConfigurationService } from './lib/configuration/services/dgt-config
 export { DGTLoggerService } from './lib/logging/services/dgt-logger.service';
 export { DGTErrorService } from './lib/logging/services/dgt-error.service';
 export { DGTHttpService } from './lib/http/services/dgt-http.service';
+export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.service';
 export { DGTConnectionService } from './lib/connection/services/dgt-connection.service';

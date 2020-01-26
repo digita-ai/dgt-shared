@@ -11,6 +11,7 @@
     "@digita/dgt-shared-utils",
     "@digita/dgt-shared-data",
     "rdflib",
-    "mssql"
+    "mssql",
+    "ts-md5"
   ]
 }

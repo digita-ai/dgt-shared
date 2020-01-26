@@ -1,4 +1,5 @@
 export enum DGTSourceType {
     SOLID = 'solid',
-    MSSQL = 'mssql'
+    MSSQL = 'mssql',
+    GRAVATAR = 'gravatar',
 }

@@ -55,7 +55,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const values: DGTLDValue[] = [];
 
-        if (sqlResult && sqlResult.recordset) {
+        if (exchange && mapping && sqlResult && sqlResult.recordset) {
             sqlResult.recordset.forEach((record) => {
                 if (record) {
                     mapping.forEach((field, key) => {
