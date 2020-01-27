@@ -93,22 +93,22 @@ mat-form-field.mat-form-field-appearance-outline .mat-form-field-wrapper {
     padding-top: 0px !important;
 }
 
-mat-slide-toggle {
-    /deep/ .mat-slide-toggle-content {
-        font-size: 1em;
-    }
-}
+// mat-slide-toggle {
+//     /deep/ .mat-slide-toggle-content {
+//         font-size: 1em;
+//     }
+// }
 
 mat-checkbox {
-    /deep/ .mat-checkbox-checkmark-path {
-        stroke: $color-foreground-inverse !important;
-    }
+    // /deep/ .mat-checkbox-checkmark-path {
+    //     stroke: $color-foreground-inverse !important;
+    // }
 
-    /deep/ .mat-checkbox-checkmark {
-        width: 80%;
-        left: 10%;
-        top: 10%;
-    }
+    // /deep/ .mat-checkbox-checkmark {
+    //     width: 80%;
+    //     left: 10%;
+    //     top: 10%;
+    // }
 
     &.inversed {
 
@@ -122,9 +122,9 @@ mat-checkbox {
         // .mat-checkbox-checked .mat-checkbox-background, .mat-checkbox-background {
         //     background-color: $color-foreground-inverse;
         // }
-        /deep/ .mat-checkbox-background {
-            background-color: transparent;
-        }
+        // /deep/ .mat-checkbox-background {
+        //     background-color: transparent;
+        // }
 
         .mat-checkbox-frame {
             border-color: $color-foreground-inverse;

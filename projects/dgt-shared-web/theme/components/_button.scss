@@ -88,3 +88,12 @@ button.mat-primary.inversed {
 // .card-footer .btn-group button.btn:not(:last-child) {
 //     margin-right: 1px;
 // }
+
+a.block,
+button.block,
+mat-form-field.block,
+mat-form-field.block input
+dgt-button.block {
+    width: 100%;
+    display: block;
+}
