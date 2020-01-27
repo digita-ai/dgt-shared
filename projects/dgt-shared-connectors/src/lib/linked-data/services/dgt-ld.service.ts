@@ -70,6 +70,8 @@ export class DGTLDService {
             exchange: exchange.id,
             field,
             value: null,
+            originalValue: null,
+            source: exchange.source,
             subject: exchange.subject
         };
 
@@ -84,6 +86,8 @@ export class DGTLDService {
             if (nodeValue && this.isValidURL(nodeValue)) {
                 res.value = store.any(rdf.sym(nodeValue), namespace('value')).value;
             }
+
+            res.originalValue = res.value;
         }
 
         // if (res.value !== null && res.value !== undefined && (typeof res.value === 'string' || res.value instanceof String)) {

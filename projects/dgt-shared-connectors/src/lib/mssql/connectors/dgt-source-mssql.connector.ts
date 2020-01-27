@@ -65,8 +65,10 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                             values.push({
                                 exchange: exchange.id,
                                 subject: exchange.subject,
+                                source: exchange.source,
                                 field,
-                                value
+                                value,
+                                originalValue: value,
                             });
                         }
                     });

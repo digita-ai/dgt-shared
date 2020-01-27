@@ -49,8 +49,10 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 res.push({
                     exchange: exchange.id,
                     subject: exchange.subject,
+                    source: exchange.source,
                     field: source.configuration.usernameField,
-                    value: entry.preferredUsername
+                    value: entry.preferredUsername,
+                    originalValue: entry.preferredUsername
                 });
             }
 
@@ -59,8 +61,10 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 res.push({
                     exchange: exchange.id,
                     subject: exchange.subject,
+                    source: exchange.source,
                     field: source.configuration.thumbnailField,
-                    value: entry.thumbnailUrl
+                    value: entry.thumbnailUrl,
+                    originalValue: entry.thumbnailUrl
                 });
             }
         }

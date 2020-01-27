@@ -6,4 +6,6 @@ export interface DGTLDValue extends DGTEntity {
     field: DGTLDField;
     subject: string;
     value: any;
+    originalValue: any;
+    source: string;
 }
