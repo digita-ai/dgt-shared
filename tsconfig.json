@@ -45,7 +45,7 @@
         "dist/dgt-shared-venture/*"
       ],
       "@angular/*": [
-        "./node_modules/@angular/*"
+        "node_modules/@angular/*"
       ],
       "@digita/dgt-shared-connectors": [
         "dist/dgt-shared-connectors"

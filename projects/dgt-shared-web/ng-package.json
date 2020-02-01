@@ -26,6 +26,7 @@
     "redux-beacon",
     "@redux-beacon/google-analytics",
     "@redux-beacon/google-tag-manager",
-    "moment"
+    "moment",
+    "solid-auth-client"
   ]
 }

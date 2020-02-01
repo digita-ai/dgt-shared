@@ -5,6 +5,7 @@
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
     "@digita/dgt-shared-utils": "latest",
+    "store2": "^2.10.0",
     "uuid": "3.4.0"
   },
   "devDependencies": {
