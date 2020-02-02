@@ -14,10 +14,10 @@ export class DGTHttpAngularService extends DGTHttpService {
     super();
   }
 
-  public get<T>(uri: string): Observable<DGTHttpResponse<T>> {
+  public get<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpService.name, 'Getting from URI', { uri });
 
-    return this.http.get(uri)
+    return this.http.get(uri, { headers })
       .pipe(
         map(data => data as T),
         map(data => ({
@@ -28,10 +28,10 @@ export class DGTHttpAngularService extends DGTHttpService {
       );
   }
 
-  public post<T>(uri: string, body: any): Observable<DGTHttpResponse<T>> {
+  public post<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpService.name, 'Posting to URI', { uri, body });
 
-    return this.http.post(uri, body)
+    return this.http.post(uri, body, { headers })
       .pipe(
         map(data => data as T),
         map(data => ({
@@ -42,10 +42,10 @@ export class DGTHttpAngularService extends DGTHttpService {
       );
   }
 
-  public put<T>(uri: string, body: any): Observable<DGTHttpResponse<T>> {
+  public put<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpService.name, 'Putting to URI', { uri, body });
 
-    return this.http.put(uri, body)
+    return this.http.put(uri, body, { headers })
       .pipe(
         map(data => data as T),
         map(data => ({

@@ -1,7 +1,7 @@
-import { DGTSource, DGTSourceSolidConfiguration, DGTSourceType } from '@digita/dgt-shared-data';
+import { DGTSource, DGTSourceSolidConfiguration, DGTSourceType, DGTLDValue } from '@digita/dgt-shared-data';
 import { DGTProvider } from '../models/dgt-provider.model';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import auth from 'solid-auth-client';
 import { Observable, from } from 'rxjs';
 import { switchMap, map, filter } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { DGTProviderSolid } from '../models/dgt-provider-solid.model';
 
 @Injectable()
 export class DGTProvidersService {
-    constructor(private logger: DGTLoggerService) {
+    constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
 
     }
 
@@ -24,6 +24,10 @@ export class DGTProvidersService {
         }
 
         return res;
+    }
+
+    public retrieve(provider: DGTProviderSolid, source: DGTSource<DGTSourceSolidConfiguration>): DGTLDValue[] {
+        return this.http.get(provider.configuration.)
     }
 
     private connectToSolid(provider: DGTProviderSolid, source: DGTSource<DGTSourceSolidConfiguration>, callbackUri: string): Observable<DGTProviderSolid> {
