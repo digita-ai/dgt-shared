@@ -26,23 +26,16 @@ export class DGTProvidersService {
         return res;
     }
 
-    public retrieve(provider: DGTProviderSolid, source: DGTSource<DGTSourceSolidConfiguration>): DGTLDValue[] {
-        return this.http.get(provider.configuration.)
-    }
-
     private connectToSolid(provider: DGTProviderSolid, source: DGTSource<DGTSourceSolidConfiguration>, callbackUri: string): Observable<DGTProviderSolid> {
+        this.logger.debug(DGTProvidersService.name, 'Starting to connect to Solid', { provider, source, callbackUri });
+
         let res: Observable<DGTProvider<any>> = null;
 
         if (source) {
-            res = from(auth.currentSession())
+            res = from(auth.login(source.configuration.serverUri, {
+                callbackUri
+            }))
                 .pipe(
-                    filter(session => session === null),
-                    switchMap(data => from(auth.login(source.configuration.serverUri, {
-                        callbackUri
-                    }))
-                        .pipe(map(response => data))),
-                    switchMap(data => from(auth.currentSession())
-                        .pipe(map(session => ({ session, webId: session.webId, ...data })))),
                     map(data => ({ state: DGTProviderState.CONNECTING, ...provider }))
                 );
         }
