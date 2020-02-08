@@ -1,21 +1,22 @@
 import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTLDResponse, DGTExchange, DGTJustification, DGTSourceConnector, DGTLDValue, DGTLDField, DGTSource } from '@digita/dgt-shared-data';
+import { DGTLDResponse, DGTExchange, DGTSourceConnector, DGTLDValue, DGTLDField, DGTSource, DGTJustification, DGTProvider } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
+import { DGTProviderMSSQLConfiguration } from '../models/dgt-provider-mssql-configuration.model';
 
-export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration> {
+export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTProviderMSSQLConfiguration> {
 
     constructor(
         private logger: DGTLoggerService,
     ) { }
 
-    public query(
-        exchange: DGTExchange,
-        justification: DGTJustification,
-        source: DGTSource<DGTSourceMSSQLConfiguration>
-    ): Observable<DGTLDResponse> {
+    connect(justification: DGTJustification, exchange: DGTExchange, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTProvider<DGTProviderMSSQLConfiguration>> {
+        return of(null);
+    }
+
+    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTLDResponse> {
         const config = {
             user: source.configuration.user,
             password: source.configuration.password,
@@ -29,7 +30,6 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
 
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting query, creating connection pool', {
             exchange,
-            justification,
             source
         });
 

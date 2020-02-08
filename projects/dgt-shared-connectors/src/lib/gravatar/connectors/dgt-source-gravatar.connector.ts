@@ -1,25 +1,26 @@
-import { Observable } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse, DGTSource, DGTLDValue } from '@digita/dgt-shared-data';
+import { Observable, of } from 'rxjs';
+import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDValue, DGTJustification, DGTProvider } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
 import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
 import { map, tap } from 'rxjs/operators';
+import { DGTProviderGravatarConfiguration } from '../models/dgt-provider-gravatar-configuration.model';
 
-export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceGravatarConfiguration> {
+export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceGravatarConfiguration, DGTProviderGravatarConfiguration> {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService) { }
 
-    public query(
-        exchange: DGTExchange,
-        justification: DGTJustification,
-        source: DGTSource<DGTSourceGravatarConfiguration>
-    ): Observable<DGTLDResponse> {
-        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, justification, source });
+    connect(justification: DGTJustification, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTProvider<DGTProviderGravatarConfiguration>> {
+        return of(null);
+    }
+
+    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDResponse> {
+        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
 
         let res = null;
 
-        if (exchange && justification && source) {
+        if (exchange && source) {
             const hash = Md5.hashStr(exchange.uri);
             const uri = `https://www.gravatar.com/${hash}.json`;
 

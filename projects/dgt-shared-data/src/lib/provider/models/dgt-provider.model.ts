@@ -1,5 +1,5 @@
 import { DGTProviderState } from './dgt-provider-state.model';
-import { DGTEntity } from '@digita/dgt-shared-data';
+import { DGTEntity } from '../../metadata/models/dgt-entity.model';
 
 export interface DGTProvider<T> extends DGTEntity {
     configuration: T;

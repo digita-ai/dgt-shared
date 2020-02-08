@@ -1,4 +1,3 @@
-import { DGTSource, DGTSourceType, DGTLDValue, DGTSourceSolid, DGTSourceSolidConfiguration, DGTDataService } from '@digita/dgt-shared-data';
 import { DGTProvider } from '../models/dgt-provider.model';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
@@ -10,6 +9,12 @@ import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { DGTProviderState } from '../models/dgt-provider-state.model';
 import { Buffer } from 'buffer';
+import { DGTDataService } from '../../metadata/services/dgt-data.service';
+import { DGTSource } from '../../source/models/dgt-source.model';
+import { DGTSourceType } from '../../source/models/dgt-source-type.model';
+import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
+import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 
 @Injectable()
 export class DGTProvidersService {

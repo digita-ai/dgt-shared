@@ -46,11 +46,6 @@ export { DGTFormControlComponent } from './lib/form/components/dgt-form-control/
 export { DGTFormElementComponent } from './lib/form/components/dgt-form-element/dgt-form-element.component';
 export { DGTFormComponent } from './lib/form/components/dgt-form/dgt-form.component';
 export { DGTFormLabelComponent } from './lib/form/components/dgt-form-label/dgt-form-label.component';
-export { DGTProvider } from './lib/providers/models/dgt-provider.model';
-export { DGTProviderSolid } from './lib/providers/models/dgt-provider-solid.model';
-export { DGTProviderSolidConfiguration } from './lib/providers/models/dgt-provider-solid-configuration.model';
-export { DGTProviderState } from './lib/providers/models/dgt-provider-state.model';
-export { DGTProvidersService } from './lib/providers/services/dgt-providers.service';
 export { DGTStandardPageComponent } from './lib/interface/components/dgt-standard-page/dgt-standard-page.component';
 export { DGTSectionComponent } from './lib/interface/components/dgt-section/dgt-section.component';
 export { DGTSectionTitleComponent } from './lib/interface/components/dgt-section-title/dgt-section-title.component';
