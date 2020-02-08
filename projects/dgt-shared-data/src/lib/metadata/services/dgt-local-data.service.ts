@@ -121,7 +121,7 @@ export class DGTLocalDataService extends DGTDataService {
 
         return of(store.get(entityType))
             .pipe(
-                map(entities => entities.filter(entity => entity.id !== updatedEntity.id)),
+                map(entities => entities ? entities.filter(entity => entity.id !== updatedEntity.id) : []),
                 tap(entities => store.set(entityType, [...entities, updatedEntity])),
                 map(() => updatedEntity)
             );

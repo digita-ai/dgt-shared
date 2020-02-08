@@ -4,4 +4,7 @@ export interface DGTProviderSolidConfiguration {
     expiresIn: string;
     idToken: string;
     state: string;
+    requestHistory: { [key: string]: string };
+    privateKey: string;
+    loginUri: string;
 }

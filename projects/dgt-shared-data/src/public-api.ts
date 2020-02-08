@@ -32,6 +32,7 @@ export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove
 export { DGTSubject } from './lib/subject/models/dgt-subject.model';
 export { DGTSourceService } from './lib/source/services/dgt-source.service';
 export { DGTSource } from './lib/source/models/dgt-source.model';
+export { DGTSourceSolid } from './lib/source/models/dgt-source-solid.model';
 export { DGTSourceSolidConfiguration } from './lib/source/models/dgt-source-solid-configuration.model';
 export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.model';
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
