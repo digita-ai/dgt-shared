@@ -7,11 +7,13 @@ import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-respons
 import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
 import { map, tap } from 'rxjs/operators';
 import { DGTProviderGravatarConfiguration } from '../models/dgt-provider-gravatar-configuration.model';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceGravatarConfiguration, DGTProviderGravatarConfiguration> {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService) { }
 
-    connect(justification: DGTJustification, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTProvider<DGTProviderGravatarConfiguration>> {
+    connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTProvider<DGTProviderGravatarConfiguration>> {
         return of(null);
     }
 

@@ -7,4 +7,5 @@ export interface DGTProviderSolidConfiguration {
     requestHistory: { [key: string]: string };
     privateKey: string;
     loginUri: string;
+    callbackUri: string;
 }

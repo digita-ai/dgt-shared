@@ -6,6 +6,6 @@ import { DGTProvider } from '../../provider/models/dgt-provider.model';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
 
 export interface DGTSourceConnector<T, S> {
-    connect(justification: DGTJustification, exchange: DGTExchange, source: DGTSource<T>): Observable<DGTProvider<S>>;
+    connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<S>, source: DGTSource<T>): Observable<DGTProvider<S>>;
     query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<S>, source: DGTSource<T>): Observable<DGTLDResponse>;
 }

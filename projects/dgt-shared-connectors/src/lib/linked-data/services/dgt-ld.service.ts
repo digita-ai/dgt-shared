@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import * as rdf from 'rdflib';
 import { Injectable } from '@angular/core';
-import { DGTExchange, DGTJustification, DGTSource, DGTLDResponse, DGTLDValue, DGTLDField } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDValue, DGTLDField } from '@digita/dgt-shared-data';
 
 @Injectable()
 export class DGTLDService {
@@ -53,12 +53,18 @@ export class DGTLDService {
                 res = justification.fields
                     .map((field) => this.getLinkedValue(webId, store, field, exchange))
                     .filter(value => value.value !== null);
+            } else {
+
             }
 
             subscriber.next(res);
             subscriber.complete();
         });
     }
+
+    // private getAllValues(store: rdf.IndexedFormula): DGTLDValue[] {
+    //     store.
+    // }
 
     private getLinkedValue(
         webId: string,

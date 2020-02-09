@@ -5,14 +5,14 @@ import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTProviderMSSQLConfiguration } from '../models/dgt-provider-mssql-configuration.model';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTProviderMSSQLConfiguration> {
 
-    constructor(
-        private logger: DGTLoggerService,
-    ) { }
+    constructor(private logger: DGTLoggerService) { }
 
-    connect(justification: DGTJustification, exchange: DGTExchange, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTProvider<DGTProviderMSSQLConfiguration>> {
+    connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTProvider<DGTProviderMSSQLConfiguration>> {
         return of(null);
     }
 
