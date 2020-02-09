@@ -1,6 +1,6 @@
 import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
 
 export interface DGTCategoryField {
-    field: DGTLDField;
+    fields: DGTLDField[];
     description: string;
 }

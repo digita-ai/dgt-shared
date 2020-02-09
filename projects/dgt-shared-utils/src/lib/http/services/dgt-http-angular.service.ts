@@ -1,5 +1,5 @@
 
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -14,11 +14,18 @@ export class DGTHttpAngularService extends DGTHttpService {
     super();
   }
 
-  public get<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
-    this.logger.debug(DGTHttpService.name, 'Getting from URI', { uri });
+  public get<T>(uri: string, headers?: { [key: string]: string }, isText: boolean = false): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Getting from URI', { uri });
 
-    return this.http.get(uri, { headers })
+    let request = this.http.get(uri, { headers });
+
+    if (isText) {
+      request = this.http.get(uri, { headers, responseType: 'text' });
+    }
+
+    return request
       .pipe(
+        tap(data => this.logger.debug(DGTHttpAngularService.name, 'Received response', { data })),
         map(data => data as T),
         map(data => ({
           data,
@@ -29,7 +36,7 @@ export class DGTHttpAngularService extends DGTHttpService {
   }
 
   public post<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
-    this.logger.debug(DGTHttpService.name, 'Posting to URI', { uri, body });
+    this.logger.debug(DGTHttpAngularService.name, 'Posting to URI', { uri, body });
 
     return this.http.post(uri, body, { headers })
       .pipe(
@@ -43,7 +50,7 @@ export class DGTHttpAngularService extends DGTHttpService {
   }
 
   public put<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
-    this.logger.debug(DGTHttpService.name, 'Putting to URI', { uri, body });
+    this.logger.debug(DGTHttpAngularService.name, 'Putting to URI', { uri, body });
 
     return this.http.put(uri, body, { headers })
       .pipe(
@@ -59,13 +66,13 @@ export class DGTHttpAngularService extends DGTHttpService {
   private handleError<T>(error: HttpErrorResponse): DGTHttpResponse<T> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      this.logger.debug(DGTHttpService.name, 'An error occurred:', error.error.message);
+      this.logger.debug(DGTHttpAngularService.name, 'An error occurred:', error.error.message);
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      this.logger.debug(DGTHttpService.name,
+      this.logger.debug(DGTHttpAngularService.name,
         `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `body was: ${error.error}`, error);
     }
     // return an observable with a user-facing error message
     return {

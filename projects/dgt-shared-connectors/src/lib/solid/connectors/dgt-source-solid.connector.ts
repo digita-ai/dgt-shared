@@ -49,7 +49,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>,source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        return this.linked.query(provider.configuration.webId, exchange, justification);
+        return this.linked.query(provider.configuration.webId, provider.configuration.accessToken, exchange, justification, source);
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {
