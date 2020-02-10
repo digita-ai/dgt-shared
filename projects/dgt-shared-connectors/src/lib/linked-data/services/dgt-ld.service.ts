@@ -30,16 +30,21 @@ export class DGTLDService {
     }
 
     private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>): DGTLDValue[] {
-        let quads = this.parser.parse(response);
+        let res = null;
+
+        const quads = this.parser.parse(response);
+        this.logger.debug(DGTLDService.name, 'Parsed quads', { quads });
 
         if (quads) {
-            quads = quads.filter(quad => quad.subject.value === '#me');
+            this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
+            res = quads.map(quad => this.convert(quad, exchange, source));
+            res = this.resolve(res);
         }
 
-        return quads.map(quad => this.convert(quad, webId, exchange, source));
+        return res;
     }
 
-    private convert(quad: Quad, webId: string, exchange: DGTExchange, source: DGTSource<any>): DGTLDValue {
+    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>): DGTLDValue {
         const predicateSplit = quad.predicate.value.split('#');
 
         return {
@@ -49,11 +54,32 @@ export class DGTLDService {
                 name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
                 namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
             },
-            subject: webId,
+            subject: quad.subject.value,
             value: quad.object.value,
             originalValue: quad.object.value,
             source: source ? source.id : null
         };
+    }
+
+    private resolve(values: DGTLDValue[]): DGTLDValue[] {
+        const variables = values.filter(
+            value => value.field.namespace === 'http://www.w3.org/2006/vcard/ns#'
+                && value.field.name === 'value'
+        );
+
+        return values.map(value => {
+            const updatedValue = value;
+
+            if (value && (value.value as string).startsWith('#')) {
+                const foundVariable = variables.find(variable => variable.subject === value.value);
+
+                if (foundVariable) {
+                    updatedValue.value = foundVariable.value;
+                }
+            }
+
+            return updatedValue;
+        });
     }
 
     // public query(
