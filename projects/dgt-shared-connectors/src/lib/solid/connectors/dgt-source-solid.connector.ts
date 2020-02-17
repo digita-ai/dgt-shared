@@ -13,7 +13,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
     connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTProvider<DGTProviderSolidConfiguration>> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { provider, source });
-        
+
         let res: Observable<DGTProvider<any>> = null;
 
         if (source && source.type === DGTSourceType.SOLID) {
@@ -48,8 +48,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return res;
     }
 
-    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>,source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        return this.linked.query(provider.configuration.webId, provider.configuration.accessToken, exchange, justification, source);
+    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
+        return this.linked.query(provider.configuration.webId, provider.configuration.accessToken, exchange, justification, source, provider);
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {

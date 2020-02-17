@@ -46,12 +46,12 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                 switchMap(data => from(data.pool.request().query(source.configuration.command(exchange.uri)))
                 .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
-                map(data => this.convertResult(data.result, exchange, source.configuration.mapping)),
+                map(data => this.convertResult(data.result, exchange, source.configuration.mapping, provider)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
             );
     }
 
-    private convertResult(sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDField>): DGTLDResponse {
+    private convertResult(sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDField>, provider: DGTProvider<DGTProviderMSSQLConfiguration>): DGTLDResponse {
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const values: DGTLDValue[] = [];
 
@@ -63,6 +63,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
 
                         if (value) {
                             values.push({
+                                provider: provider.id,
                                 exchange: exchange.id,
                                 subject: exchange.subject,
                                 source: exchange.source,

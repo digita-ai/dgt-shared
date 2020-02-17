@@ -8,4 +8,5 @@ export interface DGTLDValue extends DGTEntity {
     value: any;
     originalValue: any;
     source: string;
+    provider: string;
 }

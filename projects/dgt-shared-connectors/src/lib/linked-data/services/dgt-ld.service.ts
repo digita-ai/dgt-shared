@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
-import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDValue, DGTSource } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDValue, DGTSource, DGTProvider } from '@digita/dgt-shared-data';
 import { tap, map } from 'rxjs/operators';
 import { Parser, N3Parser, Quad } from 'n3';
 import { v4 as uuid } from 'uuid';
@@ -13,7 +13,7 @@ export class DGTLDService {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
     }
 
-    public query(webId: string, accessToken: string, exchange: DGTExchange, justification: DGTJustification, source: DGTSource<any>): Observable<DGTLDResponse> {
+    public query(webId: string, accessToken: string, exchange: DGTExchange, justification: DGTJustification, source: DGTSource<any>, provider: DGTProvider<any>): Observable<DGTLDResponse> {
         this.logger.debug(DGTLDService.name, 'Starting to query linked data service', { endpoint: webId, exchange, justification });
 
         return this.http.get<string>(webId, {
@@ -21,7 +21,7 @@ export class DGTLDService {
         }, true)
             .pipe(
                 tap(data => this.logger.debug(DGTLDService.name, 'Received response from provider', { data })),
-                map(data => this.parse(data.data, webId, exchange, source)),
+                map(data => this.parse(data.data, webId, exchange, source, provider)),
                 tap(data => this.logger.debug(DGTLDService.name, 'Parsed values', { data })),
                 map(values => ({
                     data: values
@@ -29,7 +29,7 @@ export class DGTLDService {
             );
     }
 
-    private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>): DGTLDValue[] {
+    private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, provider: DGTProvider<any>): DGTLDValue[] {
         let res = null;
 
         const quads = this.parser.parse(response);
@@ -37,19 +37,20 @@ export class DGTLDService {
 
         if (quads) {
             this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
-            res = quads.map(quad => this.convert(quad, exchange, source));
+            res = quads.map(quad => this.convert(quad, exchange, source, provider));
             res = this.resolve(res);
         }
 
         return res;
     }
 
-    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>): DGTLDValue {
+    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>, provider: DGTProvider<any>): DGTLDValue {
         const predicateSplit = quad.predicate.value.split('#');
 
         return {
             id: uuid(),
             exchange: exchange ? exchange.id : null,
+            provider: provider ? provider.id : null,
             field: {
                 name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
                 namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,

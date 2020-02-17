@@ -29,7 +29,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             res = this.http.get<DGTSourceGravatarResponse>(uri)
                 .pipe(
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
-                    map(data => this.convertResponse(data, exchange, source)),
+                    map(data => this.convertResponse(data, exchange, source, provider)),
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
                 );
         }
@@ -37,10 +37,10 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return res;
     }
 
-    private convertResponse(httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>): DGTLDResponse {
+    private convertResponse(httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, provider: DGTProvider<DGTProviderGravatarConfiguration>): DGTLDResponse {
         const res: DGTLDValue[] = [];
 
-        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source });
+        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, provider });
 
         if (exchange && source && httpResponse && httpResponse.success && httpResponse.data && httpResponse.data.entry && httpResponse.data.entry[0]) {
             const entry = httpResponse.data.entry[0];
@@ -55,7 +55,8 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                     source: exchange.source,
                     field: source.configuration.usernameField,
                     value: entry.preferredUsername,
-                    originalValue: entry.preferredUsername
+                    originalValue: entry.preferredUsername,
+                    provider: provider.id
                 });
             }
 
@@ -67,7 +68,8 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                     source: exchange.source,
                     field: source.configuration.thumbnailField,
                     value: entry.thumbnailUrl,
-                    originalValue: entry.thumbnailUrl
+                    originalValue: entry.thumbnailUrl,
+                    provider: provider.id
                 });
             }
         }
