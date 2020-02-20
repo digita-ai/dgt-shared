@@ -52,7 +52,7 @@ export class DGTMockDataService extends DGTDataService {
 
         return of(this.database.get(entityType))
             .pipe(
-                map(entities => entities.find(entity => entity.id === entityId)),
+                map(entities => entities ? entities.find(entity => entity.id === entityId) : null),
                 map(entity => {
                     let res: S = null;
 

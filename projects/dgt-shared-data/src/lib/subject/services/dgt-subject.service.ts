@@ -20,7 +20,7 @@ export class DGTSubjectService {
         private workflow: DGTWorkflowService
     ) { }
 
-    public getValuesForSubject(subject: DGTSubject, provider: DGTProvider<any>): Observable<DGTLDValue[]> {
+    public getValuesForSubject(subject: DGTSubject): Observable<DGTLDValue[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
 
         return of({ subject })
@@ -29,7 +29,7 @@ export class DGTSubjectService {
                     { conditions: [{ field: 'subject', operator: '==', value: subject.id }] }
                 )
                     .pipe(map(exchanges => ({ exchanges, ...data })))),
-                switchMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange, provider)))
+                switchMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
                     .pipe(map(valuesPerExchange => ({ valuesPerExchange, ...data })))),
                 map(data => _.flatten(data.valuesPerExchange)),
                 // switchMap(data => data.valuesPerExchange),
@@ -37,18 +37,20 @@ export class DGTSubjectService {
             );
     }
 
-    public getValuesForExchange(exchange: DGTExchange, provider: DGTProvider<any>): Observable<DGTLDValue[]> {
+    public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDValue[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
 
         return of({ exchange })
             .pipe(
                 switchMap(data => this.cache.getValuesForExchange(exchange)
                     .pipe(map(values => ({ values, ...data })))),
+                switchMap(data => this.data.getEntity<DGTProvider<any>>('provider', exchange.provider)
+                    .pipe(map(provider => ({ ...data, provider })))),
                 switchMap(data => {
                     let res = of(data.values);
 
                     if (!data.values || data.values.length === 0) {
-                        res = this.workflow.execute(exchange, provider)
+                        res = this.workflow.execute(exchange, data.provider)
                             .pipe(
                                 switchMap((values) => this.cache.storeForExchange(exchange, values)),
                             );

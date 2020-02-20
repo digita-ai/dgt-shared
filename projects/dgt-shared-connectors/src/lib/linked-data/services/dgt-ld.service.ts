@@ -30,7 +30,7 @@ export class DGTLDService {
     }
 
     private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, provider: DGTProvider<any>): DGTLDValue[] {
-        let res = null;
+        let res: DGTLDValue[] = null;
 
         const quads = this.parser.parse(response);
         this.logger.debug(DGTLDService.name, 'Parsed quads', { quads });
@@ -38,6 +38,7 @@ export class DGTLDService {
         if (quads) {
             this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
             res = quads.map(quad => this.convert(quad, exchange, source, provider));
+            res = res.map(value => ({...value, subject: value.subject === '#me' ? provider.subject : value.subject}));
             res = this.resolve(res);
         }
 

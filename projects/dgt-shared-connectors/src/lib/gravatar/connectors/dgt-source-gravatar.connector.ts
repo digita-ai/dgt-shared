@@ -23,7 +23,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         let res = null;
 
         if (exchange && source) {
-            const hash = Md5.hashStr(exchange.uri);
+            const hash = Md5.hashStr(provider.configuration.email);
             const uri = `https://www.gravatar.com/${hash}.json`;
 
             res = this.http.get<DGTSourceGravatarResponse>(uri)

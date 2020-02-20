@@ -5,4 +5,5 @@ export interface DGTProvider<T> extends DGTEntity {
     configuration: T;
     state: DGTProviderState;
     source: string;
+    subject?: string;
 }
