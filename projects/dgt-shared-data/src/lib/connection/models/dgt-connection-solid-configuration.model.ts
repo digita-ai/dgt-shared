@@ -1,4 +1,4 @@
-export interface DGTProviderSolidConfiguration {
+export interface DGTConnectionSolidConfiguration {
     webId: string;
     accessToken: string;
     expiresIn: string;

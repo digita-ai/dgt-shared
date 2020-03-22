@@ -4,5 +4,5 @@ export interface DGTExchange extends DGTEntity {
     justification: string;
     subject: string;
     source: string;
-    provider: string;
+    connection: string;
 }

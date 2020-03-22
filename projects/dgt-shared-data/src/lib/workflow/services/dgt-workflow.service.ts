@@ -11,7 +11,7 @@ import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTProvider } from '../../provider/models/dgt-provider.model';
+import { DGTConnection } from '../../connection/models/dgt-connection.model';
 
 @Injectable()
 export class DGTWorkflowService {
@@ -20,7 +20,7 @@ export class DGTWorkflowService {
 
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
-    public execute(exchange: DGTExchange, provider: DGTProvider<any>)
+    public execute(exchange: DGTExchange, connection: DGTConnection<any>)
         : Observable<DGTLDValue[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
 
@@ -30,7 +30,7 @@ export class DGTWorkflowService {
                     .pipe(map(justification => ({ justification, ...data })))),
                 switchMap((data) => this.data.getEntity<DGTSource<any>>('source', exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.get(exchange, provider, data.source, data.justification)
+                switchMap((data) => this.sources.get(exchange, connection, data.source, data.justification)
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
                 map(data => {
                     const values: DGTLDValue[] = _.flatten(data.valuesPerSource);

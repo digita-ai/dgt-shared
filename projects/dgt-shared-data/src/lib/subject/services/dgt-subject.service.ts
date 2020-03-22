@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTProvider } from '../../provider/models/dgt-provider.model';
+import { DGTConnection } from '../../connection/models/dgt-connection.model';
 
 @Injectable()
 export class DGTSubjectService {
@@ -44,13 +44,13 @@ export class DGTSubjectService {
             .pipe(
                 switchMap(data => this.cache.getValuesForExchange(exchange)
                     .pipe(map(values => ({ values, ...data })))),
-                switchMap(data => this.data.getEntity<DGTProvider<any>>('provider', exchange.provider)
-                    .pipe(map(provider => ({ ...data, provider })))),
+                switchMap(data => this.data.getEntity<DGTConnection<any>>('connection', exchange.connection)
+                    .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => {
                     let res = of(data.values);
 
                     if (!data.values || data.values.length === 0) {
-                        res = this.workflow.execute(exchange, data.provider)
+                        res = this.workflow.execute(exchange, data.connection)
                             .pipe(
                                 switchMap((values) => this.cache.storeForExchange(exchange, values)),
                             );

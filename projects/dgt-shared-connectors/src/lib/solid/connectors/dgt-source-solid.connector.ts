@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTProvider, DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse, DGTSource, DGTSourceSolidConfiguration, DGTProviderSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTProviderState, DGTProviderSolid } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid } from '@digita/dgt-shared-data';
 import { DGTLDService } from '../../linked-data/services/dgt-ld.service';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
@@ -8,48 +8,48 @@ import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 
 @Injectable()
-export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTProviderSolidConfiguration> {
+export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
     constructor(private linked: DGTLDService, private logger: DGTLoggerService, private data: DGTDataService, private http: DGTHttpService) { }
 
-    connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTProvider<DGTProviderSolidConfiguration>> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { provider, source });
+    connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnection<DGTConnectionSolidConfiguration>> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
 
-        let res: Observable<DGTProvider<any>> = null;
+        let res: Observable<DGTConnection<any>> = null;
 
         if (source && source.type === DGTSourceType.SOLID) {
-            res = of({ provider, source })
+            res = of({ connection, source })
                 .pipe(
                     switchMap(data => this.discover(data.source)
                         .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
                     switchMap(data => this.jwks(data.source)
                         .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
-                    switchMap(data => this.register(data.source, data.provider)
+                    switchMap(data => this.register(data.source, data.connection)
                         .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
                     switchMap(data => this.data.updateEntity('source', data.source)
                         .pipe(map(savedSource => ({ ...data, source: savedSource })))),
                     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Updated source configuration', { data })),
-                    switchMap(data => this.generateUri(data.source, data.provider)
+                    switchMap(data => this.generateUri(data.source, data.connection)
                         .pipe(
                             map(loginUri => ({
                                 ...data,
-                                provider: {
-                                    ...provider,
-                                    configuration: { ...data.provider.configuration, loginUri },
-                                    state: DGTProviderState.CONNECTING
+                                connection: {
+                                    ...connection,
+                                    configuration: { ...data.connection.configuration, loginUri },
+                                    state: DGTConnectionState.CONNECTING
                                 },
                             })),
                         )),
-                    switchMap(data => this.data.updateEntity('provider', data.provider)
-                        .pipe(map(savedProvider => ({ ...data, provider: savedProvider })))),
-                    map(data => data.provider)
+                    switchMap(data => this.data.updateEntity('connection', data.connection)
+                        .pipe(map(savedProvider => ({ ...data, connection: savedProvider })))),
+                    map(data => data.connection)
                 );
         }
 
         return res;
     }
 
-    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        return this.linked.query(provider.configuration.webId, provider.configuration.accessToken, exchange, justification, source, provider);
+    public query(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
+        return this.linked.query(connection.configuration.webId, connection.configuration.accessToken, exchange, justification, source, connection);
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {
@@ -76,10 +76,10 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    private register(source: DGTSourceSolid, provider: DGTProviderSolid): Observable<DGTSourceSolidConfiguration> {
+    private register(source: DGTSourceSolid, connection: DGTConnectionSolid): Observable<DGTSourceSolidConfiguration> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering client', { source });
 
-        const encodedCallbackUri = provider.configuration.callbackUri;
+        const encodedCallbackUri = connection.configuration.callbackUri;
         const uri = `${source.configuration.registration_endpoint}`;
         const headers = { 'Content-Type': 'application/json' };
         const params = {
@@ -101,8 +101,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    private generateUri(source: DGTSourceSolid, provider: DGTProviderSolid): Observable<string> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate login uri', { source, provider });
+    private generateUri(source: DGTSourceSolid, connection: DGTConnectionSolid): Observable<string> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate login uri', { source, connection });
         // define basic elements of the request
         const issuer = source.configuration.issuer;
         const endpoint = source.configuration.authorization_endpoint;
@@ -112,7 +112,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             response_type: 'id_token token',
             // display: 'popup',
             scope: 'openid profile email',
-            redirect_uri: provider.configuration.callbackUri,
+            redirect_uri: connection.configuration.callbackUri,
             state: null,
             nonce: null,
             key: null
@@ -128,7 +128,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         )
             .pipe(
                 map(digests => ({ digests })),
-                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated digests', { data, params, source, provider })),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated digests', { data, params, source, connection })),
                 map(data => {
                     const state = base64url(Buffer.from(data.digests[0]));
                     const nonce = base64url(Buffer.from(data.digests[1]));
@@ -136,8 +136,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
                     // store the request params for response validation
                     // with serialized octet values for state and nonce
-                    provider.configuration.requestHistory = {};
-                    provider.configuration.requestHistory[key] = JSON.stringify(params);
+                    connection.configuration.requestHistory = {};
+                    connection.configuration.requestHistory[key] = JSON.stringify(params);
 
                     // replace state and nonce octets with base64url encoded digests
                     params.state = state;
@@ -145,12 +145,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
                     return data;
                 }),
-                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, provider })),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, connection })),
                 switchMap(data => this.generateSessionKeys()
                     .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
-                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, provider })),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
                 map(data => {
-                    provider.configuration.privateKey = JSON.stringify(data.sessionKeys.private);
+                    connection.configuration.privateKey = JSON.stringify(data.sessionKeys.private);
                     params.key = data.sessionKeys.public;
                 }),
                 switchMap(data => {
@@ -192,11 +192,11 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    public retrieveWebId(provider: DGTProviderSolid): string {
+    public retrieveWebId(connection: DGTConnectionSolid): string {
         let res = null;
 
-        if (provider && provider.configuration && provider.configuration.idToken) {
-            const decoded = JWT.decode(provider.configuration.idToken);
+        if (connection && connection.configuration && connection.configuration.idToken) {
+            const decoded = JWT.decode(connection.configuration.idToken);
 
             res = decoded.payload.sub;
         }

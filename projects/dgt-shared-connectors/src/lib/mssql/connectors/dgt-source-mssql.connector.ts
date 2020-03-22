@@ -1,22 +1,22 @@
 import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTLDResponse, DGTExchange, DGTSourceConnector, DGTLDValue, DGTLDField, DGTSource, DGTJustification, DGTProvider } from '@digita/dgt-shared-data';
+import { DGTLDResponse, DGTExchange, DGTSourceConnector, DGTLDValue, DGTLDField, DGTSource, DGTJustification, DGTConnection } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
-import { DGTProviderMSSQLConfiguration } from '../models/dgt-provider-mssql-configuration.model';
+import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTProviderMSSQLConfiguration> {
+export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
     constructor(private logger: DGTLoggerService) { }
 
-    connect(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTProvider<DGTProviderMSSQLConfiguration>> {
+    connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTConnection<DGTConnectionMSSQLConfiguration>> {
         return of(null);
     }
 
-    public query(justification: DGTJustification, exchange: DGTExchange, provider: DGTProvider<DGTProviderMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTLDResponse> {
+    public query(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTLDResponse> {
         const config = {
             user: source.configuration.user,
             password: source.configuration.password,
@@ -43,15 +43,15 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                     .pipe(map(newPool => ({ newPool, ...data })))
                 ),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
-                switchMap(data => from(data.pool.request().query(source.configuration.command(provider.configuration.personId)))
+                switchMap(data => from(data.pool.request().query(source.configuration.command(connection.configuration.personId)))
                 .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
-                map(data => this.convertResult(data.result, exchange, source.configuration.mapping, provider)),
+                map(data => this.convertResult(data.result, exchange, source.configuration.mapping, connection)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
             );
     }
 
-    private convertResult(sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDField>, provider: DGTProvider<DGTProviderMSSQLConfiguration>): DGTLDResponse {
+    private convertResult(sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDField>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResponse {
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const values: DGTLDValue[] = [];
 
@@ -63,7 +63,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
 
                         if (value) {
                             values.push({
-                                provider: provider.id,
+                                connection: connection.id,
                                 exchange: exchange.id,
                                 subject: exchange.subject,
                                 source: exchange.source,
