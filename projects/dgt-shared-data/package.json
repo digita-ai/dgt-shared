@@ -1,16 +1,16 @@
 {
   "name": "@digita/dgt-shared-data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "peerDependencies": {
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
-    "@digita/dgt-shared-utils": "latest",
+    "@digita/dgt-shared-utils": "0.1.1",
     "@solid/jose": "^0.5.0",
     "store2": "^2.10.0",
     "uuid": "3.4.0"
   },
   "devDependencies": {
-    "@digita/dgt-shared-test": "latest",
+    "@digita/dgt-shared-test": "0.1.1",
     "@types/node": "~11.9.5",
     "@types/uuid": "3.4.3"
   },

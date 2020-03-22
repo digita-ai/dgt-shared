@@ -1,6 +1,6 @@
 {
   "name": "@digita/dgt-shared-utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -17,7 +17,7 @@
     "@angular/core": "^7.2.7"
   },
   "devDependencies": {
-    "@digita/dgt-shared-test": "latest",
+    "@digita/dgt-shared-test": "0.1.1",
     "@types/node": "~11.9.5"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
