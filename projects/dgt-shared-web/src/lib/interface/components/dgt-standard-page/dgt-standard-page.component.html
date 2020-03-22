@@ -1,9 +1,9 @@
-<dgt-split-page [subHeaderEnabled]="false" [fabEnabled]="fabEnabled" (fabClicked)="onFabClicked()" [fabHelpSummary]="fabHelpSummary"
+<dgt-page [subHeaderEnabled]="false" [fabEnabled]="fabEnabled" (fabClicked)="onFabClicked()" [fabHelpSummary]="fabHelpSummary"
   [sidenavEnabled]="false">
-  <dgt-split-page-header fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
-    <dgt-split-page-header-profile *ngIf="authenticatedProfile" fxFlex="initial" [profile]="authenticatedProfile"></dgt-split-page-header-profile>
-  </dgt-split-page-header>
-  <dgt-split-page-content>
+  <dgt-page-header fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="10px">
+    <dgt-page-header-profile *ngIf="authenticatedProfile" fxFlex="initial" [profile]="authenticatedProfile"></dgt-page-header-profile>
+  </dgt-page-header>
+  <dgt-page-content>
     <div class="main-container">
       <div class="content-area" fxLayout="row" fxLayoutAlign="center start">
         <div class="checkout-sections" fxFlex="initial" fxLayout="column wrap" fxLayoutGap="10px">
@@ -11,5 +11,5 @@
         </div>
       </div>
     </div>
-  </dgt-split-page-content>
-</dgt-split-page>
+  </dgt-page-content>
+</dgt-page>

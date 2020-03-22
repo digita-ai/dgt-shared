@@ -18,12 +18,12 @@ body {
     padding: $measure-gutter-large;
 }
 
-dgt-split-page-sidenav {
+dgt-page-sidenav {
     color: $color-foreground-inverse;
     .split-sidenav-primary-action {
         padding: $measure-gutter-large;
-        background-color: $color-blue-light;
-        border-color: $color-blue-light;
+        background-color: $color-primary-light;
+        border-color: $color-primary-light;
         height: auto;
         margin-bottom: $measure-gutter-xxlarge;
         .split-sidenav-primary-action-label {

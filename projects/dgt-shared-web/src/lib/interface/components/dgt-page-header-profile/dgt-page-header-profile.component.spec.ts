@@ -1,12 +1,12 @@
 import { async } from '@angular/core/testing';
-import { DGTSplitPageHeaderProfileComponent } from './dgt-split-page-header-profile.component';
+import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
 import { configuration } from '../../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
 import { DGTUser } from '@digita/dgt-shared-web';
 
-describe('DGTSplitPageHeaderProfile', () => {
-    const testService = new DGTTestRunnerComponent<DGTSplitPageHeaderProfileComponent>(configuration);
-    testService.setup(DGTSplitPageHeaderProfileComponent);
+describe('DGTPageHeaderProfile', () => {
+    const testService = new DGTTestRunnerComponent<DGTPageHeaderProfileComponent>(configuration);
+    testService.setup(DGTPageHeaderProfileComponent);
 
     it('should create', async(() => {
         expect(testService.component).toBeTruthy();

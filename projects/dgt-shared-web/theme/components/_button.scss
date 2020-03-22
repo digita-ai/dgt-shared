@@ -32,15 +32,15 @@ button.mat-raised-button:not([class*=mat-elevation-z]) {
     &.mat-primary {
         box-shadow: initial;
         border-radius: 0px;
-        border: 1px solid $color-blue-normal;
-        background-color: $color-blue-normal;
+        border: 1px solid $color-primary-normal;
+        background-color: $color-primary-normal;
         color: $color-foreground-inverse;
     }
     &.mat-accent {
         box-shadow: initial;
         border-radius: 0px;
-        background-color: $color-orange-dark;
-        border: 1px solid $color-orange-dark;
+        background-color: $color-accent-dark;
+        border: 1px solid $color-accent-dark;
         color: $color-foreground-inverse;
     }
     &.mat-warn {
@@ -60,7 +60,7 @@ button.mat-raised-button:not([class*=mat-elevation-z]) {
             border-color: $color-facebook-dark;
         }
         &.btn-link {
-            color: $color-blue-normal;
+            color: $color-primary-normal;
         }
     }
 }
@@ -74,15 +74,15 @@ button.mat-primary.inversed {
 // .btn-group.btn-primary .btn {
 //     height: $component-component-normal;
 //     border-width: $component-component-border;
-//     background-color: $color-blue-normal;
-//     border-color: $color-blue-normal;
+//     background-color: $color-primary-normal;
+//     border-color: $color-primary-normal;
 //     color: $color-foreground-inverse;
 //     border-style: solid;
 //     border-radius: 0px;
 //     cursor: pointer;
 //     &:hover, &.active {
-//         background-color: $color-blue-light;
-//         border-color: $color-blue-light;
+//         background-color: $color-primary-light;
+//         border-color: $color-primary-light;
 //     }
 // }
 // .card-footer .btn-group button.btn:not(:last-child) {

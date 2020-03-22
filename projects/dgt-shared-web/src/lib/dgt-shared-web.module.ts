@@ -34,11 +34,11 @@ import { DGTNotificationsComponent } from './interface/components/dgt-notificati
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
 import { DGTSectionTitleComponent } from './interface/components/dgt-section-title/dgt-section-title.component';
 import { DGTSectionContentComponent } from './interface/components/dgt-section-content/dgt-section-content.component';
-import { DGTSplitPageComponent } from './interface/components/dgt-split-page/dgt-split-page.component';
-import { DGTSplitPageContentComponent } from './interface/components/dgt-split-page-content/dgt-split-page-content.component';
-import { DGTSplitPageSidenavComponent } from './interface/components/dgt-split-page-sidenav/dgt-split-page-sidenav.component';
-import { DGTSplitPageHeaderComponent } from './interface/components/dgt-split-page-header/dgt-split-page-header.component';
-import { DGTSplitPageSubHeaderComponent } from './interface/components/dgt-split-page-sub-header/dgt-split-page-sub-header.component';
+import { DGTPageComponent } from './interface/components/dgt-page/dgt-page.component';
+import { DGTPageContentComponent } from './interface/components/dgt-page-content/dgt-page-content.component';
+import { DGTPageSidenavComponent } from './interface/components/dgt-page-sidenav/dgt-page-sidenav.component';
+import { DGTPageHeaderComponent } from './interface/components/dgt-page-header/dgt-page-header.component';
+import { DGTPageSubHeaderComponent } from './interface/components/dgt-page-sub-header/dgt-page-sub-header.component';
 import { DGTSectionHelpComponent } from './interface/components/dgt-section-help/dgt-section-help.component';
 import { DGTSectionSummaryComponent } from './interface/components/dgt-section-summary/dgt-section-summary.component';
 import { DGTSectionResetComponent } from './interface/components/dgt-section-reset/dgt-section-reset.component';
@@ -48,9 +48,10 @@ import { DGTDialogContentComponent } from './interface/components/dgt-dialog-con
 import { DGTLinkComponent } from './interface/components/dgt-link/dgt-link.component';
 import { DGTSectionHelpTitleComponent } from './interface/components/dgt-section-help-title/dgt-section-help-title.component';
 import { DGTNotificationComponent } from './interface/components/dgt-notification/dgt-notification.component';
-import { DGTSplitPageHeaderProfileComponent } from './interface/components/dgt-split-page-header-profile/dgt-split-page-header-profile.component';
+import { DGTPageHeaderProfileComponent } from './interface/components/dgt-page-header-profile/dgt-page-header-profile.component';
 import { RouterModule } from '@angular/router';
-import { DGTSplitPageRailComponent } from './interface/components/dgt-split-page-rail/dgt-split-page-rail.component';
+import { DGTPageRailComponent } from './interface/components/dgt-page-rail/dgt-page-rail.component';
+import { DGTPageRailItemComponent } from './interface/components/dgt-page-rail-item/dgt-page-rail-item.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -81,15 +82,16 @@ export const declarations = [
   DGTSectionSummaryComponent,
   DGTSectionTitleComponent,
   DGTSectionContentComponent,
-  DGTSplitPageComponent,
-  DGTSplitPageHeaderComponent,
-  DGTSplitPageSidenavComponent,
-  DGTSplitPageSubHeaderComponent,
-  DGTSplitPageRailComponent,
-  DGTSplitPageContentComponent,
+  DGTPageComponent,
+  DGTPageHeaderComponent,
+  DGTPageSidenavComponent,
+  DGTPageSubHeaderComponent,
+  DGTPageRailComponent,
+  DGTPageRailItemComponent,
+  DGTPageContentComponent,
   DGTNotificationComponent,
   DGTNotificationsComponent,
-  DGTSplitPageHeaderProfileComponent,
+  DGTPageHeaderProfileComponent,
 ];
 export const imports = [
   CommonModule,
@@ -161,15 +163,16 @@ export const providers = [
     DGTSectionSummaryComponent,
     DGTSectionTitleComponent,
     DGTSectionContentComponent,
-    DGTSplitPageComponent,
-    DGTSplitPageHeaderComponent,
-    DGTSplitPageSidenavComponent,
-    DGTSplitPageSubHeaderComponent,
-    DGTSplitPageRailComponent,
-    DGTSplitPageContentComponent,
+    DGTPageComponent,
+    DGTPageHeaderComponent,
+    DGTPageSidenavComponent,
+    DGTPageSubHeaderComponent,
+    DGTPageRailComponent,
+    DGTPageRailItemComponent,
+    DGTPageContentComponent,
     DGTNotificationComponent,
     DGTNotificationsComponent,
-    DGTSplitPageHeaderProfileComponent,
+    DGTPageHeaderProfileComponent,
   ]
 })
 export class DGTSharedWebModule { }

@@ -6,9 +6,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 
 @Component({
-  selector: 'dgt-split-page',
-  templateUrl: './dgt-split-page.component.html',
-  styleUrls: ['./dgt-split-page.component.scss'],
+  selector: 'dgt-page',
+  templateUrl: './dgt-page.component.html',
+  styleUrls: ['./dgt-page.component.scss'],
   animations: [
     trigger(
       'myAnimation',
@@ -28,7 +28,7 @@ import { DGTLoggerService } from '@digita/dgt-shared-utils';
     )
   ],
 })
-export class DGTSplitPageComponent implements OnInit {
+export class DGTPageComponent implements OnInit {
   @Input() public sidenavEnabled = true;
   @Input() public sidenavSize = '300px';
   @Input() public railEnabled = true;
@@ -51,7 +51,7 @@ export class DGTSplitPageComponent implements OnInit {
       this.opened = this.media.isActive('gt-sm');
       this.isSmallDevice = !this.media.isActive('gt-sm');
 
-      this.logger.debug(DGTSplitPageComponent.name, 'Captured media change', { opened: this.opened, isSmallDevice: this.isSmallDevice });
+      this.logger.debug(DGTPageComponent.name, 'Captured media change', { opened: this.opened, isSmallDevice: this.isSmallDevice });
     });
   }
 
