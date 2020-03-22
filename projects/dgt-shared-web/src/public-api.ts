@@ -55,6 +55,7 @@ export { DGTSplitPageContentComponent } from './lib/interface/components/dgt-spl
 export { DGTSplitPageSidenavComponent } from './lib/interface/components/dgt-split-page-sidenav/dgt-split-page-sidenav.component';
 export { DGTSplitPageHeaderComponent } from './lib/interface/components/dgt-split-page-header/dgt-split-page-header.component';
 export { DGTSplitPageSubHeaderComponent } from './lib/interface/components/dgt-split-page-sub-header/dgt-split-page-sub-header.component';
+export { DGTSplitPageRailComponent } from './lib/interface/components/dgt-split-page-rail/dgt-split-page-rail.component';
 export { DGTSplitPageHeaderProfileComponent } from './lib/interface/components/dgt-split-page-header-profile/dgt-split-page-header-profile.component';
 export { DGTSectionHelpComponent } from './lib/interface/components/dgt-section-help/dgt-section-help.component';
 export { DGTSectionSummaryComponent } from './lib/interface/components/dgt-section-summary/dgt-section-summary.component';

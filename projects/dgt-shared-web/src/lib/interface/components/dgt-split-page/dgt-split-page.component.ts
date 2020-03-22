@@ -31,6 +31,7 @@ import { DGTLoggerService } from '@digita/dgt-shared-utils';
 export class DGTSplitPageComponent implements OnInit {
   @Input() public sidenavEnabled = true;
   @Input() public sidenavSize = '300px';
+  @Input() public railEnabled = true;
   @Input() public headerEnabled = true;
   @Input() public subHeaderEnabled = true;
   @Input() public contentPaddingEnabled = true;

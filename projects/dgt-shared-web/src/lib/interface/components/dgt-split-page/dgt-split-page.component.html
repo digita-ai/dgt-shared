@@ -14,6 +14,9 @@
     </div>
   </div>
   <div fxFlex fxFlexFill class="split-body" fxLayout="row">
+    <div [fxFlex]="'90px'" fixedInViewport="true" class="split-rail" [hidden]="!opened || !railEnabled">
+      <ng-content select="dgt-split-page-rail"></ng-content>
+    </div>
     <div [fxFlex]="sidenavSize" fixedInViewport="true" class="split-sidenav" [hidden]="!opened || !sidenavEnabled">
       <ng-content select="dgt-split-page-sidenav"></ng-content>
     </div>

@@ -29,6 +29,13 @@
     }
     .split-body {
         overflow-x: auto;
+        .split-rail {
+            background-color: $color-blue-normal;
+            width: 90px;
+            min-width: 9px;
+            border-right: 0px;
+            padding: $measure-gutter-large;
+        }
         .split-sidenav {
             background-color: $color-blue-normal;
             width: 300px;

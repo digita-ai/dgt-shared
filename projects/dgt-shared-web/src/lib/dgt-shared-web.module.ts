@@ -50,6 +50,7 @@ import { DGTSectionHelpTitleComponent } from './interface/components/dgt-section
 import { DGTNotificationComponent } from './interface/components/dgt-notification/dgt-notification.component';
 import { DGTSplitPageHeaderProfileComponent } from './interface/components/dgt-split-page-header-profile/dgt-split-page-header-profile.component';
 import { RouterModule } from '@angular/router';
+import { DGTSplitPageRailComponent } from './interface/components/dgt-split-page-rail/dgt-split-page-rail.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -84,6 +85,7 @@ export const declarations = [
   DGTSplitPageHeaderComponent,
   DGTSplitPageSidenavComponent,
   DGTSplitPageSubHeaderComponent,
+  DGTSplitPageRailComponent,
   DGTSplitPageContentComponent,
   DGTNotificationComponent,
   DGTNotificationsComponent,
@@ -163,6 +165,7 @@ export const providers = [
     DGTSplitPageHeaderComponent,
     DGTSplitPageSidenavComponent,
     DGTSplitPageSubHeaderComponent,
+    DGTSplitPageRailComponent,
     DGTSplitPageContentComponent,
     DGTNotificationComponent,
     DGTNotificationsComponent,
