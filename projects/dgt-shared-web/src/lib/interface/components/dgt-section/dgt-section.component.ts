@@ -54,6 +54,8 @@ export class DGTSectionComponent {
 
     return res;
   }
+  @Input() public showSubtitle = false;
+  @Input() public showIcon = false;
   @Input() public state: DGTSectionState = DGTSectionState.NORMAL;
   @Output() public reset: EventEmitter<void> = new EventEmitter<void>();
 
