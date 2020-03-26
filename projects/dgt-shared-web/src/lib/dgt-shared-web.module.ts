@@ -52,6 +52,8 @@ import { DGTPageHeaderProfileComponent } from './interface/components/dgt-page-h
 import { RouterModule } from '@angular/router';
 import { DGTPageRailComponent } from './interface/components/dgt-page-rail/dgt-page-rail.component';
 import { DGTPageRailItemComponent } from './interface/components/dgt-page-rail-item/dgt-page-rail-item.component';
+import { DGTSectionSubtitleComponent } from './interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
+import { DGTSectionIconComponent } from './interface/components/dgt-section-icon/dgt-section-icon.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -78,8 +80,10 @@ export const declarations = [
   DGTSectionComponent,
   DGTSectionHelpComponent,
   DGTSectionHelpTitleComponent,
+  DGTSectionIconComponent,
   DGTSectionResetComponent,
   DGTSectionSummaryComponent,
+  DGTSectionSubtitleComponent,
   DGTSectionTitleComponent,
   DGTSectionContentComponent,
   DGTPageComponent,
@@ -159,7 +163,9 @@ export const providers = [
     DGTSectionComponent,
     DGTSectionHelpComponent,
     DGTSectionHelpTitleComponent,
+    DGTSectionIconComponent,
     DGTSectionResetComponent,
+    DGTSectionSubtitleComponent,
     DGTSectionSummaryComponent,
     DGTSectionTitleComponent,
     DGTSectionContentComponent,

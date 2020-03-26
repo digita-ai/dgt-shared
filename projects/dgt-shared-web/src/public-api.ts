@@ -49,6 +49,7 @@ export { DGTFormLabelComponent } from './lib/form/components/dgt-form-label/dgt-
 export { DGTStandardPageComponent } from './lib/interface/components/dgt-standard-page/dgt-standard-page.component';
 export { DGTSectionComponent } from './lib/interface/components/dgt-section/dgt-section.component';
 export { DGTSectionTitleComponent } from './lib/interface/components/dgt-section-title/dgt-section-title.component';
+export { DGTSectionSubtitleComponent } from './lib/interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
 export { DGTSectionContentComponent } from './lib/interface/components/dgt-section-content/dgt-section-content.component';
 export { DGTPageComponent } from './lib/interface/components/dgt-page/dgt-page.component';
 export { DGTPageContentComponent } from './lib/interface/components/dgt-page-content/dgt-page-content.component';

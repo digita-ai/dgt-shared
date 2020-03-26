@@ -1,20 +1,30 @@
-<div class="section" fxLayout="column" fxLayoutGap="20px" *ngIf="state !== 'collapsed'"
+<div class="section" fxLayout="row" fxLayoutGap="20px" *ngIf="state !== 'collapsed'"
   [class.collapsed]="state === 'collapsed'" [class.blue]="state === 'blue'" [class.warning]="state === 'warning'"
   [class.success]="state === 'success' || state === 'locked'">
-  <div fxFlex="initial" class="section-title" *ngIf="showTitle">
-    <ng-content select="dgt-section-title"></ng-content>
+
+  <div fxFlex="initial" class="section-icon" *ngIf="showIcon">
+    <ng-content select="dgt-section-icon"></ng-content>
   </div>
-  <div fxFlex="initial" class="section-content" *ngIf="showContent">
-    <ng-content select="dgt-section-content"></ng-content>
+
+  <div fxFlex="initial" fxLayout="column" fxLayoutGap="20px">
+    <div fxFlex="initial" class="section-title" *ngIf="showTitle">
+      <ng-content select="dgt-section-title"></ng-content>
+    </div>
+    <div fxFlex="initial" class="section-subtitle" *ngIf="showSubtitle">
+      <ng-content select="dgt-section-subtitle"></ng-content>
+    </div>
+    <div fxFlex="initial" class="section-content" *ngIf="showContent">
+      <ng-content select="dgt-section-content"></ng-content>
+    </div>
+    <div fxFlex="initial" class="section-summary" *ngIf="showSummary">
+      <ng-content select="dgt-section-summary"></ng-content>
+    </div>
+    <dgt-button fxFlex="initial" (called)="onReset()" *ngIf="showReset && showSummary" class="block">
+      <i class="fas fa-redo"></i>
+      <ng-content select="dgt-section-reset"></ng-content>
+    </dgt-button>
+    <dgt-button fxFlex="initial" *ngIf="showLoading && showSummary" [loading]="true" class="block">
+      {{'common.components.dgt-section.loading' | translate}}
+    </dgt-button>
   </div>
-  <div fxFlex="initial" class="section-summary" *ngIf="showSummary">
-    <ng-content select="dgt-section-summary"></ng-content>
-  </div>
-  <dgt-button fxFlex="initial" (called)="onReset()" *ngIf="showReset && showSummary" class="block">
-    <i class="fas fa-redo"></i>
-    <ng-content select="dgt-section-reset"></ng-content>
-  </dgt-button>
-  <dgt-button fxFlex="initial" *ngIf="showLoading && showSummary" [loading]="true" class="block">
-    {{'common.components.dgt-section.loading' | translate}}
-  </dgt-button>
 </div>
