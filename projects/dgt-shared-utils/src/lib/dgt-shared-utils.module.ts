@@ -10,7 +10,10 @@ export const declarations: (any[] | Type<any>)[] = [];
 export const imports = [];
 export const providers = [
   DGTConnectionService,
-  DGTHttpAngularService,
+  {
+    provide: DGTHttpService,
+    useClass: DGTHttpAngularService
+  },
   DGTErrorService,
   DGTLoggerService,
   DGTPlatformService,
