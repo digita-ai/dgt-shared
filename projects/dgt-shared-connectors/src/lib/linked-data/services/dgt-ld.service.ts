@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
-import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDTriple, DGTSource, DGTConnection } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDTriple, DGTSource, DGTConnection, DGTLDNode } from '@digita/dgt-shared-data';
 import { tap, map } from 'rxjs/operators';
 import { Parser, N3Parser, Quad } from 'n3';
 import { v4 as uuid } from 'uuid';
@@ -37,7 +37,7 @@ export class DGTLDService {
 
         if (quads) {
             this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
-            res = quads.map(quad => this.convert(quad, exchange, source, connection));
+            res = quads.map(quad => this.convert(webId, quad, exchange, source, connection));
             res = res.map(value => ({ ...value, subject: value.subject.value === '#me' ? { value: webId } : value.subject }));
             //res = this.resolve(res);
             res = this.clean(res);
@@ -46,8 +46,21 @@ export class DGTLDService {
         return res;
     }
 
-    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
+    private convert(webId: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
         const predicateSplit = quad.predicate.value.split('#');
+
+        let subject: DGTLDNode = { value: quad.subject.value };
+        if (subject && subject.value && subject.value.startsWith('#me')) {
+            const me = connection.configuration.webId.split('/profile/card#me')[0];
+
+            subject = {
+                value: `${webId}`
+            };
+        } else if (subject && subject.value && subject.value.startsWith('#')) {
+            subject = {
+                value: `${webId}#${quad.subject.value.split('#')[1]}`
+            };
+        }
 
         return {
             id: uuid(),
@@ -57,7 +70,7 @@ export class DGTLDService {
                 name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
                 namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
             },
-            subject: quad.subject.value ? { value: quad.subject.value } : { value: connection.subject },
+            subject,
             object: { value: quad.object.value },
             originalValue: { value: quad.object.value },
             source: source ? source.id : null
@@ -86,18 +99,22 @@ export class DGTLDService {
     }
 
     private clean(values: DGTLDTriple[]): DGTLDTriple[] {
-        return values.map(value => {
-            const updatedValue = value;
-            const stringValue = (value.object.value as string);
+        return values
+            .map(value => {
+                const updatedValue = value;
+                const stringValue = (value.object.value as string);
 
-            if (value && stringValue.startsWith('undefined/')) {
-                const stringValueSplit = stringValue.split('undefined/')[1];
-                const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
+                if (value && stringValue.startsWith('undefined/')) {
+                    const stringValueSplit = stringValue.split('undefined/')[1];
+                    const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
 
-                updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
-            }
+                    updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
+                }
 
-            return updatedValue;
-        });
+                return updatedValue;
+            })
+        // .map(value => {
+
+        // });
     }
 }
