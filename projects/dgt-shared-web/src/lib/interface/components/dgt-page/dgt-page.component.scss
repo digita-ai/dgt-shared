@@ -48,7 +48,7 @@
                 padding: $measure-gutter-large;
             }
             .split-content-details {
-                overflow-y: scroll;
+                overflow-y: auto;
                 overflow-x: hidden;
             }
             .split-content-details-padding {
