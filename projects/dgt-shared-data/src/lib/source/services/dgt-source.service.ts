@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DGTLoggerService, DGTMap } from '@digita/dgt-shared-utils';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { Injectable } from '@angular/core';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
@@ -18,7 +18,7 @@ export class DGTSourceService {
     constructor(private logger: DGTLoggerService) { }
 
     public get(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, justification: DGTJustification)
-        : Observable<DGTLDValue[]> {
+        : Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSourceService.name, 'Getting source', source);
 
         let connector: DGTSourceConnector<any, any> = null;
@@ -27,7 +27,7 @@ export class DGTSourceService {
             connector = this.connectors.get(source.type);
         }
 
-        return connector.query(justification, exchange, connection, source)
+        return connector.query(null, justification, exchange, connection, source)
             .pipe(
                 map((response) => response.data),
             );

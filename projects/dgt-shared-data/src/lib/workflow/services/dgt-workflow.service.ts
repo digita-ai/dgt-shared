@@ -1,7 +1,7 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
+import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
 import { switchMap, map } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class DGTWorkflowService {
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
     public execute(exchange: DGTExchange, connection: DGTConnection<any>)
-        : Observable<DGTLDValue[]> {
+        : Observable<DGTLDTriple[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
 
         return of({ exchange })
@@ -33,14 +33,14 @@ export class DGTWorkflowService {
                 switchMap((data) => this.sources.get(exchange, connection, data.source, data.justification)
                     .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
                 map(data => {
-                    const values: DGTLDValue[] = _.flatten(data.valuesPerSource);
+                    const values: DGTLDTriple[] = _.flatten(data.valuesPerSource);
 
                     this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
                         { exchange, values });
 
                     values.map((value) => {
                         if (value) {
-                            const workflows = this.get(exchange.source, value.field);
+                            const workflows = this.get(exchange.source, value.predicate);
 
                             if (workflows) {
                                 workflows.forEach((workflow) => {
@@ -62,7 +62,7 @@ export class DGTWorkflowService {
     }
 
 
-    public get(source: string, field: DGTLDField): DGTWorkflow[] {
+    public get(source: string, field: DGTLDPredicate): DGTWorkflow[] {
         this.logger.debug(DGTWorkflowService.name, 'Getting workflow for field', { field });
 
         let res: DGTWorkflow[] = null;

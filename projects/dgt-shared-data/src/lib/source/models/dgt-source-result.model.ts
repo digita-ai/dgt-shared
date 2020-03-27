@@ -1,7 +1,7 @@
 import { DGTSource } from './dgt-source.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 
 export interface DGTSourceResult<T> {
     source: DGTSource<T>;
-    values: DGTLDValue[];
+    values: DGTLDTriple[];
 }

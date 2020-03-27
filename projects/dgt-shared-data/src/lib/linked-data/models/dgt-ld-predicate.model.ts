@@ -1,4 +1,4 @@
-export interface DGTLDField {
+export interface DGTLDPredicate {
     name: string;
     namespace: string;
 }

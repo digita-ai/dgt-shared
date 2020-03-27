@@ -7,7 +7,7 @@ import { DGTConnectionSolid } from '../models/dgt-connection-solid.model';
 import * as _ from 'lodash';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 
 @Injectable()
 export class DGTConnectionsService {
@@ -27,13 +27,13 @@ export class DGTConnectionsService {
     //     return res;
     // }
 
-    public get(connections: DGTConnection<any>[]): Observable<DGTLDValue[]> {
+    public get(connections: DGTConnection<any>[]): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTConnectionsService.name, 'Starting to get data from connections', { connections });
 
         return of(connections)
             .pipe(
                 switchMap(() => forkJoin(connections.map(connection => {
-                    let res: Observable<DGTLDValue[]> = of([]);
+                    let res: Observable<DGTLDTriple[]> = of([]);
 
                     if (connection) {
                         // Plus check type
@@ -47,7 +47,7 @@ export class DGTConnectionsService {
             );
     }
 
-    private getSolid(connection: DGTConnectionSolid): Observable<DGTLDValue[]> {
+    private getSolid(connection: DGTConnectionSolid): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTConnectionsService.name, 'Starting to get data from Solid connection', { connection });
 
         return this.http.get(connection.configuration.webId, {
