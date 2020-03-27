@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Type, ModuleWithProviders, InjectionToken } from '@angular/core';
 import { DGTTitleService } from './interface/services/dgt-title.service';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
@@ -55,6 +55,9 @@ import { DGTPageRailItemComponent } from './interface/components/dgt-page-rail-i
 import { DGTSectionSubtitleComponent } from './interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
 import { DGTSectionIconComponent } from './interface/components/dgt-section-icon/dgt-section-icon.component';
 import { DGTSectionActionComponent } from './interface/components/dgt-section-action/dgt-section-action.component';
+import { StoreModule, Store, ActionReducerMap, StoreRootModule } from '@ngrx/store';
+
+// export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -99,19 +102,12 @@ export const declarations = [
   DGTNotificationsComponent,
   DGTPageHeaderProfileComponent,
 ];
-export const imports = [
+export const imports: (any[] | Type<any>)[] = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
   RouterModule,
   FlexLayoutModule,
-  TranslateModule.forRoot({
-    loader: {
-      provide: TranslateLoader,
-      useFactory: HttpLoaderFactory,
-      deps: [HttpClient]
-    }
-  }),
   MatButtonModule,
   MatDialogModule,
   MatTableModule,
@@ -127,10 +123,6 @@ export const providers = [
   DGTI8NService,
   DGTPhoneValidator,
   DGTCompareValidator,
-  {
-    provide: DGTStoreService,
-    useClass: DGTNGRXStoreService
-  },
   DGTFormAfterValidator,
   DGTFormBeforeValidator,
   DGTBrowserIsSupportedGuard
@@ -139,49 +131,17 @@ export const providers = [
 @NgModule({
   declarations,
   providers,
-  imports,
-  exports: [
-    MatButtonModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    DGTButtonComponent,
-    DGTButtonConfirmComponent,
-    DGTFormValidationComponent,
-    DGTFormControlComponent,
-    DGTFormDateComponent,
-    DGTFormElementComponent,
-    DGTFormComponent,
-    DGTFormFileComponent,
-    DGTFormLabelComponent,
-    DGTActivitiesComponent,
-    DGTChipComponent,
-    DGTLoadingPageComponent,
-    DGTStandardPageComponent,
-    DGTDialogComponent,
-    DGTDialogActionComponent,
-    DGTDialogContentComponent,
-    DGTLinkComponent,
-    DGTSectionComponent,
-    DGTSectionActionComponent,
-    DGTSectionHelpComponent,
-    DGTSectionHelpTitleComponent,
-    DGTSectionIconComponent,
-    DGTSectionResetComponent,
-    DGTSectionSubtitleComponent,
-    DGTSectionSummaryComponent,
-    DGTSectionTitleComponent,
-    DGTSectionContentComponent,
-    DGTPageComponent,
-    DGTPageHeaderComponent,
-    DGTPageSidenavComponent,
-    DGTPageSubHeaderComponent,
-    DGTPageRailComponent,
-    DGTPageRailItemComponent,
-    DGTPageContentComponent,
-    DGTNotificationComponent,
-    DGTNotificationsComponent,
-    DGTPageHeaderProfileComponent,
-  ]
+  imports: [
+    ...imports,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    StoreRootModule
+  ],
+  exports: [...imports, ...declarations]
 })
 export class DGTSharedWebModule { }
