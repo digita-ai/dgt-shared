@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
-import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDValue, DGTSource, DGTConnection } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDTriple, DGTSource, DGTConnection } from '@digita/dgt-shared-data';
 import { tap, map } from 'rxjs/operators';
 import { Parser, N3Parser, Quad } from 'n3';
 import { v4 as uuid } from 'uuid';
@@ -29,8 +29,8 @@ export class DGTLDService {
             );
     }
 
-    private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDValue[] {
-        let res: DGTLDValue[] = null;
+    private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+        let res: DGTLDTriple[] = null;
 
         const quads = this.parser.parse(response);
         this.logger.debug(DGTLDService.name, 'Parsed quads', { quads });
@@ -38,45 +38,46 @@ export class DGTLDService {
         if (quads) {
             this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
             res = quads.map(quad => this.convert(quad, exchange, source, connection));
-            res = res.map(value => ({...value, subject: value.subject === '#me' ? connection.subject : value.subject}));
-            res = this.resolve(res);
+            res = res.map(value => ({ ...value, subject: value.subject.value === '#me' ? { value: webId } : value.subject }));
+            //res = this.resolve(res);
+            res = this.clean(res);
         }
 
         return res;
     }
 
-    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDValue {
+    private convert(quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
         const predicateSplit = quad.predicate.value.split('#');
 
         return {
             id: uuid(),
             exchange: exchange ? exchange.id : null,
             connection: connection ? connection.id : null,
-            field: {
+            predicate: {
                 name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
                 namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
             },
-            subject: quad.subject.value,
-            value: quad.object.value,
-            originalValue: quad.object.value,
+            subject: quad.subject.value ? { value: quad.subject.value } : { value: connection.subject },
+            object: { value: quad.object.value },
+            originalValue: { value: quad.object.value },
             source: source ? source.id : null
         };
     }
 
-    private resolve(values: DGTLDValue[]): DGTLDValue[] {
-        const variables = values.filter(
-            value => value.field.namespace === 'http://www.w3.org/2006/vcard/ns#'
-                && value.field.name === 'value'
-        );
+    private resolve(values: DGTLDTriple[]): DGTLDTriple[] {
+        // const variables = values.filter(
+        //     value => value.field.namespace === 'http://www.w3.org/2006/vcard/ns#'
+        //         && value.field.name === 'value'
+        // );
 
         return values.map(value => {
             const updatedValue = value;
 
-            if (value && (value.value as string).startsWith('#')) {
-                const foundVariable = variables.find(variable => variable.subject === value.value);
+            if (value && (value.object.value as string).startsWith('#')) {
+                const foundVariable = values.find(variable => variable.subject === value.object.value);
 
                 if (foundVariable) {
-                    updatedValue.value = foundVariable.value;
+                    updatedValue.object.value = foundVariable.object.value;
                 }
             }
 
@@ -84,148 +85,19 @@ export class DGTLDService {
         });
     }
 
-    // public query(
-    //     webId: string,
-    //     exchange: DGTExchange,
-    //     justification: DGTJustification
-    // ): Observable<DGTLDResponse> {
-    //     return new Observable<DGTLDResponse>((subscriber) => {
-    //         this.logger.debug(DGTLDService.name, 'Starting to query data', { webId });
+    private clean(values: DGTLDTriple[]): DGTLDTriple[] {
+        return values.map(value => {
+            const updatedValue = value;
+            const stringValue = (value.object.value as string);
 
-    //         this.fetcher.nowOrWhenFetched(webId,
-    //             (ok, body, xhr) => {
-    //                 this.logger.debug(DGTLDService.name, 'Load finished');
+            if (value && stringValue.startsWith('undefined/')) {
+                const stringValueSplit = stringValue.split('undefined/')[1];
+                const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
 
-    //                 this.parse(webId, this.store, exchange, justification)
-    //                     .subscribe(data => {
-    //                         this.logger.debug(DGTLDService.name, 'Parsed data', data);
-    //                         subscriber.next(({ data }));
-    //                         subscriber.complete();
-    //                     },
-    //                     );
-    //             });
-    //     });
+                updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
+            }
 
-    // }
-
-    // private parse(
-    //     webId: string,
-    //     store: rdf.IndexedFormula,
-    //     exchange: DGTExchange,
-    //     justification: DGTJustification,
-    // ): Observable<DGTLDValue[]> {
-    //     return new Observable<DGTLDValue[]>((subscriber) => {
-    //         let res: DGTLDValue[] = [];
-
-    //         if (justification && justification.fields) {
-    //             res = justification.fields
-    //                 .map((field) => this.getLinkedValue(webId, store, field, exchange))
-    //                 .filter(value => value.value !== null);
-    //         } else {
-
-    //         }
-
-    //         subscriber.next(res);
-    //         subscriber.complete();
-    //     });
-    // }
-
-    // // private getAllValues(store: rdf.IndexedFormula): DGTLDValue[] {
-    // //     store.
-    // // }
-
-    // private getLinkedValue(
-    //     webId: string,
-    //     store: rdf.IndexedFormula,
-    //     field: DGTLDField,
-    //     exchange: DGTExchange
-    // ): DGTLDValue {
-    //     const res: DGTLDValue = {
-    //         exchange: exchange.id,
-    //         field,
-    //         value: null,
-    //         originalValue: null,
-    //         source: exchange.source,
-    //         subject: exchange.subject
-    //     };
-
-    //     const namespace = rdf.Namespace(field.namespace);
-
-    //     const node = store.any(rdf.sym(webId), namespace(field.name));
-
-    //     if (node) {
-    //         const nodeValue = node.value;
-    //         res.value = nodeValue;
-
-    //         if (nodeValue && this.isValidURL(nodeValue)) {
-    //             res.value = store.any(rdf.sym(nodeValue), namespace('value')).value;
-    //         }
-
-    //         res.originalValue = res.value;
-    //     }
-
-    //     // if (res.value !== null && res.value !== undefined && (typeof res.value === 'string' || res.value instanceof String)) {
-    //     //     res.value = res.value.split('mailto:').length > 0 ? res.value.split('mailto:')[1] : res.value;
-    //     //     res.value = res.value.split('tel:').length > 0 ? res.value.split('tel:')[1] : res.value;
-    //     // }
-
-    //     return res;
-    // }
-
-    // private isValidURL(str): boolean {
-    //     const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-    //         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-    //         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    //         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-    //         '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-    //         '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-    //     return !!pattern.test(str);
-    // }
-
-    // public query(webId: string, query: string): Observable<DGTLinkedDataResponse<any>> {
-    //     return new Observable((subscriber) => {
-    //         // const url = encodeURI(this.endpoint);
-
-    //         this.logger.debug(DGTLinkedDataService.name, 'Starting to query data', { webId, query });
-
-    //         try {
-    //             from(this.fetcher.load(webId))
-    //             // post(webId, { form: 'query=' + query }, (error, response, body) => {
-    //             post(webId, {}, (error, response, body) => {
-    //                 this.logger.debug(DGTLinkedDataService.name, 'Received response, starting to convert', { error, response, body });
-
-    //                 this.parser.fromSPARQLJSONToTurtle(webId, JSON.parse(body))
-    //                     .subscribe((data) => {
-    //                         subscriber.next({ data });
-    //                         subscriber.complete();
-    //                     });
-    //             });
-    //         } catch (e) {
-    //             this.logger.debug(DGTLinkedDataService.name, 'Something went wrong', e);
-    //             subscriber.error('Something went wrong: ' + e);
-    //             subscriber.complete();
-    //         }
-    //     });
-    // }
-
-    // public update(query: string): Observable<DGTLinkedDataResponse<any>> {
-    //     return new Observable((subscriber) => {
-    //         const url = encodeURI(this.endpoint);
-
-    //         this.logger.debug(DGTLinkedDataService.name, 'Starting to update data', { url, query });
-
-    //         try {
-    //             post(url, { form: 'update=' + query }, (error, response, body) => {
-    //                 this.logger.debug(DGTLinkedDataService.name, 'Received response', { error, response, body });
-
-    //                 subscriber.next({ data: body });
-    //                 subscriber.complete();
-    //             });
-    //         } catch (e) {
-    //             this.logger.debug(DGTLinkedDataService.name, 'Something went wrong', e);
-    //             subscriber.error('Something went wrong: ' + e);
-    //             subscriber.complete();
-    //         }
-    //     });
-    // }
+            return updatedValue;
+        });
+    }
 }

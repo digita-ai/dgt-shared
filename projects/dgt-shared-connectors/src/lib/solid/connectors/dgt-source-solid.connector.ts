@@ -35,7 +35,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                                 connection: {
                                     ...connection,
                                     configuration: { ...data.connection.configuration, loginUri },
-                                    state: DGTConnectionState.CONNECTING
+                                    state: DGTConnectionState.CONNECTING,
                                 },
                             })),
                         )),
@@ -48,8 +48,14 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return res;
     }
 
-    public query(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        return this.linked.query(connection.configuration.webId, connection.configuration.accessToken, exchange, justification, source, connection);
+    public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
+        const uri = subjectUri ?  subjectUri : connection.configuration.webId;
+
+        return this.linked.query(uri, connection.configuration.accessToken, exchange, justification, source, connection);
+    }
+
+    public queryUri(uri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
+        return this.linked.query(uri, connection.configuration.accessToken, exchange, justification, source, connection);
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {

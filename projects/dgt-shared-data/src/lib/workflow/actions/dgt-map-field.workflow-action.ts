@@ -1,19 +1,19 @@
 import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
+import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 
 export class DGTMapFieldWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;
 
-    constructor(private newField: DGTLDField, private logger: DGTLoggerService) { }
+    constructor(private newField: DGTLDPredicate, private logger: DGTLoggerService) { }
 
-    public execute(value: DGTLDValue): DGTLDValue {
+    public execute(value: DGTLDTriple): DGTLDTriple {
         this.logger.debug(DGTMapFieldWorkflowAction.name, 'Executing map field action', { newField: this.newField, value });
 
-        if (value && value.field && this.newField) {
-            value.field = this.newField;
+        if (value && value.predicate && this.newField) {
+            value.predicate = this.newField;
         }
 
         return value;

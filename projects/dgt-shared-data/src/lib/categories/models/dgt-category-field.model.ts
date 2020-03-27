@@ -1,6 +1,6 @@
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
+import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 
 export interface DGTCategoryField {
-    fields: DGTLDField[];
+    fields: DGTLDPredicate[];
     description: string;
 }

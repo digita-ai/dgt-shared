@@ -2,7 +2,7 @@ import { Observable, forkJoin, of, concat, zip, merge } from 'rxjs';
 import { DGTSubject } from '../models/dgt-subject.model';
 import { switchMap, map, tap, concatAll } from 'rxjs/operators';
 import { DGTExchange } from '../models/dgt-subject-exchange.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import * as _ from 'lodash';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { Injectable } from '@angular/core';
@@ -20,7 +20,7 @@ export class DGTSubjectService {
         private workflow: DGTWorkflowService
     ) { }
 
-    public getValuesForSubject(subject: DGTSubject): Observable<DGTLDValue[]> {
+    public getValuesForSubject(subject: DGTSubject): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
 
         return of({ subject })
@@ -37,7 +37,7 @@ export class DGTSubjectService {
             );
     }
 
-    public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDValue[]> {
+    public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
 
         return of({ exchange })

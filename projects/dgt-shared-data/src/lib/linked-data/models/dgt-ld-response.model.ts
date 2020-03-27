@@ -1,5 +1,5 @@
-import { DGTLDValue } from './dgt-ld-value.model';
+import { DGTLDTriple } from './dgt-ld-triple.model';
 
 export interface DGTLDResponse {
-    data: DGTLDValue[];
+    data: DGTLDTriple[];
 }

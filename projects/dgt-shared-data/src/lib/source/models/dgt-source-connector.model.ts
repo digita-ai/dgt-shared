@@ -7,5 +7,5 @@ import { DGTJustification } from '../../justification/models/dgt-justification.m
 
 export interface DGTSourceConnector<T, S> {
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTConnection<S>>;
-    query(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTLDResponse>;
+    query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTLDResponse>;
 }

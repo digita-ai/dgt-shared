@@ -1,8 +1,8 @@
 import { DGTWorkflowAction } from './dgt-workflow-action.model';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
+import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 
 export interface DGTWorkflow {
     actions: DGTWorkflowAction[];
-    fields: DGTLDField[];
+    fields: DGTLDPredicate[];
     source: string;
 }

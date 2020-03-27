@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDValue, DGTJustification, DGTConnection } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDTriple, DGTJustification, DGTConnection } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -17,7 +17,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return of(null);
     }
 
-    public query(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDResponse> {
+    public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDResponse> {
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
 
         let res = null;
@@ -38,7 +38,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
     }
 
     private convertResponse(httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResponse {
-        const res: DGTLDValue[] = [];
+        const res: DGTLDTriple[] = [];
 
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
 
@@ -51,11 +51,11 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found username', { entry });
                 res.push({
                     exchange: exchange.id,
-                    subject: exchange.subject,
+                    subject: { value: exchange.subject },
                     source: exchange.source,
-                    field: source.configuration.usernameField,
-                    value: entry.preferredUsername,
-                    originalValue: entry.preferredUsername,
+                    predicate: source.configuration.usernameField,
+                    object: { value: entry.preferredUsername },
+                    originalValue: { value: entry.preferredUsername },
                     connection: connection.id
                 });
             }
@@ -64,11 +64,11 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found thumbnail', { entry });
                 res.push({
                     exchange: exchange.id,
-                    subject: exchange.subject,
+                    subject: { value: exchange.subject },
                     source: exchange.source,
-                    field: source.configuration.thumbnailField,
-                    value: entry.thumbnailUrl,
-                    originalValue: entry.thumbnailUrl,
+                    predicate: source.configuration.thumbnailField,
+                    object: { value: entry.thumbnailUrl },
+                    originalValue: { value: entry.thumbnailUrl },
                     connection: connection.id
                 });
             }
