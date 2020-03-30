@@ -49,7 +49,7 @@ describe('DGTLDService', () => {
             uri: 'https://wouteraj.inrupt.net/profile/card#me',
         };
 
-        testService.service.query(webId, exchange, justification, source)
+        testService.service.get(webId, exchange, justification, source)
         .subscribe(response => {
             expect(response).toBeTruthy();
             done();

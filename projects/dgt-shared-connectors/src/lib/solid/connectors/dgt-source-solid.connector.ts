@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTLDResponse, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple } from '@digita/dgt-shared-data';
 import { DGTLDService } from '../../linked-data/services/dgt-ld.service';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
@@ -49,13 +49,13 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        const uri = subjectUri ?  subjectUri : connection.configuration.webId;
+        const uri = subjectUri ? subjectUri : connection.configuration.webId;
 
-        return this.linked.query(uri, connection.configuration.accessToken, exchange, justification, source, connection);
+        return this.linked.get(uri, exchange, justification, source, connection);
     }
 
-    public queryUri(uri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTLDResponse> {
-        return this.linked.query(uri, connection.configuration.accessToken, exchange, justification, source, connection);
+    public delete(uri: string, triples: DGTLDTriple[], connection: DGTConnectionSolid): Observable<any> {
+        return this.linked.delete(uri, triples, connection);
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {

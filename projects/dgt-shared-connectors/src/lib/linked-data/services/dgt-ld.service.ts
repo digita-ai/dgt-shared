@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
-import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDTriple, DGTSource, DGTConnection, DGTLDNode } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTJustification, DGTLDResponse, DGTLDTriple, DGTSource, DGTConnection, DGTLDNode, DGTConnectionSolid, DGTLDNodeType } from '@digita/dgt-shared-data';
 import { tap, map } from 'rxjs/operators';
 import { Parser, N3Parser, Quad } from 'n3';
 import { v4 as uuid } from 'uuid';
@@ -13,11 +13,11 @@ export class DGTLDService {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
     }
 
-    public query(webId: string, accessToken: string, exchange: DGTExchange, justification: DGTJustification, source: DGTSource<any>, connection: DGTConnection<any>): Observable<DGTLDResponse> {
+    public get(webId: string, exchange: DGTExchange, justification: DGTJustification, source: DGTSource<any>, connection: DGTConnection<any>): Observable<DGTLDResponse> {
         this.logger.debug(DGTLDService.name, 'Starting to query linked data service', { endpoint: webId, exchange, justification });
 
         return this.http.get<string>(webId, {
-            Authorization: 'Bearer ' + accessToken
+            Authorization: 'Bearer ' + connection.configuration.accessToken
         }, true)
             .pipe(
                 tap(data => this.logger.debug(DGTLDService.name, 'Received response from connection', { data })),
@@ -29,6 +29,34 @@ export class DGTLDService {
             );
     }
 
+    public delete(uri, triples: DGTLDTriple[], connection: DGTConnectionSolid): Observable<any> {
+
+        // DELETE DATA {<https://wouteraj.solid.community/profile/card#me> <http://www.w3.org/2006/vcard/ns#hasTelephone> <https://wouteraj.solid.community/profile/card#id1579729497510>.
+        //     <https://wouteraj.solid.community/profile/card#id1579729497510> <http://www.w3.org/2006/vcard/ns#value> <tel:0447444444>.
+        //     };
+
+        let body = '';
+
+        body += 'DELETE DATA {';
+
+        if (triples) {
+            triples.forEach(triple => {
+                if (triple.object.type === DGTLDNodeType.LITERAL) {
+                    body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> "${triple.object.value}" . `;
+                } else if (triple.object.type === DGTLDNodeType.REFERENCE) {
+                    body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> <${triple.object.value}> . `;
+                }
+            });
+        }
+
+        body += '};';
+
+        return this.http.patch(uri, body, {
+            'Content-Type': 'application/sparql-update',
+            Authorization: 'Bearer ' + connection.configuration.accessToken
+        });
+    }
+
     private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
         let res: DGTLDTriple[] = null;
 
@@ -38,8 +66,10 @@ export class DGTLDService {
         if (quads) {
             this.logger.debug(DGTLDService.name, 'Starting to convert quads to values', { quads, webId });
             res = quads.map(quad => this.convert(webId, quad, exchange, source, connection));
-            res = res.map(value => ({ ...value, subject: value.subject.value === '#me' ? { value: webId } : value.subject }));
-            //res = this.resolve(res);
+            res = res.map(value => ({
+                ...value, subject: value.subject.value === '#me' ?
+                    { value: webId, type: DGTLDNodeType.REFERENCE } : value.subject
+            }));
             res = this.clean(res);
         }
 
@@ -49,16 +79,18 @@ export class DGTLDService {
     private convert(webId: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
         const predicateSplit = quad.predicate.value.split('#');
 
-        let subject: DGTLDNode = { value: quad.subject.value };
+        let subject: DGTLDNode = { value: quad.subject.value, type: DGTLDNodeType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
             const me = connection.configuration.webId.split('/profile/card#me')[0];
 
             subject = {
-                value: `${webId}`
+                value: `${webId}`,
+                type: DGTLDNodeType.REFERENCE
             };
         } else if (subject && subject.value && subject.value.startsWith('#')) {
             subject = {
-                value: `${webId}#${quad.subject.value.split('#')[1]}`
+                value: `${webId}#${quad.subject.value.split('#')[1]}`,
+                type: DGTLDNodeType.REFERENCE
             };
         }
 
@@ -71,31 +103,16 @@ export class DGTLDService {
                 namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
             },
             subject,
-            object: { value: quad.object.value },
-            originalValue: { value: quad.object.value },
+            object: {
+                value: quad.object.value,
+                type: quad.object.termType === 'Literal' ? DGTLDNodeType.LITERAL : DGTLDNodeType.REFERENCE
+            },
+            originalValue: {
+                value: quad.object.value,
+                type: quad.object.termType === 'Literal' ? DGTLDNodeType.LITERAL : DGTLDNodeType.REFERENCE
+            },
             source: source ? source.id : null
         };
-    }
-
-    private resolve(values: DGTLDTriple[]): DGTLDTriple[] {
-        // const variables = values.filter(
-        //     value => value.field.namespace === 'http://www.w3.org/2006/vcard/ns#'
-        //         && value.field.name === 'value'
-        // );
-
-        return values.map(value => {
-            const updatedValue = value;
-
-            if (value && (value.object.value as string).startsWith('#')) {
-                const foundVariable = values.find(variable => variable.subject === value.object.value);
-
-                if (foundVariable) {
-                    updatedValue.object.value = foundVariable.object.value;
-                }
-            }
-
-            return updatedValue;
-        });
     }
 
     private clean(values: DGTLDTriple[]): DGTLDTriple[] {
@@ -112,9 +129,6 @@ export class DGTLDService {
                 }
 
                 return updatedValue;
-            })
-        // .map(value => {
-
-        // });
+            });
     }
 }

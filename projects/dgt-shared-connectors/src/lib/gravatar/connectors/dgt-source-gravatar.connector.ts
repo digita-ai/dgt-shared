@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDTriple, DGTJustification, DGTConnection } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -51,11 +51,20 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found username', { entry });
                 res.push({
                     exchange: exchange.id,
-                    subject: { value: exchange.subject },
+                    subject: {
+                        value: exchange.subject,
+                        type: DGTLDNodeType.REFERENCE
+                    },
                     source: exchange.source,
                     predicate: source.configuration.usernameField,
-                    object: { value: entry.preferredUsername },
-                    originalValue: { value: entry.preferredUsername },
+                    object: {
+                        value: entry.preferredUsername,
+                        type: DGTLDNodeType.LITERAL
+                    },
+                    originalValue: {
+                        value: entry.preferredUsername,
+                        type: DGTLDNodeType.LITERAL
+                    },
                     connection: connection.id
                 });
             }
@@ -64,11 +73,20 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found thumbnail', { entry });
                 res.push({
                     exchange: exchange.id,
-                    subject: { value: exchange.subject },
+                    subject: {
+                        value: exchange.subject,
+                        type: DGTLDNodeType.REFERENCE
+                    },
                     source: exchange.source,
                     predicate: source.configuration.thumbnailField,
-                    object: { value: entry.thumbnailUrl },
-                    originalValue: { value: entry.thumbnailUrl },
+                    object: {
+                        value: entry.thumbnailUrl,
+                        type: DGTLDNodeType.LITERAL
+                    },
+                    originalValue: {
+                        value: entry.thumbnailUrl,
+                        type: DGTLDNodeType.LITERAL
+                    },
                     connection: connection.id
                 });
             }

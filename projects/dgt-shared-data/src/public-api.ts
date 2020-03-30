@@ -42,7 +42,9 @@ export { DGTSourceSolidConfiguration } from './lib/source/models/dgt-source-soli
 export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.model';
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
 export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
+export { DGTLDEntity } from './lib/linked-data/models/dgt-ld-entity.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
+export { DGTLDNodeType } from './lib/linked-data/models/dgt-ld-node-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
 export { DGTLDResponse } from './lib/linked-data/models/dgt-ld-response.model';

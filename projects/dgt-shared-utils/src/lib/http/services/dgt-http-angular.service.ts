@@ -63,6 +63,34 @@ export class DGTHttpAngularService extends DGTHttpService {
       );
   }
 
+  public delete<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Deleting to URI', { uri, headers });
+
+    return this.http.delete(uri, { headers })
+      .pipe(
+        map(data => data as T),
+        map(data => ({
+          data,
+          success: true
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public patch<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Patching to URI', { uri, body });
+
+    return this.http.patch(uri, body, { headers })
+      .pipe(
+        map(data => data as T),
+        map(data => ({
+          data,
+          success: true
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
   private handleError<T>(error: HttpErrorResponse): DGTHttpResponse<T> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
