@@ -7,6 +7,10 @@
     }
 }
 
+.section-subtitle{
+    font-size: 12px;
+}
+
 .section {
     background-color: $color-foreground-inverse;
     border: $measure-gutter-normal solid transparent;
@@ -21,8 +25,4 @@
     &.success {
         border-left: $measure-gutter-normal solid $color-success-normal;
     }
-}
-.section-subtitle, .section-title{
-    margin: 0 !important;
-    padding: 3px 0 0;
 }
