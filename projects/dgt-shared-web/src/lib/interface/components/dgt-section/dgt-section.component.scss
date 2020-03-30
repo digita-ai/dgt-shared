@@ -1,7 +1,7 @@
 @import 'styles';
 :host {
     display: block;
-    margin-bottom: $measure-gutter-large;
+    margin-bottom: $measure-gutter-normal;
     &:last-child {
         margin-bottom: 0px;
     }
@@ -21,4 +21,8 @@
     &.success {
         border-left: $measure-gutter-normal solid $color-success-normal;
     }
+}
+.section-subtitle, .section-title{
+    margin: 0 !important;
+    padding: 3px 0 0;
 }
