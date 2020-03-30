@@ -1,4 +1,5 @@
 @import "../../../../../theme/utilities/colors";
+@import "../../../../../theme/utilities/measures";
 
 :host {
     width: 100%;
@@ -10,13 +11,13 @@
 }
 
 .sub-header-container {
-    padding: 3%;
+    padding: $measure-gutter-xlarge;
 }
 
 .sub-header-title{
     font-weight: bold;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    margin-bottom: $measure-gutter-xlarge;
     width: 100%;
 }
 .sub-header-subtitle{
