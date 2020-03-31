@@ -2,6 +2,7 @@
 @import "../../../../../theme/utilities/measures";
 
 :host {
+    height: 90px;
     width: 100%;
     margin: 0;
     display: block;
@@ -17,7 +18,6 @@
 .sub-header-title{
     font-weight: bold;
     text-transform: uppercase;
-    margin-bottom: $measure-gutter-xlarge;
     width: 100%;
 }
 .sub-header-subtitle{
