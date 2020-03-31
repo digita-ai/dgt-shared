@@ -1,4 +1,6 @@
-import { DGTEntity, DGTLDNode, DGTConnection, DGTLDTriple } from '@digita/dgt-shared-data/public-api';
+import { DGTEntity } from '../../metadata/models/dgt-entity.model';
+import { DGTLDNode } from './dgt-ld-node.model';
+import { DGTLDTriple } from './dgt-ld-triple.model';
 
 export interface DGTLDEntity extends DGTEntity {
     connection: string;

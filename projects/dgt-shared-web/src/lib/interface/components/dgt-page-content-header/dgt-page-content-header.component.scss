@@ -1,6 +1,8 @@
 @import "../../../../../theme/utilities/colors";
+@import "../../../../../theme/utilities/measures";
 
 :host {
+    height: 90px;
     width: 100%;
     margin: 0;
     display: block;
@@ -10,13 +12,12 @@
 }
 
 .sub-header-container {
-    padding: 3%;
+    padding: $measure-gutter-xlarge;
 }
 
 .sub-header-title{
     font-weight: bold;
     text-transform: uppercase;
-    margin-bottom: 1rem;
     width: 100%;
 }
 .sub-header-subtitle{

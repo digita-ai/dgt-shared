@@ -2,6 +2,9 @@
  * Public API Surface of dgt-shared-web
  */
 
+export { DGTPageContentHeaderComponent } from './lib/interface/components/dgt-page-content-header/dgt-page-content-header.component';
+export { DGTPageContentHeaderTitleComponent } from './lib/interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
+export { DGTPageContentHeaderSubtitleComponent } from './lib/interface/components/dgt-page-content-header-subtitle/dgt-page-content-header-subtitle.component';
 export { DGTSharedWebModule } from './lib/dgt-shared-web.module';
 export { DGTAbstractAction } from './lib/state/models/dgt-abstract-action.model';
 export { DGTAction } from './lib/state/models/dgt-action.model';
