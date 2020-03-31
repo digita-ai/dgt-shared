@@ -5,6 +5,7 @@ import { DGTPlatformService } from './platform/services/dgt-platform.service';
 import { DGTConnectionService } from './connection/services/dgt-connection.service';
 import { DGTHttpService } from './http/services/dgt-http.service';
 import { DGTHttpAngularService } from './http/services/dgt-http-angular.service';
+import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 
 export const declarations: (any[] | Type<any>)[] = [];
 export const imports = [];
@@ -17,6 +18,7 @@ export const providers = [
   DGTErrorService,
   DGTLoggerService,
   DGTPlatformService,
+  DGTDateToLabelService
 ];
 
 @NgModule({
