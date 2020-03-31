@@ -55,7 +55,7 @@ import { DGTPageRailItemComponent } from './interface/components/dgt-page-rail-i
 import { DGTSectionSubtitleComponent } from './interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
 import { DGTSectionIconComponent } from './interface/components/dgt-section-icon/dgt-section-icon.component';
 import { DGTSectionActionComponent } from './interface/components/dgt-section-action/dgt-section-action.component';
-import { StoreModule, Store, ActionReducerMap, StoreRootModule } from '@ngrx/store';
+import { Store, ActionReducerMap, StoreRootModule } from '@ngrx/store';
 import { DGTPageContentHeaderComponent } from './interface/components/dgt-page-content-header/dgt-page-content-header.component';
 import { DGTPageContentHeaderSubtitleComponent } from './interface/components/dgt-page-content-header-subtitle/dgt-page-content-header-subtitle.component';
 import { DGTPageContentHeaderTitleComponent } from './interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
@@ -148,7 +148,6 @@ export const providers = [
         deps: [HttpClient]
       }
     }),
-    StoreRootModule
   ],
   exports: [...imports, ...declarations]
 })
