@@ -58,6 +58,7 @@ export class DGTSectionComponent {
   @Input() public showIcon = false;
   @Input() public state: DGTSectionState = DGTSectionState.NORMAL;
   @Output() public reset: EventEmitter<void> = new EventEmitter<void>();
+  @Input() public gapUnderTitleInPixels: number = 20;
 
   constructor() { }
 

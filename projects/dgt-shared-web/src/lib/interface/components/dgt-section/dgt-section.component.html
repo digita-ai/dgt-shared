@@ -6,7 +6,7 @@
     <ng-content select="dgt-section-icon"></ng-content>
   </div>
 
-  <div fxFlex="initial" fxLayout="column" fxFlexFill fxLayoutGap="20px">
+  <div fxFlex="initial" fxLayout="column" fxFlexFill fxLayoutGap="{{gapUnderTitleInPixels}}px">
     <div fxFlex="initial" class="section-title" *ngIf="showTitle">
       <ng-content select="dgt-section-title"></ng-content>
     </div>
