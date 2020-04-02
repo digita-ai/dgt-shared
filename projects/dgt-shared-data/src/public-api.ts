@@ -47,7 +47,6 @@ export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
 export { DGTLDNodeType } from './lib/linked-data/models/dgt-ld-node-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
-export { DGTLDResponse } from './lib/linked-data/models/dgt-ld-response.model';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';

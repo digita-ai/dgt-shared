@@ -29,7 +29,7 @@ export class DGTSourceService {
 
         return connector.query(null, justification, exchange, connection, source)
             .pipe(
-                map((response) => response.data),
+                map((response) => response.triples),
             );
     }
 

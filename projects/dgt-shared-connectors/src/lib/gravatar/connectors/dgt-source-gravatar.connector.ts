@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTLDResponse, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType, DGTLDEntity } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -17,7 +17,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return of(null);
     }
 
-    public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDResponse> {
+    public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDEntity> {
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
 
         let res = null;
@@ -29,7 +29,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             res = this.http.get<DGTSourceGravatarResponse>(uri)
                 .pipe(
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
-                    map(data => this.convertResponse(data, exchange, source, connection)),
+                    map(data => this.convertResponse(subjectUri, data, exchange, source, connection)),
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
                 );
         }
@@ -37,8 +37,8 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return res;
     }
 
-    private convertResponse(httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResponse {
-        const res: DGTLDTriple[] = [];
+    private convertResponse(subjectUri: string, httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDEntity {
+        const triples: DGTLDTriple[] = [];
 
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
 
@@ -49,7 +49,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
 
             if (entry.preferredUsername) {
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found username', { entry });
-                res.push({
+                triples.push({
                     exchange: exchange.id,
                     subject: {
                         value: exchange.subject,
@@ -71,7 +71,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
 
             if (entry.thumbnailUrl) {
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found thumbnail', { entry });
-                res.push({
+                triples.push({
                     exchange: exchange.id,
                     subject: {
                         value: exchange.subject,
@@ -93,7 +93,13 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         }
 
         return {
-            data: res
+            triples,
+            connection: connection.id,
+            source: connection.source,
+            subject: {
+                value: subjectUri,
+                type: DGTLDNodeType.REFERENCE
+            },
         };
     }
 }
