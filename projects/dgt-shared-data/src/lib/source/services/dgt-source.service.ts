@@ -27,7 +27,7 @@ export class DGTSourceService {
             connector = this.connectors.get(source.type);
         }
 
-        return connector.query(null, justification, exchange, connection, source)
+        return connector.query(null, justification, exchange, connection, source, null)
             .pipe(
                 map((response) => response.triples),
             );

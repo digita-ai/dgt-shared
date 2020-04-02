@@ -1,11 +1,11 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType, DGTLDEntity } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
 import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, switchMap } from 'rxjs/operators';
 import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
 import { Injectable } from '@angular/core';
 
@@ -17,7 +17,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return of(null);
     }
 
-    public query(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTLDEntity> {
+    public query<T extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T> {
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
 
         let res = null;
@@ -31,6 +31,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
                     map(data => this.convertResponse(subjectUri, data, exchange, source, connection)),
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
+                    switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain(entity) : (of(entity as T))),
                 );
         }
 
