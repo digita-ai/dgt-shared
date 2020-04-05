@@ -1,8 +1,8 @@
 import { async } from '@angular/core/testing';
-import { configuration } from '../../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
 import { DGTFormDateComponent } from './dgt-form-date.component';
 import moment from 'moment';
+import { configuration } from 'projects/dgt-shared-web/src/test.configuration';
 
 describe('DGTFormDateComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTFormDateComponent>(configuration);
