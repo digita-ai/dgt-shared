@@ -1,12 +1,12 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDNodeType, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDNodeType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { N3Parser, Quad, Parser } from 'n3';
-
+import { Generator, SparqlQuery, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -80,31 +80,87 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     public delete(entity: DGTLDEntity, connection: DGTConnectionSolid): Observable<DGTLDEntity> {
-        // DELETE DATA {<https://wouteraj.solid.community/profile/card#me> <http://www.w3.org/2006/vcard/ns#hasTelephone> <https://wouteraj.solid.community/profile/card#id1579729497510>.
-        //     <https://wouteraj.solid.community/profile/card#id1579729497510> <http://www.w3.org/2006/vcard/ns#value> <tel:0447444444>.
-        //     };
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { entity, connection });
 
-        let body = '';
 
-        body += 'DELETE DATA {';
+        const body = this.deleteGenerateSparql(entity);
 
-        if (entity.triples) {
-            entity.triples.forEach(triple => {
-                if (triple.object.type === DGTLDNodeType.LITERAL) {
-                    body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> "${triple.object.value}" . `;
-                } else if (triple.object.type === DGTLDNodeType.REFERENCE) {
-                    body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> <${triple.object.value}> . `;
-                }
-            });
-        }
 
-        body += '};';
+        this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entity, connection });
 
         return this.http.patch(entity.subject.value, body, {
             'Content-Type': 'application/sparql-update',
             Authorization: 'Bearer ' + connection.configuration.accessToken
         })
             .pipe(map(response => entity));
+    }
+
+    private deleteGenerateSparql(entity: DGTLDEntity): string {
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entity });
+
+        const triples: Triple[] = entity.triples.map<Triple>(triple => {
+            let object: Term = `${triple.object.value}` as Term;
+
+            if (triple.object.type === DGTLDNodeType.LITERAL) {
+                object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
+            }
+
+            return {
+                subject: triple.subject.value as Term,
+                predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
+                object
+            };
+        });
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entity, triples });
+
+        const query: Update = {
+            type: 'update',
+            // prefixes: { [prefix: string]: string; },
+            prefixes: {
+                // xsd: 'http://www.w3.org/2001/XMLSchema#'
+            },
+            updates: [
+                {
+                    updateType: 'delete',
+                    delete: [
+                        {
+                            type: 'bgp',
+                            triples
+                        }
+                    ]
+                }
+            ]
+        };
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', { query, entity, triples });
+
+        const generator = new Generator();
+        const body = generator.stringify(query);
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', { body, query, entity, triples });
+        // DELETE DATA {<https://wouteraj.solid.community/profile/card#me> <http://www.w3.org/2006/vcard/ns#hasTelephone> <https://wouteraj.solid.community/profile/card#id1579729497510>.
+        //     <https://wouteraj.solid.community/profile/card#id1579729497510> <http://www.w3.org/2006/vcard/ns#value> <tel:0447444444>.
+        //     };
+
+        // let body = '';
+
+        // body += 'DELETE DATA {';
+
+        // if (entity.triples) {
+        //     entity.triples.forEach(triple => {
+        //         if (triple.object.type === DGTLDNodeType.LITERAL) {
+        //             body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> "${triple.object.value}" . `;
+        //         } else if (triple.object.type === DGTLDNodeType.REFERENCE) {
+        //             body += `<${triple.subject.value}> <${triple.predicate.namespace}${triple.predicate.name}> <${triple.object.value}> . `;
+        //         }
+        //     });
+        // }
+
+        // body += '};';
+
+        return body;
     }
 
     private discover(source: DGTSourceSolid): Observable<DGTSourceSolidConfiguration> {
@@ -294,7 +350,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return pairs.join('&');
     }
 
-    private parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+    public parse(response: string, webId: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
         let res: DGTLDTriple[] = null;
 
         const quads = this.parser.parse(response);
@@ -302,10 +358,11 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         if (quads) {
             this.logger.debug(DGTSourceSolidConnector.name, 'Starting to convert quads to values', { quads, webId });
-            res = quads.map(quad => this.convert(webId, quad, exchange, source, connection));
+            res = quads.map(quad => this.convertOne(webId, quad, exchange, source, connection));
             res = res.map(value => ({
                 ...value, subject: value.subject.value === '#me' ?
-                    { value: webId, type: DGTLDNodeType.REFERENCE } : value.subject
+                    value.subject : value.subject
+                // { value: webId, type: DGTLDNodeType.REFERENCE } : value.subject
             }));
             res = this.clean(res);
         }
@@ -313,12 +370,31 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return res;
     }
 
-    private convert(webId: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
+    private convertOne(webId: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
         const predicateSplit = quad.predicate.value.split('#');
 
+        const subject = this.convertOneSubject(webId, quad, connection);
+        const object = this.convertOneObject(webId, quad);
+
+        return {
+            id: uuid(),
+            exchange: exchange ? exchange.id : null,
+            connection: connection ? connection.id : null,
+            predicate: {
+                name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
+                namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
+            },
+            subject,
+            object,
+            originalValue: object,
+            source: source ? source.id : null
+        };
+    }
+
+    private convertOneSubject(webId: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
         let subject: DGTLDNode = { value: quad.subject.value, type: DGTLDNodeType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
-            const me = connection.configuration.webId.split('/profile/card#me')[0];
+            // const me = connection.configuration.webId.split('/profile/card#me')[0];
 
             subject = {
                 value: `${webId}`,
@@ -331,25 +407,34 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             };
         }
 
-        return {
-            id: uuid(),
-            exchange: exchange ? exchange.id : null,
-            connection: connection ? connection.id : null,
-            predicate: {
-                name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
-                namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
-            },
-            subject,
-            object: {
+        return subject;
+    }
+
+    private convertOneObject(uri: string, quad: Quad): DGTLDNode {
+        let res = null;
+
+        if (quad.object.termType === 'Literal') {
+            res = {
+                dataType: quad.object.datatypeString,
                 value: quad.object.value,
-                type: quad.object.termType === 'Literal' ? DGTLDNodeType.LITERAL : DGTLDNodeType.REFERENCE
-            },
-            originalValue: {
-                value: quad.object.value,
-                type: quad.object.termType === 'Literal' ? DGTLDNodeType.LITERAL : DGTLDNodeType.REFERENCE
-            },
-            source: source ? source.id : null
-        };
+                type: DGTLDNodeType.LITERAL
+            };
+        } else {
+            if (quad.object.value.startsWith('#')) {
+                res = {
+                    value: uri + quad.object.value,
+                    type: DGTLDNodeType.REFERENCE
+                };
+            } else {
+                res = {
+                    value: quad.object.value,
+                    type: DGTLDNodeType.REFERENCE
+                };
+            }
+        }
+
+
+        return res;
     }
 
     private clean(values: DGTLDTriple[]): DGTLDTriple[] {
