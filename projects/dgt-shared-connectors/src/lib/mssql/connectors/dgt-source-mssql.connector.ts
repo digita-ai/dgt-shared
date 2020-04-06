@@ -1,6 +1,6 @@
 import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTExchange, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTJustification, DGTConnection, DGTLDNodeType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTJustification, DGTConnection, DGTLDTermType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
@@ -68,13 +68,13 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                                 exchange: exchange.id,
                                 subject: {
                                     value: exchange.subject,
-                                    type: DGTLDNodeType.REFERENCE
+                                    termType: DGTLDTermType.REFERENCE
                                 },
                                 source: exchange.source,
                                 predicate: field,
                                 object: {
                                     value,
-                                    type: DGTLDNodeType.LITERAL
+                                    termType: DGTLDTermType.LITERAL
                                 },
                                 originalValue: value,
                             });
@@ -91,7 +91,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
             documentUri: uri,
             subject: {
                 value: uri,
-                type: DGTLDNodeType.REFERENCE
+                termType: DGTLDTermType.REFERENCE
             },
         };
     }

@@ -4,7 +4,7 @@ import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTSourceSolidConnector } from './dgt-source-solid.connector';
-import { DGTExchange, DGTSourceSolid, DGTConnectionSolid, DGTLDTriple, DGTLDNodeType } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTSourceSolid, DGTConnectionSolid, DGTLDTriple, DGTLDTermType } from '@digita/dgt-shared-data';
 import * as _ from 'lodash';
 
 describe('DGTSourceSolidConnector', () => {
@@ -48,15 +48,15 @@ describe('DGTSourceSolidConnector', () => {
                     name: 'event'
                 },
                 subject: {
-                    type: DGTLDNodeType.REFERENCE,
+                    termType: DGTLDTermType.REFERENCE,
                     value: 'https://john.my.id/'
                 },
                 object: {
-                    type: DGTLDNodeType.REFERENCE,
+                    termType: DGTLDTermType.REFERENCE,
                     value: 'https://john.my.id/#1'
                 },
                 originalValue: {
-                    type: DGTLDNodeType.REFERENCE,
+                    termType: DGTLDTermType.REFERENCE,
                     value: 'https://john.my.id/#1'
                 },
                 source: 's-1',

@@ -45,7 +45,7 @@ export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
 export { DGTLDDataType } from './lib/linked-data/models/dgt-ld-data-type.model';
 export { DGTLDEntity } from './lib/linked-data/models/dgt-ld-entity.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
-export { DGTLDNodeType } from './lib/linked-data/models/dgt-ld-node-type.model';
+export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';

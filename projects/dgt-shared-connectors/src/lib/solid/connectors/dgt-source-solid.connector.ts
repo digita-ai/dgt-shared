@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDNodeType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -72,7 +72,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                         documentUri,
                         subject: {
                             value: uri,
-                            type: DGTLDNodeType.REFERENCE
+                            termType: DGTLDTermType.REFERENCE
                         },
                     }),
                 ),
@@ -101,7 +101,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         const triples: Triple[] = entity.triples.map<Triple>(triple => {
             let object: Term = `${triple.object.value}` as Term;
 
-            if (triple.object.type === DGTLDNodeType.LITERAL) {
+            if (triple.object.termType === DGTLDTermType.LITERAL) {
                 object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
             }
 
@@ -164,7 +164,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         const triples: Triple[] = entity.triples.map<Triple>(triple => {
             let object: Term = `${triple.object.value}` as Term;
 
-            if (triple.object.type === DGTLDNodeType.LITERAL) {
+            if (triple.object.termType === DGTLDTermType.LITERAL) {
                 object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
             }
 
@@ -405,7 +405,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             res = res.map(value => ({
                 ...value, subject: value.subject.value === '#me' ?
                     value.subject : value.subject
-                // { value: webId, type: DGTLDNodeType.REFERENCE } : value.subject
+                // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
             }));
             res = this.clean(res);
         }
@@ -435,18 +435,18 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
-        let subject: DGTLDNode = { value: quad.subject.value, type: DGTLDNodeType.REFERENCE };
+        let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
             // const me = connection.configuration.webId.split('/profile/card#me')[0];
 
             subject = {
                 value: `${documentUri}`,
-                type: DGTLDNodeType.REFERENCE
+                termType: DGTLDTermType.REFERENCE
             };
         } else if (subject && subject.value && subject.value.startsWith('#')) {
             subject = {
                 value: `${documentUri}#${quad.subject.value.split('#')[1]}`,
-                type: DGTLDNodeType.REFERENCE
+                termType: DGTLDTermType.REFERENCE
             };
         }
 
@@ -460,18 +460,18 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             res = {
                 dataType: quad.object.datatypeString,
                 value: quad.object.value,
-                type: DGTLDNodeType.LITERAL
+                type: DGTLDTermType.LITERAL
             };
         } else {
             if (quad.object.value.startsWith('#')) {
                 res = {
                     value: documentUri + quad.object.value,
-                    type: DGTLDNodeType.REFERENCE
+                    type: DGTLDTermType.REFERENCE
                 };
             } else {
                 res = {
                     value: quad.object.value,
-                    type: DGTLDNodeType.REFERENCE
+                    type: DGTLDTermType.REFERENCE
                 };
             }
         }

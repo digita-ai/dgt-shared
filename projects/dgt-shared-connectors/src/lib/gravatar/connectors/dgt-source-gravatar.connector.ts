@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDNodeType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDTermType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -54,17 +54,17 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                     exchange: exchange.id,
                     subject: {
                         value: exchange.subject,
-                        type: DGTLDNodeType.REFERENCE
+                        termType: DGTLDTermType.REFERENCE
                     },
                     source: exchange.source,
                     predicate: source.configuration.usernameField,
                     object: {
                         value: entry.preferredUsername,
-                        type: DGTLDNodeType.LITERAL
+                        termType: DGTLDTermType.LITERAL
                     },
                     originalValue: {
                         value: entry.preferredUsername,
-                        type: DGTLDNodeType.LITERAL
+                        termType: DGTLDTermType.LITERAL
                     },
                     connection: connection.id
                 });
@@ -76,17 +76,17 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                     exchange: exchange.id,
                     subject: {
                         value: exchange.subject,
-                        type: DGTLDNodeType.REFERENCE
+                        termType: DGTLDTermType.REFERENCE
                     },
                     source: exchange.source,
                     predicate: source.configuration.thumbnailField,
                     object: {
                         value: entry.thumbnailUrl,
-                        type: DGTLDNodeType.LITERAL
+                        termType: DGTLDTermType.LITERAL
                     },
                     originalValue: {
                         value: entry.thumbnailUrl,
-                        type: DGTLDNodeType.LITERAL
+                        termType: DGTLDTermType.LITERAL
                     },
                     connection: connection.id
                 });
@@ -100,7 +100,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             documentUri: subjectUri,
             subject: {
                 value: subjectUri,
-                type: DGTLDNodeType.REFERENCE
+                termType: DGTLDTermType.REFERENCE
             },
         };
     }
