@@ -9,6 +9,9 @@
     border-bottom: 1px solid $color-primary-dark;
     background-color: $color-grey-light;
     color: $color-primary-dark;
+    position: sticky;
+    right: 0;
+    top: 0;
 }
 
 .sub-header-container {
