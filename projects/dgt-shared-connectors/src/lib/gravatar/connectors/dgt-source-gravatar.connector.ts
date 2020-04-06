@@ -97,6 +97,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             triples,
             connection: connection.id,
             source: connection.source,
+            documentUri: subjectUri,
             subject: {
                 value: subjectUri,
                 type: DGTLDNodeType.REFERENCE

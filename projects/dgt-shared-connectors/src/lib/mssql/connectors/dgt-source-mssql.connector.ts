@@ -88,6 +88,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
             triples,
             connection: connection.id,
             source: connection.source,
+            documentUri: uri,
             subject: {
                 value: uri,
                 type: DGTLDNodeType.REFERENCE

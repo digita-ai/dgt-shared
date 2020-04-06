@@ -11,7 +11,7 @@ describe('DGTSourceSolidConnector', () => {
     const testService = new DGTTestRunnerService<DGTSourceSolidConnector>(configuration);
     testService.setup(DGTSourceSolidConnector);
 
-    it('should parse', async(() => {
+    it('should convert simple turtle', async(() => {
         const response = `@prefix : <#>.
         @prefix dgt-events: <http://digita.ai/voc/events#>.
         @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -64,7 +64,7 @@ describe('DGTSourceSolidConnector', () => {
             }
         ];
 
-        const result = testService.service.parse(response, webId, exchange, source, connection);
+        const result = testService.service.convert(response, webId, exchange, source, connection);
         delete result[0].id;
 
         // expect(_.isEqual(result, expectedResult)).toBeTruthy();

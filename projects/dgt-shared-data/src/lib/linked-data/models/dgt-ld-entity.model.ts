@@ -6,5 +6,6 @@ export interface DGTLDEntity extends DGTEntity {
     connection: string;
     source: string;
     subject: DGTLDNode;
+    documentUri: string;
     triples: DGTLDTriple[];
 }

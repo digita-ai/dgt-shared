@@ -1,3 +1,4 @@
 export enum DGTLDDataType {
-    DATETIME = 'http://www.w3.org/2001/XMLSchema#dateTime'
+    DATETIME = 'http://www.w3.org/2001/XMLSchema#dateTime',
+    STRING = 'http://www.w3.org/2001/XMLSchema#string'
 }
