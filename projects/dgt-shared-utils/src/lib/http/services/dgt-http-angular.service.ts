@@ -17,19 +17,19 @@ export class DGTHttpAngularService extends DGTHttpService {
   public get<T>(uri: string, headers?: { [key: string]: string }, isText: boolean = false): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Getting from URI', { uri });
 
-    let request = this.http.get(uri, { headers });
+    let request = this.http.get(uri, { headers, observe: 'response' });
 
     if (isText) {
-      request = this.http.get(uri, { headers, responseType: 'text' });
+      request = this.http.get(uri, { headers, responseType: 'text', observe: 'response' });
     }
 
     return request
       .pipe(
         tap(data => this.logger.debug(DGTHttpAngularService.name, 'Received response', { data })),
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -38,12 +38,12 @@ export class DGTHttpAngularService extends DGTHttpService {
   public post<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Posting to URI', { uri, body });
 
-    return this.http.post(uri, body, { headers })
+    return this.http.post(uri, body, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -52,12 +52,12 @@ export class DGTHttpAngularService extends DGTHttpService {
   public put<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Putting to URI', { uri, body });
 
-    return this.http.put(uri, body, { headers })
+    return this.http.put(uri, body, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -66,12 +66,12 @@ export class DGTHttpAngularService extends DGTHttpService {
   public delete<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Deleting to URI', { uri, headers });
 
-    return this.http.delete(uri, { headers })
+    return this.http.delete(uri, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -80,12 +80,12 @@ export class DGTHttpAngularService extends DGTHttpService {
   public patch<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Patching to URI', { uri, body });
 
-    return this.http.patch(uri, body, { headers })
+    return this.http.patch(uri, body, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -105,7 +105,8 @@ export class DGTHttpAngularService extends DGTHttpService {
     // return an observable with a user-facing error message
     return {
       data: null,
-      success: false
+      success: false,
+      status: error.status
     };
   }
 }
