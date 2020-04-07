@@ -52,7 +52,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return res;
     }
 
-    public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T> {
+    public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         const uri = documentUri ? documentUri : connection.configuration.webId;
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { endpoint: uri, exchange, justification });
@@ -76,7 +76,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                         },
                     }),
                 ),
-                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain(entity) : (of(entity as T)))
+                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
             );
     }
 

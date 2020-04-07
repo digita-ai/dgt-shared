@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
 import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
+import * as _ from 'lodash';
 
 @Injectable()
 export class DGTSourceService {
@@ -29,7 +30,8 @@ export class DGTSourceService {
 
         return connector.query(null, justification, exchange, connection, source, null)
             .pipe(
-                map((response) => response.triples),
+                map((entities) => entities.map(entity => entity.triples)),
+                map((triples) => _.flatten(triples)),
             );
     }
 
