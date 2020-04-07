@@ -8,6 +8,7 @@ import base64url from 'base64url';
 import { N3Parser, Quad, Parser } from 'n3';
 import { Generator, SparqlQuery, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
+import * as _ from 'lodash';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -143,39 +144,43 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return body;
     }
 
-    public delete(entity: DGTLDEntity, connection: DGTConnectionSolid): Observable<DGTLDEntity> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { entity, connection });
+    public delete(entities: DGTLDEntity[], connection: DGTConnectionSolid): Observable<DGTLDEntity[]> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { entities, connection });
 
-        const body = this.deleteGenerateSparql(entity);
+        if (entities) {
+            const body = this.deleteGenerateSparql(entities);
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entity, connection });
+            this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entities, connection });
 
-        return this.http.patch(entity.subject.value, body, {
-            'Content-Type': 'application/sparql-update',
-            Authorization: 'Bearer ' + connection.configuration.accessToken
-        })
-            .pipe(map(response => entity));
+            return this.http.patch(entities[0].subject.value, body, {
+                'Content-Type': 'application/sparql-update',
+                Authorization: 'Bearer ' + connection.configuration.accessToken
+            }).pipe(map(res => entities));
+        }
     }
 
-    private deleteGenerateSparql(entity: DGTLDEntity): string {
+    private deleteGenerateSparql(entities: DGTLDEntity[]): string {
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entity });
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entities });
 
-        const triples: Triple[] = entity.triples.map<Triple>(triple => {
-            let object: Term = `${triple.object.value}` as Term;
+        const triples: Triple[] = _.flatMap(entities, (entity: DGTLDEntity) => {
+            this.logger.log('debug', DGTSourceSolidConnector.name, 'entity: ', triples);
+            return entity.triples.map<Triple>(triple => {
+                let object: Term = `${triple.object.value}` as Term;
 
-            if (triple.object.termType === DGTLDTermType.LITERAL) {
-                object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
-            }
+                if (triple.object.termType === DGTLDTermType.LITERAL) {
+                    object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
+                }
 
-            return {
-                subject: triple.subject.value as Term,
-                predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
-                object
-            };
+                return {
+                    subject: triple.subject.value as Term,
+                    predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
+                    object
+                };
+            });
         });
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entity, triples });
+        this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entities, triples });
 
         const query: Update = {
             type: 'update',
@@ -196,12 +201,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             ]
         };
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', { query, entity, triples });
+        this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', { query, entities, triples });
 
         const generator = new Generator();
         const body = generator.stringify(query);
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', { body, query, entity, triples });
+        this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', { body, query, entities, triples });
 
         return body;
     }
