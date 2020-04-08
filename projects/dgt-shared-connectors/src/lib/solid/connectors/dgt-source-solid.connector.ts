@@ -151,10 +151,10 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         if (entities) {
             const body = this.deleteGenerateSparql(entities);
-
             this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entities, connection });
+            this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body 2', entities[0].documentUri);
 
-            return this.http.patch(entities[0].subject.value, body, {
+            return this.http.patch(entities[0].documentUri, body, {
                 'Content-Type': 'application/sparql-update',
                 Authorization: 'Bearer ' + connection.configuration.accessToken
             }).pipe(map(res => entities));
