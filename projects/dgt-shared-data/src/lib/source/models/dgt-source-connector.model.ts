@@ -8,5 +8,5 @@ import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.mo
 
 export interface DGTSourceConnector<T, S> {
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTConnection<S>>;
-    query<R extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R>
+    query<R extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>
 }

@@ -53,7 +53,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return res;
     }
 
-    public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T> {
+    public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         const uri = documentUri ? documentUri : connection.configuration.webId;
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { endpoint: uri, exchange, justification });
@@ -77,7 +77,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                         },
                     }),
                 ),
-                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain(entity) : (of(entity as T)))
+                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
             );
     }
 
@@ -163,21 +163,22 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entities });
 
-        const triples: Triple[] = _.flatMap(entities, (entity: DGTLDEntity) => {
-            this.logger.log('debug', DGTSourceSolidConnector.name, 'entity: ', triples);
-            return entity.triples.map<Triple>(triple => {
-                let object: Term = `${triple.object.value}` as Term;
+        const originalTriples: DGTLDTriple[] = _.flatten(entities.map(entity => entity.triples));
 
-                if (triple.object.termType === DGTLDTermType.LITERAL) {
-                    object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
-                }
+        this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved original entities.', { originalTriples, entities });
 
-                return {
-                    subject: triple.subject.value as Term,
-                    predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
-                    object
-                };
-            });
+        const triples: Triple[] = originalTriples.map((triple: DGTLDTriple) => {
+            let object: Term = `${triple.object.value}` as Term;
+
+            if (triple.object.termType === DGTLDTermType.LITERAL) {
+                object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
+            }
+
+            return {
+                subject: triple.subject.value as Term,
+                predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
+                object
+            };
         });
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entities, triples });
@@ -465,18 +466,18 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             res = {
                 dataType: quad.object.datatypeString,
                 value: quad.object.value,
-                type: DGTLDTermType.LITERAL
+                termType: DGTLDTermType.LITERAL
             };
         } else {
             if (quad.object.value.startsWith('#')) {
                 res = {
                     value: documentUri + quad.object.value,
-                    type: DGTLDTermType.REFERENCE
+                    termType: DGTLDTermType.REFERENCE
                 };
             } else {
                 res = {
                     value: quad.object.value,
-                    type: DGTLDTermType.REFERENCE
+                    termType: DGTLDTermType.REFERENCE
                 };
             }
         }

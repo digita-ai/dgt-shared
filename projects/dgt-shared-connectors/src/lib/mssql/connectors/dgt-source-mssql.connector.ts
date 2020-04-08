@@ -16,7 +16,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
         return of(null);
     }
 
-    public query<T extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T> {
+    public query<T extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         const config = {
             user: source.configuration.user,
             password: source.configuration.password,
@@ -48,7 +48,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
                 map(data => this.convertResult(subjectUri, data.result, exchange, source.configuration.mapping, connection)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
-                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain(entity) : (of(entity as T)))
+                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
             );
     }
 
