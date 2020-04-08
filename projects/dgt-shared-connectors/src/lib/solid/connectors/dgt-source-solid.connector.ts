@@ -9,6 +9,7 @@ import { N3Parser, Quad, Parser } from 'n3';
 import { Generator, SparqlQuery, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
+import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -58,10 +59,11 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { endpoint: uri, exchange, justification });
 
-        return this.http.get<string>(uri, {
-            Authorization: 'Bearer ' + connection.configuration.accessToken
-        }, true)
+        return this.generateToken(uri, connection, source)
             .pipe(
+                switchMap(token => this.http.get<string>(uri, {
+                    Authorization: 'Bearer ' + token
+                }, true)),
                 tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { data })),
                 map(data => this.convert(data.data, uri, exchange, source, connection)),
                 tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { data })),
@@ -501,5 +503,15 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
                 return updatedValue;
             });
+    }
+
+    private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<any> {
+
+        return DGTSourceSolidToken.issueFor(
+            uri,
+            connection.configuration.privateKey,
+            source.configuration.client_id,
+            connection.configuration.idToken
+        );
     }
 }
