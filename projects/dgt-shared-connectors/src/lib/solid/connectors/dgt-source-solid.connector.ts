@@ -83,18 +83,22 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    public add(entity: DGTLDEntity, connection: DGTConnectionSolid): Observable<DGTLDEntity> {
+    public add(entity: DGTLDEntity, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDEntity> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { entity, connection });
 
         const body = this.addGenerateSparql(entity);
+        const uri = entity.subject.value;
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entity, connection });
 
-        return this.http.patch(entity.subject.value, body, {
-            'Content-Type': 'application/sparql-update',
-            Authorization: 'Bearer ' + connection.configuration.accessToken
-        })
-            .pipe(map(response => entity));
+        return this.generateToken(uri, connection, source)
+            .pipe(
+                switchMap(token => this.http.patch(uri, body, {
+                    'Content-Type': 'application/sparql-update',
+                    Authorization: 'Bearer ' + token
+                })),
+                map(response => entity)
+            );
     }
 
     private addGenerateSparql(entity: DGTLDEntity): string {
@@ -146,18 +150,23 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         return body;
     }
 
-    public delete(entities: DGTLDEntity[], connection: DGTConnectionSolid): Observable<DGTLDEntity[]> {
+    public delete(entities: DGTLDEntity[], connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDEntity[]> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { entities, connection });
 
         if (entities) {
+            const uri = entities[0].documentUri;
             const body = this.deleteGenerateSparql(entities);
-            this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entities, connection });
-            this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body 2', entities[0].documentUri);
 
-            return this.http.patch(entities[0].documentUri, body, {
-                'Content-Type': 'application/sparql-update',
-                Authorization: 'Bearer ' + connection.configuration.accessToken
-            }).pipe(map(res => entities));
+            this.logger.debug(DGTSourceSolidConnector.name, 'Generated body', { body, entities, connection });
+
+            return this.generateToken(uri, connection, source)
+                .pipe(
+                    switchMap(token => this.http.patch(uri, body, {
+                        'Content-Type': 'application/sparql-update',
+                        Authorization: 'Bearer ' + token
+                    })),
+                    map(res => entities)
+                );
         }
     }
 
@@ -505,7 +514,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             });
     }
 
-    private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<any> {
+    private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
 
         return DGTSourceSolidToken.issueFor(
             uri,
