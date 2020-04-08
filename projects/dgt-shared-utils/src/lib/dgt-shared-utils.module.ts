@@ -1,6 +1,6 @@
 import { NgModule, Type } from '@angular/core';
 import { DGTLoggerService } from './logging/services/dgt-logger.service';
-import { DGTErrorService } from './logging/services/dgt-error.service';
+import { DGTErrorService } from './errors/services/dgt-error.service';
 import { DGTPlatformService } from './platform/services/dgt-platform.service';
 import { DGTConnectionService } from './connection/services/dgt-connection.service';
 import { DGTHttpService } from './http/services/dgt-http.service';

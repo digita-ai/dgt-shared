@@ -7,7 +7,9 @@ export { DGTPlatformService } from './lib/platform/services/dgt-platform.service
 export { DGTPlatformType } from './lib/platform/models/dgt-platform-type.model';
 export { DGTConfigurationService } from './lib/configuration/services/dgt-configuration.service';
 export { DGTLoggerService } from './lib/logging/services/dgt-logger.service';
-export { DGTErrorService } from './lib/logging/services/dgt-error.service';
+export { DGTError } from './lib/errors/models/dgt-error.model';
+export { DGTErrorArgument } from './lib/errors/models/dgt-error-argument.model';
+export { DGTErrorService } from './lib/errors/services/dgt-error.service';
 export { DGTHttpService } from './lib/http/services/dgt-http.service';
 export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.service';
 export { DGTConnectionService } from './lib/connection/services/dgt-connection.service';

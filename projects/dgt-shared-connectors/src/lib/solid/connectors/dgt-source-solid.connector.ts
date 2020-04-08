@@ -1,7 +1,7 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
@@ -55,9 +55,21 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+        if (!documentUri) {
+            throw new DGTErrorArgument('documentUri should be set', documentUri);
+        }
+
+        if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
+            throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
+        }
+
+        if (!source || !source.id) {
+            throw new DGTErrorArgument('source and source.id should be set', exchange);
+        }
+
         const uri = documentUri ? documentUri : connection.configuration.webId;
 
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { endpoint: uri, exchange, justification });
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { uri });
 
         return this.generateToken(uri, connection, source)
             .pipe(
