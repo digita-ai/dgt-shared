@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutGap="20px" class="section" *ngIf="state !== 'collapsed'"
+<div fxFlexFill fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between" class="section" *ngIf="state !== 'collapsed'"
 [class.collapsed]="state === 'collapsed'" [class.blue]="state === 'blue'" [class.warning]="state === 'warning'"
 [class.success]="state === 'success' || state === 'locked'">
   <div fxLayout="row" fxLayoutGap="20px">
