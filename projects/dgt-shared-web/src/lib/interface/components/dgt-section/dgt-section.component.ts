@@ -49,7 +49,7 @@ export class DGTSectionComponent {
   @Input() public enableTitle = true;
   @Input() public showSubtitle = false;
   @Input() public showIcon = false;
-  @Input() public showContent = false;
+  @Input() public showContent = true;
   @Input() public state: DGTSectionState = DGTSectionState.NORMAL;
   @Output() public reset: EventEmitter<void> = new EventEmitter<void>();
   @Input() public gapUnderTitleInPixels = 20;
