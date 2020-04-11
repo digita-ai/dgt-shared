@@ -8,7 +8,7 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 export abstract class DGTSmartElement<T extends DGTBaseRootState<DGTBaseAppState>> implements OnDestroy {
   public notifications: Array<DGTNotification>;
-  public unsubscribe: Subject<void> = new Subject();
+  public unsubscribe: Subject<any> = new Subject();
 
   constructor(protected store: DGTStoreService<T>) {
     this.store.select(state => state.app.notifications).subscribe(notifications => this.notifications = notifications);
