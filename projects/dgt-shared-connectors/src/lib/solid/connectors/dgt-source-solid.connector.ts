@@ -95,21 +95,22 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    public add(entity: DGTLDEntity, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDEntity> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { entity, connection });
+    public add<T extends DGTLDEntity>(domainEntity: T, connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { entity: domainEntity, connection });
 
-        const body = this.addGenerateSparql(entity);
-        const uri = entity.subject.value;
-
-        this.logger.debug(DGTSourceSolidConnector.name, 'Constructed body', { body, entity, connection });
-
-        return this.generateToken(uri, connection, source)
+        return transformer.toTriples([domainEntity], connection)
             .pipe(
-                switchMap(token => this.http.patch(uri, body, {
+                map(entities => ({ entity: { ...domainEntity, ...entities[0] }, entities, domainEntity, body: this.addGenerateSparql(entities[0]) })),
+                switchMap(data => this.generateToken(data.entity.subject.value, connection, source)
+                    .pipe(map(token => ({ ...data, token })))),
+                switchMap(data => this.http.patch(data.entity.subject.value, data.body, {
                     'Content-Type': 'application/sparql-update',
-                    Authorization: 'Bearer ' + token
-                })),
-                map(response => entity)
+                    Authorization: 'Bearer ' + data.token
+                })
+                    .pipe(
+                        
+                        map(response => data.entity)
+                        )),
             );
     }
 
