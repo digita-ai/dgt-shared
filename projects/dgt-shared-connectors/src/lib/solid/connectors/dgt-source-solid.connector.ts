@@ -95,95 +95,112 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    public add<T extends DGTLDEntity>(domainEntity: T, connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { entity: domainEntity, connection });
+    public add<T extends DGTLDEntity>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+        if (!domainEntities) {
+            throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
+        }
 
-        return transformer.toTriples([domainEntity], connection)
+        if (!connection) {
+            throw new DGTErrorArgument('connection should be set.', connection);
+        }
+
+        if (!source) {
+            throw new DGTErrorArgument('source should be set.', source);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('transformer should be set.', transformer);
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { domainEntities, connection });
+
+        return transformer.toTriples(domainEntities, connection)
             .pipe(
-                map(entities => ({ entity: { ...domainEntity, ...entities[0] }, entities, domainEntity, body: this.addGenerateSparql(entities[0]) })),
-                switchMap(data => this.generateToken(data.entity.subject.value, connection, source)
-                    .pipe(map(token => ({ ...data, token })))),
-                switchMap(data => this.http.patch(data.entity.subject.value, data.body, {
-                    'Content-Type': 'application/sparql-update',
-                    Authorization: 'Bearer ' + data.token
-                })
+                map(entities => ({
+                    entities,
+                    groupedEntities: _.groupBy(entities, 'subject.value'),
+                    domainEntities,
+                })),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add entities', data)),
+                switchMap(data => forkJoin(
+                    Object.keys(data.groupedEntities).map(uri => {
+                        return this.generateToken(uri, connection, source)
+                            .pipe(
+                                switchMap(token => this.http.patch(
+                                    uri,
+                                    this.generateSparqlUpdate(data.groupedEntities[uri], 'insert'),
+                                    {
+                                        'Content-Type': 'application/sparql-update',
+                                        Authorization: 'Bearer ' + token
+                                    })
+                                )
+                            );
+                    }
+                    ))
                     .pipe(
-                        
-                        map(response => data.entity)
-                        )),
+                        map(response => data.entities as T[]),
+                    )
+                ),
             );
     }
 
-    private addGenerateSparql(entity: DGTLDEntity): string {
-
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entity });
-
-        const triples: Triple[] = entity.triples.map<Triple>(triple => {
-            let object: Term = `${triple.object.value}` as Term;
-
-            if (triple.object.termType === DGTLDTermType.LITERAL) {
-                object = `"${triple.object.value}"^^${triple.object.dataType}` as Term;
-            }
-
-            return {
-                subject: triple.subject.value as Term,
-                predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
-                object
-            };
-        });
-
-        this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entity, triples });
-
-        const query: Update = {
-            type: 'update',
-            // prefixes: { [prefix: string]: string; },
-            prefixes: {
-                // xsd: 'http://www.w3.org/2001/XMLSchema#'
-            },
-            updates: [
-                {
-                    updateType: 'insert',
-                    insert: [
-                        {
-                            type: 'bgp',
-                            triples
-                        }
-                    ]
-                }
-            ]
-        };
-
-        this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', { query, entity, triples });
-
-        const generator = new Generator();
-        const body = generator.stringify(query);
-
-        this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', { body, query, entity, triples });
-
-        return body;
-    }
-
-    public delete(entities: DGTLDEntity[], connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDEntity[]> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { entities, connection });
-
-        if (entities) {
-            const uri = entities[0].documentUri;
-            const body = this.deleteGenerateSparql(entities);
-
-            this.logger.debug(DGTSourceSolidConnector.name, 'Generated body', { body, entities, connection });
-
-            return this.generateToken(uri, connection, source)
-                .pipe(
-                    switchMap(token => this.http.patch(uri, body, {
-                        'Content-Type': 'application/sparql-update',
-                        Authorization: 'Bearer ' + token
-                    })),
-                    map(res => entities)
-                );
+    public delete<T extends DGTLDEntity>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+        if (!domainEntities) {
+            throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
         }
+
+        if (!connection) {
+            throw new DGTErrorArgument('connection should be set.', connection);
+        }
+
+        if (!source) {
+            throw new DGTErrorArgument('source should be set.', source);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('transformer should be set.', transformer);
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to delete entity', { domainEntities, connection });
+
+        return transformer.toTriples(domainEntities, connection)
+            .pipe(
+                map(entities => ({
+                    entities,
+                    groupedEntities: _.groupBy(entities, 'documentUri'),
+                    domainEntities,
+                })),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared entities', data)),
+                switchMap(data => forkJoin(
+                    Object.keys(data.groupedEntities).map(uri => {
+                        return this.generateToken(uri, connection, source)
+                            .pipe(
+                                switchMap(token => this.http.patch(
+                                    uri,
+                                    this.generateSparqlUpdate(data.groupedEntities[uri], 'delete'),
+                                    {
+                                        'Content-Type': 'application/sparql-update',
+                                        Authorization: 'Bearer ' + token
+                                    })
+                                )
+                            );
+                    }
+                    ))
+                    .pipe(
+                        map(response => data.entities as T[]),
+                    )
+                ),
+            );
     }
 
-    private deleteGenerateSparql(entities: DGTLDEntity[]): string {
+    private generateSparqlUpdate(entities: DGTLDEntity[], updateType: 'insert' | 'delete'): string {
+        if (!entities) {
+            throw new DGTErrorArgument('entities should be set.', entities);
+        }
+
+        if (!updateType) {
+            throw new DGTErrorArgument('updateType should be set.', updateType);
+        }
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to generate SparQL for delete.', { entities });
 
@@ -207,24 +224,43 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', { entities, triples });
 
-        const query: Update = {
-            type: 'update',
-            // prefixes: { [prefix: string]: string; },
-            prefixes: {
-                // xsd: 'http://www.w3.org/2001/XMLSchema#'
-            },
-            updates: [
-                {
-                    updateType: 'delete',
-                    delete: [
-                        {
-                            type: 'bgp',
-                            triples
-                        }
-                    ]
-                }
-            ]
-        };
+        let query: Update = null;
+
+        if (updateType === 'delete') {
+            query = {
+                type: 'update',
+                prefixes: {
+                },
+                updates: [
+                    {
+                        updateType,
+                        delete: [
+                            {
+                                type: 'bgp',
+                                triples
+                            }
+                        ]
+                    }
+                ]
+            };
+        } else if (updateType === 'insert') {
+            query = {
+                type: 'update',
+                prefixes: {
+                },
+                updates: [
+                    {
+                        updateType,
+                        insert: [
+                            {
+                                type: 'bgp',
+                                triples
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', { query, entities, triples });
 
