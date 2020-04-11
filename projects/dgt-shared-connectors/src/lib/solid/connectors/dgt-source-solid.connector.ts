@@ -1,4 +1,4 @@
-import { Observable, of, forkJoin, from } from 'rxjs';
+import { Observable, of, forkJoin, from, combineLatest } from 'rxjs';
 import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument } from '@digita/dgt-shared-utils';
@@ -188,6 +188,63 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                     ))
                     .pipe(
                         map(response => data.entities as T[]),
+                    )
+                ),
+            );
+    }
+
+    public update<T extends DGTLDEntity>(domainEntities: { original: T, updated: T }[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+        if (!domainEntities) {
+            throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
+        }
+
+        if (!connection) {
+            throw new DGTErrorArgument('connection should be set.', connection);
+        }
+
+        if (!source) {
+            throw new DGTErrorArgument('source should be set.', source);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('transformer should be set.', transformer);
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to update entity', { domainEntities, connection, source, transformer });
+        return forkJoin(
+            domainEntities.map(update => transformer.toTriples([update.original], connection)
+                .pipe(
+                    map(uTransfored => ({ ...update, original: uTransfored[0] })),
+                    switchMap(u => transformer.toTriples([u.updated], connection)
+                        .pipe(map(uTransfored => ({ ...u, updated: uTransfored[0] })))),
+                )
+            ))
+            .pipe(
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed updated', data)),
+                map(updates => updates.map(update => ({
+                    ...update,
+                    delta: {
+                        ...update.updated,
+                        triples: _.differenceWith(update.updated.triples, update.original.triples, _.isEqual) as DGTLDTriple[]
+                    }
+                }))),
+                tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to update entities', data)),
+                switchMap(updates => forkJoin(
+                    updates.map(update =>
+                        this.generateToken(update.delta.documentUri, connection, source)
+                            .pipe(
+                                switchMap(token => this.http.patch(
+                                    update.delta.documentUri,
+                                    this.generateSparqlUpdate([update.delta], 'insert'),
+                                    {
+                                        'Content-Type': 'application/sparql-update',
+                                        Authorization: 'Bearer ' + token
+                                    })
+                                )
+                            )
+                    ))
+                    .pipe(
+                        map(response => domainEntities.map(update => update.updated)),
                     )
                 ),
             );
