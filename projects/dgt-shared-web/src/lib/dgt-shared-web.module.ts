@@ -1,11 +1,9 @@
-import { NgModule, Type, ModuleWithProviders, InjectionToken } from '@angular/core';
+import { NgModule, Type } from '@angular/core';
 import { DGTTitleService } from './interface/services/dgt-title.service';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTI8NService } from './i8n/services/dgt-i8n.service';
 import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
-import { DGTNGRXStoreService } from './state/services/dgt-ngrx-store.service';
-import { DGTStoreService } from './state/services/dgt-store.service';
 import { DGTSharedDataModule } from '@digita/dgt-shared-data';
 import { MatPaginatorModule, MatTableModule, MatSortModule, MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { DGTButtonComponent } from './interface/components/dgt-button/dgt-button.component';
@@ -55,7 +53,6 @@ import { DGTPageRailItemComponent } from './interface/components/dgt-page-rail-i
 import { DGTSectionSubtitleComponent } from './interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
 import { DGTSectionIconComponent } from './interface/components/dgt-section-icon/dgt-section-icon.component';
 import { DGTSectionActionComponent } from './interface/components/dgt-section-action/dgt-section-action.component';
-import { Store, ActionReducerMap, StoreRootModule } from '@ngrx/store';
 import { DGTPageContentHeaderComponent } from './interface/components/dgt-page-content-header/dgt-page-content-header.component';
 import { DGTPageContentHeaderSubtitleComponent } from './interface/components/dgt-page-content-header-subtitle/dgt-page-content-header-subtitle.component';
 import { DGTPageContentHeaderTitleComponent } from './interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
