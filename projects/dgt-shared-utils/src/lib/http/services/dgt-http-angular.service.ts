@@ -99,7 +99,8 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
+          headers: response.headers
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
