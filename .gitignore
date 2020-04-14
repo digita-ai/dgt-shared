@@ -52,3 +52,4 @@ Thumbs.db
 
 package-lock.json
 yarn.lock
+projects/dgt-shared-web/yarn.lock
