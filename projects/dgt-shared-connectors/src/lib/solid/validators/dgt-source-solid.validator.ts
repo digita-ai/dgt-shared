@@ -1,4 +1,4 @@
-import { DGTErrorArgument, DGTHttpService, DGTErrorService, DGTError } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 
