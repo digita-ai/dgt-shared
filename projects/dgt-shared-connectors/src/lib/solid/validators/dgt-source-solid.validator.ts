@@ -1,6 +1,5 @@
 import { DGTErrorArgument, DGTHttpService, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { Injectable } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
 
 /**
  * Validator for all things solid-related
