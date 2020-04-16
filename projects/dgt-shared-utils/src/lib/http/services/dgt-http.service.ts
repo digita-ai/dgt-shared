@@ -9,4 +9,5 @@ export abstract class DGTHttpService {
   public abstract post<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>>;
   public abstract put<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>>;
   public abstract head<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>>;
+  public abstract options<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>>;
 }
