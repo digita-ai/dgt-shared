@@ -14,9 +14,8 @@ export class DGTSourceSolidValidator {
 
     /**
      * Check if a solid server is running on the given url
-     * @param url url of the solid server to test
+     * @param url url to test
      * @returns true if the specified url is a solid server, false if not
-     * @throws DGTErrorArgument if url is invalid or server does not return 200
      */
     public isSolidServer(url: string): boolean {
         if (!url) {
