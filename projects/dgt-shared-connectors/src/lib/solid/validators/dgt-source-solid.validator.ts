@@ -46,7 +46,7 @@ export class DGTSourceSolidValidator {
         });
 
         this.logger.debug(DGTSourceSolidValidator.name, 'URL has a solid server', url);
-        // When the url passes all of the previous checks, it is officially granted 'solid-server' status and a small applause
+        // When the url passes all of the previous checks, it is officially granted 'solid-server' status and awarded a small applause
         return true;
     }
 }
