@@ -3,6 +3,7 @@ import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
 import { DGTSourceGravatarConnector } from './gravatar/connectors/dgt-source-gravatar.connector';
 import { DGTSourceMSSQLConnector } from './mssql/connectors/dgt-source-mssql.connector';
 import { DGTSourceSolidConnector } from './solid/connectors/dgt-source-solid.connector';
+import { DGTSourceSolidValidator } from './solid/validators/dgt-source-solid.validator';
 
 export const declarations = [];
 export const imports = [
@@ -11,7 +12,8 @@ export const imports = [
 export const providers = [
   DGTSourceSolidConnector,
   DGTSourceMSSQLConnector,
-  DGTSourceGravatarConnector
+  DGTSourceGravatarConnector,
+  DGTSourceSolidValidator
 ];
 
 @NgModule({

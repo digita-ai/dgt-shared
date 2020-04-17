@@ -91,6 +91,36 @@ export class DGTHttpAngularService extends DGTHttpService {
       );
   }
 
+  public head<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Sending HEAD request', {uri});
+
+    return this.http.head(uri, {headers, observe: 'response'})
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status,
+          headers: response.headers
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public options<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Sending OPTIONS request', {uri});
+
+    return this.http.options(uri, {headers, observe: 'response'})
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status,
+          headers: response.headers
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
   private handleError<T>(error: HttpErrorResponse): DGTHttpResponse<T> {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

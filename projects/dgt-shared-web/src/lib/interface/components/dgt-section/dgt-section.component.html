@@ -3,7 +3,7 @@
 [class.success]="state === 'success' || state === 'locked'">
   <div fxLayout="row" fxLayoutGap="20px">
 
-    <div fxFlex="initial" class="section-icon" *ngIf="showIcon">
+    <div fxFlex="initial" fxLayoutAlign="center" class="section-icon" *ngIf="showIcon">
       <ng-content select="dgt-section-icon"></ng-content>
     </div>
 
@@ -26,7 +26,7 @@
       </dgt-button>
     </div>
 
-    <div fxLayout="row" fxLayoutGap="20px" fxFlex="initial" class="section-actions" *ngIf="showIcon">
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="20px" fxFlex="initial" class="section-actions" *ngIf="showIcon">
       <ng-content fxFlex="initial" select="dgt-section-action"></ng-content>
     </div>
   </div>
