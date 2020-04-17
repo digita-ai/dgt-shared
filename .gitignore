@@ -54,3 +54,8 @@ Thumbs.db
 package-lock.json
 yarn.lock
 projects/dgt-shared-web/yarn.lock
+projects/dgt-shared-test/yarn.lock
+projects/dgt-shared-utils/yarn.lock
+projects/dgt-shared-data/yarn.lock
+projects/dgt-shared-connectors/yarn.lock
+projects/dgt-shared-venture/yarn.lock
