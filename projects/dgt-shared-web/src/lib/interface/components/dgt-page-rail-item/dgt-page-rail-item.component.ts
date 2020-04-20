@@ -6,7 +6,6 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./dgt-page-rail-item.component.scss']
 })
 export class DGTPageRailItemComponent implements OnInit {
-  @Input() public routerLink: string[];
 
   constructor() { }
 
