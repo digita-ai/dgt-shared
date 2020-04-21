@@ -9,8 +9,21 @@
     border-radius: 50%;
     text-align: center;
     margin-bottom: $measure-gutter-xlarge;
-    i {
-        font-size: 1.8em;
-        margin-top: 12px;
+
+    .split-page-rail-item {
+        height: 100%;
+    }
+}
+
+:host(.selected) {
+    padding: 5px;
+    height: 40px;
+    width: 40px;
+
+    .split-page-rail-item {
+        border: 2px solid $color-primary-dark;
+        border-radius: 50%;
+        height: 36px;
+        width: 36px;
     }
 }
