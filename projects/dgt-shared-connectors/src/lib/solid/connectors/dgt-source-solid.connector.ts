@@ -10,6 +10,7 @@ import { Generator, SparqlQuery, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
+import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -247,6 +248,33 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                         map(response => domainEntities.map(update => update.updated)),
                     )
                 ),
+            );
+    }
+
+    registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<DGTSourceSolidConfiguration> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
+
+        const uri = source.configuration.issuer + '/api/accounts/new';
+        const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+        const body = {
+            username: loginData.username,
+            name: loginData.name,
+            password: loginData.password,
+            email: loginData.email,
+            // client_name: 'Digita Consumer Client',
+            // client_uri: 'http://localhost:4201',
+            // logo_uri: 'http://localhost:4201/assets/images/logo.png',
+            // response_types: ['code', 'code id_token token'],
+            // grant_types: ['authorization_code'],
+            // default_max_age: 7200,
+            // post_logout_redirect_uris: ['https://localhost:4200/connect/logout'],
+            // redirect_uris: [encodedCallbackUri]
+        };
+
+        return this.http.post<DGTSourceSolidConfiguration>(uri, body, headers)
+            .pipe(
+                tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received registration response', { response, source })),
+                map(response => ({ ...response.data, ...source.configuration })),
             );
     }
 

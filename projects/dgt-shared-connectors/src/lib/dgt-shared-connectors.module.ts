@@ -13,7 +13,7 @@ export const providers = [
   DGTSourceSolidConnector,
   DGTSourceMSSQLConnector,
   DGTSourceGravatarConnector,
-  DGTSourceSolidValidator
+  DGTSourceSolidValidator,
 ];
 
 @NgModule({
