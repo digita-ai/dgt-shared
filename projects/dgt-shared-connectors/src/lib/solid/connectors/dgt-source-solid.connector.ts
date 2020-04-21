@@ -255,7 +255,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<DGTSourceSolidConfiguration> {
+    registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<any> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
 
         const uri = source.configuration.issuer + '/api/accounts/new';
@@ -267,7 +267,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             .set('repeat_password', loginData.password)
             .set('email', loginData.email);
 
-        return this.http.post<DGTSourceSolidConfiguration>(uri, body, headers)
+        return this.http.post<any>(uri, body, headers)
             .pipe(
                 tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received registration response', { response, source })),
                 map(response => ({ response, ...source.configuration })),
