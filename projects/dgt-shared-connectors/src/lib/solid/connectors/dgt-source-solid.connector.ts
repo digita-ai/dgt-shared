@@ -11,12 +11,16 @@ import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
+import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
     private parser: N3Parser<Quad> = new Parser();
 
-    constructor(private logger: DGTLoggerService, private data: DGTDataService, private http: DGTHttpService) { }
+    constructor(private logger: DGTLoggerService,
+                private data: DGTDataService,
+                private http: DGTHttpService,
+                private httptest: HttpClient) { }
 
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnection<DGTConnectionSolidConfiguration>> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
@@ -251,30 +255,24 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
-    registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<DGTSourceSolidConfiguration> {
+    registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<any> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
 
         const uri = source.configuration.issuer + '/api/accounts/new';
-        const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-        const body = {
-            username: loginData.username,
-            name: loginData.name,
-            password: loginData.password,
-            email: loginData.email,
-            // client_name: 'Digita Consumer Client',
-            // client_uri: 'http://localhost:4201',
-            // logo_uri: 'http://localhost:4201/assets/images/logo.png',
-            // response_types: ['code', 'code id_token token'],
-            // grant_types: ['authorization_code'],
-            // default_max_age: 7200,
-            // post_logout_redirect_uris: ['https://localhost:4200/connect/logout'],
-            // redirect_uris: [encodedCallbackUri]
-        };
+        const headers = {'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': '*/*'};
+        // const body = new HttpParams()
+        //     .set('username', loginData.username)
+        //     .set('name', loginData.name)
+        //     .set('password', loginData.password)
+        //     .set('repeat_password', loginData.password)
+        //     .set('email', loginData.email);
+        const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;
 
-        return this.http.post<DGTSourceSolidConfiguration>(uri, body, headers)
+        return this.http.post<any>(uri, body, headers)
             .pipe(
                 tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received registration response', { response, source })),
-                map(response => ({ ...response.data, ...source.configuration })),
+                map(response => ({ response, ...source.configuration })),
             );
     }
 
