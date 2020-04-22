@@ -278,6 +278,25 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             );
     }
 
+    /**
+     * This function will check if a specific username is already taken
+     * on a specific solid server
+     * @param source The source you want to check the username on
+     * @param username The username you want to check for existance
+     * @returns True if the username is available, false if not
+     */
+    public checkIfUsernameAvailable(source: DGTSourceSolid, username: string): Observable<boolean> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Checking if username exists on solid server', { source, username });
+
+        const sourceuri = source.configuration.issuer;
+        const url = 'https://' + username + '.' + sourceuri.split('//')[1];
+
+        return this.http.get<DGTSourceSolidConfiguration>(url).pipe(
+            tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received response', { response })),
+            map(response => (response.status === 404) )
+        );
+    }
+
     private generateSparqlUpdate(entities: DGTLDEntity[], updateType: 'insert' | 'delete'): string {
         if (!entities) {
             throw new DGTErrorArgument('entities should be set.', entities);
