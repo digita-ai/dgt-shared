@@ -259,13 +259,15 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
 
         const uri = source.configuration.issuer + '/api/accounts/new';
-        const headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-        const body = new HttpParams()
-            .set('username', loginData.username)
-            .set('name', loginData.name)
-            .set('password', loginData.password)
-            .set('repeat_password', loginData.password)
-            .set('email', loginData.email);
+        const headers = {'Content-Type': 'application/x-www-form-urlencoded',
+                        'Accept': '*/*'};
+        // const body = new HttpParams()
+        //     .set('username', loginData.username)
+        //     .set('name', loginData.name)
+        //     .set('password', loginData.password)
+        //     .set('repeat_password', loginData.password)
+        //     .set('email', loginData.email);
+        const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;
 
         return this.http.post<any>(uri, body, headers)
             .pipe(
