@@ -254,7 +254,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                 ),
             );
     }
-
+    /**
+     * Registers an account on a solid server
+     * @param source source to create account on
+     * @param loginData data to use to create the account
+     * @returns the http response
+     */
     registerAccount(source: DGTSourceSolid, loginData: DGTSourceSolidLogin): Observable<any> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
 
@@ -289,7 +294,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         const sourceuri = source.configuration.issuer;
         const url = 'https://' + username + '.' + sourceuri.split('//')[1];
 
-        return this.http.get<DGTSourceSolidConfiguration>(url).pipe(
+        return this.http.head<DGTSourceSolidConfiguration>(url).pipe(
             tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received response', { response })),
             map(response => (response.status === 404) )
         );
