@@ -1,31 +1,28 @@
-import { Observable, of, forkJoin, from, combineLatest } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDDataType } from '@digita/dgt-shared-data';
+import { Observable, of, forkJoin, from } from 'rxjs';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { N3Parser, Quad, Parser } from 'n3';
-import { Generator, SparqlQuery, Update, Triple, Term } from 'sparqljs';
+import { Generator, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { HttpHeaders, HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
     private parser: N3Parser<Quad> = new Parser();
 
     constructor(private logger: DGTLoggerService,
-                private data: DGTDataService,
-                private http: DGTHttpService,
-                private httptest: HttpClient) { }
+                private http: DGTHttpService) { }
 
-    connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnection<DGTConnectionSolidConfiguration>> {
-        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
+    public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to prepare source for connection', { connection, source });
 
-        let res: Observable<DGTConnection<any>> = null;
+        let res: Observable<DGTSourceSolid> = null;
 
         if (source && source.type === DGTSourceType.SOLID) {
             res = of({ connection, source })
@@ -35,9 +32,21 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                     switchMap(data => this.jwks(data.source)
                         .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
                     switchMap(data => this.register(data.source, data.connection)
-                        .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
-                    switchMap(data => this.data.updateEntity('source', data.source)
-                        .pipe(map(savedSource => ({ ...data, source: savedSource })))),
+                        .pipe(map(configuration => ({ ...source, configuration })))),
+                );
+        }
+
+        return res;
+    }
+
+    public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
+        this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
+
+        let res: Observable<DGTConnection<any>> = null;
+
+        if (source && source.type === DGTSourceType.SOLID) {
+            res = of({ connection, source })
+                .pipe(
                     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Updated source configuration', { data })),
                     switchMap(data => this.generateUri(data.source, data.connection)
                         .pipe(
@@ -50,8 +59,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
                                 },
                             })),
                         )),
-                    switchMap(data => this.data.updateEntity('connection', data.connection)
-                        .pipe(map(savedProvider => ({ ...data, connection: savedProvider })))),
                     map(data => data.connection)
                 );
         }
