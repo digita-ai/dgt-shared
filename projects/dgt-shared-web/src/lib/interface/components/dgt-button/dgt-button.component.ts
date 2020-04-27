@@ -15,14 +15,14 @@ export class DGTButtonComponent implements OnInit {
   @Input() public confirm = false;
   @Input() public disabled = false;
   @Input() public loading = false;
-
+  @Input() public showContent = true;
   @Output() public called: EventEmitter<any> = new EventEmitter<any>();
 
   public get colorBase(): string {
     let res = 'basic';
 
     if (this.color) {
-      res = this.color
+      res = this.color;
     }
 
     return res;

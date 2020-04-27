@@ -1,9 +1,14 @@
-<button mat-raised-button [color]="colorBase" (click)="onClick()" [disabled]="disabled || loading" fxLayout="row"
-    fxLayoutGap="10px" fxLayoutAlign="center center">
-    <div fxFlex="initial" class="button-loading">
-        <i *ngIf="loading" class="fas fa-spinner fa-spin"></i>
+<button mat-raised-button [color]="colorBase" (click)="onClick()" [disabled]="disabled || loading">
+    <div class="button-wrapper" fxLayout="row"
+    fxLayoutGap="10px" fxLayoutAlign="start center">
+    <div *ngIf="loading" fxFlex="initial" class="button-loading">
+        <i class="fas fa-spinner fa-spin"></i>
     </div>
-    <div fxFlex="initial" class="button-content">
+    <div fxFlex="initial" class="button-icon">
+        <ng-content select="i"></ng-content>
+    </div>
+    <div fxFlex="initial" fxFill class="button-content" *ngIf="showContent">
         <ng-content></ng-content>
     </div>
+</div>
 </button>

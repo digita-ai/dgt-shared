@@ -1,0 +1,18 @@
+@import "styles";
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+.charm-wrapper {
+    height: 100%;
+    width: 100%;
+    background-color: $color-background-normal;
+    border-radius: 50%;
+
+    .charm-content {
+        max-width: 30px;
+        max-height: 30px;
+    }
+}

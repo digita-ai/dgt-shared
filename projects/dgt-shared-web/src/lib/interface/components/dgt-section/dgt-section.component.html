@@ -1,11 +1,11 @@
 <div fxFlexFill fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between" class="section" *ngIf="state !== 'collapsed'"
 [class.collapsed]="state === 'collapsed'" [class.blue]="state === 'blue'" [class.warning]="state === 'warning'"
 [class.success]="state === 'success' || state === 'locked'">
-  <div fxLayout="row" fxLayoutGap="20px">
+  <div fxFlex="50px" fxLayout="row" fxLayoutGap="20px">
 
-    <div fxFlex="initial" fxLayoutAlign="center" class="section-icon" *ngIf="showIcon">
+    <dgt-charm fxFlex="50px" fxLayoutAlign="center" class="section-icon" *ngIf="showIcon">
       <ng-content select="dgt-section-icon"></ng-content>
-    </div>
+    </dgt-charm>
 
     <div fxFlex="grow" fxLayout="column" fxLayoutAlign="center" fxLayoutGap="{{gapUnderTitleInPixels}}px" class="title-container">
       <div fxFlex="initial" class="section-title" *ngIf="showTitle">

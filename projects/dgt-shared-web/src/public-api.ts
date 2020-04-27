@@ -15,6 +15,7 @@ export { DGTBaseAppState } from './lib/state/models/dgt-base-app-state.model';
 export { DGTBaseRootState } from './lib/state/models/dgt-base-root-state.model';
 export { DGTButtonComponent } from './lib/interface/components/dgt-button/dgt-button.component';
 export { DGTButtonConfirmComponent } from './lib/interface/components/dgt-button-confirm/dgt-button-confirm.component';
+export { DGTCharmComponent } from './lib/interface/components/dgt-charm/dgt-charm.component';
 export { DGTCompareValidator } from './lib/validation/validators/dgt-compare.validator';
 export { DGTEmailUniqueValidator } from './lib/validation/validators/dgt-email-unique.validator';
 export { DGTFeature } from './lib/state/models/dgt-feature.model';
