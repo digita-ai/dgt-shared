@@ -1,0 +1,7 @@
+@import "styles";
+
+:host {
+    font-weight: bold;
+    font-size: $measure-font-large;
+    line-height: 17px;
+}

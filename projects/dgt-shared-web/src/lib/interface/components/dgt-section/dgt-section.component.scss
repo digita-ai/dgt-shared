@@ -1,7 +1,7 @@
 @import 'styles';
 :host {
     display: block;
-    margin-bottom: $measure-gutter-normal;
+    margin-bottom: $measure-gutter-xlarge !important;
     &:last-child {
         margin-bottom: 0px;
     }
@@ -24,5 +24,8 @@
     }
     &.success {
         border-left: $measure-gutter-normal solid $color-success-normal;
+    }
+    dgt-charm {
+        height: 50px;
     }
 }

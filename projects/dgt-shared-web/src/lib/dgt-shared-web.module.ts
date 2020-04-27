@@ -57,6 +57,7 @@ import { DGTPageContentHeaderComponent } from './interface/components/dgt-page-c
 import { DGTPageContentHeaderSubtitleComponent } from './interface/components/dgt-page-content-header-subtitle/dgt-page-content-header-subtitle.component';
 import { DGTPageContentHeaderTitleComponent } from './interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
 import { DGTPageContentGroupHeader } from './interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
+import { DGTCharmComponent } from './interface/components/dgt-charm/dgt-charm.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -67,6 +68,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const declarations = [
   DGTButtonComponent,
   DGTButtonConfirmComponent,
+  DGTCharmComponent,
   DGTFormValidationComponent,
   DGTFormControlComponent,
   DGTFormDateComponent,
