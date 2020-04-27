@@ -22,7 +22,7 @@ export class DGTButtonComponent implements OnInit {
     let res = 'basic';
 
     if (this.color) {
-      res = this.color
+      res = this.color;
     }
 
     return res;
