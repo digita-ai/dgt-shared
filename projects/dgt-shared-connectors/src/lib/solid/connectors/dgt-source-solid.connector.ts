@@ -1,7 +1,7 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
@@ -17,7 +17,9 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     private parser: N3Parser<Quad> = new Parser();
 
     constructor(private logger: DGTLoggerService,
-                private http: DGTHttpService) { }
+        private http: DGTHttpService,
+        private config: DGTConfigurationService<DGTConfigurationBase>
+    ) { }
 
     public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Starting to prepare source for connection', { connection, source });
@@ -271,8 +273,10 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering account', { source });
 
         const uri = source.configuration.issuer + '/api/accounts/new';
-        const headers = {'Content-Type': 'application/x-www-form-urlencoded',
-                        'Accept': '*/*'};
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': '*/*'
+        };
         // const body = new HttpParams()
         //     .set('username', loginData.username)
         //     .set('name', loginData.name)
@@ -303,7 +307,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         return this.http.head<DGTSourceSolidConfiguration>(url).pipe(
             tap(response => this.logger.debug(DGTSourceSolidConnector.name, 'Received response', { response })),
-            map(response => (response.status === 404) )
+            map(response => (response.status === 404))
         );
     }
 
@@ -327,35 +331,35 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             // Check headers for Link
             return this.http.head(url).pipe(
                 map(res => {
-                        const headers = res.headers;
-                        if (res.status !== 200) {
-                            this.logger.debug(DGTSourceSolidConnector.name, 'Status was not 200', res.status);
-                            return false;
-                        } else if (!headers.has('link')) {
-                            this.logger.debug(DGTSourceSolidConnector.name, 'Headers did not contain Link', headers);
-                            return false;
-                        } else if (headers.get('link') !== '<.acl>; rel="acl", <.meta>; rel="describedBy", <http://www.w3.org/ns/ldp#Resource>; rel="type"') {
-                            this.logger.debug(DGTSourceSolidConnector.name, 'Link header value did not match', headers.get('link'));
+                    const headers = res.headers;
+                    if (res.status !== 200) {
+                        this.logger.debug(DGTSourceSolidConnector.name, 'Status was not 200', res.status);
+                        return false;
+                    } else if (!headers.has('link')) {
+                        this.logger.debug(DGTSourceSolidConnector.name, 'Headers did not contain Link', headers);
+                        return false;
+                    } else if (headers.get('link') !== '<.acl>; rel="acl", <.meta>; rel="describedBy", <http://www.w3.org/ns/ldp#Resource>; rel="type"') {
+                        this.logger.debug(DGTSourceSolidConnector.name, 'Link header value did not match', headers.get('link'));
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+            )
+                &&
+                // Check if /.well-known/openid-configuration exists on server
+                this.http.get(url + '/.well-known/openid-configuration').pipe(
+                    map(getRes => {
+                        if (getRes.status !== 200) {
+                            this.logger.debug(DGTSourceSolidConnector.name, 'Status was not 200', getRes.status);
                             return false;
                         } else {
+                            this.logger.debug(DGTSourceSolidConnector.name, 'URL has a solid server', url);
+                            // When the url passes all of the previous checks, it is granted 'solid-server' status and awarded a small applause
                             return true;
                         }
                     })
-            )
-            &&
-            // Check if /.well-known/openid-configuration exists on server
-            this.http.get(url + '/.well-known/openid-configuration').pipe(
-                map(getRes => {
-                if (getRes.status !== 200) {
-                    this.logger.debug(DGTSourceSolidConnector.name, 'Status was not 200', getRes.status);
-                    return false;
-                } else {
-                    this.logger.debug(DGTSourceSolidConnector.name, 'URL has a solid server', url);
-                    // When the url passes all of the previous checks, it is granted 'solid-server' status and awarded a small applause
-                    return true;
-                }
-                })
-            );
+                );
         }
     }
 
@@ -465,17 +469,19 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     private register(source: DGTSourceSolid, connection: DGTConnectionSolid): Observable<DGTSourceSolidConfiguration> {
         this.logger.debug(DGTSourceSolidConnector.name, 'Registering client', { source });
 
+        const baseUri = this.config.get(c => c.baseURI);
+
         const encodedCallbackUri = connection.configuration.callbackUri;
         const uri = `${source.configuration.registration_endpoint}`;
         const headers = { 'Content-Type': 'application/json' };
         const params = {
             client_name: 'Digita Consumer Client',
-            client_uri: 'http://localhost:4200',
-            logo_uri: 'http://localhost:4200/assets/images/logo.png',
+            client_uri: baseUri,
+            logo_uri: `${baseUri}assets/images/logo.png`,
             response_types: ['code', 'code id_token token'],
             grant_types: ['authorization_code'],
             default_max_age: 7200,
-            post_logout_redirect_uris: ['https://localhost:4200/connect/logout'],
+            post_logout_redirect_uris: [`${baseUri}connect/logout`],
             redirect_uris: [encodedCallbackUri]
         };
         const body = JSON.stringify(Object.assign({}, params, {}));
