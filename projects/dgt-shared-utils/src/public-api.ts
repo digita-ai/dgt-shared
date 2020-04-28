@@ -11,6 +11,7 @@ export { DGTLoggerService } from './lib/logging/services/dgt-logger.service';
 export { DGTError } from './lib/errors/models/dgt-error.model';
 export { DGTErrorArgument } from './lib/errors/models/dgt-error-argument.model';
 export { DGTErrorConfig } from './lib/errors/models/dgt-error-config.model';
+export { DGTErrorHttp } from './lib/errors/models/dgt-error-http.model';
 export { DGTErrorService } from './lib/errors/services/dgt-error.service';
 export { DGTHttpService } from './lib/http/services/dgt-http.service';
 export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.service';
