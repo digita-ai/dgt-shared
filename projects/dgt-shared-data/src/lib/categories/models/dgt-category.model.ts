@@ -5,4 +5,5 @@ export interface DGTCategory extends DGTEntity {
     icon: string;
     description: string;
     fields: DGTCategoryField[];
+    groupId: string;
 }
