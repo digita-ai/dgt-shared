@@ -235,7 +235,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       ))
       .pipe(
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed updated', data)),
-        map( updates => updates.map(update => ({
+        map(updates => updates.map(update => ({
           ...update,
           delta: {
             updated: {
@@ -253,14 +253,26 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
           updates.map(update =>
             this.generateToken(update.delta.updated.documentUri, connection, source)
               .pipe(
-                switchMap(token => this.http.patch(
-                  update.delta.updated.documentUri,
-                  this.generateSparqlUpdate([update.delta.updated], 'insertdelete', [update.delta.original] ),
-                  {
-                    'Content-Type': 'application/sparql-update',
-                    Authorization: 'Bearer ' + token
-                  })
-                )
+                switchMap(token => {
+
+                  if (update.delta.original.triples.length === 0) {
+                    return this.http.patch(
+                      update.delta.updated.documentUri,
+                      this.generateSparqlUpdate([update.delta.updated], 'insert'),
+                      { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token }
+                    );
+                  }
+
+                  if (update.delta.updated.triples.length === 0) {
+                    throw new DGTErrorArgument('Updated values are undefined', update.delta.updated);
+                  }
+
+                  return this.http.patch(
+                    update.delta.updated.documentUri,
+                    this.generateSparqlUpdate([update.delta.updated], 'insertdelete', [update.delta.original]),
+                    { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token }
+                  );
+                })
               )
           ))
           .pipe(

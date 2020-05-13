@@ -35,6 +35,8 @@ export class DGTButtonComponent implements OnInit {
 
   public onClick() {
 
+    this.loading = true;
+
     if (this.confirm) {
       this.logger.debug(DGTButtonComponent.name, 'Button clicked, launching confirm dialog');
 
