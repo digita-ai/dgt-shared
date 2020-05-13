@@ -14,11 +14,11 @@
   "peerDependencies": {
     "@angular/http": "^7.2.7",
     "@angular/common": "^7.2.7",
-    "@angular/core": "^7.2.7"
+    "@angular/core": "^7.2.7",
+    "@types/node": "~11.9.5"
   },
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",
-    "@types/node": "~11.9.5"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
   "main": "src/public-api.ts",

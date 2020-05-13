@@ -5,11 +5,11 @@
     "@digita/dgt-shared-test": "0.1.1",
     "@types/mssql": "^4.3.1",
     "@types/n3": "^1.1.5",
-    "@types/node": "~11.9.5",
     "@types/rdflib": "^1.0.5",
     "@types/sparqljs": "^2.1.0"
   },
   "peerDependencies": {
+    "@types/node": "~11.9.5",
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0",
     "@digita/dgt-shared-data": "0.1.1",
