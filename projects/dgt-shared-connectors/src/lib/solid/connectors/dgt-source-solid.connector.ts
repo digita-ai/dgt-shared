@@ -706,7 +706,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       };
     } else if (subject && subject.value && subject.value.startsWith('#')) {
       subject = {
-        value: `${documentUri}#${quad.subject.value.split('#')[1]}`,
+        value: `${documentUri.split('#')[0]}${quad.subject.value}`,
         termType: DGTLDTermType.REFERENCE
       };
     }
@@ -726,7 +726,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     } else {
       if (quad.object.value.startsWith('#')) {
         res = {
-          value: documentUri + quad.object.value,
+          value: `${documentUri.split('#')[0]}${quad.object.value}`,
           termType: DGTLDTermType.REFERENCE
         };
       } else {
