@@ -69,10 +69,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-    if (!documentUri) {
-      throw new DGTErrorArgument('documentUri should be set', documentUri);
-    }
-
+    
     if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
       throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
     }
