@@ -13,7 +13,14 @@ export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.servic
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/categories/models/dgt-category.model';
-export { DGTCategoryFilter as DGTCategoryField } from './lib/categories/models/dgt-category-filter.model';
+export { DGTCategoryFilter } from './lib/categories/models/dgt-category-filter.model';
+export { DGTCategoryFilterService } from './lib/categories/services/dgt-category-filter.service'
+export { DGTCategoryFilterRunnerService } from './lib/categories/services/dgt-category-filter-runner.service'
+export { DGTCategoryFilterRunnerSparqlService } from './lib/categories/services/dgt-category-filter-runner-sparql.service'
+export { DGTCategoryFilterRunnerBGPService } from './lib/categories/services/dgt-category-filter-runner-bgp.service'
+export { DGTCategoryFilterType } from './lib/categories/models/dgt-category-filter-type.model';
+export { DGTCategoryFilterSparql } from './lib/categories/models/dgt-category-filter-sparql.model';
+export { DGTCategoryFilterBGP } from './lib/categories/models/dgt-category-filter-bgp.model';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
 export { DGTFile } from './lib/file/models/dgt-file.model';
@@ -49,6 +56,7 @@ export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
+export { DGTLDTripleFactoryService} from './lib/linked-data/services/dgt-ld-triple-factory.service';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';

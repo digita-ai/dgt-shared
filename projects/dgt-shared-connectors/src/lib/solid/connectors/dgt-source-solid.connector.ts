@@ -1,24 +1,21 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDTripleFactoryService } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
-import { N3Parser, Quad, Parser } from 'n3';
 import { Generator, Update, Triple, Term } from 'sparqljs';
-import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
-  private parser: N3Parser<Quad> = new Parser();
-
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
-    private config: DGTConfigurationService<DGTConfigurationBase>
+    private config: DGTConfigurationService<DGTConfigurationBase>,
+    private triples: DGTLDTripleFactoryService
   ) { }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
@@ -91,7 +88,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
           Authorization: 'Bearer ' + token
         }, true)),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { data })),
-        map(data => this.convert(data.data, uri, exchange, source, connection)),
+        map(data => this.triples.createFromString(data.data, uri, exchange, source, connection)),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { data })),
         map(triples =>
           ({
@@ -652,110 +649,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     });
 
     return pairs.join('&');
-  }
-
-  public convert(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
-    let res: DGTLDTriple[] = null;
-
-    const quads = this.parser.parse(response);
-    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { quads });
-
-    if (quads) {
-      this.logger.debug(DGTSourceSolidConnector.name, 'Starting to convert quads to values', { quads, webId: documentUri });
-      res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
-      res = res.map(value => ({
-        ...value, subject: value.subject.value === '#me' ?
-          value.subject : value.subject
-        // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
-      }));
-      res = this.clean(res);
-    }
-
-    return res;
-  }
-
-  private convertOne(documentUri: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
-    const predicateSplit = quad.predicate.value.split('#');
-
-    const subject = this.convertOneSubject(documentUri, quad, connection);
-    const object = this.convertOneObject(documentUri, quad);
-
-    return {
-      id: uuid(),
-      exchange: exchange ? exchange.id : null,
-      connection: connection ? connection.id : null,
-      predicate: {
-        name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
-        namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
-      },
-      subject,
-      object,
-      originalValue: object,
-      source: source ? source.id : null
-    };
-  }
-
-  private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
-    let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
-    if (subject && subject.value && subject.value.startsWith('#me')) {
-      // const me = connection.configuration.webId.split('/profile/card#me')[0];
-
-      subject = {
-        value: `${documentUri}`,
-        termType: DGTLDTermType.REFERENCE
-      };
-    } else if (subject && subject.value && subject.value.startsWith('#')) {
-      subject = {
-        value: `${documentUri}#${quad.subject.value.split('#')[1]}`,
-        termType: DGTLDTermType.REFERENCE
-      };
-    }
-
-    return subject;
-  }
-
-  private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
-    let res = null;
-
-    if (quad.object.termType === 'Literal') {
-      res = {
-        dataType: quad.object.datatypeString,
-        value: quad.object.value,
-        termType: DGTLDTermType.LITERAL
-      };
-    } else {
-      if (quad.object.value.startsWith('#')) {
-        res = {
-          value: documentUri + quad.object.value,
-          termType: DGTLDTermType.REFERENCE
-        };
-      } else {
-        res = {
-          value: quad.object.value,
-          termType: DGTLDTermType.REFERENCE
-        };
-      }
-    }
-
-
-    return res;
-  }
-
-  private clean(values: DGTLDTriple[]): DGTLDTriple[] {
-    return values
-      .map(value => {
-        const updatedValue = value;
-        const stringValue = (value.object.value as string);
-
-        if (value && stringValue.startsWith('undefined/')) {
-          const stringValueSplit = stringValue.split('undefined/')[1];
-          const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
-
-          updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
-        }
-
-        return updatedValue;
-      });
   }
 
   private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
