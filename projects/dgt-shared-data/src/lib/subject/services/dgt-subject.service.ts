@@ -20,6 +20,10 @@ export class DGTSubjectService {
         private workflow: DGTWorkflowService
     ) { }
 
+    /**
+     * Retrieves all values for a given subject
+     * @param subject The subject for which values should be retrieved
+     */
     public getValuesForSubject(subject: DGTSubject): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
 
@@ -32,6 +36,10 @@ export class DGTSubjectService {
             );
     }
 
+    /**
+     * Retrieves all values for a given exchange
+     * @param exchange The exchange for which values should be retrieved
+     */
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
 
