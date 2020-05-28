@@ -1,6 +1,6 @@
 import { Observable, forkJoin, of, concat, zip, merge } from 'rxjs';
 import { DGTSubject } from '../models/dgt-subject.model';
-import { switchMap, map, tap, concatAll } from 'rxjs/operators';
+import { switchMap, map, tap, concatAll, filter, mergeMap } from 'rxjs/operators';
 import { DGTExchange } from '../models/dgt-subject-exchange.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import * as _ from 'lodash';
@@ -23,17 +23,12 @@ export class DGTSubjectService {
     public getValuesForSubject(subject: DGTSubject): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
 
-        return of({ subject })
+        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'subject', operator: '==', value: subject.id }] })
             .pipe(
-                switchMap(data => this.data.getEntities<DGTExchange>('exchange',
-                    { conditions: [{ field: 'subject', operator: '==', value: subject.id }] }
-                )
-                    .pipe(map(exchanges => ({ exchanges, ...data })))),
-                switchMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
-                    .pipe(map(valuesPerExchange => ({ valuesPerExchange, ...data })))),
-                map(data => _.flatten(data.valuesPerExchange)),
-                // switchMap(data => data.valuesPerExchange),
-                tap(data => this.logger.debug(DGTSubjectService.name, 'Retrieved values for subject', data)),
+                filter(exchanges => exchanges && exchanges.length > 0),
+                tap(exchanges => this.logger.debug(DGTSubjectService.name, 'Retrieved exchanges for subject', {exchanges, subject})),
+                mergeMap(exchanges => forkJoin(exchanges.map(exc => this.getValuesForExchange(exc)))),
+                map(val => _.flatten(val))
             );
     }
 
