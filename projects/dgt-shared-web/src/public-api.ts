@@ -9,7 +9,6 @@ export { DGTPageContentHeaderSubtitleComponent } from './lib/interface/component
 export { DGTSharedWebModule } from './lib/dgt-shared-web.module';
 export { DGTAbstractAction } from './lib/state/models/dgt-abstract-action.model';
 export { DGTAction } from './lib/state/models/dgt-action.model';
-// export { DGTActivitiesComponent } from './lib/interface/components/dgt-activities/dgt-activities.component';
 export { DGTAppRoot } from './lib/state/models/dgt-app-root.model';
 export { DGTBaseAppState } from './lib/state/models/dgt-base-app-state.model';
 export { DGTBaseRootState } from './lib/state/models/dgt-base-root-state.model';
@@ -23,14 +22,14 @@ export { DGTFeatureDefinition } from './lib/state/models/dgt-feature-definition.
 export { DGTNotification } from './lib/interface/models/dgt-notification.model';
 export { DGTNotificationType } from './lib/interface/models/dgt-notification-type.model';
 export { DGTPhoneValidator } from './lib/validation/validators/dgt-phone.validator';
-export { DGTNGRXStoreService } from './lib/state/services/dgt-ngrx-store.service';
+export { DGTStateStoreNGRXService } from './lib/state/services/dgt-state-store-ngrx.service';
 export { DGTReducer } from './lib/state/models/dgt-reducer.model';
 export { DGTReducerMethod } from './lib/state/models/dgt-reducer-method.model';
 export { reduceFactory } from './lib/state/models/dgt-reducer-reduce.model';
 export { DGTRobotVerificationResponse } from './lib/validation/models/dgt-robot-verification-response.model';
 export { DGTSmartElement } from './lib/interface/models/dgt-smart-element.model';
 export { DGTSmartForm } from './lib/interface/models/dgt-smart-form.model';
-export { DGTStoreService } from './lib/state/services/dgt-store.service';
+export { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
 export { DGTTitleService } from './lib/interface/services/dgt-title.service';
 export { DGTAuthenticatedState } from './lib/security/models/dgt-authenticated-state.model';
 export { DGTAuthService } from './lib/security/services/dgt-auth.service';
