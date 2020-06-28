@@ -16,19 +16,19 @@ describe('DGTWorkflowService', () => {
     }));
 
     it('should register and get a workflow', async(() => {
-        const field: DGTLDPredicate = {
+        const predicate: DGTLDPredicate = {
             namespace: 'digita.ai/',
             name: 'test'
         };
 
         const workflow: DGTWorkflow = {
             trigger: {
-                fields: [field]
+                predicates: [predicate]
             },
             actions: []
         };
         testService.service.register(workflow);
 
-        expect(testService.service.get(field)).toEqual([workflow]);
+        expect(testService.service.get(predicate)).toEqual([workflow]);
     }));
 });
