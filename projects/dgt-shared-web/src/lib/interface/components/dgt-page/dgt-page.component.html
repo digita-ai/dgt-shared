@@ -15,15 +15,15 @@
     >
       <i class="fas fa-bars"></i>
     </button>
+
     <div fxFlex="50px" class="split-header-logo" [routerLink]="['/']">
       <ng-content select="dgt-page-header-logo"></ng-content>
     </div>
-    <a fxFlex="50px" class="split-header-logo" [routerLink]="['/']">
-      <img class="logo" src="assets/images/logo.png" />
-    </a>
+
     <div fxFlex class="split-header-name" fxHide.lt-sm>
       <h1>{{ 'app.application-name' | translate }}</h1>
     </div>
+
     <div fxFlex class="split-header-controls">
       <ng-content select="dgt-page-header"></ng-content>
     </div>

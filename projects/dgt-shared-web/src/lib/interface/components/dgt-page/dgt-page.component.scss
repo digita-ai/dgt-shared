@@ -9,11 +9,6 @@
     overflow: hidden;
     .split-header {
         background-color: $color-primary-dark;
-        .split-header-logo img {
-            height: 30px;
-            width: 30px;
-            padding: $measure-gutter-large;
-        }
         .split-header-name h1 {
             font-size: $measure-font-large;
             margin: 0px;
