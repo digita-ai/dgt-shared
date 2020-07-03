@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -9,8 +9,8 @@ import { N3Parser, Quad, Parser } from 'n3';
 import { Generator, Update, Triple, Term } from 'sparqljs';
 import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
-import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
+import { DGTCryptoService } from '@digita/dgt-shared-utils';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -18,7 +18,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
-    private config: DGTConfigurationService<DGTConfigurationBase>
+    private config: DGTConfigurationService<DGTConfigurationBase>,
+    private crypto: DGTCryptoService
   ) { }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
@@ -531,12 +532,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }, client);
 
     // generate state and nonce random octets
-    params.state = Array.from(crypto.getRandomValues(new Uint8Array(16)));
-    params.nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)));
+    params.state = this.crypto.generateRandomNumbers(16);
+    params.nonce = this.crypto.generateRandomNumbers(16);
 
     return forkJoin(
-      crypto.subtle.digest({ name: 'SHA-256' }, new Uint8Array(params.state)),
-      crypto.subtle.digest({ name: 'SHA-256' }, new Uint8Array(params.nonce))
+      this.crypto.digest(new Uint8Array(params.state)),
+      this.crypto.digest(new Uint8Array(params.nonce)),
     )
       .pipe(
         map(digests => ({ digests })),
@@ -558,7 +559,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
           return data;
         }),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, connection })),
-        switchMap(data => this.generateSessionKeys()
+        switchMap(data => this.crypto.generateKeyPair()
           .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
         map(data => {
@@ -614,31 +615,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }
 
     return res;
-  }
-
-  private generateSessionKeys(): Observable<{ public: JsonWebKey, private: JsonWebKey }> {
-
-    return from(crypto.subtle.generateKey(
-      {
-        name: 'RSASSA-PKCS1-v1_5',
-        modulusLength: 2048,
-        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-        hash: { name: 'SHA-256' },
-      },
-      true,
-      ['sign', 'verify']
-    ))
-      .pipe(
-        switchMap(data => forkJoin(
-          crypto.subtle.exportKey('jwk', data.publicKey),
-          crypto.subtle.exportKey('jwk', data.privateKey)
-        )),
-        map(data => {
-          const [publicJwk, privateJwk] = data;
-
-          return { public: publicJwk, private: privateJwk };
-        })
-      );
   }
 
   private encode(data): string {
