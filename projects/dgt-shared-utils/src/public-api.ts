@@ -10,6 +10,8 @@ export { DGTConfigurationService } from './lib/configuration/services/dgt-config
 export { DGTLoggerService } from './lib/logging/services/dgt-logger.service';
 export { DGTCryptoService } from './lib/crypto/services/dgt-crypto.service';
 export { DGTCryptoBrowserService } from './lib/crypto/services/dgt-crypto-browser.service';
+export { DGTCryptoKey } from './lib/crypto/models/dgt-crypto-key.model';
+export { DGTCryptoKeyPair } from './lib/crypto/models/dgt-crypto-key-pair.model';
 export { DGTError } from './lib/errors/models/dgt-error.model';
 export { DGTErrorArgument } from './lib/errors/models/dgt-error-argument.model';
 export { DGTErrorConfig } from './lib/errors/models/dgt-error-config.model';

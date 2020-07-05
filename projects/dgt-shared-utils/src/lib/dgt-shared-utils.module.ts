@@ -7,22 +7,18 @@ import { DGTHttpService } from './http/services/dgt-http.service';
 import { DGTHttpAngularService } from './http/services/dgt-http-angular.service';
 import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 import { DGTCryptoBrowserService } from './crypto/services/dgt-crypto-browser.service';
-import { DGTCryptoService } from './crypto/services/dgt-crypto.service';
 
 export const declarations: (any[] | Type<any>)[] = [];
 export const imports = [];
 export const providers = [
+  DGTLoggerService,
+  DGTCryptoBrowserService,
   DGTConnectionService,
   {
     provide: DGTHttpService,
     useClass: DGTHttpAngularService
   },
-  {
-    provide: DGTCryptoService,
-    useClass: DGTCryptoBrowserService
-  },
   DGTErrorService,
-  DGTLoggerService,
   DGTPlatformService,
   DGTDateToLabelService
 ];

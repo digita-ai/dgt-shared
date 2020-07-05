@@ -1,8 +1,9 @@
 import { DGTCryptoService } from './dgt-crypto.service';
 import { from, forkJoin, Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
+import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
 
 @Injectable()
 export class DGTCryptoBrowserService extends DGTCryptoService {
@@ -11,7 +12,7 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
         super();
     }
 
-    public generateKeyPair(): Observable<{ public: JsonWebKey, private: JsonWebKey }> {
+    public generateKeyPair(): Observable<DGTCryptoKeyPair> {
         this.logger.debug(DGTCryptoBrowserService.name, 'Generating key pair');
 
         return from(crypto.subtle.generateKey(
@@ -32,8 +33,11 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
                 map(data => {
                     const [publicJwk, privateJwk] = data;
 
-                    return { public: publicJwk, private: privateJwk };
-                })
+                    return { publicKey: publicJwk, privateKey: privateJwk };
+                }),
+                tap(res =>
+                    this.logger.debug(DGTCryptoBrowserService.name, 'Generated keypair', { res })
+                )
             );
     }
 
