@@ -563,8 +563,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
           .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
         map(data => {
-          connection.configuration.privateKey = JSON.stringify(data.sessionKeys.private);
-          params.key = data.sessionKeys.public;
+          connection.configuration.privateKey = JSON.stringify(data.sessionKeys.privateKey);
+          params.key = data.sessionKeys.publicKey;
         }),
         switchMap(data => {
           if (source.configuration.request_parameter_supported) {
