@@ -43,6 +43,14 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
+    if (!connection) {
+      throw new DGTErrorArgument('Argument connection should be set.', connection);
+    }
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
 
     let res: Observable<DGTConnection<any>> = null;
