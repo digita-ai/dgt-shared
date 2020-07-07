@@ -6,4 +6,5 @@ export interface DGTConnection<T> extends DGTEntity {
     state: DGTConnectionState;
     source: string;
     subject?: string;
+    invite?: string;
 }
