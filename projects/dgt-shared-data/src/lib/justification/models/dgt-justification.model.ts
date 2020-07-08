@@ -6,4 +6,5 @@ export interface DGTJustification extends DGTEntity {
   description: string;
   predicates: DGTLDPredicate[];
   label?: string;
+  aclNeeded?: string[];
 }
