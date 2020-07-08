@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -23,6 +23,11 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   ) { }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to prepare source for connection', { connection, source });
 
     let res: Observable<DGTSourceSolid> = null;
@@ -36,17 +41,17 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
           switchMap(data => this.register(data.source, data.connection)
             .pipe(map(configuration => ({ ...source, configuration })))),
+          map(src => ({...src, state: DGTSourceState.PREPARED})),
         );
     }
+
+    this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source for connection', { connection, source });
 
     return res;
   }
 
   public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
-    if (!connection) {
-      throw new DGTErrorArgument('Argument connection should be set.', connection);
-    }
-
+  
     if (!source) {
       throw new DGTErrorArgument('Argument source should be set.', source);
     }
