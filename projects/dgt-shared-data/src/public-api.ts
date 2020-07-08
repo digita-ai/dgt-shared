@@ -57,3 +57,4 @@ export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.mod
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
+export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
