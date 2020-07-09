@@ -5,4 +5,5 @@ export interface DGTInvite extends DGTEntity {
     subject: string;
     justification: string;
     state: DGTInviteState;
+    connection?: string;
 }
