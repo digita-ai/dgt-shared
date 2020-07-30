@@ -1,6 +1,7 @@
 /*
  * Public API Surface of dgt-shared-utils
  */
+export { DGTEnvironmentService } from './lib/environment/services/dgt-environment.service';
 export { DGTSharedUtilsModule } from './lib/dgt-shared-utils.module';
 export { DGTMap } from './lib/collections/models/dgt-map.model';
 export { DGTPlatformService } from './lib/platform/services/dgt-platform.service';
