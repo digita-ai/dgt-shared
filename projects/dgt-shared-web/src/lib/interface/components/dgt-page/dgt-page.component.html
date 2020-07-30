@@ -1,38 +1,84 @@
 <div class="split" fxLayout="column" fxFlexFill>
-  <div class="split-header" fxFlex="initial" *ngIf="headerEnabled" fxLayout="row" fxLayoutAlign="start center">
-    <button fxFlex="24px" mat-icon-button color="accent" *ngIf="sidenavEnabled && isSmallDevice" (click)="opened=!opened">
+  <div
+    class="split-header"
+    fxFlex="initial"
+    *ngIf="headerEnabled"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+  >
+    <button
+      fxFlex="24px"
+      mat-icon-button
+      color="accent"
+      *ngIf="sidenavEnabled && isSmallDevice"
+      (click)="opened = !opened"
+    >
       <i class="fas fa-bars"></i>
     </button>
-    <a fxFlex="50px" class="split-header-logo" [routerLink]="['/']">
-      <img class="logo" src="assets/images/logo.png">
-    </a>
-    <div fxFlex class="split-header-name" fxHide.lt-sm>
-      <h1>{{'app.application-name' | translate}}</h1>
+
+    <div fxFlex="50px" class="split-header-logo" [routerLink]="['/']">
+      <ng-content select="dgt-page-header-logo"></ng-content>
     </div>
+
+    <div fxFlex class="split-header-name" fxHide.lt-sm>
+      <h1>{{ 'app.application-name' | translate }}</h1>
+    </div>
+
     <div fxFlex class="split-header-controls">
       <ng-content select="dgt-page-header"></ng-content>
     </div>
   </div>
   <div fxFlex fxFlexFill class="split-body" fxLayout="row">
-    <div [fxFlex]="'90px'" fixedInViewport="true" class="split-rail" [hidden]="!opened || !railEnabled">
+    <div
+      [fxFlex]="'90px'"
+      fixedInViewport="true"
+      class="split-rail"
+      [hidden]="!opened || !railEnabled"
+    >
       <ng-content select="dgt-page-rail"></ng-content>
     </div>
-    <div [fxFlex]="sidenavSize" fixedInViewport="true" class="split-sidenav" [hidden]="!opened || !sidenavEnabled">
+    <div
+      [fxFlex]="sidenavSize"
+      fixedInViewport="true"
+      class="split-sidenav"
+      [hidden]="!opened || !sidenavEnabled"
+    >
       <ng-content select="dgt-page-sidenav"></ng-content>
     </div>
     <div fxFlex fxFlexFill fxLayout="column" class="split-content">
-      <div fxFlex="initial" class="split-content-header" [hidden]="!subHeaderEnabled">
+      <div
+        fxFlex="initial"
+        class="split-content-header"
+        [hidden]="!subHeaderEnabled"
+      >
         <ng-content select="dgt-page-sub-header"></ng-content>
       </div>
-      <div fxFlex fxFlexFill class="split-content-details" [class.split-content-details-padding]="contentPaddingEnabled">
+      <div
+        fxFlex
+        fxFlexFill
+        class="split-content-details"
+        [class.split-content-details-padding]="contentPaddingEnabled"
+      >
         <ng-content select="dgt-page-content"></ng-content>
       </div>
     </div>
   </div>
 </div>
 
-<div class="split-fab-container" fxLayout="row" fxLayoutGap="50px" fxLayoutAlign="end end" *ngIf="fabEnabled">
-  <div fxFlex="0 1 300px" class="split-fab-message" [@myAnimation] *ngIf="isFabHelpSummaryShown" [innerHTML]="fabHelpSummary"></div>
+<div
+  class="split-fab-container"
+  fxLayout="row"
+  fxLayoutGap="50px"
+  fxLayoutAlign="end end"
+  *ngIf="fabEnabled"
+>
+  <div
+    fxFlex="0 1 300px"
+    class="split-fab-message"
+    [@myAnimation]
+    *ngIf="isFabHelpSummaryShown"
+    [innerHTML]="fabHelpSummary"
+  ></div>
   <button fxFlex="0 0 56px" (click)="onFabClicked()" class="split-fab-avatar">
     <img src="assets/images/avatar/avatar.png" />
   </button>

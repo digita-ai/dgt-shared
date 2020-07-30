@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "peerDependencies": {
     "@angular/common": "^7.2.7",
+    "@types/node": "~11.9.5",
     "@angular/core": "^7.2.7",
     "@comunica/actor-init-sparql": "1.12.1",
     "@comunica/actor-init-sparql-rdfjs": "1.12.1",
@@ -15,7 +16,7 @@
   },
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",
-    "@types/n3": "^1.1.5",
+    "@types/n3": "1.1.6",
     "@types/uuid": "3.4.3"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",

@@ -71,8 +71,8 @@ export class DGTWorkflowService {
             res = this.workflows.filter(workflow =>
                 workflow
                 && workflow.source === source
-                && workflow.fields
-                && workflow.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
+                && workflow.predicates
+                && workflow.predicates.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
         }
 
         return res;

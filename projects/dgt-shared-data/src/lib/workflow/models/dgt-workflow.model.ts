@@ -3,6 +3,6 @@ import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model'
 
 export interface DGTWorkflow {
     actions: DGTWorkflowAction[];
-    fields: DGTLDPredicate[];
+    predicates: DGTLDPredicate[];
     source: string;
 }

@@ -14,11 +14,10 @@
     "@ngx-translate/core": "11.0.1",
     "@ngx-translate/http-loader": "4.0.0",
     "angularfire2": "5.1.1",
-    "@types/node": "~11.9.5",
-    "firebase": "5.8.4"
+    "firebase": "5.8.4",
+    "@types/node": "~11.9.5"
   },
   "devDependencies": {
-    
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
   "main": "src/public-api.ts",

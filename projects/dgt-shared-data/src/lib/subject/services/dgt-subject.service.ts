@@ -1,6 +1,6 @@
 import { Observable, forkJoin, of, concat, zip, merge } from 'rxjs';
 import { DGTSubject } from '../models/dgt-subject.model';
-import { switchMap, map, tap, concatAll } from 'rxjs/operators';
+import { switchMap, map, tap, concatAll, filter, mergeMap, flatMap } from 'rxjs/operators';
 import { DGTExchange } from '../models/dgt-subject-exchange.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import * as _ from 'lodash';
@@ -20,23 +20,32 @@ export class DGTSubjectService {
         private workflow: DGTWorkflowService
     ) { }
 
+    /**
+     * Retrieves all values for a given subject
+     * @param subject The subject for which values should be retrieved
+     */
     public getValuesForSubject(subject: DGTSubject): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
-
-        return of({ subject })
+        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'subject', operator: '==', value: subject.id }] })
             .pipe(
-                switchMap(data => this.data.getEntities<DGTExchange>('exchange',
-                    { conditions: [{ field: 'subject', operator: '==', value: subject.id }] }
-                )
-                    .pipe(map(exchanges => ({ exchanges, ...data })))),
-                switchMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
-                    .pipe(map(valuesPerExchange => ({ valuesPerExchange, ...data })))),
-                map(data => _.flatten(data.valuesPerExchange)),
-                // switchMap(data => data.valuesPerExchange),
-                tap(data => this.logger.debug(DGTSubjectService.name, 'Retrieved values for subject', data)),
+                mergeMap(exchanges => {
+                    if (exchanges.length) {
+                        return of(exchanges).pipe(
+                            mergeMap(xchngs => forkJoin(xchngs.map(xchng => this.getValuesForExchange(xchng)))),
+                            tap(val => this.logger.debug(DGTSubjectService.name, 'Retrieved values for exchanges', {val})),
+                            map(val => _.flatten(val))
+                        );
+                    } else {
+                        return of([]);
+                    }
+                }),
             );
     }
 
+    /**
+     * Retrieves all values for a given exchange
+     * @param exchange The exchange for which values should be retrieved
+     */
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
 

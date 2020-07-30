@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTDataService, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTLDTripleFactoryService } from '@digita/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -7,18 +7,29 @@ import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { Generator, Update, Triple, Term } from 'sparqljs';
 import * as _ from 'lodash';
-import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
+import { DGTCryptoService, DGTEnvironmentService } from '@digita/dgt-shared-utils';
+import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
+import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
+import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
-    private triples: DGTLDTripleFactoryService
+    private triples: DGTLDTripleFactoryService,
+    private crypto: DGTCryptoService,
+    private environment: DGTEnvironmentService,
+    private transformer: DGTSourceSolidTrustedAppTransformerService
   ) { }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to prepare source for connection', { connection, source });
 
     let res: Observable<DGTSourceSolid> = null;
@@ -32,13 +43,21 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
           switchMap(data => this.register(data.source, data.connection)
             .pipe(map(configuration => ({ ...source, configuration })))),
+          map(src => ({ ...src, state: DGTSourceState.PREPARED })),
         );
     }
+
+    this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source for connection', { connection, source });
 
     return res;
   }
 
   public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
 
     let res: Observable<DGTConnection<any>> = null;
@@ -66,9 +85,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-    if (!documentUri) {
-      throw new DGTErrorArgument('documentUri should be set', documentUri);
-    }
 
     if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
       throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
@@ -292,12 +308,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': '*/*'
     };
-    // const body = new HttpParams()
-    //     .set('username', loginData.username)
-    //     .set('name', loginData.name)
-    //     .set('password', loginData.password)
-    //     .set('repeat_password', loginData.password)
-    //     .set('email', loginData.email);
+
     const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;
 
     return this.http.post<any>(uri, body, headers)
@@ -489,19 +500,17 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   private register(source: DGTSourceSolid, connection: DGTConnectionSolid): Observable<DGTSourceSolidConfiguration> {
     this.logger.debug(DGTSourceSolidConnector.name, 'Registering client', { source });
 
-    const baseUri = this.config.get(c => c.baseURI);
-
     const encodedCallbackUri = connection.configuration.callbackUri;
     const uri = `${source.configuration.registration_endpoint}`;
     const headers = { 'Content-Type': 'application/json' };
     const params = {
       client_name: 'Digita Consumer Client',
-      client_uri: baseUri,
-      logo_uri: `${baseUri}assets/images/logo.png`,
+      client_uri: this.environment.baseUri,
+      logo_uri: `${this.environment.baseUri}assets/images/logo.png`,
       response_types: ['code', 'code id_token token'],
       grant_types: ['authorization_code'],
       default_max_age: 7200,
-      post_logout_redirect_uris: [`${baseUri}connect/logout`],
+      post_logout_redirect_uris: [`${this.environment.baseUri}connect/logout`],
       redirect_uris: [encodedCallbackUri]
     };
     const body = JSON.stringify(Object.assign({}, params, {}));
@@ -531,12 +540,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     }, client);
 
     // generate state and nonce random octets
-    params.state = Array.from(crypto.getRandomValues(new Uint8Array(16)));
-    params.nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)));
+    params.state = this.crypto.generateRandomNumbers(16);
+    params.nonce = this.crypto.generateRandomNumbers(16);
 
     return forkJoin(
-      crypto.subtle.digest({ name: 'SHA-256' }, new Uint8Array(params.state)),
-      crypto.subtle.digest({ name: 'SHA-256' }, new Uint8Array(params.nonce))
+      this.crypto.digest(new Uint8Array(params.state)),
+      this.crypto.digest(new Uint8Array(params.nonce)),
     )
       .pipe(
         map(digests => ({ digests })),
@@ -558,12 +567,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
           return data;
         }),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, connection })),
-        switchMap(data => this.generateSessionKeys()
+        switchMap(data => this.crypto.generateKeyPair()
           .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
         map(data => {
-          connection.configuration.privateKey = JSON.stringify(data.sessionKeys.private);
-          params.key = data.sessionKeys.public;
+          connection.configuration.privateKey = JSON.stringify(data.sessionKeys.privateKey);
+          params.key = data.sessionKeys.publicKey;
         }),
         switchMap(data => {
           if (source.configuration.request_parameter_supported) {
@@ -616,31 +625,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     return res;
   }
 
-  private generateSessionKeys(): Observable<{ public: JsonWebKey, private: JsonWebKey }> {
-
-    return from(crypto.subtle.generateKey(
-      {
-        name: 'RSASSA-PKCS1-v1_5',
-        modulusLength: 2048,
-        publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-        hash: { name: 'SHA-256' },
-      },
-      true,
-      ['sign', 'verify']
-    ))
-      .pipe(
-        switchMap(data => forkJoin(
-          crypto.subtle.exportKey('jwk', data.publicKey),
-          crypto.subtle.exportKey('jwk', data.privateKey)
-        )),
-        map(data => {
-          const [publicJwk, privateJwk] = data;
-
-          return { public: publicJwk, private: privateJwk };
-        })
-      );
-  }
-
   private encode(data): string {
     const pairs = [];
 
@@ -651,13 +635,162 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     return pairs.join('&');
   }
 
-  private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
+  public convert(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+    let res: DGTLDTriple[] = null;
 
-    return DGTSourceSolidToken.issueFor(
-      uri,
-      connection.configuration.privateKey,
-      source.configuration.client_id,
-      connection.configuration.idToken
+    const quads = this.parser.parse(response);
+    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { quads });
+
+    if (quads) {
+      this.logger.debug(DGTSourceSolidConnector.name, 'Starting to convert quads to values', { quads, webId: documentUri });
+      res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
+      res = res.map(value => ({
+        ...value, subject: value.subject.value === '#me' ?
+          value.subject : value.subject
+        // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
+      }));
+      res = this.clean(res);
+    }
+
+    return res;
+  }
+
+  private convertOne(documentUri: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
+    const predicateSplit = quad.predicate.value.split('#');
+
+    const subject = this.convertOneSubject(documentUri, quad, connection);
+    const object = this.convertOneObject(documentUri, quad);
+
+    return {
+      id: uuid(),
+      exchange: exchange ? exchange.id : null,
+      connection: connection ? connection.id : null,
+      predicate: {
+        name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
+        namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
+      },
+      subject,
+      object,
+      originalValue: object,
+      source: source ? source.id : null
+    };
+  }
+
+  private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
+    let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
+    if (subject && subject.value && subject.value.startsWith('#me')) {
+      // const me = connection.configuration.webId.split('/profile/card#me')[0];
+
+      subject = {
+        value: `${documentUri}`,
+        termType: DGTLDTermType.REFERENCE
+      };
+    } else if (subject && subject.value && subject.value.startsWith('#')) {
+      subject = {
+        value: `${documentUri.split('#')[0]}${quad.subject.value}`,
+        termType: DGTLDTermType.REFERENCE
+      };
+    }
+
+    return subject;
+  }
+
+  private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
+    let res = null;
+
+    if (quad.object.termType === 'Literal') {
+      res = {
+        dataType: quad.object.datatypeString,
+        value: quad.object.value,
+        termType: DGTLDTermType.LITERAL
+      };
+    } else {
+      if (quad.object.value.startsWith('#')) {
+        res = {
+          value: `${documentUri.split('#')[0]}${quad.object.value}`,
+          termType: DGTLDTermType.REFERENCE
+        };
+      } else {
+        res = {
+          value: quad.object.value,
+          termType: DGTLDTermType.REFERENCE
+        };
+      }
+    }
+
+
+    return res;
+  }
+
+  private clean(values: DGTLDTriple[]): DGTLDTriple[] {
+    return values
+      .map(value => {
+        const updatedValue = value;
+        const stringValue = (value.object.value as string);
+
+        if (value && stringValue.startsWith('undefined/')) {
+          const stringValueSplit = stringValue.split('undefined/')[1];
+          const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
+
+          updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
+        }
+
+        return updatedValue;
+      });
+  }
+
+  /**
+   * Checks if a specific connection has sufficient access rights.
+   * @param connection The connection for which to check access rights.
+   * @param justification The justification which indicates the amount of access rights required.
+   * @param exchange The exchange for which to check access rights.
+   * @param source The source on which the connection is hosted.
+   */
+  public checkAccessRights(connection: DGTConnectionSolid, justification: DGTJustification, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, justification });
+
+    if (!connection) {
+      throw new DGTErrorArgument('Argument connection should be set.', connection);
+    }
+
+    if (!justification) {
+      throw new DGTErrorArgument('Argument justification should be set.', justification);
+    }
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
+    return of({ connection, justification }).pipe(
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, justification, exchange, connection, source, this.transformer).pipe(
+        map(trustedApps => ({ ...data, trustedApps }))
+      )),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
+      map(data => ({ ...data, ourTrustedApp: data.trustedApps.find(app => this.environment.baseUri.includes(app.origin)) })),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Found our trusted app', data.ourTrustedApp)),
+      map(data => {
+        let res = false;
+        const aclsNeeded: string[] = data.justification.aclNeeded ? data.justification.aclNeeded : [DGTSourceSolidTrustedAppMode.READ];
+
+
+        if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {
+          res = true
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Checked if acl modes are included', { res, aclsNeeded, ourTrustedApp: data.ourTrustedApp })
+
+        return res;
+      })
     );
+  }
+
+  private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
+    return of('');
+    // return DGTSourceSolidToken.issueFor(
+    //   uri,
+    //   connection.configuration.privateKey,
+    //   source.configuration.client_id,
+    //   connection.configuration.idToken
+    // );
   }
 }
