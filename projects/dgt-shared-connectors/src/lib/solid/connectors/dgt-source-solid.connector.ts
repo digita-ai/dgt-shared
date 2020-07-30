@@ -12,6 +12,8 @@ import { DGTCryptoService, DGTEnvironmentService } from '@digita/dgt-shared-util
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
+import { Quad } from 'n3';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -633,110 +635,6 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     });
 
     return pairs.join('&');
-  }
-
-  public convert(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
-    let res: DGTLDTriple[] = null;
-
-    const quads = this.parser.parse(response);
-    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { quads });
-
-    if (quads) {
-      this.logger.debug(DGTSourceSolidConnector.name, 'Starting to convert quads to values', { quads, webId: documentUri });
-      res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
-      res = res.map(value => ({
-        ...value, subject: value.subject.value === '#me' ?
-          value.subject : value.subject
-        // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
-      }));
-      res = this.clean(res);
-    }
-
-    return res;
-  }
-
-  private convertOne(documentUri: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
-    const predicateSplit = quad.predicate.value.split('#');
-
-    const subject = this.convertOneSubject(documentUri, quad, connection);
-    const object = this.convertOneObject(documentUri, quad);
-
-    return {
-      id: uuid(),
-      exchange: exchange ? exchange.id : null,
-      connection: connection ? connection.id : null,
-      predicate: {
-        name: predicateSplit && predicateSplit.length === 2 ? predicateSplit[1] : null,
-        namespace: predicateSplit && predicateSplit.length === 2 ? predicateSplit[0] + '#' : null,
-      },
-      subject,
-      object,
-      originalValue: object,
-      source: source ? source.id : null
-    };
-  }
-
-  private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
-    let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
-    if (subject && subject.value && subject.value.startsWith('#me')) {
-      // const me = connection.configuration.webId.split('/profile/card#me')[0];
-
-      subject = {
-        value: `${documentUri}`,
-        termType: DGTLDTermType.REFERENCE
-      };
-    } else if (subject && subject.value && subject.value.startsWith('#')) {
-      subject = {
-        value: `${documentUri.split('#')[0]}${quad.subject.value}`,
-        termType: DGTLDTermType.REFERENCE
-      };
-    }
-
-    return subject;
-  }
-
-  private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
-    let res = null;
-
-    if (quad.object.termType === 'Literal') {
-      res = {
-        dataType: quad.object.datatypeString,
-        value: quad.object.value,
-        termType: DGTLDTermType.LITERAL
-      };
-    } else {
-      if (quad.object.value.startsWith('#')) {
-        res = {
-          value: `${documentUri.split('#')[0]}${quad.object.value}`,
-          termType: DGTLDTermType.REFERENCE
-        };
-      } else {
-        res = {
-          value: quad.object.value,
-          termType: DGTLDTermType.REFERENCE
-        };
-      }
-    }
-
-
-    return res;
-  }
-
-  private clean(values: DGTLDTriple[]): DGTLDTriple[] {
-    return values
-      .map(value => {
-        const updatedValue = value;
-        const stringValue = (value.object.value as string);
-
-        if (value && stringValue.startsWith('undefined/')) {
-          const stringValueSplit = stringValue.split('undefined/')[1];
-          const stringSubjectBase = value.subject.value.split('/profile/card#me')[0];
-
-          updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
-        }
-
-        return updatedValue;
-      });
   }
 
   /**

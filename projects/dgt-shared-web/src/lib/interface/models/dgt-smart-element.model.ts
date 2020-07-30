@@ -11,7 +11,7 @@ export abstract class DGTSmartElement<T extends DGTBaseRootState<DGTBaseAppState
   public unsubscribe: Subject<any> = new Subject();
 
   constructor(protected store: DGTStateStoreService<T>) {
-    this.store.select(state => state.app.notifications).subscribe(notifications => this.notifications = notifications);
+    this.store.select(state => state.app.notifications).subscribe((notifications: DGTNotification[]) => this.notifications = notifications);
   }
 
   ngOnDestroy(): void {
