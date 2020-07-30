@@ -6,5 +6,5 @@ import { DGTStateSelector } from '../models/dgt-state-selector.model';
 
 export abstract class DGTStateStoreService<T extends DGTBaseRootState<DGTBaseAppState>> {
     public abstract dispatch(action: DGTAction);
-    public abstract select<K, L>(mapFn: (state: T) => K, selector?: DGTStateSelector<K, L>): Observable<L>;
+    public abstract select<K, L=K>(mapFn: (state: T) => K, selector?: DGTStateSelector<K, L>): Observable<L>;
 }

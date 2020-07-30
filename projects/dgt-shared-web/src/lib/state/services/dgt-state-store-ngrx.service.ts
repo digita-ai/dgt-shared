@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DGTBaseRootState } from '../models/dgt-base-root-state.model';
 import { DGTStateStoreService } from './dgt-state-store.service';
@@ -23,12 +23,12 @@ export class DGTStateStoreNGRXService<T extends DGTBaseRootState<DGTBaseAppState
         this.store.dispatch(action);
     }
 
-    public select<K, L>(mapFn: (state: T) => K, selector?: DGTStateSelector<K, L>): Observable<L> {
+    public select<K, L=K>(mapFn: (state: T) => K, selector?: DGTStateSelector<K, L>): Observable<L> {
         this.logger.debug(DGTStateStoreNGRXService.name, 'Selecting value from store.', { mapFn, selector });
 
         return this.store.select(mapFn)
             .pipe(
-                switchMap(data => selector.execute(data))
+                switchMap(data => selector ? selector.execute(data) : of(data as any))
             );
     }
 }
