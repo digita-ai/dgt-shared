@@ -10,7 +10,7 @@ export const configuration: DGTTestConfiguration = {
             ...imports,
         ],
         providers: [
-            ...providers
+            ...providers,
         ],
     }
 };

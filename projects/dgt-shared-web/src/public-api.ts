@@ -61,6 +61,9 @@ export { DGTPageComponent } from './lib/interface/components/dgt-page/dgt-page.c
 export { DGTPageContentComponent } from './lib/interface/components/dgt-page-content/dgt-page-content.component';
 export { DGTPageSidenavComponent } from './lib/interface/components/dgt-page-sidenav/dgt-page-sidenav.component';
 export { DGTPageHeaderComponent } from './lib/interface/components/dgt-page-header/dgt-page-header.component';
+export { DGTPageHeaderLogoComponent } from './lib/interface/components/dgt-page-header-logo/dgt-page-header-logo.component';
+export { DGTPageHeaderControlsComponent } from './lib/interface/components/dgt-page-header-controls/dgt-page-header-controls.component';
+export { DGTPageHeaderTitleComponent } from './lib/interface/components/dgt-page-header-title/dgt-page-header-title.component';
 export { DGTPageSubHeaderComponent } from './lib/interface/components/dgt-page-sub-header/dgt-page-sub-header.component';
 export { DGTPageRailComponent } from './lib/interface/components/dgt-page-rail/dgt-page-rail.component';
 export { DGTPageRailItemComponent } from './lib/interface/components/dgt-page-rail-item/dgt-page-rail-item.component';

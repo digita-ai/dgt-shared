@@ -35,6 +35,7 @@ export { DGTConnectionState } from './lib/connection/models/dgt-connection-state
 export { DGTConnectionsService } from './lib/connection/services/dgt-connection.service';
 export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove-prefix.workflow-action';
 export { DGTSubject } from './lib/subject/models/dgt-subject.model';
+export { DGTInvite } from './lib/invite/models/dgt-invite.model';
 export { DGTSourceService } from './lib/source/services/dgt-source.service';
 export { DGTSource } from './lib/source/models/dgt-source.model';
 export { DGTSourceSolid } from './lib/source/models/dgt-source-solid.model';
@@ -55,3 +56,5 @@ export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
+export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
+export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
