@@ -11,6 +11,9 @@ import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
 import { DGTCryptoService } from '@digita/dgt-shared-utils';
+import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
+import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
+import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -19,7 +22,8 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
-    private crypto: DGTCryptoService
+    private crypto: DGTCryptoService,
+    private transformer: DGTSourceSolidTrustedAppTransformerService
   ) { }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
@@ -41,7 +45,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
           switchMap(data => this.register(data.source, data.connection)
             .pipe(map(configuration => ({ ...source, configuration })))),
-          map(src => ({...src, state: DGTSourceState.PREPARED})),
+          map(src => ({ ...src, state: DGTSourceState.PREPARED })),
         );
     }
 
@@ -51,7 +55,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
-  
+
     if (!source) {
       throw new DGTErrorArgument('Argument source should be set.', source);
     }
@@ -83,7 +87,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-    
+
     if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
       throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
     }
@@ -306,12 +310,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       'Content-Type': 'application/x-www-form-urlencoded',
       'Accept': '*/*'
     };
-    // const body = new HttpParams()
-    //     .set('username', loginData.username)
-    //     .set('name', loginData.name)
-    //     .set('password', loginData.password)
-    //     .set('repeat_password', loginData.password)
-    //     .set('email', loginData.email);
+
     const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;
 
     return this.http.post<any>(uri, body, headers)
@@ -742,6 +741,53 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
         return updatedValue;
       });
+  }
+
+  /**
+   * Checks if a specific connection has sufficient access rights.
+   * @param connection The connection for which to check access rights.
+   * @param justification The justification which indicates the amount of access rights required.
+   * @param exchange The exchange for which to check access rights.
+   * @param source The source on which the connection is hosted.
+   */
+  public checkAccessRights(connection: DGTConnectionSolid, justification: DGTJustification, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, justification });
+
+    if (!connection) {
+      throw new DGTErrorArgument('Argument connection should be set.', connection);
+    }
+
+    if (!justification) {
+      throw new DGTErrorArgument('Argument justification should be set.', justification);
+    }
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
+    const baseUri = this.config.get(conf => conf.baseURI);
+
+    return of({ connection, justification, baseUri }).pipe(
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, justification, exchange, connection, source, this.transformer).pipe(
+        map(trustedApps => ({ ...data, trustedApps }))
+      )),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
+      map(data => ({ ...data, ourTrustedApp: data.trustedApps.find(app => baseUri.includes(app.origin)) })),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Found our trusted app', data.ourTrustedApp)),
+      map(data => {
+        let res = false;
+        const aclsNeeded: string[] = data.justification.aclNeeded ? data.justification.aclNeeded : [DGTSourceSolidTrustedAppMode.READ];
+
+
+        if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {
+          res = true
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Checked if acl modes are included', { res, aclsNeeded, ourTrustedApp: data.ourTrustedApp })
+
+        return res;
+      })
+    );
   }
 
   private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
