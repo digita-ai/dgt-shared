@@ -2,6 +2,10 @@
 
 set -euxo pipefail;
 
+rm -rf node_modules/ &&
+rm yarn.lock &&
+yarn install
+
 ng build dgt-shared-test &&
 
 cd dist/dgt-shared-test &&
