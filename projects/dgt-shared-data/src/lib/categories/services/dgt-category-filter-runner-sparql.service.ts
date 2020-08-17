@@ -13,7 +13,7 @@ import { Injectable } from '@angular/core';
 import { ActorInitSparql } from '@comunica/actor-init-sparql/lib/ActorInitSparql-browser';
 import { Term } from 'rdf-js';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
-import { DGTLDNode } from '@digita/dgt-shared-data/public-api';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 @Injectable()
 export class DGTCategoryFilterRunnerSparqlService implements DGTCategoryFilterRunnerService<DGTCategoryFilterSparql> {

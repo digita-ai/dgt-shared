@@ -1,5 +1,5 @@
-import { DGTEntity } from '@digita/dgt-shared-data/public-api';
 import { DGTInviteState } from './dgt-invite-state.model';
+import { DGTEntity } from '../../metadata/models/dgt-entity.model';
 
 export interface DGTInvite extends DGTEntity {
     subject: string;
