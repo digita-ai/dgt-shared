@@ -35,7 +35,7 @@ export class DGTCategoryFilterRunnerBGPService implements DGTCategoryFilterRunne
             predicate =>
                 predicate.namespace === triple.predicate.namespace
                 && predicate.name === triple.predicate.name
-        )
+        );
 
         return match ? true : false;
     }
