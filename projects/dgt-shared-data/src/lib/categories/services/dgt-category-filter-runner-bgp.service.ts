@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class DGTCategoryFilterRunnerBGPService implements DGTCategoryFilterRunnerService<DGTCategoryFilterBGP> {
     public readonly type: DGTCategoryFilterType = DGTCategoryFilterType.BGP;
-    
+
     run(filter: DGTCategoryFilterBGP, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
