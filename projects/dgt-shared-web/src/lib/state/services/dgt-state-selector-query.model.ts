@@ -1,5 +1,5 @@
 import { DGTStateSelector } from '../models/dgt-state-selector.model';
-import { DGTQueryService, DGTQuery } from '@digita/dgt-shared-data/public-api';
+import { DGTQueryService, DGTQuery } from '@digita/dgt-shared-data';
 import { Observable, of } from 'rxjs';
 
 export class DGTStateSelectorQuery<K> implements DGTStateSelector<K, K> {

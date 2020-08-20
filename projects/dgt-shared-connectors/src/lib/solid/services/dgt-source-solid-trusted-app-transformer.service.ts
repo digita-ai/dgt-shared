@@ -1,4 +1,4 @@
-import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDEntity, DGTConnectionSolid } from '@digita/dgt-shared-data';
+import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita/dgt-shared-data';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
@@ -21,7 +21,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of trustedapps
      */
-    public toDomain(entities: DGTLDEntity[]): Observable<DGTSourceSolidTrustedApp[]> {
+    public toDomain(entities: DGTLDResource[]): Observable<DGTSourceSolidTrustedApp[]> {
         if (!entities) {
             throw new DGTErrorArgument('Argument entities should be set.', entities);
         }
@@ -38,7 +38,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of trustedapps
      */
-    private toDomainOne(entity: DGTLDEntity): Observable<DGTSourceSolidTrustedApp[]> {
+    private toDomainOne(entity: DGTLDResource): Observable<DGTSourceSolidTrustedApp[]> {
         if (!entity) {
             throw new DGTErrorArgument('Argument entity should be set.', entity);
         }
@@ -70,7 +70,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data entities.
      */
-    public toTriples(trustedapps: DGTSourceSolidTrustedApp[], connection: DGTConnectionSolid): Observable<DGTLDEntity[]> {
+    public toTriples(trustedapps: DGTSourceSolidTrustedApp[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
         throw new Error();
     }
 
@@ -81,7 +81,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns The transformed trustedapp.
      */
-    private transformOne(trustedAppTriple: DGTLDTriple, entity: DGTLDEntity): DGTSourceSolidTrustedApp {
+    private transformOne(trustedAppTriple: DGTLDTriple, entity: DGTLDResource): DGTSourceSolidTrustedApp {
         this.logger.debug(DGTSourceSolidTrustedAppTransformerService.name, 'Starting to transform one entity', { trustedAppTriple, entity });
 
         if (!trustedAppTriple) {
