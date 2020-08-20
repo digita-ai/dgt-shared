@@ -4,7 +4,7 @@ import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-co
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
-import { DGTHttpResponse } from '@digita/dgt-shared-utils';
+import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
 import { Injectable } from '@angular/core';
