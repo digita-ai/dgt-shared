@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 ng build dgt-shared-test
 ng build dgt-shared-utils
