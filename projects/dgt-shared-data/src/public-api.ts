@@ -51,7 +51,7 @@ export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.mod
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
 export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
 export { DGTLDDataType } from './lib/linked-data/models/dgt-ld-data-type.model';
-export { DGTLDResource as DGTLDEntity } from './lib/linked-data/models/dgt-ld-resource.model';
+export { DGTLDResource } from './lib/linked-data/models/dgt-ld-resource.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
 export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
