@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { DGTMockDataService } from './metadata/services/dgt-mock-data.service';
-import { DGTSubjectService } from './subject/services/dgt-subject.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTSourceService } from './source/services/dgt-source.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
@@ -10,6 +9,7 @@ import { DGTCategoryFilterRunnerBGPService } from './categories/services/dgt-cat
 import { DGTCategoryFilterService } from './categories/services/dgt-category-filter.service';
 import { DGTCategoryFilterRunnerSparqlService } from './categories/services/dgt-category-filter-runner-sparql.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
+import { DGTHolderService } from './holder/services/dgt-holder.service';
 
 export const declarations = [];
 export const imports = [
@@ -23,7 +23,7 @@ export const providers = [
   DGTMockDataService,
   DGTSourceService,
   DGTCacheService,
-  DGTSubjectService,
+  DGTHolderService,
   DGTWorkflowService,
   DGTLDTripleFactoryService
 ];

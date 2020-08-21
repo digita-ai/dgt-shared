@@ -3,11 +3,10 @@ import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTSubject } from '../../subject/models/dgt-subject.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTQuery } from '../../metadata/models/dgt-query.model';
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
 export class DGTCacheService {

@@ -1,8 +1,7 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
@@ -12,6 +11,7 @@ import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
 export class DGTWorkflowService {

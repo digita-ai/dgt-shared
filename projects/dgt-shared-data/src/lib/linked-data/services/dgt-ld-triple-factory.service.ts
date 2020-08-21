@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
@@ -9,6 +8,7 @@ import { DGTLDNode } from '../models/dgt-ld-node.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { v4 as uuid } from 'uuid';
 import { N3Parser, Quad, Parser } from 'n3';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
 export class DGTLDTripleFactoryService {
