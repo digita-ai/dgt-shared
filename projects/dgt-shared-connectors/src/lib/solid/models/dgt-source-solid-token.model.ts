@@ -1,7 +1,7 @@
-const { URL } = require('whatwg-url');
 import { JWT, JWK } from '@solid/jose';
 import { Observable, from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { URL } from 'whatwg-url';
 
 const DEFAULT_MAX_AGE = 3600; // Default token expiration, in seconds
 
@@ -15,19 +15,19 @@ export class DGTSourceSolidToken extends JWT {
         const jwk = JSON.parse(sessionKey);
 
         return from(JWK.importKey(jwk))
-        .pipe(
-            map(importedSessionJwk => {
-                const options = {
-                    aud: (new URL(resourceServerUri)).origin,
-                    key: importedSessionJwk,
-                    iss: clientId,
-                    idToken
-                };
+            .pipe(
+                map(importedSessionJwk => {
+                    const options = {
+                        aud: (new URL(resourceServerUri)).origin,
+                        key: importedSessionJwk,
+                        iss: clientId,
+                        idToken
+                    };
 
-                return DGTSourceSolidToken.issue(options);
-            }),
-            switchMap((jwt: any) => from(jwt.encode()))
-        );
+                    return DGTSourceSolidToken.issue(options);
+                }),
+                switchMap((jwt: any) => from(jwt.encode()))
+            );
     }
 
     static issue(options) {

@@ -8,11 +8,11 @@ import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDNode } from '../models/dgt-ld-node.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { v4 as uuid } from 'uuid';
-import { N3Parser, Quad, Parser } from 'n3';
+import { Quad, Parser } from 'n3';
 
 @Injectable()
 export class DGTLDTripleFactoryService {
-    private parser: N3Parser<Quad> = new Parser();
+    private parser: Parser<Quad> = new Parser();
 
     constructor(private logger: DGTLoggerService) { }
 
