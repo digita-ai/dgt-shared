@@ -47,5 +47,9 @@ cd dist/dgt-shared-web &&
 yarn link &&
 cd ../dgt-shared-connectors &&
 yarn link &&
-cd ../..;
+cd ../.. &&
+
+yarn link @digita/dgt-shared-utils &&
+yarn link @digita/dgt-shared-data;
+
 
