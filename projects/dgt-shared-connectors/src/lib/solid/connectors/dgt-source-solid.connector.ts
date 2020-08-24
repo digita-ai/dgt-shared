@@ -12,8 +12,6 @@ import { DGTCryptoService, DGTEnvironmentService } from '@digita/dgt-shared-util
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
-import { Quad } from 'n3';
-import { v4 } from 'uuid';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
