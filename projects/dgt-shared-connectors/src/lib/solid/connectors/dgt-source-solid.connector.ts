@@ -145,6 +145,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       .pipe(
         map(entities => ({
           entities,
+          //TODO check if subject.value below is correct or should be renamed to holder
           groupedEntities: _.groupBy(entities, 'subject.value'),
           domainEntities,
         })),

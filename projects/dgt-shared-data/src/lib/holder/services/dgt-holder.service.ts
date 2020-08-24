@@ -21,12 +21,12 @@ export class DGTHolderService {
     ) { }
 
     /**
-     * Retrieves all values for a given subject
-     * @param subject The subject for which values should be retrieved
+     * Retrieves all values for a given holder
+     * @param holder The holder for which values should be retrieved
      */
-    public getValuesForSubject(subject: DGTHolder): Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTHolderService.name, 'Getting subject values', { subject });
-        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'subject', operator: '==', value: subject.id }] })
+    public getValuesForHolder(holder: DGTHolder): Observable<DGTLDTriple[]> {
+        this.logger.debug(DGTHolderService.name, 'Getting holder values', { holder });
+        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'holder', operator: '==', value: holder.id }] })
             .pipe(
                 mergeMap(exchanges => {
                     if (exchanges.length) {

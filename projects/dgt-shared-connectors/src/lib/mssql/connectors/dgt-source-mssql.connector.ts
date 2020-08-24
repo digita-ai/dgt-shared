@@ -16,7 +16,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
         return of(null);
     }
 
-    public query<T extends DGTLDResource>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+    public query<T extends DGTLDResource>(holderUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         const config = {
             user: source.configuration.user,
             password: source.configuration.password,
@@ -46,7 +46,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                 switchMap(data => from(data.pool.request().query(source.configuration.command(connection.configuration.personId)))
                     .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
-                map(data => this.convertResult(subjectUri, data.result, exchange, source.configuration.mapping, connection)),
+                map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
                 switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
             );
@@ -67,7 +67,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                                 connection: connection.id,
                                 exchange: exchange.id,
                                 subject: {
-                                    value: exchange.subject,
+                                    value: exchange.holder,
                                     termType: DGTLDTermType.REFERENCE
                                 },
                                 source: exchange.source,

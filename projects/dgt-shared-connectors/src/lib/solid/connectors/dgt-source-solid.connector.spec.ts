@@ -44,7 +44,7 @@ describe('DGTSourceSolidConnector', () => {
             const exchange: DGTExchange = {
                 id: 'e-1',
                 justification: null,
-                subject: null,
+                holder: null,
                 source: 's-1',
                 connection: 'c-1',
             };
