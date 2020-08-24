@@ -112,7 +112,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             connection: connection.id,
             source: source.id,
             documentUri,
-            subject: {
+            holder: {
               value: uri,
               termType: DGTLDTermType.REFERENCE
             },

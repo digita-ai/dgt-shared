@@ -35,6 +35,7 @@ export class DGTLDTripleFactoryService {
         this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { quads, documentUri });
         res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
         res = res.map(value => ({
+            // TODO is subject correct in this context ? - i'm thinking yes because DGTLDTriple
             ...value, subject: value.subject && value.subject.value === '#me' ?
                 value.subject : value.subject
             // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject

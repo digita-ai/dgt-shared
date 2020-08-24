@@ -8,5 +8,5 @@ import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 export interface DGTSourceConnector<T, S> {
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTConnection<S>>;
-    query<R extends DGTLDResource>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>
+    query<R extends DGTLDResource>(holderUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>
 }
