@@ -13,6 +13,7 @@ import {
   MatButtonModule,
   MatFormFieldModule,
   MatInputModule,
+  MatSelectModule,
 } from '@angular/material';
 import { DGTButtonComponent } from './interface/components/dgt-button/dgt-button.component';
 import { DGTButtonConfirmComponent } from './interface/components/dgt-button-confirm/dgt-button-confirm.component';
@@ -69,6 +70,17 @@ import { DGTPageHeaderTitleComponent } from './interface/components/dgt-page-hea
 import { DGTPageHeaderComponent } from './interface/components/dgt-page-header/dgt-page-header.component';
 import { DGTPageHeaderLogoComponent } from './interface/components/dgt-page-header-logo/dgt-page-header-logo.component';
 import { DGTPageHeaderControlsComponent } from './interface/components/dgt-page-header-controls/dgt-page-header-controls.component';
+import { DGTDataInterfaceStandardComponent } from './interface/components/data/dgt-data-interface-standard/dgt-data-interface-standard.component';
+import { DGTDataInterfaceSurveysComponent } from './interface/components/data/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
+import { DGTDataValueComponent } from './interface/components/data/dgt-data-value/dgt-data-value.component';
+import { DGTDataInterfacePhoneValueComponent } from './interface/components/data/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
+import { DGTDataInterfacePhoneComponent } from './interface/components/data/dgt-data-interface-phone/dgt-data-interface-phone.component';
+import { DGTDataInterfaceEmailComponent } from './interface/components/data/dgt-data-interface-email/dgt-data-interface-email.component';
+import { DGTDataFieldComponent } from './interface/components/data/dgt-data-field/dgt-data-field.component';
+import { DGTDataInterfaceDescentComponent } from './interface/components/data/dgt-data-interface-descent/dgt-data-interface-descent.component';
+import { DGTDataInterfaceEmailValueComponent } from './interface/components/data/dgt-data-interface-email-value/dgt-data-interface-email-value.component';
+import { DGTDataCategoryComponent } from './interface/components/data/dgt-data-category/dgt-data-category.component';
+import { DGTDataGroupComponent } from './interface/components/data/dgt-data-group/dgt-data-group.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -124,6 +136,17 @@ export const declarations = [
   DGTPageHeaderLogoComponent,
   DGTPageHeaderControlsComponent,
   DGTPageHeaderTitleComponent,
+  DGTDataValueComponent,
+  DGTDataInterfaceSurveysComponent,
+  DGTDataInterfaceStandardComponent,
+  DGTDataInterfacePhoneValueComponent,
+  DGTDataInterfacePhoneComponent,
+  DGTDataInterfaceEmailValueComponent,
+  DGTDataInterfaceEmailComponent,
+  DGTDataFieldComponent,
+  DGTDataInterfaceDescentComponent,
+  DGTDataCategoryComponent,
+  DGTDataGroupComponent,
 ];
 export const imports: (any[] | Type<any>)[] = [
   CommonModule,
@@ -138,6 +161,7 @@ export const imports: (any[] | Type<any>)[] = [
   MatFormFieldModule,
   MatInputModule,
   MatPaginatorModule,
+  MatSelectModule,
   DGTSharedUtilsModule,
   DGTSharedDataModule,
 ];

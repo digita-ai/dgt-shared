@@ -66,3 +66,9 @@ export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
+export { DGTDataValue } from './lib/data-value/models/data-value.model';
+export { DGTDataGroup } from './lib/data-value/models/data-group.model';
+export { DGTDataInterface } from './lib/data-value/models/data-category-interface.model';
+export { DGTDataValueTransformerService } from './lib/data-value/services/data-transformer-value.service';
+export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-interface-host.directive';
+export { DGTDataValueService } from './lib/data-value/services/data-value.service';

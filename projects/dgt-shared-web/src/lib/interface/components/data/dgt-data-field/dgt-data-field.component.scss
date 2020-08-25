@@ -1,0 +1,10 @@
+@import 'styles';
+
+:host {
+    margin-bottom: $measure-gutter-large;
+    display: block;
+}
+
+mat-form-field {
+    width: 100%;
+}

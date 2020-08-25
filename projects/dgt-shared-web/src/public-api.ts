@@ -1,7 +1,6 @@
 /*
  * Public API Surface of dgt-shared-web
  */
-
 export { DGTPageContentGroupHeader } from './lib/interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
 export { DGTPageContentHeaderComponent } from './lib/interface/components/dgt-page-content-header/dgt-page-content-header.component';
 export { DGTPageContentHeaderTitleComponent } from './lib/interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
@@ -83,3 +82,15 @@ export { DGTNotificationComponent } from './lib/interface/components/dgt-notific
 export { DGTSectionContainer } from './lib/interface/models/dgt-section-container.model';
 export { DGTSectionState } from './lib/interface/models/dgt-section-style.model';
 export { DGTColor } from './lib/interface/models/dgt-color.model';
+export { DGTDataInterfaceFactoryService } from './lib/interface/services/data-interface-factory.service';
+export { DGTDataFieldComponent } from './lib/interface/components/data/dgt-data-field/dgt-data-field.component';
+export { DGTDataInterfaceDescentComponent } from './lib/interface/components/data/dgt-data-interface-descent/dgt-data-interface-descent.component';
+export { DGTDataInterfaceEmailComponent } from './lib/interface/components/data/dgt-data-interface-email/dgt-data-interface-email.component';
+export { DGTDataInterfaceEmailValueComponent } from './lib/interface/components/data/dgt-data-interface-email-value/dgt-data-interface-email-value.component';
+export { DGTDataInterfacePhoneComponent } from './lib/interface/components/data/dgt-data-interface-phone/dgt-data-interface-phone.component';
+export { DGTDataInterfacePhoneValueComponent } from './lib/interface/components/data/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
+export { DGTDataInterfaceStandardComponent } from './lib/interface/components/data/dgt-data-interface-standard/dgt-data-interface-standard.component';
+export { DGTDataInterfaceSurveysComponent } from './lib/interface/components/data/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
+export { DGTDataValueComponent } from './lib/interface/components/data/dgt-data-value/dgt-data-value.component';
+export { DGTDataCategoryComponent } from './lib/interface/components/data/dgt-data-category/dgt-data-category.component';
+export { DGTDataGroupComponent } from './lib/interface/components/data/dgt-data-group/dgt-data-group.component';
