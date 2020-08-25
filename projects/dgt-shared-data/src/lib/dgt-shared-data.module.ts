@@ -9,9 +9,12 @@ import { DGTCategoryFilterRunnerBGPService } from './categories/services/dgt-cat
 import { DGTCategoryFilterService } from './categories/services/dgt-category-filter.service';
 import { DGTCategoryFilterRunnerSparqlService } from './categories/services/dgt-category-filter-runner-sparql.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
+import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
 import { DGTHolderService } from './holder/services/dgt-holder.service';
 
-export const declarations = [];
+export const declarations = [
+  DGTDataInterfaceHostDirective
+];
 export const imports = [
   DGTSharedUtilsModule
 ];
@@ -33,7 +36,7 @@ export const providers = [
   providers,
   imports,
   exports: [
-
+    DGTDataInterfaceHostDirective
   ]
 })
 export class DGTSharedDataModule { }

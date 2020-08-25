@@ -1,0 +1,11 @@
+<ng-container *ngIf="values">
+  <dgt-page-content-group-header>{{group.description}}</dgt-page-content-group-header>
+  <ng-container *ngIf="categories">
+    <dgt-data-category *ngFor="let category of categories"
+      [values]="groupedValues.get(category.id)"
+      [category]="groupedCategories[category.id][0]"
+      (valueUpdated)="onValueUpdated($event)"
+      (infoClicked)="onInfoClicked($event)">
+    </dgt-data-category>
+  </ng-container>
+</ng-container>

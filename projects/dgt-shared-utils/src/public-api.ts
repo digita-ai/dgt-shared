@@ -23,3 +23,6 @@ export { DGTHttpService } from './lib/http/services/dgt-http.service';
 export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.service';
 export { DGTConnectionService } from './lib/connection/services/dgt-connection.service';
 export { DGTDateToLabelService } from './lib/date/services/dgt-date-to-label.service';
+export { DGTInjectable } from './lib/decorators/dgt-injectable';
+export { DGTServiceType } from './lib/decorators/dgt-injectable'
+export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
