@@ -1,5 +1,5 @@
 import { Injectable, Type } from '@angular/core';
-import { DGTCategoryFilter } from '../models/dgt-category-filter.model';
+import { DGTLDFilter } from '../models/dgt-category-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, concat, forkJoin } from 'rxjs';
 import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
@@ -14,14 +14,14 @@ import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-tri
 @Injectable()
 export class DGTCategoryFilterService {
 
-    private runners: DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTCategoryFilter>> = new DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTCategoryFilter>>();
+    private runners: DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTLDFilter>>();
 
     constructor(private logger: DGTLoggerService, triples: DGTLDTripleFactoryService) {
         this.register(new DGTCategoryFilterRunnerBGPService());
         this.register(new DGTCategoryFilterRunnerSparqlService(logger, triples));
     }
 
-    public register<T extends DGTCategoryFilter>(runner: DGTCategoryFilterRunnerService<T>) {
+    public register<T extends DGTLDFilter>(runner: DGTCategoryFilterRunnerService<T>) {
         if (!runner) {
             throw new DGTErrorArgument('Argument runner should be set.', runner);
         }
@@ -29,7 +29,7 @@ export class DGTCategoryFilterService {
         this.runners.set(runner.type, runner);
     }
 
-    public run(filters: DGTCategoryFilter[], triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
+    public run(filters: DGTLDFilter[], triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTCategoryFilterService.name, 'Starting to run filters', { filters, triples });
 
         if (!filters) {
@@ -55,7 +55,7 @@ export class DGTCategoryFilterService {
             );
     }
 
-    private runOne(filter: DGTCategoryFilter, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
+    private runOne(filter: DGTLDFilter, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
         }

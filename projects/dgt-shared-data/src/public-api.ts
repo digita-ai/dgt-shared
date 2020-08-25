@@ -13,11 +13,11 @@ export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.servic
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/categories/models/dgt-category.model';
-export { DGTCategoryFilter } from './lib/categories/models/dgt-category-filter.model';
-export { DGTCategoryFilterService } from './lib/categories/services/dgt-category-filter.service'
-export { DGTCategoryFilterRunnerService } from './lib/categories/services/dgt-category-filter-runner.service'
-export { DGTCategoryFilterRunnerSparqlService } from './lib/categories/services/dgt-category-filter-runner-sparql.service'
-export { DGTCategoryFilterRunnerBGPService } from './lib/categories/services/dgt-category-filter-runner-bgp.service'
+export { DGTLDFilter } from './lib/categories/models/dgt-ld-filter.model';
+export { DGTCategoryFilterService } from './lib/categories/services/dgt-category-filter.service';
+export { DGTCategoryFilterRunnerService } from './lib/categories/services/dgt-category-filter-runner.service';
+export { DGTCategoryFilterRunnerSparqlService } from './lib/categories/services/dgt-category-filter-runner-sparql.service';
+export { DGTCategoryFilterRunnerBGPService } from './lib/categories/services/dgt-category-filter-runner-bgp.service';
 export { DGTCategoryFilterType } from './lib/categories/models/dgt-category-filter-type.model';
 export { DGTCategoryFilterSparql } from './lib/categories/models/dgt-category-filter-sparql.model';
 export { DGTCategoryFilterBGP } from './lib/categories/models/dgt-category-filter-bgp.model';
