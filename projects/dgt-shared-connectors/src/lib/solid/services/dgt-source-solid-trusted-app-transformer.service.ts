@@ -118,7 +118,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
             documentUri,
             connection: trustedAppTriple.connection,
             source: trustedAppTriple.source,
-            subject: {
+            holder: {
                 value: trustedAppTriple.object.value,
                 termType: DGTLDTermType.REFERENCE
             },

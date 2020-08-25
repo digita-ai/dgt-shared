@@ -38,7 +38,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
       return {
         connection: entity.connection,
         source: entity.source,
-        subject: entity.subject,
+        subject: entity.holder,
         documentUri: entity.documentUri,
         ...triple,
         triples: [triple]
