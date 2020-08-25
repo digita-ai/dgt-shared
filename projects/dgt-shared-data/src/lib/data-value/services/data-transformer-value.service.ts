@@ -34,6 +34,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     this.paramChecker.checkParametersNotNull({entity});
 
     return entity.triples.map((triple: DGTLDTriple) => {
+      // TODO check if subject or holder?
       return {
         connection: entity.connection,
         source: entity.source,
