@@ -5,7 +5,7 @@ import { DGTLDTriple } from './dgt-ld-triple.model';
 export interface DGTLDResource extends DGTEntity {
     connection: string;
     source: string;
-    subject: DGTLDNode;
+    holder: DGTLDNode;
     documentUri: string;
     triples: DGTLDTriple[];
 }
