@@ -1,4 +1,6 @@
 export enum DGTLDFilterType {
-    BGP, SPARQL,
-    HOLDER
+    BGP,
+    SPARQL,
+    HOLDER,
+    EXCHANGE,
 }
