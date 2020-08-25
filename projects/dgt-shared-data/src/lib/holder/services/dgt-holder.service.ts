@@ -1,7 +1,6 @@
-import { Observable, forkJoin, of, concat, zip, merge } from 'rxjs';
-import { DGTSubject } from '../models/dgt-subject.model';
-import { switchMap, map, tap, concatAll, filter, mergeMap, flatMap } from 'rxjs/operators';
-import { DGTExchange } from '../models/dgt-subject-exchange.model';
+import { Observable, forkJoin, of } from 'rxjs';
+import { switchMap, map, tap, mergeMap } from 'rxjs/operators';
+import { DGTExchange } from '../models/dgt-holder-exchange.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import * as _ from 'lodash';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
@@ -10,9 +9,10 @@ import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
+import { DGTHolder } from '../models/dgt-holder.model';
 
 @Injectable()
-export class DGTSubjectService {
+export class DGTHolderService {
     constructor(
         private logger: DGTLoggerService,
         private data: DGTDataService,
@@ -21,18 +21,18 @@ export class DGTSubjectService {
     ) { }
 
     /**
-     * Retrieves all values for a given subject
-     * @param subject The subject for which values should be retrieved
+     * Retrieves all values for a given holder
+     * @param holder The holder for which values should be retrieved
      */
-    public getValuesForSubject(subject: DGTSubject): Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTSubjectService.name, 'Getting subject values', { subject });
-        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'subject', operator: '==', value: subject.id }] })
+    public getValuesForHolder(holder: DGTHolder): Observable<DGTLDTriple[]> {
+        this.logger.debug(DGTHolderService.name, 'Getting holder values', { holder });
+        return this.data.getEntities<DGTExchange>('exchange', { conditions: [{ field: 'holder', operator: '==', value: holder.id }] })
             .pipe(
                 mergeMap(exchanges => {
                     if (exchanges.length) {
                         return of(exchanges).pipe(
                             mergeMap(xchngs => forkJoin(xchngs.map(xchng => this.getValuesForExchange(xchng)))),
-                            tap(val => this.logger.debug(DGTSubjectService.name, 'Retrieved values for exchanges', {val})),
+                            tap(val => this.logger.debug(DGTHolderService.name, 'Retrieved values for exchanges', { val })),
                             map(val => _.flatten(val))
                         );
                     } else {
@@ -47,7 +47,7 @@ export class DGTSubjectService {
      * @param exchange The exchange for which values should be retrieved
      */
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTSubjectService.name, 'Getting exchange values', { exchange });
+        this.logger.debug(DGTHolderService.name, 'Getting exchange values', { exchange });
 
         return of({ exchange })
             .pipe(

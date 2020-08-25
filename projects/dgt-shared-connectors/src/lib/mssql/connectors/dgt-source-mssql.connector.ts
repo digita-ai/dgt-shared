@@ -1,6 +1,6 @@
 import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTExchange, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTJustification, DGTConnection, DGTLDTermType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTJustification, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
@@ -16,7 +16,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
         return of(null);
     }
 
-    public query<T extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+    public query<T extends DGTLDResource>(holderUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         const config = {
             user: source.configuration.user,
             password: source.configuration.password,
@@ -46,13 +46,13 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                 switchMap(data => from(data.pool.request().query(source.configuration.command(connection.configuration.personId)))
                     .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
-                map(data => this.convertResult(subjectUri, data.result, exchange, source.configuration.mapping, connection)),
+                map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
-                switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
+                switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
             );
     }
 
-    private convertResult(uri: string, sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDPredicate>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDEntity {
+    private convertResult(uri: string, sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDPredicate>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResource {
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const triples: DGTLDTriple[] = [];
 
@@ -67,7 +67,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                                 connection: connection.id,
                                 exchange: exchange.id,
                                 subject: {
-                                    value: exchange.subject,
+                                    value: exchange.holder,
                                     termType: DGTLDTermType.REFERENCE
                                 },
                                 source: exchange.source,

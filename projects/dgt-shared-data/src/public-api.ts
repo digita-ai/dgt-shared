@@ -14,10 +14,10 @@ export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/categories/models/dgt-category.model';
 export { DGTCategoryFilter } from './lib/categories/models/dgt-category-filter.model';
-export { DGTCategoryFilterService } from './lib/categories/services/dgt-category-filter.service'
-export { DGTCategoryFilterRunnerService } from './lib/categories/services/dgt-category-filter-runner.service'
-export { DGTCategoryFilterRunnerSparqlService } from './lib/categories/services/dgt-category-filter-runner-sparql.service'
-export { DGTCategoryFilterRunnerBGPService } from './lib/categories/services/dgt-category-filter-runner-bgp.service'
+export { DGTCategoryFilterService } from './lib/categories/services/dgt-category-filter.service'
+export { DGTCategoryFilterRunnerService } from './lib/categories/services/dgt-category-filter-runner.service'
+export { DGTCategoryFilterRunnerSparqlService } from './lib/categories/services/dgt-category-filter-runner-sparql.service'
+export { DGTCategoryFilterRunnerBGPService } from './lib/categories/services/dgt-category-filter-runner-bgp.service'
 export { DGTCategoryFilterType } from './lib/categories/models/dgt-category-filter-type.model';
 export { DGTCategoryFilterSparql } from './lib/categories/models/dgt-category-filter-sparql.model';
 export { DGTCategoryFilterBGP } from './lib/categories/models/dgt-category-filter-bgp.model';
@@ -31,8 +31,8 @@ export { DGTDataService } from './lib/metadata/services/dgt-data.service';
 export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
 export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
-export { DGTSubjectService } from './lib/subject/services/dgt-subject.service';
-export { DGTExchange } from './lib/subject/models/dgt-subject-exchange.model';
+export { DGTHolderService } from './lib/holder/services/dgt-holder.service';
+export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
 export { DGTLocalDataService } from './lib/metadata/services/dgt-local-data.service';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTConnection } from './lib/connection/models/dgt-connection.model';
@@ -41,7 +41,7 @@ export { DGTConnectionSolidConfiguration } from './lib/connection/models/dgt-con
 export { DGTConnectionState } from './lib/connection/models/dgt-connection-state.model';
 export { DGTConnectionsService } from './lib/connection/services/dgt-connection.service';
 export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove-prefix.workflow-action';
-export { DGTSubject } from './lib/subject/models/dgt-subject.model';
+export { DGTHolder } from './lib/holder/models/dgt-holder.model';
 export { DGTInvite } from './lib/invite/models/dgt-invite.model';
 export { DGTSourceService } from './lib/source/services/dgt-source.service';
 export { DGTSource } from './lib/source/models/dgt-source.model';
@@ -51,13 +51,13 @@ export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.mod
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
 export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
 export { DGTLDDataType } from './lib/linked-data/models/dgt-ld-data-type.model';
-export { DGTLDEntity } from './lib/linked-data/models/dgt-ld-entity.model';
+export { DGTLDResource } from './lib/linked-data/models/dgt-ld-resource.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
 export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
-export { DGTLDTripleFactoryService} from './lib/linked-data/services/dgt-ld-triple-factory.service';
+export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';

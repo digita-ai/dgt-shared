@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDEntity, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -84,7 +84,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     return res;
   }
 
-  public query<T extends DGTLDEntity>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+  public query<T extends DGTLDResource>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
 
     if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
       throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
@@ -118,11 +118,11 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             },
           }),
         ),
-        switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
+        switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
       );
   }
 
-  public add<T extends DGTLDEntity>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+  public add<T extends DGTLDResource>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
     if (!domainEntities) {
       throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
     }
@@ -145,6 +145,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       .pipe(
         map(entities => ({
           entities,
+          //TODO check if subject.value below is correct or should be renamed to holder
           groupedEntities: _.groupBy(entities, 'subject.value'),
           domainEntities,
         })),
@@ -171,7 +172,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       );
   }
 
-  public delete<T extends DGTLDEntity>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+  public delete<T extends DGTLDResource>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
     if (!domainEntities) {
       throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
     }
@@ -220,7 +221,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
       );
   }
 
-  public update<T extends DGTLDEntity>(domainEntities: { original: T, updated: T }[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
+  public update<T extends DGTLDResource>(domainEntities: { original: T, updated: T }[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
     if (!domainEntities) {
       throw new DGTErrorArgument('domainEntities should be set.', domainEntities);
     }
@@ -390,9 +391,9 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   private generateSparqlUpdate(
-    updatedEntities: DGTLDEntity[],
+    updatedEntities: DGTLDResource[],
     updateType: 'insert' | 'delete' | 'insertdelete',
-    originalEntities?: DGTLDEntity[]
+    originalEntities?: DGTLDResource[]
   ): string {
     if (!updatedEntities) { throw new DGTErrorArgument('updatedEntities should be set.', updatedEntities); }
     if (!updateType) { throw new DGTErrorArgument('updateType should be set.', updateType); }

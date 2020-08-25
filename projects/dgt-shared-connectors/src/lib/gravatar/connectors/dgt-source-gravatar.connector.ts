@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDTermType, DGTLDEntity, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -17,7 +17,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
         return of(null);
     }
 
-    public query<T extends DGTLDEntity>(subjectUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+    public query<T extends DGTLDResource>(holderUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
 
         let res = null;
@@ -29,16 +29,16 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             res = this.http.get<DGTSourceGravatarResponse>(uri)
                 .pipe(
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
-                    map(data => this.convertResponse(subjectUri, data, exchange, source, connection)),
+                    map(data => this.convertResponse(holderUri, data, exchange, source, connection)),
                     tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
-                    switchMap((entity: DGTLDEntity) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
+                    switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
                 );
         }
 
         return res;
     }
 
-    private convertResponse(subjectUri: string, httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDEntity {
+    private convertResponse(holderUri: string, httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResource {
         const triples: DGTLDTriple[] = [];
 
         this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
@@ -53,7 +53,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 triples.push({
                     exchange: exchange.id,
                     subject: {
-                        value: exchange.subject,
+                        value: exchange.holder,
                         termType: DGTLDTermType.REFERENCE
                     },
                     source: exchange.source,
@@ -75,7 +75,7 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 triples.push({
                     exchange: exchange.id,
                     subject: {
-                        value: exchange.subject,
+                        value: exchange.holder,
                         termType: DGTLDTermType.REFERENCE
                     },
                     source: exchange.source,
@@ -97,9 +97,9 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
             triples,
             connection: connection.id,
             source: connection.source,
-            documentUri: subjectUri,
+            documentUri: holderUri,
             subject: {
-                value: subjectUri,
+                value: holderUri,
                 termType: DGTLDTermType.REFERENCE
             },
         };

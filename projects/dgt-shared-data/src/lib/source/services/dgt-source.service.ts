@@ -4,12 +4,12 @@ import { map } from 'rxjs/operators';
 import { DGTLoggerService, DGTMap } from '@digita/dgt-shared-utils';
 import { DGTJustification } from '../../justification/models/dgt-justification.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
 import { Injectable } from '@angular/core';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
 import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import * as _ from 'lodash';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
 export class DGTSourceService {

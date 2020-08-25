@@ -1,5 +1,5 @@
 import { DGTStateSelector } from '../models/dgt-state-selector.model';
-import { DGTLDTriple, DGTCategoryFilterService, DGTCategoryFilter } from '@digita/dgt-shared-data/public-api';
+import { DGTLDTriple, DGTCategoryFilterService, DGTCategoryFilter } from '@digita/dgt-shared-data';
 import { Observable } from 'rxjs';
 
 export class DGTStateSelectorFilter implements DGTStateSelector<DGTLDTriple[], DGTLDTriple[]> {
