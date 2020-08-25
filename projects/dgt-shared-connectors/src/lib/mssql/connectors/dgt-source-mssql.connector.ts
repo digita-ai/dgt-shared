@@ -89,7 +89,7 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
             connection: connection.id,
             source: connection.source,
             documentUri: uri,
-            subject: {
+            holder: {
                 value: uri,
                 termType: DGTLDTermType.REFERENCE
             },
