@@ -1,27 +1,27 @@
 import { Injectable, Type } from '@angular/core';
-import { DGTLDFilter } from '../models/dgt-category-filter.model';
+import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, concat, forkJoin } from 'rxjs';
-import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTErrorArgument, DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTCategoryFilterRunnerService } from './dgt-category-filter-runner.service';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { tap, map } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTCategoryFilterRunnerSparqlService } from './dgt-category-filter-runner-sparql.service';
-import { DGTCategoryFilterRunnerBGPService } from './dgt-category-filter-runner-bgp.service';
+import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
+import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 
 @Injectable()
 export class DGTCategoryFilterService {
 
-    private runners: DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTCategoryFilterType, DGTCategoryFilterRunnerService<DGTLDFilter>>();
+    private runners: DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>>();
 
     constructor(private logger: DGTLoggerService, triples: DGTLDTripleFactoryService) {
-        this.register(new DGTCategoryFilterRunnerBGPService());
+        this.register(new DGTLDFilterRunnerBGPService());
         this.register(new DGTCategoryFilterRunnerSparqlService(logger, triples));
     }
 
-    public register<T extends DGTLDFilter>(runner: DGTCategoryFilterRunnerService<T>) {
+    public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
         if (!runner) {
             throw new DGTErrorArgument('Argument runner should be set.', runner);
         }

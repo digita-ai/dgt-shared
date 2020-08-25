@@ -1,9 +1,9 @@
-import { DGTCategoryFilterRunnerService } from './dgt-category-filter-runner.service';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, of, from } from 'rxjs';
-import { DGTCategoryFilterSparql } from '../models/dgt-category-filter-sparql.model';
+import { DGTLDFilterSparql } from '../models/dgt-ld-filter-sparql.model';
 import { DGTErrorArgument, DGTLoggerService, DGTError, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
-import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 // import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
 // import { IActorQueryOperationOutputBindings, Bindings } from '@comunica/bus-query-operation';
 import { Store, DataFactory, Quad, Quad_Subject, Quad_Predicate, Quad_Object } from 'n3';
@@ -16,15 +16,15 @@ import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class DGTCategoryFilterRunnerSparqlService implements DGTCategoryFilterRunnerService<DGTCategoryFilterSparql> {
-    public readonly type: DGTCategoryFilterType = DGTCategoryFilterType.SPARQL;
+export class DGTCategoryFilterRunnerSparqlService implements DGTLDFilterRunnerService<DGTLDFilterSparql> {
+    public readonly type: DGTLDFilterType = DGTLDFilterType.SPARQL;
     // private engine: ActorInitSparql;
 
     constructor(private logger: DGTLoggerService, private triples: DGTLDTripleFactoryService) {
         //   this.engine = newEngine();
     }
 
-    run(filter: DGTCategoryFilterSparql, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
+    run(filter: DGTLDFilterSparql, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         throw new DGTErrorNotImplemented();
         // this.logger.debug(DGTCategoryFilterRunnerSparqlService.name, 'Starting to run filter', { filter, triples });
 

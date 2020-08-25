@@ -2,11 +2,11 @@ import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTCategoryFilterRunnerBGPService } from './dgt-category-filter-runner-bgp.service';
+import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTCategoryFilterBGP } from '../models/dgt-category-filter-bgp.model';
-import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
-import { DGTCategoryFilterService } from './dgt-category-filter.service';
+import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTCategoryFilterService } from './dgt-ld-filter.service';
 
 /* tslint:disable:no-unused-variable */
 
@@ -46,8 +46,8 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        const filter: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -71,7 +71,7 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        testService.service.register(new DGTCategoryFilterRunnerBGPService());
+        testService.service.register(new DGTLDFilterRunnerBGPService());
 
         testService.service.run([filter], triples)
             .subscribe(triples => {
@@ -119,8 +119,8 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        const filter1: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter1: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -129,8 +129,8 @@ describe('DGTCategoryFilterService', () => {
             ]
         };
 
-        const filter2: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter2: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -166,7 +166,7 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        testService.service.register(new DGTCategoryFilterRunnerBGPService());
+        testService.service.register(new DGTLDFilterRunnerBGPService());
 
         testService.service.run([filter1, filter2], triples)
             .subscribe(triples => {
@@ -214,8 +214,8 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        const filter1: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter1: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -224,8 +224,8 @@ describe('DGTCategoryFilterService', () => {
             ]
         };
 
-        const filter2: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter2: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -265,7 +265,7 @@ describe('DGTCategoryFilterService', () => {
             }
         ];
 
-        testService.service.register(new DGTCategoryFilterRunnerBGPService());
+        testService.service.register(new DGTLDFilterRunnerBGPService());
 
         testService.service.run([filter1, filter2], triples)
             .subscribe(triples => {

@@ -16,7 +16,7 @@
       "node_modules/@types"
     ],
     "types": [
-      "node"
+      "node",
     ],
     "lib": [
       "es2018",

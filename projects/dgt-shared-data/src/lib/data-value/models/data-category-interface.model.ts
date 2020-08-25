@@ -1,11 +1,11 @@
 
 import { DGTDataValue } from './data-value.model';
 import { EventEmitter } from '@angular/core';
-import { DGTCategory } from '../../categories/models/dgt-category.model';
+import { DGTLD } from '../../categories/models/dgt-ld.model';
 
 export interface DGTDataInterface {
-    category: DGTCategory;
+    category: DGTLD;
     values: DGTDataValue[];
-    valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+    valueUpdated: EventEmitter<{ value: DGTDataValue, newObject: any }>;
     submit: EventEmitter<any>;
 }

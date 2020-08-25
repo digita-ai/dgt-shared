@@ -3,11 +3,11 @@ import * as _ from 'lodash';
 import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
-import { DGTCategoryFilterService } from '../../categories/services/dgt-category-filter.service';
+import { DGTCategoryFilterService } from '../../categories/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTCategory } from '../../categories/models/dgt-category.model';
+import { DGTLD } from '../../categories/models/dgt-ld.model';
 import { DGTDataGroup } from '../models/data-group.model';
 
 @Injectable()
@@ -55,10 +55,10 @@ export class DGTDataValueService {
    * @param connection
    */
   public getCategoriesWithValues(
-    categories: DGTCategory[],
+    categories: DGTLD[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
-  ): Observable<DGTCategory[]> {
+  ): Observable<DGTLD[]> {
     this.paramChecker.checkParametersNotNull({ categories, values });
 
     this.logger.debug(DGTDataValueService.name, 'Getting categories with values', { categories });
@@ -84,7 +84,7 @@ export class DGTDataValueService {
    */
   public getGroupsWithValues(
     groups: DGTDataGroup[],
-    categories: DGTCategory[],
+    categories: DGTLD[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataGroup[]> {
@@ -103,7 +103,7 @@ export class DGTDataValueService {
    * @param connection
    */
   public getValuesOfCategory(
-    category: DGTCategory,
+    category: DGTLD,
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataValue[]> {
@@ -125,7 +125,7 @@ export class DGTDataValueService {
    * @param connection
    */
   public getValuesOfCategories(
-    categories: DGTCategory[],
+    categories: DGTLD[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataValue[]> {
