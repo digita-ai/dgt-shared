@@ -1,13 +1,11 @@
 import { DGTConnection } from '../models/dgt-connection.model';
-import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
 import { Observable, of, forkJoin } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTConnectionSolid } from '../models/dgt-connection-solid.model';
 import * as _ from 'lodash';
-import { DGTSource } from '../../source/models/dgt-source.model';
-import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DGTConnectionsService {
