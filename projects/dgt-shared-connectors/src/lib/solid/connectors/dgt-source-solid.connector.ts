@@ -12,6 +12,7 @@ import { DGTCryptoService, DGTEnvironmentService } from '@digita/dgt-shared-util
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
+import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 
 @Injectable()
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -682,12 +683,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
-    return of('');
-    // return DGTSourceSolidToken.issueFor(
-    //   uri,
-    //   connection.configuration.privateKey,
-    //   source.configuration.client_id,
-    //   connection.configuration.idToken
-    // );
+    //return of('');
+    return DGTSourceSolidToken.issueFor(
+      uri,
+      connection.configuration.privateKey,
+      source.configuration.client_id,
+      connection.configuration.idToken
+    );
   }
 }
