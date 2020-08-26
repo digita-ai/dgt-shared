@@ -19,11 +19,9 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
 
   private runOne(filter: DGTLDFilterExchange, triple: DGTLDTriple): boolean {
     this.paramChecker.checkParametersNotNull({ filter, triple });
-
     const match = filter.exchanges.find(
       exchange => exchange.id === triple.exchange
     );
-
     return match ? true : false;
   }
 }

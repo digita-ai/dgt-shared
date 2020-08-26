@@ -1,8 +1,8 @@
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { Observable, of, from } from 'rxjs';
+import { Observable } from 'rxjs';
 import { DGTLDFilterSparql } from '../models/dgt-ld-filter-sparql.model';
-import { DGTErrorArgument, DGTLoggerService, DGTError, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTLoggerService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 // import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
 // import { IActorQueryOperationOutputBindings, Bindings } from '@comunica/bus-query-operation';
@@ -13,10 +13,9 @@ import { Injectable } from '@angular/core';
 import { Term } from 'rdf-js';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
-import { map } from 'rxjs/operators';
 
 @Injectable()
-export class DGTCategoryFilterRunnerSparqlService implements DGTLDFilterRunnerService<DGTLDFilterSparql> {
+export class DGTLDFilterRunnerSparqlService implements DGTLDFilterRunnerService<DGTLDFilterSparql> {
     public readonly type: DGTLDFilterType = DGTLDFilterType.SPARQL;
     // private engine: ActorInitSparql;
 
@@ -88,7 +87,7 @@ export class DGTCategoryFilterRunnerSparqlService implements DGTLDFilterRunnerSe
     }
 
     private toStore(triples: DGTLDTriple[]): Store<any, any> {
-        this.logger.debug(DGTCategoryFilterRunnerSparqlService.name, 'Starting to convert triples to n3 store', { triples });
+        this.logger.debug(DGTLDFilterRunnerSparqlService.name, 'Starting to convert triples to n3 store', { triples });
 
         if (!triples) {
             throw new DGTErrorArgument('Argument triples should be set.', triples);
