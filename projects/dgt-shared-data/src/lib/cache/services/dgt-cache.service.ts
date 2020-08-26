@@ -72,6 +72,8 @@ export class DGTCacheService {
     }
 
     private getAllValues(): Observable<DGTLDTriple[]> {
+
+        // TODO check if getEntities with null query returns everything
         return this.data.getEntities<DGTExchange>('exchange', null).pipe(
             map(exchanges => ({
                 type: DGTLDFilterType.EXCHANGE,
