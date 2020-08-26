@@ -4,9 +4,8 @@ import { DGTLDFilterHolder } from '../models/dgt-ld-filter-holder.model';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTErrorArgument } from '@digita/dgt-shared-utils/digita-dgt-shared-utils';
+import { DGTErrorArgument, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
-import { DGTParameterCheckerService } from 'projects/dgt-shared-utils/src/public-api';
 import { map } from 'rxjs/operators';
 
 @Injectable()

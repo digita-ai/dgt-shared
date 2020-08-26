@@ -7,13 +7,29 @@ import { DGTQuery } from '../../metadata/models/dgt-query.model';
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
+import { DGTLDFilterExchange } from '../../linked-data/models/dgt-ld-filter-exchange.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 
 @Injectable()
 export class DGTCacheService {
-    constructor(private data: DGTDataService, private logger: DGTLoggerService) { }
+    constructor(
+        private data: DGTDataService,
+        private logger: DGTLoggerService,
+        private filter: DGTLDFilterService) { }
 
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for exchange', { exchange });
+
+        const filterExchange: DGTLDFilterExchange = {
+            type: DGTLDFilterType.EXCHANGE,
+            exchanges: [
+                exchange
+            ]
+        }
+        return this.data.getEntities<DGTLDTriple>('value', null).pipe(
+            switchMap(triples => this.filter.run([filterExchange], triples))
+        );
 
         return of({ exchange })
             .pipe(

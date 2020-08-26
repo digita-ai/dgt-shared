@@ -3,22 +3,32 @@ import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, forkJoin } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTErrorArgument, DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTLDFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
+import { DGTLDFilterHolderService } from './dgt-ld-filter-runner-holder.service';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
 
 @Injectable()
 export class DGTLDFilterService {
 
     private runners: DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>>();
 
-    constructor(private logger: DGTLoggerService, triples: DGTLDTripleFactoryService) {
+    constructor(
+        private logger: DGTLoggerService,
+        triples: DGTLDTripleFactoryService,
+        connections: DGTConnectionService,
+        paramChecker: DGTParameterCheckerService,
+    ) {
         this.register(new DGTLDFilterRunnerBGPService());
         this.register(new DGTLDFilterRunnerSparqlService(logger, triples));
+        this.register(new DGTLDFilterHolderService(connections, paramChecker));
+        this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
     }
 
     public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
