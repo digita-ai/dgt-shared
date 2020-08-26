@@ -9,9 +9,9 @@ import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
-import { DGTLDFilterService } from '@digita/dgt-shared-data/public-api';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilterExchange } from '../../linked-data/models/dgt-ld-filter-exchange.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 
 @Injectable()
 export class DGTCacheService {

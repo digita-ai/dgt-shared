@@ -4,7 +4,7 @@ import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { Observable } from 'rxjs';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { DGTLDTriple } from '@digita/dgt-shared-data/public-api';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 
 
 @Injectable()
