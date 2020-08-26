@@ -12,7 +12,7 @@ export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
 export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
-export { DGTLD } from './lib/linked-data/models/dgt-ld.model';
+export { DGTCategory } from './lib/linked-data/models/dgt-category.model';
 export { DGTLDFilter } from './lib/linked-data/models/dgt-ld-filter.model';
 export { DGTLDFilterService } from './lib/linked-data/services/dgt-ld-filter.service';
 export { DGTLDFilterRunnerService } from './lib/linked-data/services/dgt-ld-filter-runner.service';
