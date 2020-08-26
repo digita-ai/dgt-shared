@@ -3,5 +3,6 @@ export enum DGTLDFilterType {
     SPARQL,
     HOLDER,
     EXCHANGE,
-    CONNECTION
+    CONNECTION,
+    COMBINATION
 }
