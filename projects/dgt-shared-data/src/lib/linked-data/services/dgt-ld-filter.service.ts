@@ -1,24 +1,24 @@
-import { Injectable, Type } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { Observable, concat, forkJoin } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTErrorArgument, DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
+import { DGTLDFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 
 @Injectable()
-export class DGTCategoryFilterService {
+export class DGTLDFilterService {
 
     private runners: DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>>();
 
     constructor(private logger: DGTLoggerService, triples: DGTLDTripleFactoryService) {
         this.register(new DGTLDFilterRunnerBGPService());
-        this.register(new DGTCategoryFilterRunnerSparqlService(logger, triples));
+        this.register(new DGTLDFilterRunnerSparqlService(logger, triples));
     }
 
     public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
@@ -30,7 +30,7 @@ export class DGTCategoryFilterService {
     }
 
     public run(filters: DGTLDFilter[], triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTCategoryFilterService.name, 'Starting to run filters', { filters, triples });
+        this.logger.debug(DGTLDFilterService.name, 'Starting to run filters', { filters, triples });
 
         if (!filters) {
             throw new DGTErrorArgument('Argument filters should be set.', filters);

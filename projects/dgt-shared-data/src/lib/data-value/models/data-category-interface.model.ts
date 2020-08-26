@@ -1,7 +1,7 @@
 
 import { DGTDataValue } from './data-value.model';
 import { EventEmitter } from '@angular/core';
-import { DGTLD } from '../../categories/models/dgt-ld.model';
+import { DGTLD } from '../../linked-data/models/dgt-ld.model';
 
 export interface DGTDataInterface {
     category: DGTLD;

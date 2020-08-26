@@ -3,11 +3,11 @@ import * as _ from 'lodash';
 import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
-import { DGTCategoryFilterService } from '../../categories/services/dgt-ld-filter.service';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTLD } from '../../categories/models/dgt-ld.model';
+import { DGTLD } from '../../linked-data/models/dgt-ld.model';
 import { DGTDataGroup } from '../models/data-group.model';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class DGTDataValueService {
   constructor(
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
-    private filters: DGTCategoryFilterService
+    private filters: DGTLDFilterService
   ) { }
 
   /**
