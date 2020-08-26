@@ -9,7 +9,7 @@ import { DGTConnectionService } from '../../connection/services/dgt-connection-a
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class DGTLDFilterHolderService implements DGTLDFilterRunnerService<DGTLDFilterHolder> {
+export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<DGTLDFilterHolder> {
     public readonly type: DGTLDFilterType = DGTLDFilterType.HOLDER;
 
     constructor(
