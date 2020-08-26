@@ -11,6 +11,9 @@ import { DGTLDFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.se
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 import { DGTLDFilterFilterType } from '../models/dgt-ld-filter-filtertype.model';
+import { DGTLDFilterRunnerHolderService } from './dgt-ld-filter-runner-holder.service';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
 
 @Injectable()
 export class DGTLDFilterService {
@@ -21,9 +24,12 @@ export class DGTLDFilterService {
     private logger: DGTLoggerService,
     triples: DGTLDTripleFactoryService,
     private paramChecker: DGTParameterCheckerService,
+    connections: DGTConnectionService,
   ) {
     this.register(new DGTLDFilterRunnerBGPService());
     this.register(new DGTLDFilterRunnerSparqlService(logger, triples));
+    this.register(new DGTLDFilterRunnerHolderService(connections, paramChecker));
+    this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
   }
 
   public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {

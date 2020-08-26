@@ -42,9 +42,7 @@ export class DGTSourceSolidToken extends JWT {
         const header = { alg };
         const payload = { iss, aud, exp, iat, id_token: options.idToken, token_type: 'pop' };
 
-        // const jwt = new DGTSourceSolidToken({ header, payload, key: key.cryptoKey });
-        const jwt = new DGTSourceSolidToken({ header, payload, key: key.cryptoKey }, { filter: false });
-
-        return jwt;
+        return new JWT({ header, payload, key: key.cryptoKey }, { filter: false });
+        // return new DGTSourceSolidToken({ header, payload, key: key.cryptoKey }, { filter: false }); // cannot invoke without new on jwt
     }
 }
