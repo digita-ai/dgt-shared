@@ -7,8 +7,8 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTLD } from '../../linked-data/models/dgt-ld.model';
 import { DGTDataGroup } from '../models/data-group.model';
+import { DGTCategory } from '../../linked-data/models/dgt-category.model';
 
 @Injectable()
 /**
@@ -55,10 +55,10 @@ export class DGTDataValueService {
    * @param connection
    */
   public getCategoriesWithValues(
-    categories: DGTLD[],
+    categories: DGTCategory[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
-  ): Observable<DGTLD[]> {
+  ): Observable<DGTCategory[]> {
     this.paramChecker.checkParametersNotNull({ categories, values });
 
     this.logger.debug(DGTDataValueService.name, 'Getting categories with values', { categories });
@@ -84,7 +84,7 @@ export class DGTDataValueService {
    */
   public getGroupsWithValues(
     groups: DGTDataGroup[],
-    categories: DGTLD[],
+    categories: DGTCategory[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataGroup[]> {
@@ -103,7 +103,7 @@ export class DGTDataValueService {
    * @param connection
    */
   public getValuesOfCategory(
-    category: DGTLD,
+    category: DGTCategory,
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataValue[]> {
@@ -125,7 +125,7 @@ export class DGTDataValueService {
    * @param connection
    */
   public getValuesOfCategories(
-    categories: DGTLD[],
+    categories: DGTCategory[],
     values: DGTDataValue[],
     connection?: DGTConnectionSolid
   ): Observable<DGTDataValue[]> {

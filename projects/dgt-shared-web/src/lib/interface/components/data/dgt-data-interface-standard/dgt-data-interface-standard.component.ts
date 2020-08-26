@@ -2,7 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTCategory, DGTDataInterface, DGTDataValue } from '@digita/dgt-shared-data';
-import { DGTCategoryFilterBGP } from '@digita/dgt-shared-data/lib/categories/models/dgt-category-filter-bgp.model';
+import { DGTLDFilterBGP } from '@digita/dgt-shared-data';
 
 @Component({
   selector: 'dgt-data-interface-standard',
@@ -62,7 +62,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
 
     if (values && category) {
       const filteredPredicates = _.flatten(category.filters
-        .map((filter: DGTCategoryFilterBGP) => filter.predicates)
+        .map((filter: DGTLDFilterBGP) => filter.predicates)
       );
 
       this.filteredFields = values
