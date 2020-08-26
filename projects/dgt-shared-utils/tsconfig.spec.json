@@ -3,9 +3,7 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
     "types": [
-      "jasmine",
       "node",
-      "jasminewd2"
     ]
   },
   "files": [

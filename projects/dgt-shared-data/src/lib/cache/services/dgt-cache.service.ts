@@ -21,18 +21,28 @@ export class DGTCacheService {
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for exchange', { exchange });
 
-        return of({ exchange })
-            .pipe(
-                switchMap(data => this.data.getEntities<DGTLDTriple>('value', {
-                    conditions: [
-                        {
-                            field: 'exchange',
-                            operator: '==',
-                            value: exchange.id,
-                        },
-                    ],
-                })),
-            );
+        const filterExchange: DGTLDFilterExchange = {
+            type: DGTLDFilterType.EXCHANGE,
+            exchanges: [
+                exchange
+            ]
+        }
+        return this.data.getEntities<DGTLDTriple>('value', null).pipe(
+            switchMap(triples => this.filterService.run([filterExchange], triples))
+        );
+
+        // return of({ exchange })
+        //     .pipe(
+        //         switchMap(data => this.data.getEntities<DGTLDTriple>('value', {
+        //             conditions: [
+        //                 {
+        //                     field: 'exchange',
+        //                     operator: '==',
+        //                     value: exchange.id,
+        //                 },
+        //             ],
+        //         })),
+        //     );
     }
 
     public remove(query: DGTQuery): Observable<any> {

@@ -3,10 +3,7 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
     "types": [
-      "jasmine",
       "node",
-      "jest",
-      "mocha"
     ]
   },
   "files": [
