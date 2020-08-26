@@ -1,5 +1,5 @@
 import { DGTLDFilter } from './dgt-ld-filter.model';
-import { DGTExchange } from '@digita/dgt-shared-data/public-api';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 export interface DGTLDFilterExchange extends DGTLDFilter {
     exchanges: DGTExchange[];

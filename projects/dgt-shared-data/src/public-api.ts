@@ -39,7 +39,7 @@ export { DGTConnection } from './lib/connection/models/dgt-connection.model';
 export { DGTConnectionSolid } from './lib/connection/models/dgt-connection-solid.model';
 export { DGTConnectionSolidConfiguration } from './lib/connection/models/dgt-connection-solid-configuration.model';
 export { DGTConnectionState } from './lib/connection/models/dgt-connection-state.model';
-export { DGTConnectionsService } from './lib/connection/services/dgt-connection.service';
+export { DGTConnectionService } from './lib/connection/services/dgt-connection-abstract.service';
 export { DGTRemovePrefixWorkflowAction } from './lib/workflow/actions/dgt-remove-prefix.workflow-action';
 export { DGTHolder } from './lib/holder/models/dgt-holder.model';
 export { DGTInvite } from './lib/invite/models/dgt-invite.model';
