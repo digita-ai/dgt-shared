@@ -11,6 +11,7 @@ import { DGTLDFilterRunnerSparqlService } from './linked-data/services/dgt-ld-fi
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
 import { DGTHolderService } from './holder/services/dgt-holder.service';
+import { DGTConnectionsService } from './connection/services/dgt-connections.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -28,7 +29,8 @@ export const providers = [
   DGTCacheService,
   DGTHolderService,
   DGTWorkflowService,
-  DGTLDTripleFactoryService
+  DGTLDTripleFactoryService,
+  DGTConnectionsService
 ];
 
 @NgModule({

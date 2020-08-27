@@ -73,3 +73,4 @@ export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-
 export { DGTDataValueService } from './lib/data-value/services/data-value.service';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
 export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model'
+export { DGTConnectionsService } from './lib/connection/services/dgt-connections.service';

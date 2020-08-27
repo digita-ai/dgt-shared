@@ -17,12 +17,12 @@ export class DGTLDFilterRunnerCombinationService implements DGTLDFilterRunnerSer
 
   constructor(
     private paramChecker: DGTParameterCheckerService,
-    private filterService: DGTLDFilterService
+    private filterService: DGTLDFilterService,
   ) { }
 
   run(filter: DGTLDFilterCombination, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
     this.paramChecker.checkParametersNotNull({ filter, triples });
-    const res: Observable<DGTLDTriple[]>[] = 
+    const res: Observable<DGTLDTriple[]>[] =
     filter.filters.map( subFilter => this.runOne(subFilter, triples));
 
     if ( filter.combinationType === DGTLDFilterByCombinationType.AND ) {

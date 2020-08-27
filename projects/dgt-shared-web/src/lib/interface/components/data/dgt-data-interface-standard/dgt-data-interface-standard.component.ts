@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita/dgt-shared-data';
 import { DGTLDFilterBGP } from '@digita/dgt-shared-data';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'dgt-data-interface-standard',
@@ -62,7 +63,9 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
     this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { values, category });
 
     if (values && category) {
-      this.filterService.run(category.filter, values);
+      this.filterService.run(category.filter, values).subscribe(
+        (vals: DGTDataValue[]) => this.filteredFields = vals
+      );
       /* const filteredPredicates = _.flatten(category.filters
         .map((filter: DGTLDFilterBGP) => filter.predicates)
       );

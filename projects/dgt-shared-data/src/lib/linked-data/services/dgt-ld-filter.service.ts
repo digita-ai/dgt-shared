@@ -13,6 +13,7 @@ import { DGTLDFilterRunnerHolderService } from './dgt-ld-filter-runner-holder.se
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
 import { DGTLDFilterRunnerConnectionService } from './dgt-ld-filter-runner-connection.service';
+import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-combination.service';
 
 @Injectable()
 export class DGTLDFilterService {
@@ -30,6 +31,7 @@ export class DGTLDFilterService {
     this.register(new DGTLDFilterRunnerHolderService(connections, paramChecker));
     this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
     this.register(new DGTLDFilterRunnerConnectionService(paramChecker));
+    this.register(new DGTLDFilterRunnerCombinationService(paramChecker, this));
   }
 
   public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
