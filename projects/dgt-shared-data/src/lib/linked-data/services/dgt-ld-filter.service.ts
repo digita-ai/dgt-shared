@@ -44,7 +44,7 @@ export class DGTLDFilterService {
     this.paramChecker.checkParametersNotNull({filter, triples});
     const runner = this.runners.get(filter.type);
     if (!runner) {
-      throw new DGTErrorArgument('No runner register for the given filter type.', runner);
+      throw new DGTErrorArgument('No runner registered for the given filter type.', runner);
     }
     return runner.run(filter, triples);
   }
