@@ -12,6 +12,7 @@ import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
 import { DGTHolderService } from './holder/services/dgt-holder.service';
 import { DGTConnectionsService } from './connection/services/dgt-connections.service';
+import { DGTLDService } from './linked-data/services/dgt-ld.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -20,6 +21,7 @@ export const imports = [
   DGTSharedUtilsModule
 ];
 export const providers = [
+  DGTLDService,
   DGTLDFilterService,
   DGTLDFilterRunnerBGPService,
   DGTLDFilterRunnerSparqlService,

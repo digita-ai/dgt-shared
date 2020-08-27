@@ -22,6 +22,7 @@ export class DGTMockDataService extends DGTDataService {
         const entities = query ?
             this.queries.execute<S[]>(this.database.get(entityType) as S[], query) :
             this.database.get(entityType);
+        console.log('MAP', this.database);
 
         return entities ? of(entities.map(entity => this.convertTimestamp(entity) as S)) : of([]);
     }

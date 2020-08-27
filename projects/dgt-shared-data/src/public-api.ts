@@ -20,6 +20,7 @@ export { DGTLDFilterSparql } from './lib/linked-data/models/dgt-ld-filter-sparql
 export { DGTLDFilterBGP } from './lib/linked-data/models/dgt-ld-filter-bgp.model';
 export { DGTLDFilterHolder } from './lib/linked-data/models/dgt-ld-filter-holder.model';
 export { DGTLDFilterExchange } from './lib/linked-data/models/dgt-ld-filter-exchange.model';
+export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
 export { DGTFile } from './lib/file/models/dgt-file.model';

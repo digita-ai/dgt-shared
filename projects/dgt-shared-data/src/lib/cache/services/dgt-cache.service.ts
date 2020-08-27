@@ -1,6 +1,6 @@
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { switchMap, map, tap, mergeMap } from 'rxjs/operators';
+import { switchMap, map, tap, mergeMap, mergeAll } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTQuery } from '../../metadata/models/dgt-query.model';
@@ -15,34 +15,36 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 
 @Injectable()
 export class DGTCacheService {
+
     private cache: Observable<DGTLDTriple[]>;
+
     constructor(private data: DGTDataService, private logger: DGTLoggerService, private filterService: DGTLDFilterService) { }
 
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for exchange', { exchange });
 
-        const filterExchange: DGTLDFilterExchange = {
-            type: DGTLDFilterType.EXCHANGE,
-            exchanges: [
-                exchange
-            ]
-        };
-        return this.data.getEntities<DGTLDTriple>('value', null).pipe(
-            switchMap(triples => this.filterService.run(filterExchange, triples))
-        );
+        // const filterExchange: DGTLDFilterExchange = {
+        //     type: DGTLDFilterType.EXCHANGE,
+        //     exchanges: [
+        //         exchange
+        //     ]
+        // };
+        // return this.data.getEntities<DGTLDTriple>('value', null).pipe(
+        //     switchMap(triples => this.filterService.run(filterExchange, triples))
+        // );
 
-        // return of({ exchange })
-        //     .pipe(
-        //         switchMap(data => this.data.getEntities<DGTLDTriple>('value', {
-        //             conditions: [
-        //                 {
-        //                     field: 'exchange',
-        //                     operator: '==',
-        //                     value: exchange.id,
-        //                 },
-        //             ],
-        //         })),
-        //     );
+        return of({ exchange })
+            .pipe(
+                switchMap(data => this.data.getEntities<DGTLDTriple>('value', {
+                    conditions: [
+                        {
+                            field: 'exchange',
+                            operator: '==',
+                            value: exchange.id,
+                        },
+                    ],
+                })),
+            );
     }
 
     public remove(query: DGTQuery): Observable<any> {
@@ -73,7 +75,11 @@ export class DGTCacheService {
     public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[]> {
         if (this.cache) {
             return this.cache.pipe(mergeMap(tripleArray => {
-                return this.filterService.run(filter, tripleArray);
+                if (filter) {
+                    return this.filterService.run(filter, tripleArray);
+                } else {
+                    return of(tripleArray);
+                }
             }));
         } else {
             this.cache = this.getAllValues();
@@ -85,15 +91,12 @@ export class DGTCacheService {
 
         // TODO check if getEntities with null query returns everything
         return this.data.getEntities<DGTExchange>('exchange', null).pipe(
-            map(exchanges => ({
-                type: DGTLDFilterType.EXCHANGE,
-                exchanges
-            })),
-            mergeMap(filterExchange =>
-                this.data.getEntities<DGTLDTriple>('value', null).pipe(
-                    switchMap(triples => this.filterService.run(filterExchange, triples))
-                )
-            )
+            tap(exchanges => this.logger.debug(DGTCacheService.name, 'EEEEEEEExchanges: ', exchanges)),
+            mergeMap(exchanges => 
+                exchanges.map(exchange => this.data.getEntities<DGTLDTriple>('value', { conditions: [{ field: 'exchange', operator: '==', value: exchange.id }] }))
+            ),
+            mergeAll(),
+            tap(values => this.logger.debug(DGTCacheService.name, 'values', values))
         );
     }
 }
