@@ -8,6 +8,7 @@ import { DGTHttpAngularService } from './http/services/dgt-http-angular.service'
 import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 import { DGTCryptoBrowserService } from './crypto/services/dgt-crypto-browser.service';
 import { DGTEnvironmentService } from './environment/services/dgt-environment.service';
+import { DGTParameterCheckerService } from './parameters/services/parameter-checker.service';
 
 export const declarations: (any[] | Type<any>)[] = [];
 export const imports = [];
@@ -22,7 +23,8 @@ export const providers = [
   },
   DGTErrorService,
   DGTPlatformService,
-  DGTDateToLabelService
+  DGTDateToLabelService,
+  DGTParameterCheckerService,
 ];
 
 @NgModule({
