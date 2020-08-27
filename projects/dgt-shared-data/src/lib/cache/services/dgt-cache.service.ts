@@ -26,9 +26,9 @@ export class DGTCacheService {
             exchanges: [
                 exchange
             ]
-        }
+        };
         return this.data.getEntities<DGTLDTriple>('value', null).pipe(
-            switchMap(triples => this.filterService.run([filterExchange], triples))
+            switchMap(triples => this.filterService.run(filterExchange, triples))
         );
 
         // return of({ exchange })
@@ -73,7 +73,7 @@ export class DGTCacheService {
     public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[]> {
         if (this.cache) {
             return this.cache.pipe(mergeMap(tripleArray => {
-                return this.filterService.run([filter], tripleArray);
+                return this.filterService.run(filter, tripleArray);
             }));
         } else {
             this.cache = this.getAllValues();
@@ -91,7 +91,7 @@ export class DGTCacheService {
             })),
             mergeMap(filterExchange =>
                 this.data.getEntities<DGTLDTriple>('value', null).pipe(
-                    switchMap(triples => this.filterService.run([filterExchange], triples))
+                    switchMap(triples => this.filterService.run(filterExchange, triples))
                 )
             )
         );

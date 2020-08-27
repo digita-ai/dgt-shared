@@ -4,6 +4,6 @@ import { DGTLDFilter } from './dgt-ld-filter.model';
 export interface DGTCategory extends DGTEntity {
     icon: string;
     description: string;
-    filters: DGTLDFilter[];
+    filter: DGTLDFilter;
     groupId: string;
 }

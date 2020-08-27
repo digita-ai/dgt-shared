@@ -66,7 +66,7 @@ export class DGTDataValueService {
     return of({ categories })
       .pipe(
         switchMap(data => forkJoin(
-          data.categories.map(category => this.filters.run(category.filters, values).pipe(map(triples => ({ category, triples }))))
+          data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples }))))
         )
           .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))
         ),
@@ -111,7 +111,7 @@ export class DGTDataValueService {
 
     this.logger.debug(DGTDataValueService.name, 'Getting values of category', { category });
 
-    return this.filters.run(category.filters, values)
+    return this.filters.run(category.filter, values)
       .pipe(
         map(triples => triples as DGTDataValue[]),
         map(triples => triples.filter(triple => connection ? triple.connection === connection.id : true))
