@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { DGTLDFilterCombination } from '../models/dgt-filter-combination.model';
+import { DGTLDFilterCombination } from '../models/dgt-ld-filter-combination.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTParameterCheckerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { Observable, forkJoin } from 'rxjs';
-import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-filter-combination-type.model';
+import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-combination-type.model';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
