@@ -35,13 +35,14 @@ export class DGTLDFilterService {
   }
 
   public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
-    this.paramChecker.checkParametersNotNull({runner});
+    this.paramChecker.checkParametersNotNull({ runner });
     this.runners.set(runner.type, runner);
   }
 
   public run(filter: DGTLDFilter, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    this.logger.debug(DGTLDFilterService.name, 'Starting to run filters', { filter, triples });
-    this.paramChecker.checkParametersNotNull({filter, triples});
+    // TODO log on lower level then debug
+    //this.logger.debug(DGTLDFilterService.name, 'Starting to run filters', { filter, triples });
+    this.paramChecker.checkParametersNotNull({ filter, triples });
     const runner = this.runners.get(filter.type);
     if (!runner) {
       throw new DGTErrorArgument('No runner registered for the given filter type.', runner);
