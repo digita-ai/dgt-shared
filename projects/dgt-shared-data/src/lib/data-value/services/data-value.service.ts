@@ -3,12 +3,12 @@ import * as _ from 'lodash';
 import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
-import { DGTCategoryFilterService } from '../../categories/services/dgt-category-filter.service';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTCategory } from '../../categories/models/dgt-category.model';
 import { DGTDataGroup } from '../models/data-group.model';
+import { DGTCategory } from '../../linked-data/models/dgt-category.model';
 
 @Injectable()
 /**
@@ -20,7 +20,7 @@ export class DGTDataValueService {
   constructor(
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
-    private filters: DGTCategoryFilterService
+    private filters: DGTLDFilterService
   ) { }
 
   /**
@@ -66,7 +66,7 @@ export class DGTDataValueService {
     return of({ categories })
       .pipe(
         switchMap(data => forkJoin(
-          data.categories.map(category => this.filters.run(category.filters, values).pipe(map(triples => ({ category, triples }))))
+          data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples }))))
         )
           .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))
         ),
@@ -111,7 +111,7 @@ export class DGTDataValueService {
 
     this.logger.debug(DGTDataValueService.name, 'Getting values of category', { category });
 
-    return this.filters.run(category.filters, values)
+    return this.filters.run(category.filter, values)
       .pipe(
         map(triples => triples as DGTDataValue[]),
         map(triples => triples.filter(triple => connection ? triple.connection === connection.id : true))

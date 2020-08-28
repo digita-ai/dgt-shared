@@ -2,16 +2,16 @@ import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTCategoryFilterRunnerBGPService } from './dgt-category-filter-runner-bgp.service';
+import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTCategoryFilterBGP } from '../models/dgt-category-filter-bgp.model';
-import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
+import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 
 /* tslint:disable:no-unused-variable */
 
 describe('DGTCategoryFilterRunnerBGP', () => {
-    const testService = new DGTTestRunnerService<DGTCategoryFilterRunnerBGPService>(configuration);
-    testService.setup(DGTCategoryFilterRunnerBGPService);
+    const testService = new DGTTestRunnerService<DGTLDFilterRunnerBGPService>(configuration);
+    testService.setup(DGTLDFilterRunnerBGPService);
 
     it('should be correctly instantiated', async(() => {
         expect(testService.service).toBeTruthy();
@@ -45,8 +45,8 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             }
         ];
 
-        const filter: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',
@@ -116,8 +116,8 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             }
         ];
 
-        const filter: DGTCategoryFilterBGP = {
-            type: DGTCategoryFilterType.BGP,
+        const filter: DGTLDFilterBGP = {
+            type: DGTLDFilterType.BGP,
             predicates: [
                 {
                     namespace: 'foo',

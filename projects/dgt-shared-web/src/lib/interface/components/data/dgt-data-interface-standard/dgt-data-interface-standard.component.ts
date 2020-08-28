@@ -1,8 +1,9 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
-import { DGTCategory, DGTDataInterface, DGTDataValue } from '@digita/dgt-shared-data';
-import { DGTCategoryFilterBGP } from '@digita/dgt-shared-data/lib/categories/models/dgt-category-filter-bgp.model';
+import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita/dgt-shared-data';
+import { DGTLDFilterBGP } from '@digita/dgt-shared-data';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'dgt-data-interface-standard',
@@ -50,6 +51,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
   constructor(
     private paramChecker: DGTParameterCheckerService,
     private logger: DGTLoggerService,
+    private filterService: DGTLDFilterService,
   ) {
     this.valueUpdated = new EventEmitter();
     this.submit = new EventEmitter();
@@ -61,8 +63,11 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
     this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { values, category });
 
     if (values && category) {
-      const filteredPredicates = _.flatten(category.filters
-        .map((filter: DGTCategoryFilterBGP) => filter.predicates)
+      this.filterService.run(category.filter, values).subscribe(
+        (vals: DGTDataValue[]) => this.filteredFields = vals
+      );
+      /* const filteredPredicates = _.flatten(category.filters
+        .map((filter: DGTLDFilterBGP) => filter.predicates)
       );
 
       this.filteredFields = values
@@ -70,7 +75,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
           filteredPredicates.some(predicate => predicate.name === value.predicate.name &&
             predicate.namespace === value.predicate.namespace
           )
-        );
+        ); */
     }
   }
 

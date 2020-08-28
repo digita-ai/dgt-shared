@@ -2,10 +2,10 @@ import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { DGTCategoryFilterRunnerSparqlService } from './dgt-category-filter-runner-sparql.service';
+import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTCategoryFilterType } from '../models/dgt-category-filter-type.model';
-import { DGTCategoryFilterSparql } from '../models/dgt-category-filter-sparql.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTLDFilterSparql } from '../models/dgt-ld-filter-sparql.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 
 /* tslint:disable:no-unused-variable */
@@ -64,8 +64,8 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
             }
         ];
 
-        const filter: DGTCategoryFilterSparql = {
-            type: DGTCategoryFilterType.BGP,
+        const filter: DGTLDFilterSparql = {
+            type: DGTLDFilterType.BGP,
             sparql: `PREFIX foo:  <http://foo.bar/ns#>
             SELECT ?subject ?predicate ?object
             WHERE {
