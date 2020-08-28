@@ -8,11 +8,11 @@
     "@digita/dgt-shared-utils": "0.1.1",
     "store2": "2.9.0",
     "uuid": "3.4.0",
-    "n3": "1.4.0"
+    "n3": "^1.4.0"
   },
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",
-    "@types/n3": "1.4.0",
+    "@types/n3": "^1.4.0",
     "@types/uuid": "3.4.3"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",

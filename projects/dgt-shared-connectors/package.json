@@ -4,7 +4,7 @@
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",
     "@types/mssql": "^4.3.1",
-    "@types/n3": "1.4.0",
+    "@types/n3": "^1.4.0",
     "@types/rdflib": "^1.0.5",
     "@types/sparqljs": "^2.1.0"
   },
@@ -18,7 +18,7 @@
     "lodash": "4.17.11",
     "ts-md5": "^1.2.7",
     "mssql": "5.1.0",
-    "n3": "1.4.0",
+    "n3": "^1.4.0",
     "rdflib": "^1.0.4",
     "sparqljs": "2.1.0",
     "whatwg-url": "6.5.0"
