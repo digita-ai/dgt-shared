@@ -31,7 +31,6 @@ export { DGTDataService } from './lib/metadata/services/dgt-data.service';
 export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
 export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
-export { DGTHolderService } from './lib/holder/services/dgt-holder.service';
 export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
 export { DGTLocalDataService } from './lib/metadata/services/dgt-local-data.service';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';

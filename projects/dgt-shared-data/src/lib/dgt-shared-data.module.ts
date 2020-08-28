@@ -10,7 +10,6 @@ import { DGTLDFilterService } from './linked-data/services/dgt-ld-filter.service
 import { DGTLDFilterRunnerSparqlService } from './linked-data/services/dgt-ld-filter-runner-sparql.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
-import { DGTHolderService } from './holder/services/dgt-holder.service';
 import { DGTConnectionsService } from './connection/services/dgt-connections.service';
 import { DGTLDService } from './linked-data/services/dgt-ld.service';
 
@@ -29,7 +28,6 @@ export const providers = [
   DGTMockDataService,
   DGTSourceService,
   DGTCacheService,
-  DGTHolderService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
   DGTConnectionsService
