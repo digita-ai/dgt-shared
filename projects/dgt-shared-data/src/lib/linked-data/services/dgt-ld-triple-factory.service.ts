@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
@@ -17,12 +17,15 @@ export class DGTLDTripleFactoryService {
     constructor(private logger: DGTLoggerService) { }
 
     public createFromString(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
-        let res: DGTLDTriple[] = null;
 
-        const quads = this.parser.parse(response);
-        this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { quads });
+        try {
+            const quads = this.parser.parse(response);
+            this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { quads });
 
-        return this.createFromQuads(quads, documentUri, exchange, source, connection);
+            return this.createFromQuads(quads, documentUri, exchange, source, connection);
+        } catch (err) {
+            this.logger.error(DGTLDTripleFactoryService.name, 'catched exception', { response, error: err })
+        }
     }
 
     public createFromQuads(quads: Quad[], documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
