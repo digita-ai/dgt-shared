@@ -22,13 +22,13 @@ export class DGTLDFilterService {
 
   constructor(
     private logger: DGTLoggerService,
-    triples: DGTLDTripleFactoryService,
+    private triples: DGTLDTripleFactoryService,
     private paramChecker: DGTParameterCheckerService,
-    connections: DGTConnectionService,
+    private connections: DGTConnectionService,
   ) {
     this.register(new DGTLDFilterRunnerBGPService());
-    this.register(new DGTLDFilterRunnerSparqlService(logger, triples));
-    this.register(new DGTLDFilterRunnerHolderService(connections, paramChecker));
+    this.register(new DGTLDFilterRunnerSparqlService(logger, this.triples));
+    this.register(new DGTLDFilterRunnerHolderService(this.connections, paramChecker));
     this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
     this.register(new DGTLDFilterRunnerConnectionService(paramChecker));
     this.register(new DGTLDFilterRunnerCombinationService(paramChecker, this));

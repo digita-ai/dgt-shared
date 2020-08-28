@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDFilterHolder } from '../models/dgt-ld-filter-holder.model';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTErrorArgument, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable()
 export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<DGTLDFilterHolder> {
@@ -26,14 +26,21 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
             throw new DGTErrorArgument('Argument triples should be set.', triples);
         }
         // This might not work
-        return of(triples.filter(triple => this.runOne(filter, triple)));
+        return forkJoin(triples.map(triple => this.runOne(filter, triple).pipe(map(result => result ? triple : null))))
+        .pipe(
+            map(triples => triples.filter(triple => triple !== null)),
+        )
+
+        // return triples.filter(triple => this.runOne(filter, triple));
     }
 
     private runOne(filter: DGTLDFilterHolder, triple: DGTLDTriple): Observable<boolean> {
         this.paramChecker.checkParametersNotNull({ filter, triple });
         return this.connections.getConnection(triple.connection).pipe(
+            tap(connection => console.log('coooooonnn', connection)),
             map(connection => filter.holders.find(holder => holder.id === connection.holder)),
-            map(holder => holder ? true : false)
+            tap(holder => console.log('found hoooooolder', holder)),
+            map(holder => holder !== null && holder !== undefined ? true : false)
         );
     }
 
