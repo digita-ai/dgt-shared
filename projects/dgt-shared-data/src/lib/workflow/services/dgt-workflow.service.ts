@@ -20,34 +20,25 @@ export class DGTWorkflowService {
 
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
-    public execute(exchange: DGTExchange, connection: DGTConnection<any>)
-        : Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
+    public execute(exchange: DGTExchange, triples: DGTLDTriple[]) : Observable<DGTLDTriple[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
 
-        return of({ exchange })
-            .pipe(
-                switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
-                    .pipe(map(justification => ({ justification, ...data })))),
-                switchMap((data) => this.data.getEntity<DGTSource<any>>('source', exchange.source)
-                    .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.get(exchange, connection, data.source, data.justification)
-                    .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
+        return of({ exchange, triples }).pipe(
                 map(data => {
-                    const values: DGTLDTriple[] = _.flatten(data.valuesPerSource);
+                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
 
-                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
-                        { exchange, values });
+                    // todo clean this up
+                    data.triples.map((triple) => {
 
-                    values.map((value) => {
-                        if (value) {
-                            const workflows = this.get(exchange.source, value.predicate);
+                        if (triple) {
+                            const workflows = this.get(exchange.source, triple.predicate);
 
                             if (workflows) {
                                 workflows.forEach((workflow) => {
                                     if (workflow && workflow.actions) {
                                         workflow.actions.forEach((action) => {
                                             if (action) {
-                                                value = action.execute(value);
+                                                triple = action.execute(triple);
                                             }
                                         });
                                     }
@@ -56,7 +47,7 @@ export class DGTWorkflowService {
                         }
                     });
 
-                    return values;
+                    return data.triples;
                 }),
             );
     }

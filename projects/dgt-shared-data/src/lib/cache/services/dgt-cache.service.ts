@@ -16,9 +16,11 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 @Injectable()
 export class DGTCacheService {
 
-    private cache: Observable<DGTLDTriple[]>;
+    public cache: DGTLDTriple[];
 
-    constructor(private data: DGTDataService, private logger: DGTLoggerService, private filterService: DGTLDFilterService) { }
+    constructor(private data: DGTDataService, private logger: DGTLoggerService, private filterService: DGTLDFilterService) { 
+        this.cache = [];
+    }
 
     public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTCacheService.name, 'Retrieving values from cache for exchange', { exchange });
@@ -72,19 +74,20 @@ export class DGTCacheService {
             );
     }
 
-    public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[]> {
-        if (this.cache) {
-            return this.cache.pipe(mergeMap(tripleArray => {
-                if (filter) {
-                    return this.filterService.run(filter, tripleArray);
-                } else {
-                    return of(tripleArray);
-                }
-            }));
-        } else {
-            this.cache = this.getAllValues();
-            return this.query(filter, transformer);
-        }
+    public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[] | T[]> {
+        return of(this.cache).pipe(mergeMap(tripleArray => {
+            let res;
+            if (filter) {
+                res = this.filterService.run(filter, tripleArray);
+            } else {
+                res = of(tripleArray);
+            }
+            return transformer ? transformer.toDomain(res) : res;
+        }));
+    }
+
+    public isFilled(): boolean {
+        return this.cache.length > 0;
     }
 
     private getAllValues(): Observable<DGTLDTriple[]> {
