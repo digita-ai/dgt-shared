@@ -683,12 +683,14 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
   }
 
   private generateToken(uri, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<string> {
-    //return of('');
-    return DGTSourceSolidToken.issueFor(
-      uri,
-      connection.configuration.privateKey,
-      source.configuration.client_id,
-      connection.configuration.idToken
-    );
+    if (connection.configuration.privateKey && connection.configuration.idToken) {
+      return DGTSourceSolidToken.issueFor(
+        uri,
+        connection.configuration.privateKey,
+        source.configuration.client_id,
+        connection.configuration.idToken
+      );
+    }
+    return of('');
   }
 }
