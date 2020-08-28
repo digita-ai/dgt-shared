@@ -87,12 +87,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
 
   public query<T extends DGTLDResource>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
 
-    if (!connection || !connection.id || !connection.configuration || !connection.configuration.webId) {
-      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', exchange.id);
+    if (connection == null || connection.id == null || connection.configuration == null || connection.configuration.webId == null) {
+      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection: connection });
     }
 
     if (!source || !source.id) {
-      throw new DGTErrorArgument('source and source.id should be set', exchange);
+      throw new DGTErrorArgument('source and source.id should be set', { source: source });
     }
 
     const uri = documentUri ? documentUri : connection.configuration.webId;
@@ -113,7 +113,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
             connection: connection.id,
             source: source.id,
             documentUri,
-            holder: {
+            subject: {
               value: uri,
               termType: DGTLDTermType.REFERENCE
             },
