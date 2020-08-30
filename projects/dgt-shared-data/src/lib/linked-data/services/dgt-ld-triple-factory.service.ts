@@ -17,15 +17,34 @@ export class DGTLDTripleFactoryService {
     constructor(private logger: DGTLoggerService) { }
 
     public createFromString(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+        if (!response) {
+            throw new DGTErrorArgument('Argument response should be set.', response);
+        }
+
+        if (!documentUri) {
+            throw new DGTErrorArgument('Argument documentUri should be set.', documentUri);
+        }
+
+        if (!source) {
+            throw new DGTErrorArgument('Argument source should be set.', source);
+        }
+
+        if (!connection) {
+            throw new DGTErrorArgument('Argument connection should be set.', connection);
+        }
+
+        let res: DGTLDTriple[] = null;
 
         try {
             const quads = this.parser.parse(response);
             this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { quads });
 
-            return this.createFromQuads(quads, documentUri, exchange, source, connection);
+            res = this.createFromQuads(quads, documentUri, exchange, source, connection);
         } catch (err) {
-            this.logger.error(DGTLDTripleFactoryService.name, 'catched exception', { response, error: err })
+            this.logger.error(DGTLDTripleFactoryService.name, 'Caught exception', { response, error: err })
         }
+
+        return res;
     }
 
     public createFromQuads(quads: Quad[], documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
