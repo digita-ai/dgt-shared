@@ -13,8 +13,6 @@ import { DGTSource } from '../../source/models/dgt-source.model';
 import * as _ from 'lodash';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTLDResource } from '@digita/dgt-shared-data/public-api';
-
 
 @Injectable()
 export class DGTLDService {
