@@ -81,6 +81,8 @@ import { DGTDataInterfaceDescentComponent } from './interface/components/data/dg
 import { DGTDataInterfaceEmailValueComponent } from './interface/components/data/dgt-data-interface-email-value/dgt-data-interface-email-value.component';
 import { DGTDataCategoryComponent } from './interface/components/data/dgt-data-category/dgt-data-category.component';
 import { DGTDataGroupComponent } from './interface/components/data/dgt-data-group/dgt-data-group.component';
+import { DGTSectionAvatarComponent } from './interface/components/dgt-section-avatar/dgt-section-avatar.component';
+import { DGTSectionImageComponent } from './interface/components/dgt-section-image/dgt-section-image.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -109,6 +111,8 @@ export const declarations = [
   DGTLinkComponent,
   DGTSectionComponent,
   DGTSectionActionComponent,
+  DGTSectionAvatarComponent,
+  DGTSectionImageComponent,
   DGTSectionHelpComponent,
   DGTSectionHelpTitleComponent,
   DGTSectionIconComponent,
