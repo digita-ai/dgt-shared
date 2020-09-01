@@ -2,11 +2,11 @@
   <div fxFlex="50px" class="avatar" *ngIf="showAvatar">
     <ng-content select="dgt-section-avatar"></ng-content>
   </div>
-  <div fxFlex fxLayout="column">
-    <div fxFlex class="section-image" *ngIf="showImage">
+  <div fxFlex="grow" fxLayout="column">
+    <div fxFlex="grow" class="section-image" *ngIf="showImage">
       <ng-content select="dgt-section-image"></ng-content>
     </div>
-    <div fxFlex fxFlexFill fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between" class="section"
+    <div fxFlex="grow" fxFlexFill fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="space-between" class="section"
       *ngIf="state !== 'collapsed'" [class.collapsed]="state === 'collapsed'" [class.blue]="state === 'blue'"
       [class.warning]="state === 'warning'" [class.success]="state === 'success' || state === 'locked'">
       <div fxFlex="initial" fxLayout="row" fxLayoutGap="20px"
