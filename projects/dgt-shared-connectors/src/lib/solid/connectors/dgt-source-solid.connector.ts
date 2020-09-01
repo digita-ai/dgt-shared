@@ -1,14 +1,13 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { Generator, Update, Triple, Term } from 'sparqljs';
 import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { DGTCryptoService, DGTEnvironmentService } from '@digita/dgt-shared-utils';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
@@ -18,10 +17,9 @@ import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
-    private config: DGTConfigurationService<DGTConfigurationBase>,
+    private origin: DGTOriginService,
     private triples: DGTLDTripleFactoryService,
     private crypto: DGTCryptoService,
-    private environment: DGTEnvironmentService,
     private transformer: DGTSourceSolidTrustedAppTransformerService
   ) { }
 
@@ -507,12 +505,12 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
     const headers = { 'Content-Type': 'application/json' };
     const params = {
       client_name: 'Digita Consumer Client',
-      client_uri: this.environment.baseUri,
-      logo_uri: `${this.environment.baseUri}assets/images/logo.png`,
+      client_uri: this.origin.get(),
+      logo_uri: `${this.origin.get()}assets/images/logo.png`,
       response_types: ['code', 'code id_token token'],
       grant_types: ['authorization_code'],
       default_max_age: 7200,
-      post_logout_redirect_uris: [`${this.environment.baseUri}connect/logout`],
+      post_logout_redirect_uris: [`${this.origin.get()}connect/logout`],
       redirect_uris: [encodedCallbackUri]
     };
     const body = JSON.stringify(Object.assign({}, params, {}));
@@ -664,7 +662,7 @@ export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSoli
         map(trustedApps => ({ ...data, trustedApps }))
       )),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
-      map(data => ({ ...data, ourTrustedApp: data.trustedApps.find(app => this.environment.baseUri.includes(app.origin)) })),
+      map(data => ({ ...data, ourTrustedApp: data.trustedApps.find(app => this.origin.get().includes(app.origin)) })),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Found our trusted app', data.ourTrustedApp)),
       map(data => {
         let res = false;
