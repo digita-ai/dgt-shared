@@ -1,7 +1,6 @@
 /*
  * Public API Surface of dgt-shared-utils
  */
-export { DGTEnvironmentService } from './lib/environment/services/dgt-environment.service';
 export { DGTSharedUtilsModule } from './lib/dgt-shared-utils.module';
 export { DGTMap } from './lib/collections/models/dgt-map.model';
 export { DGTPlatformService } from './lib/platform/services/dgt-platform.service';
@@ -24,5 +23,7 @@ export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.serv
 export { DGTConnectionService } from './lib/connection/services/dgt-connection.service';
 export { DGTDateToLabelService } from './lib/date/services/dgt-date-to-label.service';
 export { DGTInjectable } from './lib/decorators/dgt-injectable';
-export { DGTServiceType } from './lib/decorators/dgt-injectable'
+export { DGTServiceType } from './lib/decorators/dgt-injectable';
+export { DGTOriginService } from './lib/origin/services/dgt-origin.service';
+export { DGTOriginConfigService } from './lib/origin/services/dgt-origin-config.service';
 export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
