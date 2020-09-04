@@ -56,6 +56,7 @@ export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
+export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';
 export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
