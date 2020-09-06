@@ -1,11 +1,11 @@
 import { Injectable, ComponentFactoryResolver, Type, } from '@angular/core';
 import { DGTCategory, DGTDataValue, DGTDataInterface } from '@digita/dgt-shared-data';
 import { DGTParameterCheckerService } from '@digita/dgt-shared-utils';
-import { DGTDataInterfaceEmailComponent } from '../components/data/dgt-data-interface-email/dgt-data-interface-email.component';
-import { DGTDataInterfaceDescentComponent } from '../components/data/dgt-data-interface-descent/dgt-data-interface-descent.component';
-import { DGTDataInterfaceSurveysComponent } from '../components/data/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
-import { DGTDataInterfacePhoneComponent } from '../components/data/dgt-data-interface-phone/dgt-data-interface-phone.component';
-import { DGTDataInterfaceStandardComponent } from '../components/data/dgt-data-interface-standard/dgt-data-interface-standard.component';
+import { DGTDataInterfaceEmailComponent } from '../components/dgt-data-interface-email/dgt-data-interface-email.component';
+import { DGTDataInterfaceDescentComponent } from '../components/dgt-data-interface-descent/dgt-data-interface-descent.component';
+import { DGTDataInterfaceSurveysComponent } from '../components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
+import { DGTDataInterfacePhoneComponent } from '../components/dgt-data-interface-phone/dgt-data-interface-phone.component';
+import { DGTDataInterfaceStandardComponent } from '../components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 import { DGTDataInterfaceHostDirective } from '@digita/dgt-shared-data';
 
 @Injectable()
