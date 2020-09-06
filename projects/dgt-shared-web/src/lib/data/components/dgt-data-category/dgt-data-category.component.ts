@@ -2,7 +2,7 @@ import { Component, Input, ViewChild, Output, EventEmitter, AfterViewInit } from
 import * as _ from 'lodash';
 import { DGTCategory } from '@digita/dgt-shared-data';
 import { DGTParameterCheckerService, DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTDataInterfaceFactoryService } from '../../services/data-interface-factory.service';
+import { DGTDataInterfaceFactoryService } from '../../services/dgt-data-interface-factory.service';
 import { DGTDataValue, DGTDataInterfaceHostDirective } from '@digita/dgt-shared-data';
 
 @Component({

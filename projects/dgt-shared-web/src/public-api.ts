@@ -84,7 +84,8 @@ export { DGTNotificationComponent } from './lib/interface/components/dgt-notific
 export { DGTSectionContainer } from './lib/interface/models/dgt-section-container.model';
 export { DGTSectionState } from './lib/interface/models/dgt-section-style.model';
 export { DGTColor } from './lib/interface/models/dgt-color.model';
-export { DGTDataInterfaceFactoryService } from './lib/data/services/data-interface-factory.service';
+export { DGTDataInterfaceFactoryService } from './lib/data/services/dgt-data-interface-factory.service';
+export { DGTDataInterfaceResolverService } from './lib/data/services/dgt-data-interface-resolver.service';
 export { DGTDataFieldComponent } from './lib/data/components/dgt-data-field/dgt-data-field.component';
 export { DGTDataInterfaceDescentComponent } from './lib/data/components/dgt-data-interface-descent/dgt-data-interface-descent.component';
 export { DGTDataInterfaceEmailComponent } from './lib/data/components/dgt-data-interface-email/dgt-data-interface-email.component';
