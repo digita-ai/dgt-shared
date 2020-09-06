@@ -1,5 +1,5 @@
-import { DGTLDPredicate } from '@digita/dgt-shared-data/public-api';
 import { Injectable } from '@angular/core';
+import { DGTLDPredicate } from '../models/dgt-ld-predicate.model';
 
 @Injectable()
 export class DGTLDUtils {

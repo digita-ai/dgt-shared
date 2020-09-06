@@ -14,14 +14,16 @@ import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 
 @Injectable()
-export class DGTSourceSolidConnector implements DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
+export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
   constructor(private logger: DGTLoggerService,
     private http: DGTHttpService,
     private origin: DGTOriginService,
     private triples: DGTLDTripleFactoryService,
     private crypto: DGTCryptoService,
     private transformer: DGTSourceSolidTrustedAppTransformerService
-  ) { }
+  ) { 
+    super();
+  }
 
   public prepare(connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTSourceSolid> {
 
