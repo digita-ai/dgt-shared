@@ -43,7 +43,7 @@ describe('DGTSourceSolidConnector', () => {
             const webId = 'https://john.my.id/';
             const exchange: DGTExchange = {
                 id: 'e-1',
-                justification: null,
+                purpose: null,
                 holder: null,
                 source: 's-1',
                 connection: 'c-1',

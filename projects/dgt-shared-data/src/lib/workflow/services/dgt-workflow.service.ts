@@ -2,10 +2,8 @@ import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { switchMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
@@ -20,36 +18,36 @@ export class DGTWorkflowService {
 
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
-    public execute(exchange: DGTExchange, triples: DGTLDTriple[]) : Observable<DGTLDTriple[]> {
+    public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
 
         return of({ exchange, triples }).pipe(
-                map(data => {
-                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
+            map(data => {
+                this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
 
-                    // todo clean this up
-                    data.triples.map((triple) => {
+                // todo clean this up
+                data.triples.map((triple) => {
 
-                        if (triple) {
-                            const workflows = this.get(exchange.source, triple.predicate);
+                    if (triple) {
+                        const workflows = this.get(exchange.source, triple.predicate);
 
-                            if (workflows) {
-                                workflows.forEach((workflow) => {
-                                    if (workflow && workflow.actions) {
-                                        workflow.actions.forEach((action) => {
-                                            if (action) {
-                                                triple = action.execute(triple);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                        if (workflows) {
+                            workflows.forEach((workflow) => {
+                                if (workflow && workflow.actions) {
+                                    workflow.actions.forEach((action) => {
+                                        if (action) {
+                                            triple = action.execute(triple);
+                                        }
+                                    });
+                                }
+                            });
                         }
-                    });
+                    }
+                });
 
-                    return data.triples;
-                }),
-            );
+                return data.triples;
+            }),
+        );
     }
 
 

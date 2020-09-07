@@ -67,7 +67,6 @@ export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.mo
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
 export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';
 export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
-export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
