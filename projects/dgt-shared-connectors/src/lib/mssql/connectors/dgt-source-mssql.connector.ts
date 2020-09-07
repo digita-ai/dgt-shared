@@ -2,15 +2,17 @@ import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
 import { DGTExchange, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTJustification, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { DGTMap, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTMap, DGTLoggerService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
+export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
-    constructor(private logger: DGTLoggerService) { }
+    constructor(private logger: DGTLoggerService) { 
+        super();
+    }
 
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTConnection<DGTConnectionMSSQLConfiguration>> {
         return of(null);
@@ -94,5 +96,17 @@ export class DGTSourceMSSQLConnector implements DGTSourceConnector<DGTSourceMSSQ
                 termType: DGTLDTermType.REFERENCE
             },
         };
+    }
+
+    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
+    }
+
+    public delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> { 
+        throw new DGTErrorNotImplemented();
+    }
+
+    public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
     }
 }

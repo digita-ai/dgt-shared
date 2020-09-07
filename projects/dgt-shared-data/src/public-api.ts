@@ -3,6 +3,13 @@
  */
 
 export * from './lib/dgt-shared-data.module';
+export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
+export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
+export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
+export { DGTProfile } from './lib/profile/models/dgt-profile.model';
+export { DGTProfileService } from './lib/profile/services/dgt-profile.service';
+export { DGTProfileTransformerService } from './lib/profile/services/dgt-profile-transformer.service';
+export { DGTProfileSolidService } from './lib/profile/services/dgt-profile-solid.service';
 export { DGTQuery } from './lib/metadata/models/dgt-query.model';
 export { DGTQueryCondition } from './lib/metadata/models/dgt-query-condition.model';
 export { DGTQueryConditionOperator } from './lib/metadata/models/dgt-query-condition-operator.model';
@@ -20,6 +27,11 @@ export { DGTLDFilterSparql } from './lib/linked-data/models/dgt-ld-filter-sparql
 export { DGTLDFilterBGP } from './lib/linked-data/models/dgt-ld-filter-bgp.model';
 export { DGTLDFilterHolder } from './lib/linked-data/models/dgt-ld-filter-holder.model';
 export { DGTLDFilterExchange } from './lib/linked-data/models/dgt-ld-filter-exchange.model';
+export { DGTLDTypeRegistration } from './lib/linked-data/models/dgt-ld-type-registration.model';
+export { DGTLDTypeRegistrationService } from './lib/linked-data/services/dgt-ld-type-registration.service';
+export { DGTLDTypeRegistrationTransformerService } from './lib/linked-data/services/dgt-ld-type-registration-transformer.service';
+export { DGTLDTypeRegistrationSolidService } from './lib/linked-data/services/dgt-ld-type-registration-solid.service';
+export { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
 export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
@@ -28,9 +40,6 @@ export { DGTFileService } from './lib/file/services/dgt-file.service';
 export { DGTFileType } from './lib/file/models/dgt-file-type.model';
 export { DGTEntity } from './lib/metadata/models/dgt-entity.model';
 export { DGTDataService } from './lib/metadata/services/dgt-data.service';
-export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
-export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
-export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
 export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
 export { DGTLocalDataService } from './lib/metadata/services/dgt-local-data.service';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
@@ -56,6 +65,7 @@ export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
 export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
+export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';
 export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
 export { DGTJustification } from './lib/justification/models/dgt-justification.model';
 export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
@@ -74,3 +84,8 @@ export { DGTDataValueService } from './lib/data-value/services/data-value.servic
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
 export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model'
 export { DGTConnectionsService } from './lib/connection/services/dgt-connections.service';
+export { DGTEvent } from './lib/events/models/dgt-event.model';
+export { DGTEventService } from './lib/events/services/dgt-event.service';
+export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.service';
+export { DGTEventMockService } from './lib/events/services/dgt-event-mock.service';
+export { DGTEventTransformerService } from './lib/events/services/dgt-event-transformer.service';
