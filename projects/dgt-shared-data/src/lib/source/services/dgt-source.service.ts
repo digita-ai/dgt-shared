@@ -12,13 +12,18 @@ import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
-export class DGTSourceService {
+export abstract class DGTSourceService {
 
     private connectors: DGTMap<DGTSourceType, DGTSourceConnector<any, any>>;
 
-    constructor(private logger: DGTLoggerService) { }
+    constructor(protected logger: DGTLoggerService) { }
 
-    public get(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, justification: DGTJustification)
+    public abstract get(sourceId: string): Observable<DGTSource<any>>;
+    public abstract all(): Observable<Array<DGTSource<any>>>;
+    public abstract update(source: DGTSource<any>): Observable<DGTSource<any>>;
+    public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
+
+    public query(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, justification: DGTJustification)
         : Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSourceService.name, 'Getting source', source);
 
