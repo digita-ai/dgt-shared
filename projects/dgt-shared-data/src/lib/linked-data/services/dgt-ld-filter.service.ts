@@ -14,6 +14,7 @@ import { DGTConnectionService } from '../../connection/services/dgt-connection-a
 import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
 import { DGTLDFilterRunnerConnectionService } from './dgt-ld-filter-runner-connection.service';
 import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-combination.service';
+import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 
 @Injectable()
 export class DGTLDFilterService {
@@ -25,9 +26,10 @@ export class DGTLDFilterService {
     private triples: DGTLDTripleFactoryService,
     private paramChecker: DGTParameterCheckerService,
     private connections: DGTConnectionService,
+    private sparql: DGTSparqlCommunicaService
   ) {
     this.register(new DGTLDFilterRunnerBGPService());
-    this.register(new DGTLDFilterRunnerSparqlService(logger, this.triples));
+    this.register(new DGTLDFilterRunnerSparqlService(logger, this.triples, this.sparql));
     this.register(new DGTLDFilterRunnerHolderService(this.connections, paramChecker));
     this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
     this.register(new DGTLDFilterRunnerConnectionService(paramChecker));
