@@ -12,7 +12,10 @@ import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
 import { DGTConnectionsService } from './connection/services/dgt-connections.service';
 import { DGTLDService } from './linked-data/services/dgt-ld.service';
-
+import { DGTLDUtils } from './linked-data/services/dgt-ld-utils.service';
+import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/dgt-ld-type-registration-transformer.service';
+import { DGTProfileTransformerService } from './profile/services/dgt-profile-transformer.service';
+import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 export const declarations = [
   DGTDataInterfaceHostDirective
 ];
@@ -20,6 +23,7 @@ export const imports = [
   DGTSharedUtilsModule
 ];
 export const providers = [
+  DGTLDUtils,
   DGTLDService,
   DGTLDFilterService,
   DGTLDFilterRunnerBGPService,
@@ -29,7 +33,10 @@ export const providers = [
   DGTCacheService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
-  DGTConnectionsService
+  DGTConnectionsService,
+  DGTLDTypeRegistrationTransformerService,
+  DGTProfileTransformerService,
+  DGTEventTransformerService,
 ];
 
 @NgModule({

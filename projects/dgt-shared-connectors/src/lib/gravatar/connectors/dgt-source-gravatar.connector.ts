@@ -1,7 +1,7 @@
 import { Observable, of } from 'rxjs';
 import { DGTSourceConnector, DGTExchange, DGTSource, DGTLDTriple, DGTJustification, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
-import { DGTLoggerService, DGTHttpService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
 import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
@@ -10,8 +10,10 @@ import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gra
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
-    constructor(private logger: DGTLoggerService, private http: DGTHttpService) { }
+export class DGTSourceGravatarConnector extends DGTSourceConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
+    constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
+        super();
+     }
 
     connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>): Observable<DGTConnection<DGTConnectionGravatarConfiguration>> {
         return of(null);
@@ -103,5 +105,17 @@ export class DGTSourceGravatarConnector implements DGTSourceConnector<DGTSourceG
                 termType: DGTLDTermType.REFERENCE
             },
         };
+    }
+
+    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
+    }
+
+    public delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> { 
+        throw new DGTErrorNotImplemented();
+    }
+
+    public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
     }
 }
