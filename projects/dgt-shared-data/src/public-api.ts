@@ -88,3 +88,4 @@ export { DGTEventService } from './lib/events/services/dgt-event.service';
 export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.service';
 export { DGTEventMockService } from './lib/events/services/dgt-event-mock.service';
 export { DGTEventTransformerService } from './lib/events/services/dgt-event-transformer.service';
+export { DGTPurpose } from './lib/purpose/models/dgt-purpose.model'

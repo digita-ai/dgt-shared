@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTSourceConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -12,7 +12,6 @@ import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
-import { DGTPurpose } from 'projects/dgt-shared-data/src/lib/purpose/models/dgt-purpose.model';
 
 @Injectable()
 export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
