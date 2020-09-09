@@ -30,7 +30,6 @@ export const providers = [
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
   DGTMockDataService,
-  DGTSourceService,
   DGTCacheService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
