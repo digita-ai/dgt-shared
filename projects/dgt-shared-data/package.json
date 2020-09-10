@@ -8,7 +8,10 @@
     "@digita/dgt-shared-utils": "0.1.1",
     "store2": "2.9.0",
     "uuid": "3.4.0",
-    "n3": "^1.4.0"
+    "n3": "^1.4.0",
+    "@comunica/actor-init-sparql": "^1.16.2",
+    "@comunica/actor-init-sparql-rdfjs": "^1.16.2",
+    "@comunica/bus-sparql-serialize": "^1.16.0"
   },
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",

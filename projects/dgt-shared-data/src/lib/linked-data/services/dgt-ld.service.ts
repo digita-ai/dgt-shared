@@ -28,7 +28,7 @@ export class DGTLDService {
 
     public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[] | T[]> {
         // this.paramChecker.checkParametersNotNull({ filter, transformer });
-        this.logger.debug(DGTLDService.name, 'Querying cache with filter {} and transformer {} ', { filter, transformer });
+        this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
         // check cache
         if (!this.cache.isFilled()) {
             return this.fillCacheFromDataService().pipe(
@@ -59,11 +59,11 @@ export class DGTLDService {
         this.paramChecker.checkParametersNotNull({ exchange, connection });
         return of({ exchange, connection })
             .pipe(
-                switchMap((data) => this.data.getEntity<DGTPurpose>('purpose', data.exchange.purpose)
+                switchMap((data) => this.data.getEntity<DGTPurpose>('justification', data.exchange.purpose)
                     .pipe(map(purpose => ({ purpose, ...data })))),
                 switchMap((data) => this.data.getEntity<DGTSource<any>>('source', data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.get(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.sources.query(data.exchange, data.connection, data.source, data.purpose)),
             );
     }
 }

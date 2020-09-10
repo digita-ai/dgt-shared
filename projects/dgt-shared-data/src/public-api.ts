@@ -89,3 +89,9 @@ export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.serv
 export { DGTEventMockService } from './lib/events/services/dgt-event-mock.service';
 export { DGTEventTransformerService } from './lib/events/services/dgt-event-transformer.service';
 export { DGTPurpose } from './lib/purpose/models/dgt-purpose.model'
+export { DGTSparqlService } from './lib/sparql/services/dgt-sparql.service';
+export { DGTSparqlCommunicaService } from './lib/sparql/services/dgt-sparql-communica.service';
+export { DGTSparqlDataset } from './lib/sparql/models/dgt-sparql-dataset.model';
+export { DGTSparqlDatasetType } from './lib/sparql/models/dgt-sparql-dataset-type.model';
+export { DGTSparqlDatasetMemory} from './lib/sparql/models/dgt-sparql-dataset-memory.model';
+export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
