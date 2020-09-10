@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTConnection, DGTSourceConnector, DGTExchange, DGTJustification, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTSourceConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     private triples: DGTLDTripleFactoryService,
     private crypto: DGTCryptoService,
     private transformer: DGTSourceSolidTrustedAppTransformerService
-  ) { 
+  ) {
     super();
   }
 
@@ -53,7 +53,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     return res;
   }
 
-  public connect(justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
+  public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
 
     if (!source) {
       throw new DGTErrorArgument('Argument source should be set.', source);
@@ -85,7 +85,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     return res;
   }
 
-  public query<T extends DGTLDResource>(documentUri: string, justification: DGTJustification, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
+  public query<T extends DGTLDResource>(documentUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
 
     if (connection == null || connection.id == null || connection.configuration == null || connection.configuration.webId == null) {
       throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection: connection });
@@ -640,27 +640,27 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
   /**
    * Checks if a specific connection has sufficient access rights.
    * @param connection The connection for which to check access rights.
-   * @param justification The justification which indicates the amount of access rights required.
+   * @param purpose The purpose which indicates the amount of access rights required.
    * @param exchange The exchange for which to check access rights.
    * @param source The source on which the connection is hosted.
    */
-  public checkAccessRights(connection: DGTConnectionSolid, justification: DGTJustification, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, justification });
+  public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, purpose });
 
     if (!connection) {
       throw new DGTErrorArgument('Argument connection should be set.', connection);
     }
 
-    if (!justification) {
-      throw new DGTErrorArgument('Argument justification should be set.', justification);
+    if (!purpose) {
+      throw new DGTErrorArgument('Argument purpose should be set.', purpose);
     }
 
     if (!source) {
       throw new DGTErrorArgument('Argument source should be set.', source);
     }
 
-    return of({ connection, justification }).pipe(
-      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, justification, exchange, connection, source, this.transformer).pipe(
+    return of({ connection, purpose }).pipe(
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, purpose, exchange, connection, source, this.transformer).pipe(
         map(trustedApps => ({ ...data, trustedApps }))
       )),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
@@ -668,7 +668,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Found our trusted app', data.ourTrustedApp)),
       map(data => {
         let res = false;
-        const aclsNeeded: string[] = data.justification.aclNeeded ? data.justification.aclNeeded : [DGTSourceSolidTrustedAppMode.READ];
+        const aclsNeeded: string[] = data.purpose.aclNeeded ? data.purpose.aclNeeded : [DGTSourceSolidTrustedAppMode.READ];
 
 
         if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {

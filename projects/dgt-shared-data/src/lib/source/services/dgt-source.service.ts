@@ -2,7 +2,6 @@ import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DGTLoggerService, DGTMap } from '@digita/dgt-shared-utils';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Injectable } from '@angular/core';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
@@ -10,6 +9,7 @@ import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
+import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
 
 @Injectable()
 export abstract class DGTSourceService {
@@ -23,7 +23,7 @@ export abstract class DGTSourceService {
     public abstract update(source: DGTSource<any>): Observable<DGTSource<any>>;
     public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
-    public query(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, justification: DGTJustification)
+    public query(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, purpose: DGTPurpose)
         : Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSourceService.name, 'Getting source', source);
 
@@ -33,7 +33,7 @@ export abstract class DGTSourceService {
             connector = this.connectors.get(source.type);
         }
 
-        return connector.query(null, justification, exchange, connection, source, null)
+        return connector.query(null, purpose, exchange, connection, source, null)
             .pipe(
                 map((entities) => entities.map(entity => entity.triples)),
                 map((triples) => _.flatten(triples)),
