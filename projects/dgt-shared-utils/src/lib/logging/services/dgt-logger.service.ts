@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class DGTLoggerService {

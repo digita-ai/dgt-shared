@@ -1,17 +1,15 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { switchMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
+import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
 export class DGTWorkflowService {
@@ -20,45 +18,36 @@ export class DGTWorkflowService {
 
     constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
 
-    public execute(exchange: DGTExchange, connection: DGTConnection<any>)
-        : Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
+    public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
 
-        return of({ exchange })
-            .pipe(
-                switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
-                    .pipe(map(justification => ({ justification, ...data })))),
-                switchMap((data) => this.data.getEntity<DGTSource<any>>('source', exchange.source)
-                    .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.get(exchange, connection, data.source, data.justification)
-                    .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
-                map(data => {
-                    const values: DGTLDTriple[] = _.flatten(data.valuesPerSource);
+        return of({ exchange, triples }).pipe(
+            map(data => {
+                this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
 
-                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
-                        { exchange, values });
+                // todo clean this up
+                data.triples.map((triple) => {
 
-                    values.map((value) => {
-                        if (value) {
-                            const workflows = this.get(exchange.source, value.predicate);
+                    if (triple) {
+                        const workflows = this.get(exchange.source, triple.predicate);
 
-                            if (workflows) {
-                                workflows.forEach((workflow) => {
-                                    if (workflow && workflow.actions) {
-                                        workflow.actions.forEach((action) => {
-                                            if (action) {
-                                                value = action.execute(value);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                        if (workflows) {
+                            workflows.forEach((workflow) => {
+                                if (workflow && workflow.actions) {
+                                    workflow.actions.forEach((action) => {
+                                        if (action) {
+                                            triple = action.execute(triple);
+                                        }
+                                    });
+                                }
+                            });
                         }
-                    });
+                    }
+                });
 
-                    return values;
-                }),
-            );
+                return data.triples;
+            }),
+        );
     }
 
 
@@ -71,8 +60,8 @@ export class DGTWorkflowService {
             res = this.workflows.filter(workflow =>
                 workflow
                 && workflow.source === source
-                && workflow.fields
-                && workflow.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
+                && workflow.predicates
+                && workflow.predicates.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
         }
 
         return res;

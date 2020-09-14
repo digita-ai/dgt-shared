@@ -1,4 +1,4 @@
-import { DGTStoreService } from '../../state/services/dgt-store.service';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTNotification } from './dgt-notification.model';
 import { DismissNotification } from '../../state/models/dgt-actions.model';
@@ -10,8 +10,8 @@ export abstract class DGTSmartElement<T extends DGTBaseRootState<DGTBaseAppState
   public notifications: Array<DGTNotification>;
   public unsubscribe: Subject<any> = new Subject();
 
-  constructor(protected store: DGTStoreService<T>) {
-    this.store.select(state => state.app.notifications).subscribe(notifications => this.notifications = notifications);
+  constructor(protected store: DGTStateStoreService<T>) {
+    this.store.select(state => state.app.notifications).subscribe((notifications: DGTNotification[]) => this.notifications = notifications);
   }
 
   ngOnDestroy(): void {

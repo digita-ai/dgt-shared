@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { DGTLDEntity } from './dgt-ld-entity.model';
+import { DGTLDResource } from './dgt-ld-resource.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 
 export interface DGTLDTransformer<T> {
-    toDomain(entities: DGTLDEntity[]): Observable<T[]>;
-    toTriples(objects: T[], connection: DGTConnectionSolid): Observable<DGTLDEntity[]>;
+    toDomain(entities: DGTLDResource[]): Observable<T[]>;
+    toTriples(objects: T[], connection: DGTConnectionSolid): Observable<DGTLDResource[]>;
 }

@@ -5,7 +5,16 @@ import { DGTCompareValidator } from './validation/validators/dgt-compare.validat
 import { DGTI8NService } from './i8n/services/dgt-i8n.service';
 import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
 import { DGTSharedDataModule } from '@digita/dgt-shared-data';
-import { MatPaginatorModule, MatTableModule, MatSortModule, MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import {
+  MatPaginatorModule,
+  MatTableModule,
+  MatSortModule,
+  MatDialogModule,
+  MatButtonModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+} from '@angular/material';
 import { DGTButtonComponent } from './interface/components/dgt-button/dgt-button.component';
 import { DGTButtonConfirmComponent } from './interface/components/dgt-button-confirm/dgt-button-confirm.component';
 import { CommonModule } from '@angular/common';
@@ -35,7 +44,6 @@ import { DGTSectionContentComponent } from './interface/components/dgt-section-c
 import { DGTPageComponent } from './interface/components/dgt-page/dgt-page.component';
 import { DGTPageContentComponent } from './interface/components/dgt-page-content/dgt-page-content.component';
 import { DGTPageSidenavComponent } from './interface/components/dgt-page-sidenav/dgt-page-sidenav.component';
-import { DGTPageHeaderComponent } from './interface/components/dgt-page-header/dgt-page-header.component';
 import { DGTPageSubHeaderComponent } from './interface/components/dgt-page-sub-header/dgt-page-sub-header.component';
 import { DGTSectionHelpComponent } from './interface/components/dgt-section-help/dgt-section-help.component';
 import { DGTSectionSummaryComponent } from './interface/components/dgt-section-summary/dgt-section-summary.component';
@@ -58,6 +66,23 @@ import { DGTPageContentHeaderSubtitleComponent } from './interface/components/dg
 import { DGTPageContentHeaderTitleComponent } from './interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
 import { DGTPageContentGroupHeader } from './interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
 import { DGTCharmComponent } from './interface/components/dgt-charm/dgt-charm.component';
+import { DGTPageHeaderTitleComponent } from './interface/components/dgt-page-header-title/dgt-page-header-title.component';
+import { DGTPageHeaderComponent } from './interface/components/dgt-page-header/dgt-page-header.component';
+import { DGTPageHeaderLogoComponent } from './interface/components/dgt-page-header-logo/dgt-page-header-logo.component';
+import { DGTPageHeaderControlsComponent } from './interface/components/dgt-page-header-controls/dgt-page-header-controls.component';
+import { DGTDataInterfaceStandardComponent } from './data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
+import { DGTDataInterfaceSurveysComponent } from './data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
+import { DGTDataValueComponent } from './data/components/dgt-data-value/dgt-data-value.component';
+import { DGTDataInterfacePhoneValueComponent } from './data/components/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
+import { DGTDataInterfacePhoneComponent } from './data/components/dgt-data-interface-phone/dgt-data-interface-phone.component';
+import { DGTDataInterfaceEmailComponent } from './data/components/dgt-data-interface-email/dgt-data-interface-email.component';
+import { DGTDataFieldComponent } from './data/components/dgt-data-field/dgt-data-field.component';
+import { DGTDataInterfaceDescentComponent } from './data/components/dgt-data-interface-descent/dgt-data-interface-descent.component';
+import { DGTDataInterfaceEmailValueComponent } from './data/components/dgt-data-interface-email-value/dgt-data-interface-email-value.component';
+import { DGTDataCategoryComponent } from './data/components/dgt-data-category/dgt-data-category.component';
+import { DGTDataGroupComponent } from './data/components/dgt-data-group/dgt-data-group.component';
+import { DGTSectionAvatarComponent } from './interface/components/dgt-section-avatar/dgt-section-avatar.component';
+import { DGTSectionImageComponent } from './interface/components/dgt-section-image/dgt-section-image.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -86,6 +111,8 @@ export const declarations = [
   DGTLinkComponent,
   DGTSectionComponent,
   DGTSectionActionComponent,
+  DGTSectionAvatarComponent,
+  DGTSectionImageComponent,
   DGTSectionHelpComponent,
   DGTSectionHelpTitleComponent,
   DGTSectionIconComponent,
@@ -95,7 +122,7 @@ export const declarations = [
   DGTSectionTitleComponent,
   DGTSectionContentComponent,
   DGTPageComponent,
-  DGTPageHeaderComponent,
+  DGTPageSubHeaderComponent,
   DGTPageSidenavComponent,
   DGTPageSubHeaderComponent,
   DGTPageRailComponent,
@@ -104,10 +131,26 @@ export const declarations = [
   DGTNotificationComponent,
   DGTNotificationsComponent,
   DGTPageHeaderProfileComponent,
+  DGTPageHeaderTitleComponent,
   DGTPageContentHeaderComponent,
+  DGTPageHeaderComponent,
   DGTPageContentHeaderSubtitleComponent,
   DGTPageContentHeaderTitleComponent,
   DGTPageContentGroupHeader,
+  DGTPageHeaderLogoComponent,
+  DGTPageHeaderControlsComponent,
+  DGTPageHeaderTitleComponent,
+  DGTDataValueComponent,
+  DGTDataInterfaceSurveysComponent,
+  DGTDataInterfaceStandardComponent,
+  DGTDataInterfacePhoneValueComponent,
+  DGTDataInterfacePhoneComponent,
+  DGTDataInterfaceEmailValueComponent,
+  DGTDataInterfaceEmailComponent,
+  DGTDataFieldComponent,
+  DGTDataInterfaceDescentComponent,
+  DGTDataCategoryComponent,
+  DGTDataGroupComponent,
 ];
 export const imports: (any[] | Type<any>)[] = [
   CommonModule,
@@ -122,6 +165,7 @@ export const imports: (any[] | Type<any>)[] = [
   MatFormFieldModule,
   MatInputModule,
   MatPaginatorModule,
+  MatSelectModule,
   DGTSharedUtilsModule,
   DGTSharedDataModule,
 ];
@@ -132,7 +176,7 @@ export const providers = [
   DGTCompareValidator,
   DGTFormAfterValidator,
   DGTFormBeforeValidator,
-  DGTBrowserIsSupportedGuard
+  DGTBrowserIsSupportedGuard,
 ];
 
 @NgModule({
@@ -144,10 +188,10 @@ export const providers = [
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
   ],
-  exports: [...imports, ...declarations]
+  exports: [...imports, ...declarations],
 })
-export class DGTSharedWebModule { }
+export class DGTSharedWebModule {}

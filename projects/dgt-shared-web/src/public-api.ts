@@ -1,7 +1,6 @@
 /*
  * Public API Surface of dgt-shared-web
  */
-
 export { DGTPageContentGroupHeader } from './lib/interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
 export { DGTPageContentHeaderComponent } from './lib/interface/components/dgt-page-content-header/dgt-page-content-header.component';
 export { DGTPageContentHeaderTitleComponent } from './lib/interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
@@ -9,7 +8,6 @@ export { DGTPageContentHeaderSubtitleComponent } from './lib/interface/component
 export { DGTSharedWebModule } from './lib/dgt-shared-web.module';
 export { DGTAbstractAction } from './lib/state/models/dgt-abstract-action.model';
 export { DGTAction } from './lib/state/models/dgt-action.model';
-// export { DGTActivitiesComponent } from './lib/interface/components/dgt-activities/dgt-activities.component';
 export { DGTAppRoot } from './lib/state/models/dgt-app-root.model';
 export { DGTBaseAppState } from './lib/state/models/dgt-base-app-state.model';
 export { DGTBaseRootState } from './lib/state/models/dgt-base-root-state.model';
@@ -23,14 +21,14 @@ export { DGTFeatureDefinition } from './lib/state/models/dgt-feature-definition.
 export { DGTNotification } from './lib/interface/models/dgt-notification.model';
 export { DGTNotificationType } from './lib/interface/models/dgt-notification-type.model';
 export { DGTPhoneValidator } from './lib/validation/validators/dgt-phone.validator';
-export { DGTNGRXStoreService } from './lib/state/services/dgt-ngrx-store.service';
+export { DGTStateStoreNGRXService } from './lib/state/services/dgt-state-store-ngrx.service';
 export { DGTReducer } from './lib/state/models/dgt-reducer.model';
 export { DGTReducerMethod } from './lib/state/models/dgt-reducer-method.model';
 export { reduceFactory } from './lib/state/models/dgt-reducer-reduce.model';
 export { DGTRobotVerificationResponse } from './lib/validation/models/dgt-robot-verification-response.model';
 export { DGTSmartElement } from './lib/interface/models/dgt-smart-element.model';
 export { DGTSmartForm } from './lib/interface/models/dgt-smart-form.model';
-export { DGTStoreService } from './lib/state/services/dgt-store.service';
+export { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
 export { DGTTitleService } from './lib/interface/services/dgt-title.service';
 export { DGTAuthenticatedState } from './lib/security/models/dgt-authenticated-state.model';
 export { DGTAuthService } from './lib/security/services/dgt-auth.service';
@@ -54,6 +52,8 @@ export { DGTFormLabelComponent } from './lib/form/components/dgt-form-label/dgt-
 export { DGTStandardPageComponent } from './lib/interface/components/dgt-standard-page/dgt-standard-page.component';
 export { DGTSectionComponent } from './lib/interface/components/dgt-section/dgt-section.component';
 export { DGTSectionActionComponent } from './lib/interface/components/dgt-section-action/dgt-section-action.component';
+export { DGTSectionAvatarComponent } from './lib/interface/components/dgt-section-avatar/dgt-section-avatar.component';
+export { DGTSectionImageComponent } from './lib/interface/components/dgt-section-image/dgt-section-image.component';
 export { DGTSectionTitleComponent } from './lib/interface/components/dgt-section-title/dgt-section-title.component';
 export { DGTSectionSubtitleComponent } from './lib/interface/components/dgt-section-subtitle/dgt-section-subtitle.component';
 export { DGTSectionContentComponent } from './lib/interface/components/dgt-section-content/dgt-section-content.component';
@@ -61,6 +61,9 @@ export { DGTPageComponent } from './lib/interface/components/dgt-page/dgt-page.c
 export { DGTPageContentComponent } from './lib/interface/components/dgt-page-content/dgt-page-content.component';
 export { DGTPageSidenavComponent } from './lib/interface/components/dgt-page-sidenav/dgt-page-sidenav.component';
 export { DGTPageHeaderComponent } from './lib/interface/components/dgt-page-header/dgt-page-header.component';
+export { DGTPageHeaderLogoComponent } from './lib/interface/components/dgt-page-header-logo/dgt-page-header-logo.component';
+export { DGTPageHeaderControlsComponent } from './lib/interface/components/dgt-page-header-controls/dgt-page-header-controls.component';
+export { DGTPageHeaderTitleComponent } from './lib/interface/components/dgt-page-header-title/dgt-page-header-title.component';
 export { DGTPageSubHeaderComponent } from './lib/interface/components/dgt-page-sub-header/dgt-page-sub-header.component';
 export { DGTPageRailComponent } from './lib/interface/components/dgt-page-rail/dgt-page-rail.component';
 export { DGTPageRailItemComponent } from './lib/interface/components/dgt-page-rail-item/dgt-page-rail-item.component';
@@ -81,3 +84,16 @@ export { DGTNotificationComponent } from './lib/interface/components/dgt-notific
 export { DGTSectionContainer } from './lib/interface/models/dgt-section-container.model';
 export { DGTSectionState } from './lib/interface/models/dgt-section-style.model';
 export { DGTColor } from './lib/interface/models/dgt-color.model';
+export { DGTDataInterfaceFactoryService } from './lib/data/services/dgt-data-interface-factory.service';
+export { DGTDataInterfaceResolverService } from './lib/data/services/dgt-data-interface-resolver.service';
+export { DGTDataFieldComponent } from './lib/data/components/dgt-data-field/dgt-data-field.component';
+export { DGTDataInterfaceDescentComponent } from './lib/data/components/dgt-data-interface-descent/dgt-data-interface-descent.component';
+export { DGTDataInterfaceEmailComponent } from './lib/data/components/dgt-data-interface-email/dgt-data-interface-email.component';
+export { DGTDataInterfaceEmailValueComponent } from './lib/data/components/dgt-data-interface-email-value/dgt-data-interface-email-value.component';
+export { DGTDataInterfacePhoneComponent } from './lib/data/components/dgt-data-interface-phone/dgt-data-interface-phone.component';
+export { DGTDataInterfacePhoneValueComponent } from './lib/data/components/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
+export { DGTDataInterfaceStandardComponent } from './lib/data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
+export { DGTDataInterfaceSurveysComponent } from './lib/data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
+export { DGTDataValueComponent } from './lib/data/components/dgt-data-value/dgt-data-value.component';
+export { DGTDataCategoryComponent } from './lib/data/components/dgt-data-category/dgt-data-category.component';
+export { DGTDataGroupComponent } from './lib/data/components/dgt-data-group/dgt-data-group.component';

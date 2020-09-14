@@ -1,7 +1,7 @@
-const { URL } = require('whatwg-url');
 import { JWT, JWK } from '@solid/jose';
 import { Observable, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTErrorArgument } from '@digita/dgt-shared-utils';
 
 const DEFAULT_MAX_AGE = 3600; // Default token expiration, in seconds
 
@@ -12,26 +12,38 @@ export class DGTSourceSolidToken extends JWT {
     }
 
     static issueFor(resourceServerUri, sessionKey: string, clientId: string, idToken: string): Observable<any> {
+        if (resourceServerUri == null) {
+            throw new DGTErrorArgument('resourceServerUri is undefined', { resourceServerUri });
+        }
+        if (sessionKey == null) {
+            throw new DGTErrorArgument('sessionKey is undefined', { sessionKey, clientId, resourceServerUri });
+        }
+        if (clientId == null) {
+            throw new DGTErrorArgument('clientId is undefined', { clientId });
+        }
+        if (idToken == null) {
+            throw new DGTErrorArgument('idToken is undefined', { idToken });
+        }
         const jwk = JSON.parse(sessionKey);
 
         return from(JWK.importKey(jwk))
-        .pipe(
-            map(importedSessionJwk => {
-                const options = {
-                    aud: (new URL(resourceServerUri)).origin,
-                    key: importedSessionJwk,
-                    iss: clientId,
-                    idToken
-                };
+            .pipe(
+                map(importedSessionJwk => {
+                    const options = {
+                        aud: (new URL(resourceServerUri)).origin,
+                        key: importedSessionJwk,
+                        iss: clientId,
+                        idToken
+                    };
 
-                return DGTSourceSolidToken.issue(options);
-            }),
-            switchMap((jwt: any) => from(jwt.encode()))
-        );
+                    return DGTSourceSolidToken.issue(options);
+                }),
+                switchMap((jwt: any) => from(jwt.encode()))
+            );
     }
 
     static issue(options) {
-        const { aud, iss, key } = options;
+        const { aud, key, iss } = options;
 
         const alg = key.alg;
         const iat = options.iat || Math.floor(Date.now() / 1000);
@@ -42,9 +54,7 @@ export class DGTSourceSolidToken extends JWT {
         const header = { alg };
         const payload = { iss, aud, exp, iat, id_token: options.idToken, token_type: 'pop' };
 
-        // const jwt = new DGTSourceSolidToken({ header, payload, key: key.cryptoKey });
-        const jwt = new DGTSourceSolidToken({ header, payload, key: key.cryptoKey }, { filter: false });
-
-        return jwt;
+        return new JWT({ header, payload, key: key.cryptoKey }, { filter: false });
+        // return new DGTSourceSolidToken({ header, payload, key: key.cryptoKey }, { filter: false }); // cannot invoke without new on jwt
     }
 }

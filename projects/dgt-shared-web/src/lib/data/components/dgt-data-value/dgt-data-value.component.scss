@@ -1,0 +1,10 @@
+@import 'styles';
+
+mat-form-field:not(:first-child) {
+    margin-top: $measure-gutter-xlarge;
+}
+dgt-button {
+    margin-top: $measure-gutter-xlarge;
+    display: block;
+    height: $measure-gutter-xlarge*2;
+}
