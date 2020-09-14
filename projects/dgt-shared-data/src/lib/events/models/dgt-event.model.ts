@@ -2,7 +2,7 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 /** A thing that happens or takes place on someone's pod */
 export interface DGTEvent extends DGTLDResource {
-    /** Description of the event e.g.: "Connected to your pod" */
+    /** Description of the event e.g.: 'Connected to your pod' */
     description: string;
     /**
      * Stakeholder of the event.

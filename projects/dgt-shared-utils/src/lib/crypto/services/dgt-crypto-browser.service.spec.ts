@@ -17,8 +17,8 @@ describe('DGTCryptoBrowserService', () => {
         testService.service.generateKeyPair()
         .subscribe(
             (keyPair) => {
-                // public: alg="RS256", e="AQAB", ext=true, key_ops=["verify"], kty="RSA", n
-                // private: alg="RS256", d, dp, dq,e="AQAB" ,ext=true, key_ops=["sign"], kty="RSA", n, q, p, qi
+                // public: alg='RS256', e='AQAB', ext=true, key_ops=['verify'], kty='RSA', n
+                // private: alg='RS256', d, dp, dq,e='AQAB' ,ext=true, key_ops=['sign'], kty='RSA', n, q, p, qi
                 expect(keyPair).toBeTruthy();
                 done();
             }
