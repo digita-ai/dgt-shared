@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'dgt-page-content',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dgt-page-content.component.scss']
 })
 export class DGTPageContentComponent implements OnInit {
+
+  /** Enables the right sidepane */
+  @Input() public paneEnabled = false;
 
   constructor() { }
 

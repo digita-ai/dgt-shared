@@ -1,4 +1,6 @@
 <div class="split" fxLayout="column" fxFlexFill>
+
+  <!-- header -->
   <div
     class="split-header"
     fxFlex="initial"
@@ -28,6 +30,8 @@
       <ng-content select="dgt-page-header"></ng-content>
     </div>
   </div>
+
+  <!-- rail, sidenav, etc -->
   <div fxFlex fxFlexFill class="split-body" fxLayout="row">
     <div
       [fxFlex]="'90px'"
@@ -37,6 +41,8 @@
     >
       <ng-content select="dgt-page-rail"></ng-content>
     </div>
+
+    <!-- dgt page sidenav -->
     <div
       [fxFlex]="sidenavSize"
       fixedInViewport="true"
@@ -45,7 +51,10 @@
     >
       <ng-content select="dgt-page-sidenav"></ng-content>
     </div>
+
     <div fxFlex fxFlexFill fxLayout="column" class="split-content">
+
+      <!-- dgt page sub header -->
       <div
         fxFlex="initial"
         class="split-content-header"
@@ -53,15 +62,17 @@
       >
         <ng-content select="dgt-page-sub-header"></ng-content>
       </div>
+
+      <!-- dgt page content -->
       <div
         fxFlex
-        fxFlexFill
         class="split-content-details"
         [class.split-content-details-padding]="contentPaddingEnabled"
       >
         <ng-content select="dgt-page-content"></ng-content>
       </div>
     </div>
+
   </div>
 </div>
 

@@ -45,6 +45,7 @@ import { DGTPageComponent } from './interface/components/dgt-page/dgt-page.compo
 import { DGTPageContentComponent } from './interface/components/dgt-page-content/dgt-page-content.component';
 import { DGTPageSidenavComponent } from './interface/components/dgt-page-sidenav/dgt-page-sidenav.component';
 import { DGTPageSubHeaderComponent } from './interface/components/dgt-page-sub-header/dgt-page-sub-header.component';
+import { DGTPagePaneComponent } from './interface/components/dgt-page-pane/dgt-page-pane.component';
 import { DGTSectionHelpComponent } from './interface/components/dgt-section-help/dgt-section-help.component';
 import { DGTSectionSummaryComponent } from './interface/components/dgt-section-summary/dgt-section-summary.component';
 import { DGTSectionResetComponent } from './interface/components/dgt-section-reset/dgt-section-reset.component';
@@ -125,6 +126,7 @@ export const declarations = [
   DGTPageSubHeaderComponent,
   DGTPageSidenavComponent,
   DGTPageSubHeaderComponent,
+  DGTPagePaneComponent,
   DGTPageRailComponent,
   DGTPageRailItemComponent,
   DGTPageContentComponent,
