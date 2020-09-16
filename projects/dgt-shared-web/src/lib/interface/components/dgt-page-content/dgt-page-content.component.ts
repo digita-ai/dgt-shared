@@ -7,9 +7,6 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class DGTPageContentComponent implements OnInit {
 
-  /** Enables the right sidepane */
-  @Input() public paneEnabled = false;
-
   constructor() { }
 
   ngOnInit() {

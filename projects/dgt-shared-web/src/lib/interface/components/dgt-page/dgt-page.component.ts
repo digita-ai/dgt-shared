@@ -43,6 +43,9 @@ export class DGTPageComponent implements OnInit {
   /** Enables the subheader */
   @Input() public subHeaderEnabled = true;
 
+  /** Enables the right sidepane */
+  @Input() public paneEnabled = false;
+
   @Input() public contentPaddingEnabled = true;
   @Input() public fabEnabled = false;
   @Output() public fabClicked: EventEmitter<void> = new EventEmitter<void>();

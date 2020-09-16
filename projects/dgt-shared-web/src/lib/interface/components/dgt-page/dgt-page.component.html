@@ -63,13 +63,25 @@
         <ng-content select="dgt-page-sub-header"></ng-content>
       </div>
 
-      <!-- dgt page content -->
-      <div
-        fxFlex
-        class="split-content-details"
-        [class.split-content-details-padding]="contentPaddingEnabled"
-      >
-        <ng-content select="dgt-page-content"></ng-content>
+      <!-- dgt page content and right sidepane -->
+      <div fxFlex>
+
+        <div
+          fxFlex="2 1 auto"
+          class="split-content-details"
+          [class.split-content-details-padding]="contentPaddingEnabled"
+        >
+          <ng-content select="dgt-page-content"></ng-content>
+        </div>
+
+        <div
+          fxFlex
+          class="split-content-pane"
+          [hidden]="!paneEnabled"
+        >
+          <ng-content select="dgt-page-pane"></ng-content>
+        </div>
+
       </div>
     </div>
 
