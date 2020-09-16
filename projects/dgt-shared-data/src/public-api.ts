@@ -33,6 +33,7 @@ export { DGTLDTypeRegistrationTransformerService } from './lib/linked-data/servi
 export { DGTLDTypeRegistrationSolidService } from './lib/linked-data/services/dgt-ld-type-registration-solid.service';
 export { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
 export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
+export { DGTLDResourceService } from './lib/linked-data/services/dgt-ld-resource.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
 export { DGTFile } from './lib/file/models/dgt-file.model';
