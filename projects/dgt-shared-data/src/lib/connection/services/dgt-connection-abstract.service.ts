@@ -5,8 +5,8 @@ import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource
 
 @Injectable()
 export abstract class DGTConnectionService implements DGTLDResourceService<DGTConnection<any>> {
-    public abstract create(connection: DGTConnection<any>): Observable<DGTConnection<any>>;
-    public abstract updateConnection(connection: DGTConnection<any>): Observable<DGTConnection<any>>;
+    public abstract save(resource: DGTConnection<any>): Observable<DGTConnection<any>>;
+    public abstract delete(resource: DGTConnection<any>): Observable<DGTConnection<any>>;
     public abstract get(id: string): Observable<DGTConnection<any>>;
     public abstract query(filter: Partial<DGTConnection<any>>): Observable<DGTConnection<any>[]>;
 }

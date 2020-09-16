@@ -21,7 +21,9 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
 
     public abstract get(id: string): Observable<DGTSource<any>>;
     public abstract query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]>;
-    public abstract update(source: DGTSource<any>): Observable<DGTSource<any>>;
+    public abstract save(resource: DGTSource<any>): Observable<DGTSource<any>>;
+    public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
+
     public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
     public getTriples(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, purpose: DGTPurpose)
