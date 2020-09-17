@@ -10,20 +10,23 @@ import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 
 @Injectable()
-export abstract class DGTSourceService {
+export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
 
     private connectors: DGTMap<DGTSourceType, DGTSourceConnector<any, any>>;
 
     constructor(protected logger: DGTLoggerService) { }
 
-    public abstract get(sourceId: string): Observable<DGTSource<any>>;
-    public abstract all(): Observable<Array<DGTSource<any>>>;
-    public abstract update(source: DGTSource<any>): Observable<DGTSource<any>>;
+    public abstract get(id: string): Observable<DGTSource<any>>;
+    public abstract query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]>;
+    public abstract save(resource: DGTSource<any>): Observable<DGTSource<any>>;
+    public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
+
     public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
-    public query(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, purpose: DGTPurpose)
+    public getTriples(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, purpose: DGTPurpose)
         : Observable<DGTLDTriple[]> {
         this.logger.debug(DGTSourceService.name, 'Getting source', source);
 

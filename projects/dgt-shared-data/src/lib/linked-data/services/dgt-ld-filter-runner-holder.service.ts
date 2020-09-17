@@ -36,7 +36,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
 
     private runOne(filter: DGTLDFilterHolder, triple: DGTLDTriple): Observable<boolean> {
         this.paramChecker.checkParametersNotNull({ filter, triple });
-        return this.connections.getConnection(triple.connection).pipe(
+        return this.connections.get(triple.connection).pipe(
             map(connection => filter.holders.find(holder => holder.id === connection.holder)),
             map(holder => holder !== null && holder !== undefined ? true : false)
         );
