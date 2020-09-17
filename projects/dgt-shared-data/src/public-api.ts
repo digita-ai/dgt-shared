@@ -6,6 +6,8 @@ export * from './lib/dgt-shared-data.module';
 export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
 export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
+export { DGTExchangeService } from './lib/exchanges/services/dgt-exchange.service';
+export { DGTPurposeService } from './lib/purpose/services/dgt-purpose.service';
 export { DGTProfile } from './lib/profile/models/dgt-profile.model';
 export { DGTProfileService } from './lib/profile/services/dgt-profile.service';
 export { DGTProfileTransformerService } from './lib/profile/services/dgt-profile-transformer.service';
