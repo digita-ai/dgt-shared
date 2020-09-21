@@ -9,4 +9,5 @@ export abstract class DGTConnectionService implements DGTLDResourceService<DGTCo
     public abstract delete(resource: DGTConnection<any>): Observable<DGTConnection<any>>;
     public abstract get(id: string): Observable<DGTConnection<any>>;
     public abstract query(filter: Partial<DGTConnection<any>>): Observable<DGTConnection<any>[]>;
+    public abstract getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]>;
 }
