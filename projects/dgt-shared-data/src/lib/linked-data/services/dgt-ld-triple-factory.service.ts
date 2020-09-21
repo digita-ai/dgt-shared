@@ -33,7 +33,7 @@ export class DGTLDTripleFactoryService {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        let res: DGTLDTriple[] = null;
+        let res: DGTLDTriple[] = [];
 
         try {
             const quads = this.parser.parse(response);
