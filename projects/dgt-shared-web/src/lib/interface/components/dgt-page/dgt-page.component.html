@@ -67,7 +67,7 @@
       <div class="split-content-container" fxLayout="row">
 
         <div
-          fxFlex="2fr"
+          fxFlex="paneEnabled ? 70 : 100"
           class="split-content-details"
           [class.split-content-details-padding]="contentPaddingEnabled"
         >
@@ -75,9 +75,9 @@
         </div>
 
         <div
-          fxFlex="1fr"
+          fxFlex="30"
           class="split-content-pane"
-          *ngIf="paneEnabled"
+          *ngIf="paneEnabled && opened"
         >
           <ng-content select="dgt-page-pane"></ng-content>
         </div>
