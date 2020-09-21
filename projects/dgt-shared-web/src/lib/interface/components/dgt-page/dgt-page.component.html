@@ -64,10 +64,10 @@
       </div>
 
       <!-- dgt page content and right sidepane -->
-      <div fxFlex>
+      <div class="split-content-container" fxLayout="row">
 
         <div
-          fxFlex="2 1 auto"
+          fxFlex="2fr"
           class="split-content-details"
           [class.split-content-details-padding]="contentPaddingEnabled"
         >
@@ -75,9 +75,9 @@
         </div>
 
         <div
-          fxFlex
+          fxFlex="1fr"
           class="split-content-pane"
-          [hidden]="!paneEnabled"
+          *ngIf="paneEnabled"
         >
           <ng-content select="dgt-page-pane"></ng-content>
         </div>

@@ -38,26 +38,34 @@
             padding: $measure-gutter-large;
         }
         .split-content {
+
             .split-content-header {
                 background-color: $color-foreground-inverse;
             }
-            .split-content-details {
+
+            .split-content-container {
                 overflow-y: auto;
                 overflow-x: hidden;
-                flex-grow: 2;
                 width: 100%;
-            }
-            .split-content-details-padding {
-                padding: $measure-gutter-xlarge;
-            }
-            .split-content-pane {
-                flex-grow: 1;
-                margin: 20px 20px 0 0;
-            }
-            @media only screen and (max-width: 599px) {
+
                 .split-content-details {
-                    padding: 0px;
+                    overflow-y: auto;
+                    overflow-x: hidden;
+                    flex-grow: 2;
                 }
+                .split-content-details-padding {
+                    padding: $measure-gutter-xlarge;
+                }
+                .split-content-pane {
+                    flex-grow: 1;
+                    margin: 20px 20px 0 0;
+                }
+                @media only screen and (max-width: 599px) {
+                    .split-content-details {
+                        padding: 0px;
+                    }
+                }
+                
             }
         }
     }
