@@ -3,12 +3,9 @@ import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model'
 import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { map } from 'rxjs/operators';
-import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTSourceService } from '../../source/services/dgt-source.service';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()
@@ -16,7 +13,7 @@ export class DGTWorkflowService {
 
     private workflows: DGTWorkflow[];
 
-    constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
+    constructor(private logger: DGTLoggerService) { }
 
     public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });

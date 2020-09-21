@@ -8,11 +8,11 @@ import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { mergeMap, tap, map, switchMap } from 'rxjs/operators';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
-import { DGTSource } from '../../source/models/dgt-source.model';
 import * as _ from 'lodash';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
-import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 
 @Injectable()
 export class DGTLDService {
@@ -21,7 +21,9 @@ export class DGTLDService {
         private sources: DGTSourceService,
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
-        private data: DGTDataService,
+        private exchanges: DGTExchangeService,
+        private connections: DGTConnectionService,
+        private purposes: DGTPurposeService,
         private paramChecker: DGTParameterCheckerService,
     ) {
     }
@@ -30,19 +32,24 @@ export class DGTLDService {
         // this.paramChecker.checkParametersNotNull({ filter, transformer });
         this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
         // check cache
-        if (!this.cache.isFilled()) {
-            return this.fillCacheFromDataService().pipe(
-                mergeMap(_ => this.cache.query<T>(filter, transformer)),
-            );
-        }
-        return this.cache.query<T>(filter, transformer);
+        // if (!this.cache.isFilled()) {
+        //     return this.fillCacheFromDataService().pipe(
+        //         mergeMap(_ => this.cache.query<T>(filter, transformer)),
+        //     );
+        // }
+        // return this.cache.query<T>(filter, transformer);
+
+        return this.fillCacheFromDataService().pipe(
+            mergeMap(_ => this.cache.query<T>(filter, transformer)),
+        );
     }
 
     private fillCacheFromDataService(): Observable<DGTLDTriple[]> {
-        return this.data.getEntities<DGTExchange>('exchange', null)
+        return this.exchanges.query({})
             .pipe(
+                tap(val => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', val)),
                 mergeMap(exchanges => of(exchanges).pipe(
-                    mergeMap(exchanges => forkJoin(exchanges.map(exchange => this.data.getEntity<DGTConnection<any>>('connection', exchange.connection).pipe(
+                    mergeMap(exchanges => forkJoin(exchanges.map(exchange => this.connections.get(exchange.connection).pipe(
                         // TODO pump values into workflows 
                         mergeMap(connection => this.getValuesForExchange(exchange, connection))
                     )
@@ -59,11 +66,11 @@ export class DGTLDService {
         this.paramChecker.checkParametersNotNull({ exchange, connection });
         return of({ exchange, connection })
             .pipe(
-                switchMap((data) => this.data.getEntity<DGTPurpose>('justification', data.exchange.purpose)
+                switchMap((data) => this.purposes.get(data.exchange.purpose)
                     .pipe(map(purpose => ({ purpose, ...data })))),
-                switchMap((data) => this.data.getEntity<DGTSource<any>>('source', data.exchange.source)
+                switchMap((data) => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.query(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.sources.getTriples(data.exchange, data.connection, data.source, data.purpose)),
             );
     }
 }

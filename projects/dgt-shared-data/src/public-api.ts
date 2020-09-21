@@ -6,6 +6,8 @@ export * from './lib/dgt-shared-data.module';
 export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
 export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
 export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
+export { DGTExchangeService } from './lib/exchanges/services/dgt-exchange.service';
+export { DGTPurposeService } from './lib/purpose/services/dgt-purpose.service';
 export { DGTProfile } from './lib/profile/models/dgt-profile.model';
 export { DGTProfileService } from './lib/profile/services/dgt-profile.service';
 export { DGTProfileTransformerService } from './lib/profile/services/dgt-profile-transformer.service';
@@ -33,6 +35,7 @@ export { DGTLDTypeRegistrationTransformerService } from './lib/linked-data/servi
 export { DGTLDTypeRegistrationSolidService } from './lib/linked-data/services/dgt-ld-type-registration-solid.service';
 export { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
 export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
+export { DGTLDResourceService } from './lib/linked-data/services/dgt-ld-resource.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
 export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-state.model';
 export { DGTFile } from './lib/file/models/dgt-file.model';
