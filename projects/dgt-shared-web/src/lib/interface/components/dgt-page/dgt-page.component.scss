@@ -38,34 +38,23 @@
             padding: $measure-gutter-large;
         }
         .split-content {
-
             .split-content-header {
                 background-color: $color-foreground-inverse;
             }
-
-            .split-content-container {
+            .split-content-details {
                 overflow-y: auto;
                 overflow-x: hidden;
-                width: 100%;
-
+            }
+            .split-content-details-padding {
+                padding: $measure-gutter-large;
+            }
+            .split-content-pane{
+                padding: $measure-gutter-large $measure-gutter-large $measure-gutter-xlarge 0;
+            }
+            @media only screen and (max-width: 599px) {
                 .split-content-details {
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                    flex-grow: 2;
+                    padding: 0px;
                 }
-                .split-content-details-padding {
-                    padding: $measure-gutter-xlarge;
-                }
-                .split-content-pane {
-                    flex-grow: 1;
-                    margin: 20px 20px 0 0;
-                }
-                @media only screen and (max-width: 599px) {
-                    .split-content-details {
-                        padding: 0px;
-                    }
-                }
-                
             }
         }
     }
