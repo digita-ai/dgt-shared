@@ -65,11 +65,15 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
 
     this.paramChecker.checkParametersNotNull({ profile, connection, source, predicate, resource });
 
-    const foundTypeRegistrations = profile.typeRegistrations.filter(typeRegistration => (!resource.documentUri || typeRegistration.instance === resource.documentUri) && this.utils.same(typeRegistration.forClass, predicate));
+    const foundTypeRegistrations = profile.typeRegistrations.filter(typeRegistration =>
+      (!resource.documentUri || typeRegistration.instance === resource.documentUri) &&
+      this.utils.same(typeRegistration.forClass, predicate)
+    );
     this.logger.debug(DGTLDTypeRegistrationService.name, 'Found typeRegistrations.', { foundTypeRegistrations });
 
     if (resource.documentUri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
       // documenturi exists, and corresponding type registration does not exist -> create type registration
+      this.logger.debug(DGTLDTypeRegistrationService.name, 'Creating the relevant typeRegistration.', { foundTypeRegistrations, resource });
 
       const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
         forClass: predicate,
@@ -79,19 +83,17 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
         documentUri: profile.privateTypeIndex,
         triples: null,
         subject: null
-      }
-
-      this.logger.debug(DGTLDTypeRegistrationService.name, 'Creating the relevant typeRegistration.', { foundTypeRegistrations, resource });
+      };
 
       res = of({ typeRegistrationsToBeAdded, connection, source, profile })
-      .pipe(
-        switchMap(data => this.connector.add<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], data.connection, data.source, this.transformer)
-          .pipe(map(addedTypeRegistrations => ({
-            ...data, addedTypeRegistrations,
-          })))),
-        tap(data => this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Added new typeRegistrations', data)),
-        map(data => data.addedTypeRegistrations)
-      );
+        .pipe(
+          switchMap(data => this.connector.add<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], data.connection, data.source, this.transformer)
+            .pipe(map(addedTypeRegistrations => ({
+              ...data, addedTypeRegistrations,
+            })))),
+          tap(data => this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Added new typeRegistrations', data)),
+          map(data => data.addedTypeRegistrations)
+        );
     } else if (!resource.documentUri && foundTypeRegistrations && foundTypeRegistrations.length > 0) {
       // documenturi does not exist, but type registration exist -> set document uri based on type registration
 
@@ -100,8 +102,27 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
       res = of(foundTypeRegistrations);
     } else if (!resource.documentUri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
       // documenturi does not exist, and type registration does not exist => create type registration based on defaults and set documenturi
+      this.logger.debug(DGTLDTypeRegistrationService.name, 'Creating the relevant typeRegistration...', { foundTypeRegistrations, resource });
 
-      throw new DGTErrorNotImplemented();
+      const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
+        forClass: predicate,
+        instance: '/events/InoxEvents.ttl',
+        connection: connection.id,
+        source: source.id,
+        documentUri: profile.privateTypeIndex,
+        triples: null,
+        subject: null
+      };
+
+      res = of({ typeRegistrationsToBeAdded, connection, source, profile })
+        .pipe(
+          switchMap(data => this.connector.add<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], data.connection, data.source, this.transformer)
+            .pipe(map(addedTypeRegistrations => ({
+              ...data, addedTypeRegistrations,
+            })))),
+          tap(data => this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Added new typeRegistrations', data)),
+          map(data => data.addedTypeRegistrations)
+        );
     }
 
     return res;
