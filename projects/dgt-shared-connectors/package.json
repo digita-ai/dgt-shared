@@ -1,6 +1,6 @@
 {
   "name": "@digita/dgt-shared-connectors",
-  "version": "0.1.1",
+  "version": "0.1.1-preview-1",
   "devDependencies": {
     "@digita/dgt-shared-test": "0.1.1",
     "@types/mssql": "^4.3.1",

@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "./scripts/build.sh",
+    "publish": "./scripts/publish.sh",
     "build:utils": "ng build dgt-shared-utils",
     "build:data": "ng build dgt-shared-data",
     "build:test": "ng build dgt-shared-test",

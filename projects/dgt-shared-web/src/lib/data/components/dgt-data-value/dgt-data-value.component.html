@@ -22,9 +22,11 @@
           <mat-form-field id="object" appearance="outline">
             <mat-label>Object</mat-label>
             <input matInput #object
+              [readonly]="true"
               type="text"
               formControlName="object"
-              (keyup.enter)="onValueUpdated(value, object.value)">
+              >
+              <!-- (keyup.enter)="onValueUpdated(value, object.value)" -->
           </mat-form-field>
         </dgt-form-control>
       </dgt-form-element>
