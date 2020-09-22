@@ -56,12 +56,7 @@ export class DGTLDTripleFactoryService {
 
         this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { quads, documentUri });
         res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
-        res = res.map(value => ({
-            // TODO is subject correct in this context ? - i'm thinking yes because DGTLDTriple
-            ...value, subject: value.subject && value.subject.value === '#me' ?
-                value.subject : value.subject
-            // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
-        }));
+        
         res = this.clean(res);
 
         return res;
@@ -99,7 +94,6 @@ export class DGTLDTripleFactoryService {
     private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
         let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
-            // const me = connection.configuration.webId.split('/profile/card#me')[0];
 
             subject = {
                 value: `${documentUri}`,
@@ -125,12 +119,28 @@ export class DGTLDTripleFactoryService {
                 termType: DGTLDTermType.LITERAL
             };
         } else {
+            console.log('eeeeeee ' + documentUri, quad.object.value)
             if (quad.object.value.startsWith('#')) {
+                // here, the object is a reference to another triple
                 res = {
                     value: documentUri.split('#')[0] + quad.object.value,
                     termType: DGTLDTermType.REFERENCE
                 };
+            } else if (quad.object.value.startsWith('undefined/')) {
+                // here, the object is a relative reference to a file
+                // BUT
+                // n3 parser wrongly interprets relative references
+                // in turtle, </events/lemonade3.ttl>
+                // is parsed to 'undefined/events/lemonade3.ttl'
+                // new versions of N3 might mix this issue, 
+                res = {
+                    // the origin of an url: [[https://www.youtube.com]]/watch?v=y8kEiL81_R4
+                    // to this, add the relative path
+                    value: new URL(documentUri).origin + quad.object.value.replace('undefined', ''),
+                    termType: DGTLDTermType.REFERENCE
+                }
             } else {
+                // here, the object is an absolute reference
                 res = {
                     value: quad.object.value,
                     termType: DGTLDTermType.REFERENCE
