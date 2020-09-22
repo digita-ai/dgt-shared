@@ -119,7 +119,6 @@ export class DGTLDTripleFactoryService {
                 termType: DGTLDTermType.LITERAL
             };
         } else {
-            console.log('eeeeeee ' + documentUri, quad.object.value)
             if (quad.object.value.startsWith('#')) {
                 // here, the object is a reference to another triple
                 res = {
