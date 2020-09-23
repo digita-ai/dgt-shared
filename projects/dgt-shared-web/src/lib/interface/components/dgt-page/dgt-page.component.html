@@ -17,7 +17,7 @@
       <i class="fas fa-bars"></i>
     </button>
 
-    <div fxFlex="40px" class="split-header-logo" [routerLink]="['/']">
+    <div *ngIf="headerLogoEnabled" fxFlex="40px" class="split-header-logo" [routerLink]="['/']">
       <ng-content select="dgt-page-header-logo"></ng-content>
     </div>
 
