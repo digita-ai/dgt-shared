@@ -36,11 +36,11 @@ export class DGTPageComponent implements OnInit {
   
   /** Enables the left rail */
   @Input() public railEnabled = true;
-  
-  /** Enables the header */
+  /** Show header always */
   @Input() public headerEnabled = true;
-  
-  /** Enables the subheader */
+  /** Show header on mobile*/
+  @Input() public mobileHeaderEnabled = false;
+  @Input() public headerLogoEnabled = true;
   @Input() public subHeaderEnabled = true;
 
   /** Enables the right sidepane */

@@ -8,19 +8,33 @@
 .split {
     overflow: hidden;
     .split-header {
+
         background-color: $color-primary-dark;
+
+        .split-header-hamburger {
+
+            margin: $measure-gutter-large;
+
+            i {
+                line-height: $measure-font-normal * 2;
+                font-size: $measure-font-normal * 2;
+                padding: $measure-gutter-normal;
+            }
+        }
+
+        .split-header-logo {
+            margin: $measure-gutter-large;
+        }
+
         .split-header-name h1 {
             font-size: $measure-font-large;
-            margin: 0px;
+            margin: $measure-gutter-large;
             color: $color-foreground-inverse;
         }
         .split-header-controls {
             padding: $measure-gutter-large;
+            margin: $measure-gutter-large;
         }
-    }
-    .split-header-mobile {
-        background-color: $color-primary-dark;
-        height: 50px;
     }
     .split-body {
         .split-rail {
