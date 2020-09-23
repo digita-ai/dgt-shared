@@ -110,7 +110,8 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     return this.generateToken(uri, connection, source)
       .pipe(
         switchMap(token => this.http.get<string>(uri, {
-          Authorization: 'Bearer ' + token
+          Authorization: 'Bearer ' + token,
+          Accept: 'text/turtle'
         }, true)),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { data })),
         map(data => this.triples.createFromString(data.data, uri, exchange, source, connection)),
