@@ -35,7 +35,7 @@ export class DGTPageComponent implements OnInit {
   /** Show header always */
   @Input() public headerEnabled = true;
   /** Show header on mobile*/
-  @Input() public mobileHeaderEnabled = true;
+  @Input() public mobileHeaderEnabled = false;
   @Input() public headerLogoEnabled = true;
   @Input() public subHeaderEnabled = true;
   @Input() public contentPaddingEnabled = true;
