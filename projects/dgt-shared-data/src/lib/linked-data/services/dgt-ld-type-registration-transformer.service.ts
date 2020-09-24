@@ -2,7 +2,7 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import * as _ from 'lodash';
-import { v4 } from 'uuid';
+import uuid, { v4 } from 'uuid';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
@@ -83,7 +83,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       const documentUri = typeRegistration.documentUri;
       const documentSubject = {
         // This line is only for human readability in the raw file
-        value: '#' + typeRegistration.forClass.namespace + typeRegistration.forClass.name,
+        value: '#' + uuid(),
         termType: DGTLDTermType.REFERENCE
       };
       const typeRegistrationId = v4();
