@@ -32,7 +32,11 @@ export class DGTPageComponent implements OnInit {
   @Input() public sidenavEnabled = true;
   @Input() public sidenavSize = '300px';
   @Input() public railEnabled = true;
+  /** Show header always */
   @Input() public headerEnabled = true;
+  /** Show header on mobile*/
+  @Input() public mobileHeaderEnabled = false;
+  @Input() public headerLogoEnabled = true;
   @Input() public subHeaderEnabled = true;
   @Input() public contentPaddingEnabled = true;
   @Input() public fabEnabled = false;

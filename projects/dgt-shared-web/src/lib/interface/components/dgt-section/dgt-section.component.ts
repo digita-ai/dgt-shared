@@ -22,7 +22,7 @@ export class DGTSectionComponent {
     let res = false;
 
     if (_.includes([DGTSectionState.NORMAL, DGTSectionState.BLUE, DGTSectionState.COLLAPSED,
-      DGTSectionState.SUCCESS, DGTSectionState.LOCKED, DGTSectionState.LOADING, DGTSectionState.WARNING], this.state) && this.enableTitle) {
+    DGTSectionState.SUCCESS, DGTSectionState.LOCKED, DGTSectionState.LOADING, DGTSectionState.WARNING], this.state) && this.enableTitle) {
       res = true;
     }
 
@@ -52,6 +52,7 @@ export class DGTSectionComponent {
   @Input() public showContent = false;
   @Input() public showAvatar = false;
   @Input() public showImage = false;
+  @Input() public showActions = false;
   @Input() public state: DGTSectionState = DGTSectionState.NORMAL;
   @Output() public reset: EventEmitter<void> = new EventEmitter<void>();
 
