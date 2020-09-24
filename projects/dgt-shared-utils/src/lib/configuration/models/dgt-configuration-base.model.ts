@@ -1,3 +1,9 @@
 export interface DGTConfigurationBase {
-    baseURI: string,
+    baseURI: string;
+    typeRegistrations?: {
+        [key: string]: {
+            location: string,
+            forClass: string
+        }
+    };
 }

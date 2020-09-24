@@ -20,4 +20,9 @@ export class DGTLDTypeRegistrationMockService extends DGTLDTypeRegistrationServi
     this.typeRegistrations.push(null);
     return of([null]);
   }
+
+  public register(predicate: DGTLDPredicate, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
+    this.typeRegistrations.push(null);
+    return of([null]);
+  }
 }
