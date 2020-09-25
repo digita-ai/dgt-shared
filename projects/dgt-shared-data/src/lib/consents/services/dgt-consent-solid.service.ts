@@ -3,7 +3,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTConsentService } from './dgt-consent.service';
 import { DGTConsent } from '../models/dgt-consent.model';
-import { DGTSourceSolidConnector } from '@digita/dgt-shared-connectors';
 import { DGTConsentTransformerService } from './dgt-consent-transformer.service';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { v4 } from 'uuid';
@@ -93,7 +92,7 @@ export class DGTConsentSolidService extends DGTConsentService {
           .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, documentUri: typeRegistrations[0].instance }) })))),
         switchMap(data => this.connector.add<DGTConsent>([data.resource], data.connection, data.source, this.transformer)
           .pipe(map(addedConsents => ({ ...data, addedConsents, })))),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Added new consent', data)),
+        tap(data => this.logger.debug(DGTConsentSolidService.name, 'Added new consent', data)),
         map(data => data.addedConsents)
       );
   }
