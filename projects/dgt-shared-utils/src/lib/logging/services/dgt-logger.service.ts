@@ -1,5 +1,5 @@
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 @Injectable()
 export class DGTLoggerService {
@@ -49,7 +49,7 @@ export class DGTLoggerService {
             } else {
                 console.error('[' + displayDate + ' ' + typeName + '] ' + message);
             }
-        } else {
+        } else if (isDevMode()) {
             if (data) {
                 console.log('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
             } else {
