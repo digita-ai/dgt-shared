@@ -10,5 +10,6 @@ import { DGTLDResource } from '../models/dgt-ld-resource.model';
 export abstract class DGTLDTypeRegistrationService {
     public abstract all(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]>;
     public abstract registerForResources(predicate: DGTLDPredicate, resource: DGTLDResource, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]>;
-    public abstract register(predicate: DGTLDPredicate, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]>;
+    public abstract registerMissingTypeRegistrations(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]>;
+    public abstract register(typeRegistrations: DGTLDTypeRegistration[], profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]>;
 }
