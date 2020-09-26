@@ -34,6 +34,7 @@
     "@comunica/actor-init-sparql": "^1.16.2",
     "@comunica/actor-init-sparql-rdfjs": "^1.16.2",
     "@comunica/bus-sparql-serialize": "^1.16.0",
+    "@ngrx/effects": "^7.3.0",
     "@solid/jose": "^0.6.0",
     "awesome-phonenumber": "^2.5.0",
     "base64url": "^3.0.1",
