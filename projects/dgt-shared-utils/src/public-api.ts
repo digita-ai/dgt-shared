@@ -7,6 +7,7 @@ export { DGTPlatformService } from './lib/platform/services/dgt-platform.service
 export { DGTPlatformType } from './lib/platform/models/dgt-platform-type.model';
 export { DGTConfigurationBase } from './lib/configuration/models/dgt-configuration-base.model';
 export { DGTConfigurationService } from './lib/configuration/services/dgt-configuration.service';
+export { DGTLoggerLevel } from './lib/logging/models/dgt-logger-level.model';
 export { DGTLoggerService } from './lib/logging/services/dgt-logger.service';
 export { DGTCryptoService } from './lib/crypto/services/dgt-crypto.service';
 export { DGTCryptoBrowserService } from './lib/crypto/services/dgt-crypto-browser.service';
