@@ -7,6 +7,7 @@ import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDPredicate } from '../models/dgt-ld-predicate.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 
 @Injectable()
 export class DGTLDTypeRegistrationMockService extends DGTLDTypeRegistrationService {
@@ -17,6 +18,15 @@ export class DGTLDTypeRegistrationMockService extends DGTLDTypeRegistrationServi
   }
 
   public registerForResources(predicate: DGTLDPredicate, resource: DGTLDResource, profile: DGTProfile, _connection: DGTConnectionSolid): Observable<DGTLDTypeRegistration[]> {
+    this.typeRegistrations.push(null);
+    return of([null]);
+  }
+
+  public registerMissingTypeRegistrations(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
+    throw new DGTErrorNotImplemented();
+  }
+
+  public register(typeRegistrations: DGTLDTypeRegistration[], profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
     this.typeRegistrations.push(null);
     return of([null]);
   }
