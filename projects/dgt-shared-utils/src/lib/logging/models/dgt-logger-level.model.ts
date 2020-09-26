@@ -1,8 +1,8 @@
 export enum DGTLoggerLevel {
-    FATAL = 1,
-    ERROR = 2,
-    WARN = 3,
-    INFO = 4,
-    DEBUG = 5,
-    TRACE = 6
+    FATAL = 6,
+    ERROR = 5,
+    WARN = 4,
+    INFO = 3,
+    DEBUG = 2,
+    TRACE = 1
 }

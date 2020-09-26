@@ -52,10 +52,18 @@ export class DGTLoggerService {
         const displayDate: string = new Date().toLocaleTimeString();
 
         if (level >= this.minimumLevel) {
-            if (data) {
-                console.error('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
+            if (level >= DGTLoggerLevel.WARN) {
+                if (data) {
+                    console.error('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
+                } else {
+                    console.error('[' + displayDate + ' ' + typeName + '] ' + message);
+                }
             } else {
-                console.error('[' + displayDate + ' ' + typeName + '] ' + message);
+                if (data) {
+                    console.log('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
+                } else {
+                    console.log('[' + displayDate + ' ' + typeName + '] ' + message);
+                }
             }
         }
     }
