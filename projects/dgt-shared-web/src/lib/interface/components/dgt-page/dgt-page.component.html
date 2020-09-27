@@ -46,7 +46,7 @@
     >
       <ng-content select="dgt-page-sidenav"></ng-content>
     </div>
-    <div fxFlex fxFlexFill fxLayout="column" class="split-content">
+    <div fxFlex="paneEnabled && opened ? 70 : 100" fxFlexFill fxLayout="column" class="split-content">
       <div
         fxFlex="initial"
         class="split-content-header"
@@ -62,6 +62,14 @@
       >
         <ng-content select="dgt-page-content"></ng-content>
       </div>
+    </div>
+    <div
+      fxFlex="30"
+      fxFlexFill
+      class="split-content-pane"
+      *ngIf="paneEnabled && opened"
+    >
+      <ng-content select="dgt-page-pane"></ng-content>
     </div>
   </div>
 </div>
