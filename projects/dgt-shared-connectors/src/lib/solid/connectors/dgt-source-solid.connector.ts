@@ -114,7 +114,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
           Accept: 'text/turtle'
         }, true)),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { data })),
-        map(data => this.triples.createFromString(data.data, uri, exchange, source, connection)),
+        map(data => data.data ? this.triples.createFromString(data.data, uri, exchange, source, connection) : []),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { data })),
         map(triples =>
           ({
@@ -634,7 +634,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
       let object: Term = `${triple.object.value}` as Term;
 
       if (triple.object.termType === DGTLDTermType.LITERAL) {
-        object = `'${triple.object.value}'^^${triple.object.dataType}` as Term;
+        object = `\"${triple.object.value}\"^^${triple.object.dataType}` as Term;
       }
 
       return {
