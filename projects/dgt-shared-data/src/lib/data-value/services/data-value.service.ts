@@ -65,11 +65,8 @@ export class DGTDataValueService {
 
     return of({ categories })
       .pipe(
-        switchMap(data => forkJoin(
-          data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples }))))
-        )
-          .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))
-        ),
+        switchMap(data => forkJoin(data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples: triples.filter(triple => !(triple.predicate.name === 'type' && triple.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') && !(triple.predicate.name === 'value' && triple.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#')) })))))
+          .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))),
         map(data => ({ ...data, filteredTriplesPerCategory: data.triplesPerCategory.filter(categoryWithTriples => categoryWithTriples && categoryWithTriples.triples.length > 0) })),
         map(data => data.filteredTriplesPerCategory.map(triplesPerCategory => triplesPerCategory.category)),
       );
