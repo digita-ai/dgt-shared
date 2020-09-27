@@ -1,13 +1,10 @@
-<dgt-section [showContent]="true" [showIcon]="true" [showSubtitle]="true" *ngIf="value">
+<dgt-section [showContent]="true" [showIcon]="false" [showSubtitle]="false" *ngIf="value">
   <dgt-section-icon>
     <i class="fas fa-info-circle"></i>
   </dgt-section-icon>
   <dgt-section-title>
-    {{value.predicate.name}}
+    {{value.predicate.namespace + value.predicate.name}}
   </dgt-section-title>
-  <dgt-section-subtitle>
-   {{value.predicate.namespace + value.predicate.name}}
-  </dgt-section-subtitle>
   <dgt-section-content>
     <dgt-form [formGroup]="formGroup">
       <dgt-form-element [controlName]="'desc'">
