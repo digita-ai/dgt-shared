@@ -137,7 +137,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         source: consent.source,
                         connection: consent.connection,
                         predicate: {
-                            namespace: 'http://digita.ai/voc/consent#',
+                            namespace: 'http://digita.ai/voc/consents#',
                             name: 'purposeLabel'
                         },
                         subject: consentSubject,
