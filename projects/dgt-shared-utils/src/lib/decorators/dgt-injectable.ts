@@ -5,7 +5,7 @@ export enum DGTServiceType {
 
 export function DGTInjectable() {
     try {
-        return require("@angular/core").Injectable;
+        return require('@angular/core').Injectable;
     } catch (e) {
         console.log(e);
     }

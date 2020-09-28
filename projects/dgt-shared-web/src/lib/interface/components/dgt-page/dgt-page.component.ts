@@ -29,8 +29,12 @@ import { DGTLoggerService } from '@digita/dgt-shared-utils';
   ],
 })
 export class DGTPageComponent implements OnInit {
+  /** Enables the left side navigation */
   @Input() public sidenavEnabled = true;
+  /** The width of the side navigation */
   @Input() public sidenavSize = '300px';
+  
+  /** Enables the left rail */
   @Input() public railEnabled = true;
   /** Show header always */
   @Input() public headerEnabled = true;
@@ -38,6 +42,10 @@ export class DGTPageComponent implements OnInit {
   @Input() public mobileHeaderEnabled = false;
   @Input() public headerLogoEnabled = true;
   @Input() public subHeaderEnabled = true;
+
+  /** Enables the right sidepane */
+  @Input() public paneEnabled = false;
+
   @Input() public contentPaddingEnabled = true;
   @Input() public fabEnabled = false;
   @Output() public fabClicked: EventEmitter<void> = new EventEmitter<void>();

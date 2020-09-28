@@ -5,11 +5,11 @@
   </dgt-section-icon>
 
   <dgt-section-title>
-    {{category.description}}
+    {{ 'common.data.categories.' + category.id + '-title' | translate}}
   </dgt-section-title>
 
   <dgt-section-subtitle>
-    Lorem ipsum
+    {{ 'common.data.categories.' + category.id + '-description' | translate}}
   </dgt-section-subtitle>
 
   <dgt-section-content>
@@ -26,10 +26,9 @@
     </button>
   </dgt-section-action>
 
-  <dgt-section-action>
+  <!-- <dgt-section-action>
     <button id="dots">
       <i class="fas fa-ellipsis-v"></i>
     </button>
-  </dgt-section-action>
-
+  </dgt-section-action>  -->
 </dgt-section>
