@@ -137,7 +137,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         source: consent.source,
                         connection: consent.connection,
                         predicate: {
-                            namespace: 'http://digita.ai/voc/consents#',
+                            namespace: 'http://digita.ai/voc/consent#',
                             name: 'purposeLabel'
                         },
                         subject: consentSubject,
@@ -228,13 +228,13 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
         const purposeLabel = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consents#' &&
+            value.predicate.namespace === 'http://digita.ai/voc/consent#' &&
             value.predicate.name === 'purposeLabel'
         );
 
         const controller = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consents#' &&
+            value.predicate.namespace === 'http://digita.ai/voc/consent#' &&
             value.predicate.name === 'controller'
         );
 
