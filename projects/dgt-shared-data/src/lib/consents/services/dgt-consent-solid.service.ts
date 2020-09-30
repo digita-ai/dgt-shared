@@ -7,7 +7,6 @@ import { DGTConsentTransformerService } from './dgt-consent-transformer.service'
 import { map, switchMap, tap } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import _ from 'lodash';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
@@ -20,12 +19,7 @@ import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-con
 /** Service used for working with DGTConsents */
 export class DGTConsentSolidService extends DGTConsentService {
 
-
-  readonly predicate: DGTLDPredicate = {
-    namespace: 'http://digita.ai/voc/consents#',
-    name: 'consent'
-  };
-  private isCorrectTypeRegistration = (typeRegistration) => typeRegistration.forClass.name === 'consent' && typeRegistration.forClass.namespace === 'http://digita.ai/voc/consents#';
+  private isCorrectTypeRegistration = (typeRegistration) => typeRegistration.forClass === 'http://digita.ai/voc/consents#consent';
 
   /**
    * Get all consents from multiple files.
@@ -88,7 +82,7 @@ export class DGTConsentSolidService extends DGTConsentService {
 
     return of({ resource, connection, source, profile })
       .pipe(
-        switchMap(data => this.typeRegistrations.registerForResources(this.predicate, data.resource, data.profile, data.connection, data.source)
+        switchMap(data => this.typeRegistrations.registerForResources('http://digita.ai/voc/consents#consent', data.resource, data.profile, data.connection, data.source)
           .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, documentUri: typeRegistrations[0].instance }) })))),
         switchMap(data => this.connector.add<DGTConsent>([data.resource], data.connection, data.source, this.transformer)
           .pipe(map(addedConsents => ({ ...data, addedConsents, })))),

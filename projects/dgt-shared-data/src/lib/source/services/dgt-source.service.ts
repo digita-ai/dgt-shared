@@ -41,13 +41,11 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
             connector = this.connectors.get(source.type);
         }
 
-        const predicates = purpose.predicates.map(p => `${p.namespace}${p.name}`);
-
         return connector.query(null, purpose, exchange, connection, source, null)
             .pipe(
                 map((entities) => entities.map(entity => entity.triples)),
                 map((triples) => _.flatten(triples)),
-                map(triples => triples.filter(triple => predicates.includes(`${triple.predicate.namespace}${triple.predicate.name}`)))
+                map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate)))
             );
     }
 

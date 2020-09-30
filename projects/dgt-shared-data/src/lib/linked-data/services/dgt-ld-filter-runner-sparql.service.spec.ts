@@ -1,7 +1,6 @@
 import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
@@ -22,10 +21,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar1'
-                },
+                predicate: 'http://foo.bar/ns#bar1',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'
@@ -43,10 +39,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar2'
-                },
+                predicate: 'http://foo.bar/ns#bar2',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'
@@ -77,10 +70,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar1'
-                },
+                predicate: 'http://foo.bar/ns#bar1',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'
@@ -192,11 +182,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
     // }));
 
     // it('should register and get a workflow', async(() => {
-    //     const field: DGTLDPredicate = {
-    //         namespace: 'digita.ai/',
-    //         name: 'test'
-    //     };
-
+    //     const field: string = 'digita.ai/test'
     //     const workflow: DGTWorkflow = {
     //         trigger: {
     //             fields: [field]

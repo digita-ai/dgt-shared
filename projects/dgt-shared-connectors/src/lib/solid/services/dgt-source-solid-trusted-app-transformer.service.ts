@@ -47,8 +47,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         if (entity && entity.triples) {
             const trustedAppTriples = entity.triples.filter(value =>
-                value.predicate.namespace === 'http://www.w3.org/ns/auth/acl#' &&
-                value.predicate.name === 'trustedApp'
+                value.predicate === 'http://www.w3.org/ns/auth/acl#trustedApp'
             );
 
             this.logger.debug(DGTSourceSolidTrustedAppTransformerService.name, 'Found trusted app triples to transform', { trustedAppTriples });
@@ -96,14 +95,12 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         const origin = entity.triples.find(value =>
             value.subject.value === trustedAppTriple.object.value &&
-            value.predicate.namespace === 'http://www.w3.org/ns/auth/acl#' &&
-            value.predicate.name === 'origin'
+            value.predicate === 'http://www.w3.org/ns/auth/acl#origin'
         );
 
         const modes = entity.triples.filter(value =>
             value.subject.value === trustedAppTriple.object.value &&
-            value.predicate.namespace === 'http://www.w3.org/ns/auth/acl#' &&
-            value.predicate.name === 'mode'
+            value.predicate === 'http://www.w3.org/ns/auth/acl#mode'
         );
 
         const parsedModes: DGTSourceSolidTrustedAppMode[] = modes ? modes.map(mode => {

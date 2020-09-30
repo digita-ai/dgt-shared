@@ -1,6 +1,6 @@
 import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
-import { DGTExchange, DGTPurpose, DGTSourceConnector, DGTLDTriple, DGTLDPredicate, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTPurpose, DGTSourceConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
@@ -54,7 +54,7 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
             );
     }
 
-    private convertResult(uri: string, sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, DGTLDPredicate>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResource {
+    private convertResult(uri: string, sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, string>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResource {
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const triples: DGTLDTriple[] = [];
 

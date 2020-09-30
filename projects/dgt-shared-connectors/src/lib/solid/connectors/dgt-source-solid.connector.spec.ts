@@ -66,10 +66,7 @@ describe('DGTSourceSolidConnector', () => {
             const expectedResult: DGTLDTriple[] = [
                 {
                     exchange: 'e-1',
-                    predicate: {
-                        namespace: 'http://digita.ai/voc/events#',
-                        name: 'event'
-                    },
+                    predicate: 'http://digita.ai/voc/events#event',
                     subject: {
                         termType: DGTLDTermType.REFERENCE,
                         value: 'https://john.my.id/'

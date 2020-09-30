@@ -72,9 +72,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
 
       this.filteredFields = values
         .filter((value: DGTDataValue) =>
-          filteredPredicates.some(predicate => predicate.name === value.predicate.name &&
-            predicate.namespace === value.predicate.namespace
-          )
+          filteredPredicates.some(predicate => predicate === value.predicate)
         ); */
     }
   }

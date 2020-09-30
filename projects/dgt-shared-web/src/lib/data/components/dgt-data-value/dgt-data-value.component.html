@@ -1,9 +1,9 @@
-<dgt-section [showContent]="true" [showIcon]="false" [showSubtitle]="false" *ngIf="value">
+<dgt-section [showContent]="true" [showIcon]="true" [showSubtitle]="false" *ngIf="value">
   <dgt-section-icon>
     <i class="fas fa-info-circle"></i>
   </dgt-section-icon>
   <dgt-section-title>
-    {{value.predicate.namespace + value.predicate.name}}
+    {{value.predicate}}
   </dgt-section-title>
   <dgt-section-content>
     <dgt-form [formGroup]="formGroup">

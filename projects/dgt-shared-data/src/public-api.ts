@@ -69,7 +69,6 @@ export { DGTLDDataType } from './lib/linked-data/models/dgt-ld-data-type.model';
 export { DGTLDResource } from './lib/linked-data/models/dgt-ld-resource.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
 export { DGTLDTermType } from './lib/linked-data/models/dgt-ld-term-type.model';
-export { DGTLDPredicate } from './lib/linked-data/models/dgt-ld-predicate.model';
 export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.model';
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
 export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';

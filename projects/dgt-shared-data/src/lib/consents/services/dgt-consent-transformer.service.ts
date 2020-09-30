@@ -48,9 +48,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         let res: DGTConsent[] = null;
 
         if (resource && resource.triples) {
-            const consentSubjectValues = resource.triples.filter(value =>
-                value.predicate.namespace === 'http://digita.ai/voc/consents#' &&
-                value.predicate.name === 'consent'
+            const consentSubjectValues = resource.triples.filter(value => value.predicate === 'http://digita.ai/voc/consents#consent'
             );
 
             this.logger.debug(DGTConsentTransformerService.name, 'Found subjects to transform', { consentSubjectValues: consentSubjectValues });
@@ -96,10 +94,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         exchange: null,
                         source: consent.source,
                         connection: consent.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/consents#',
-                            name: 'expirationDate'
-                        },
+                        predicate: 'http://digita.ai/voc/consents#expirationDate',
                         subject: consentSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -116,10 +111,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         exchange: null,
                         source: consent.source,
                         connection: consent.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/consents#',
-                            name: 'createdAt'
-                        },
+                        predicate: 'http://digita.ai/voc/consents#createdAt',
                         subject: consentSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -136,10 +128,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         exchange: null,
                         source: consent.source,
                         connection: consent.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/consent#',
-                            name: 'purposeLabel'
-                        },
+                        predicate: 'http://digita.ai/voc/consent#purposeLabel',
                         subject: consentSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -156,10 +145,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         exchange: null,
                         source: consent.source,
                         connection: consent.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/consent#',
-                            name: 'controller'
-                        },
+                        predicate: 'http://digita.ai/voc/consent#controller',
                         subject: consentSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -176,10 +162,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         exchange: null,
                         source: consent.source,
                         connection: consent.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/consents#',
-                            name: 'consent',
-                        },
+                        predicate: 'http://digita.ai/voc/consents#consent',
                         subject: documentSubject,
                         object: consentSubject,
                         originalValue: consentSubject,
@@ -222,26 +205,22 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
         const expirationDate = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consents#' &&
-            value.predicate.name === 'expirationDate'
+            value.predicate === 'http://digita.ai/voc/consents#expirationDate'
         );
 
         const purposeLabel = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consent#' &&
-            value.predicate.name === 'purposeLabel'
+            value.predicate === 'http://digita.ai/voc/consent#purposeLabel'
         );
 
         const controller = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consent#' &&
-            value.predicate.name === 'controller'
+            value.predicate === 'http://digita.ai/voc/consent#controller'
         );
 
         const createdAt = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/consents#' &&
-            value.predicate.name === 'createdAt'
+            value.predicate === 'http://digita.ai/voc/consents#createdAt'
         );
 
         const consentTriples = resource.triples.filter(value =>

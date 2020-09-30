@@ -639,7 +639,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
 
       return {
         subject: triple.subject.value as Term,
-        predicate: `${triple.predicate.namespace}${triple.predicate.name}` as Term,
+        predicate: triple.predicate as Term,
         object,
       };
     });
@@ -923,8 +923,6 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     source: DGTSource<any>,
     connection: DGTConnection<any>
   ): DGTLDTriple {
-    const predicateSplit = quad.predicate.value.split('#');
-
     const subject = this.convertOneSubject(documentUri, quad, connection);
     const object = this.convertOneObject(documentUri, quad);
 
@@ -932,16 +930,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
       id: uuid(),
       exchange: exchange ? exchange.id : null,
       connection: connection ? connection.id : null,
-      predicate: {
-        name:
-          predicateSplit && predicateSplit.length === 2
-            ? predicateSplit[1]
-            : null,
-        namespace:
-          predicateSplit && predicateSplit.length === 2
-            ? predicateSplit[0] + '#'
-            : null,
-      },
+      predicate: quad.predicate.value,
       subject,
       object,
       originalValue: object,
