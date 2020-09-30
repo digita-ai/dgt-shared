@@ -20,10 +20,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -32,10 +29,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,

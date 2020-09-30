@@ -71,8 +71,6 @@ export class DGTLDTripleFactoryService {
             throw new DGTErrorArgument('Argument quad.predicate should be set.', quad.predicate);
         }
 
-        const predicateSplit = quad.predicate.value.split('#');
-
         const subject = quad && quad.subject ? this.convertOneSubject(documentUri, quad, connection) : null;
         const object = quad && quad.object ? this.convertOneObject(documentUri, quad) : null;
 

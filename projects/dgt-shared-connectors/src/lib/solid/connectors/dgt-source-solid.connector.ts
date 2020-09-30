@@ -923,8 +923,6 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     source: DGTSource<any>,
     connection: DGTConnection<any>
   ): DGTLDTriple {
-    const predicateSplit = quad.predicate.value.split('#');
-
     const subject = this.convertOneSubject(documentUri, quad, connection);
     const object = this.convertOneObject(documentUri, quad);
 

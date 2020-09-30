@@ -60,10 +60,10 @@ describe('DGTBrowserDataValueComponent', () => {
         });
 
         describe('section subtitle', () => {
-            it('should contain predicate namespace + name', () => {
+            it('should contain predicate', () => {
                 const subtitle: HTMLElement = hostElement.querySelector('dgt-section-subtitle');
-                const namespace = mockValueName.triples[0].predicate.namespace + mockValueName.triples[0].predicate.name;
-                expect(subtitle.innerHTML).toContain(namespace);
+                const predicate = mockValueName.triples[0].predicate;
+                expect(subtitle.innerHTML).toContain(predicate);
             });
         });
 

@@ -21,10 +21,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar1'
-                },
+                predicate: 'http://foo.bar/ns#bar1',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'
@@ -42,10 +39,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar2'
-                },
+                predicate: 'http://foo.bar/ns#bar2',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'
@@ -76,10 +70,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'http://foo.bar/ns#',
-                    name: 'bar1'
-                },
+                predicate: 'http://foo.bar/ns#bar1',
                 subject: {
                     termType: DGTLDTermType.REFERENCE,
                     value: 'https://me.myid.be/profile/card#me'

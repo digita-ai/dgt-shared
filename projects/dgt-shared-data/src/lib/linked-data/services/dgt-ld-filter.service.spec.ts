@@ -21,10 +21,7 @@ describe('DGTCategoryFilterService', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -33,10 +30,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -48,20 +42,14 @@ describe('DGTCategoryFilterService', () => {
         const filter: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                }
+                'foobar'
             ]
         };
 
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -82,10 +70,7 @@ describe('DGTCategoryFilterService', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -94,10 +79,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -106,10 +88,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar3'
-                },
+                predicate: 'foobar3',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -121,30 +100,21 @@ describe('DGTCategoryFilterService', () => {
         const filter1: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                }
+                'foobar'
             ]
         };
 
         const filter2: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar2'
-                }
+                'foobar2'
             ]
         };
 
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -153,10 +123,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -177,10 +144,7 @@ describe('DGTCategoryFilterService', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -189,10 +153,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -201,10 +162,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar3'
-                },
+                predicate: 'foobar3',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -216,34 +174,21 @@ describe('DGTCategoryFilterService', () => {
         const filter1: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                }
+                'foobar'
             ]
         };
 
         const filter2: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
-                {
-                    namespace: 'foo',
-                    name: 'bar2'
-                }
+                'foobar', 'foobar2'
             ]
         };
 
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -252,10 +197,7 @@ describe('DGTCategoryFilterService', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
