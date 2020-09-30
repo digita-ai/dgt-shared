@@ -93,8 +93,7 @@ export class DGTStateEffectsBaseWebService {
             mergeMap(() => of(new AddNotification(new DGTNotification(
                 DGTNotificationType.DANGER,
                 'app.notifications.unexpected-error'
-            )))
-                .pipe(mergeMap(() => of(new CheckConnection()))))
+            ))))
         );
 
     @Effect()
