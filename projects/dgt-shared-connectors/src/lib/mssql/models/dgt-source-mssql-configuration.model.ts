@@ -1,5 +1,4 @@
 import { DGTMap } from '@digita/dgt-shared-utils';
-import { DGTLDPredicate } from '@digita/dgt-shared-data';
 
 export interface DGTSourceMSSQLConfiguration {
     user: string;
@@ -7,5 +6,5 @@ export interface DGTSourceMSSQLConfiguration {
     server: string;
     database: string;
     command: (identifier: string) => string;
-    mapping: DGTMap<string, DGTLDPredicate>;
+    mapping: DGTMap<string, string>;
 }

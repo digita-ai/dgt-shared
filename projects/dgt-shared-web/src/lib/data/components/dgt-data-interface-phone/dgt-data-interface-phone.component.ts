@@ -63,10 +63,10 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
     this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { values, category });
     this.paramChecker.checkParametersNotNull({ values, category });
 
-    const phoneReferences = values.filter(value => value.predicate.name === 'hasTelephone' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
-    const phoneValues = values.filter(value => value.predicate.name === 'value' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
+    const phoneReferences = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone');
+    const phoneValues = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.phoneValues = phoneValues;
-    const phoneTypes = values.filter(value => value.predicate.name === 'type' && value.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+    const phoneTypes = values.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
     this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered hasTelephone values and references', { phoneReferences, phoneValues });
 
     if (phoneReferences && phoneValues && phoneTypes) {

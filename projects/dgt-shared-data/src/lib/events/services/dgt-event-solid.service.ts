@@ -8,7 +8,6 @@ import { DGTEventService } from './dgt-event.service';
 import * as _ from 'lodash';
 import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
@@ -26,10 +25,7 @@ export class DGTEventSolidService extends DGTEventService {
     super();
   }
 
-  readonly predicate: DGTLDPredicate = {
-    namespace: 'http://digita.ai/voc/events#',
-    name: 'event'
-  };
+  readonly predicate = 'http://digita.ai/voc/events#event';
 
   private isCorrectTypeRegistration = (typeRegistration) => typeRegistration.forClass.name === 'event' && typeRegistration.forClass.namespace === 'http://digita.ai/voc/events#';
 

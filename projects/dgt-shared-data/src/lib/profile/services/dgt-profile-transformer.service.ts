@@ -61,10 +61,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     exchange: null,
                     source: profile.source,
                     connection: profile.connection,
-                    predicate: {
-                        namespace: 'http://www.w3.org/2006/vcard/ns#',
-                        name: 'fn',
-                    },
+                    predicate: 'http://www.w3.org/2006/vcard/ns#fn',
                     subject: documentSubject,
                     object: {
                         termType: DGTLDTermType.LITERAL,
@@ -81,10 +78,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     exchange: null,
                     source: profile.source,
                     connection: profile.connection,
-                    predicate: {
-                        namespace: 'http://www.w3.org/2006/vcard/ns#',
-                        name: 'hasPhoto',
-                    },
+                    predicate: 'http://www.w3.org/2006/vcard/ns#hasPhoto',
                     subject: documentSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
@@ -101,10 +95,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     exchange: null,
                     source: profile.source,
                     connection: profile.connection,
-                    predicate: {
-                        namespace: 'http://www.w3.org/ns/solid/terms#',
-                        name: 'publicTypeIndex',
-                    },
+                    predicate: 'http://www.w3.org/ns/solid/terms#publicTypeIndex',
                     subject: documentSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
@@ -121,10 +112,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     exchange: null,
                     source: profile.source,
                     connection: profile.connection,
-                    predicate: {
-                        namespace: 'http://www.w3.org/ns/solid/terms#',
-                        name: 'privateTypeIndex',
-                    },
+                    predicate: 'http://www.w3.org/ns/solid/terms#privateTypeIndex',
                     subject: documentSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
@@ -175,36 +163,31 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
         const fullName = resource.triples.find(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#' &&
-            value.predicate.name === 'fn'
+            value.predicate === 'http://www.w3.org/2006/vcard/ns#fn'
         );
 
         const avatar = resource.triples.find(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#' &&
-            value.predicate.name === 'hasPhoto'
+            value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto'
         );
 
         const publicTypeIndex = resource.triples.find(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate.namespace === 'http://www.w3.org/ns/solid/terms#' &&
-            value.predicate.name === 'publicTypeIndex'
+            value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex'
         );
 
         const privateTypeIndex = resource.triples.find(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate.namespace === 'http://www.w3.org/ns/solid/terms#' &&
-            value.predicate.name === 'privateTypeIndex'
+            value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex'
         );
 
         const calculationFiles = resource.triples.filter(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/calculations#' &&
-            value.predicate.name === 'file'
+            value.predicate === 'http://digita.ai/voc/calculations#file'
         );
 
         return {
-            documentUri: documentUri,
+            documentUri,
             fullName: fullName ? fullName.object.value : null,
             privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,

@@ -34,7 +34,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       .pipe(
         map(typeRegistrations => _.flatten(typeRegistrations)),
         map(typeRegistrations => typeRegistrations.filter(t => t !== null)),
-      )
+      );
   }
 
   /**
@@ -50,8 +50,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
     if (resource && resource.triples) {
       const typeRegistrationSubjectValues = resource.triples.filter(value =>
-        value.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' &&
-        value.predicate.name === 'type' &&
+        value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
         value.object.value === 'http://www.w3.org/ns/solid/terms#TypeRegistration'
       );
 
@@ -95,10 +94,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
             exchange: null,
             source: typeRegistration.source,
             connection: typeRegistration.connection,
-            predicate: {
-              namespace: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-              name: 'type',
-            },
+            predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
             subject: documentSubject,
             object: {
               termType: DGTLDTermType.REFERENCE,
@@ -115,30 +111,24 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
             exchange: null,
             source: typeRegistration.source,
             connection: typeRegistration.connection,
-            predicate: {
-              namespace: 'http://www.w3.org/ns/solid/terms#',
-              name: 'forClass'
-            },
+            predicate: 'http://www.w3.org/ns/solid/terms#forClass',
             subject: documentSubject,
             object: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
-              value: typeRegistration.forClass.namespace + typeRegistration.forClass.name
+              value: typeRegistration.forClass
             },
             originalValue: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
-              value: typeRegistration.forClass.namespace + typeRegistration.forClass.name
+              value: typeRegistration.forClass
             },
           },
           {
             exchange: null,
             source: typeRegistration.source,
             connection: typeRegistration.connection,
-            predicate: {
-              namespace: 'http://www.w3.org/ns/solid/terms#',
-              name: 'instance'
-            },
+            predicate: 'http://www.w3.org/ns/solid/terms#instance',
             subject: documentSubject,
             object: {
               termType: DGTLDTermType.REFERENCE,
@@ -189,14 +179,12 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
     const forClass = resource.triples.find(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value &&
-      value.predicate.namespace === 'http://www.w3.org/ns/solid/terms#' &&
-      value.predicate.name === 'forClass'
+      value.predicate === 'http://www.w3.org/ns/solid/terms#forClass'
     );
 
     const instance = resource.triples.find(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value &&
-      value.predicate.namespace === 'http://www.w3.org/ns/solid/terms#' &&
-      value.predicate.name === 'instance'
+      value.predicate === 'http://www.w3.org/ns/solid/terms#instance'
     );
 
     const typeRegistrationTriples = resource.triples.filter(value =>
@@ -204,11 +192,8 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
     );
 
     return {
-      documentUri: documentUri,
-      forClass: forClass ? {
-        namespace: forClass.object.value.split('#')[0] + '#',
-        name: forClass.object.value.split('#')[1]
-      } : null,
+      documentUri,
+      forClass: forClass ? forClass.object.value : null,
       instance: instance ? instance.object.value : null,
       connection: typeRegistrationSubjectValue.connection,
       source: typeRegistrationSubjectValue.source,

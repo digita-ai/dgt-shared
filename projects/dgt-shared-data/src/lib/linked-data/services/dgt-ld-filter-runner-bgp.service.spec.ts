@@ -1,7 +1,6 @@
 import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
@@ -48,20 +47,14 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         const filter: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                }
+               'foobar'
             ]
         };
 
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -80,10 +73,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         const triples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -92,10 +82,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar2',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -104,10 +91,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar3'
-                },
+                predicate: 'foobar3',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -119,24 +103,15 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         const filter: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-                {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
-                {
-                    namespace: 'foo',
-                    name: 'bar2'
-                }
+                'foobar',
+                'foobar2'
             ]
         };
 
         const filteredTriples: DGTLDTriple[] = [
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -145,10 +120,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
             },
             {
                 exchange: null,
-                predicate: {
-                    namespace: 'foo',
-                    name: 'bar2'
-                },
+                predicate: 'foobar',
                 subject: null,
                 object: null,
                 originalValue: null,
@@ -164,10 +136,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
     }));
 
     // it('should register and get a workflow', async(() => {
-    //     const field: DGTLDPredicate = {
-    //         namespace: 'digita.ai/',
-    //         name: 'test'
-    //     };
+    //     const field: string = 'digita.ai/test'
 
     //     const workflow: DGTWorkflow = {
     //         trigger: {

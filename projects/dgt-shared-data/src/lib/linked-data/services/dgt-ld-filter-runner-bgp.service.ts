@@ -33,8 +33,7 @@ export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGT
 
         const match = filter.predicates.find(
             predicate =>
-                predicate.namespace === triple.predicate.namespace
-                && predicate.name === triple.predicate.name
+                predicate === triple.predicate
         );
 
         return match ? true : false;

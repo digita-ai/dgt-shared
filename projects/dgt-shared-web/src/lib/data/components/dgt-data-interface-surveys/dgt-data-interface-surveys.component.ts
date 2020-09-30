@@ -63,7 +63,7 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
       throw new DGTErrorArgument('Argument category should be set.', category);
     }
 
-    const surveyReferences = values.filter(value => value.predicate.name === 'survey' && value.predicate.namespace === 'http://digita.ai/voc/health#');
+    const surveyReferences = values.filter(value => value.predicate === 'http://digita.ai/voc/health#survey');
 
     surveyReferences.map(surveyReference => {
 

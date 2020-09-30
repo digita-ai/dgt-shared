@@ -76,9 +76,9 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
 
     const genderReferences = values.filter(genderReference => {
       const genderReferenceObject = genderReference.object.value;
-      const isHasGender = genderReference.predicate.name === 'hasGender' && genderReference.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#';
-      const hasGenderType = values.find(value => value.predicate.name === 'type' && value.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
-      const hasGenderValue = values.find(value => value.predicate.name === 'value' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#' && value.subject.value === genderReferenceObject) ? true : false;
+      const isHasGender = genderReference.predicate === 'http://www.w3.org/2006/vcard/ns#hasGender';
+      const hasGenderType = values.find(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
+      const hasGenderValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject) ? true : false;
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Checking gender reference', { genderReference, isHasGender, hasGenderType, hasGenderValue });
       return isHasGender && hasGenderType && hasGenderValue;
@@ -89,7 +89,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     if (genderReferences && genderReferences.length > 0) {
       const genderReference = genderReferences[0];
       const genderReferenceObject = genderReference.object.value;
-      const genderValue = values.find(value => value.predicate.name === 'value' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#' && value.subject.value === genderReferenceObject);
+      const genderValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject);
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Retrieved gender value for first gender reference', { genderReference, genderValue });
 
@@ -98,13 +98,13 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
       }
     }
 
-    const dateOfBirthValue = values.find(value => value.predicate.name === 'bday' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
+    const dateOfBirthValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#bday');
 
     if (dateOfBirthValue) {
       this.dateOfBirth = dateOfBirthValue.object.value;
     }
 
-    const placeOfBirthValue = values.find(value => value.predicate.name === 'placeOfBirth' && value.predicate.namespace === 'https://www.w3.org/ns/person#');
+    const placeOfBirthValue = values.find(value => value.predicate === 'https://www.w3.org/ns/person#placeOfBirth');
 
     if (placeOfBirthValue) {
       this.placeOfBirth = placeOfBirthValue.object.value;

@@ -1,7 +1,6 @@
 import { DGTTestRunnerService } from '@digita/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
@@ -192,11 +191,7 @@ fdescribe('DGTCategoryFilterRunnerSparqlService', () => {
     // }));
 
     // it('should register and get a workflow', async(() => {
-    //     const field: DGTLDPredicate = {
-    //         namespace: 'digita.ai/',
-    //         name: 'test'
-    //     };
-
+    //     const field: string = 'digita.ai/test'
     //     const workflow: DGTWorkflow = {
     //         trigger: {
     //             fields: [field]

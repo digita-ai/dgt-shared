@@ -1,5 +1,4 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { map } from 'rxjs/operators';
@@ -48,7 +47,7 @@ export class DGTWorkflowService {
     }
 
 
-    public get(source: string, field: DGTLDPredicate): DGTWorkflow[] {
+    public get(source: string, field: string): DGTWorkflow[] {
         this.logger.debug(DGTWorkflowService.name, 'Getting workflow for field', { field });
 
         let res: DGTWorkflow[] = null;
@@ -58,7 +57,7 @@ export class DGTWorkflowService {
                 workflow
                 && workflow.source === source
                 && workflow.predicates
-                && workflow.predicates.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
+                && workflow.predicates.filter((f) => f === field).length > 0);
         }
 
         return res;

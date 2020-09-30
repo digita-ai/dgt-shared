@@ -10,7 +10,6 @@ import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
-import { DGTLDPredicate } from '../models/dgt-ld-predicate.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
 import { DGTConfigurationBaseWeb } from '../../configuration/models/dgt-configuration-base-web.model';
@@ -60,7 +59,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of registered typeRegistration.
    */
-  public registerForResources(predicate: DGTLDPredicate, resource: DGTLDResource, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
+  public registerForResources(predicate: string, resource: DGTLDResource, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
     this.logger.debug(DGTLDTypeRegistrationService.name, 'Preparing to register typeRegistration.', { profile, connection, source, predicate, resource });
 
     let res = of(null);
@@ -121,12 +120,9 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
           const typeRegistrationsMissing: DGTLDTypeRegistration[] = Object.keys(typeRegistrationsInConfig).map(key => {
             // filter out typeRegistrations that are already on the state
             // no need to add those
-            const regsAlreadyAdded = data.profile.typeRegistrations.map(reg => reg.forClass.namespace + reg.forClass.name);
+            const regsAlreadyAdded = data.profile.typeRegistrations.map(reg => reg.forClass);
 
-            const predicate = regsAlreadyAdded.includes(key) ? null : {
-              name: key.split('#')[1],
-              namespace: key.split('#')[0] + '#'
-            } as DGTLDPredicate;
+            const predicate = regsAlreadyAdded.includes(key) ? null : `${key}#`;
 
             const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
               forClass: predicate,
@@ -138,11 +134,11 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
               subject: null
             };
 
-            return typeRegistrationsToBeAdded
+            return typeRegistrationsToBeAdded;
           })
             .filter(typeRegistrationsToBeAdded => typeRegistrationsToBeAdded !== null && typeRegistrationsToBeAdded.forClass !== null);
 
-          return { ...data, typeRegistrationsMissing: typeRegistrationsMissing };
+          return { ...data, typeRegistrationsMissing };
         }),
         switchMap(data => data.typeRegistrationsMissing && data.typeRegistrationsMissing.length > 0 ?
           this.register(data.typeRegistrationsMissing, data.profile, data.connection, data.source)
@@ -150,7 +146,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
           :
           of([])
         ),
-      )
+      );
   }
 
   public register(

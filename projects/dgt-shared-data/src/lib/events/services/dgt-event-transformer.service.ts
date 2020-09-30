@@ -33,7 +33,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         return forkJoin(resources.map(entity => this.toDomainOne(entity)))
             .pipe(
                 map(events => _.flatten(events))
-            )
+            );
     }
 
     /**
@@ -49,8 +49,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
 
         if (resource && resource.triples) {
             const eventSubjectValues = resource.triples.filter(value =>
-                value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-                value.predicate.name === 'event'
+                value.predicate === 'http://digita.ai/voc/events#event'
             );
 
             this.logger.debug(DGTEventTransformerService.name, 'Found event subjects to transform', { eventSubjectValues });
@@ -96,10 +95,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'description'
-                        },
+                        predicate: 'http://digita.ai/voc/events#description',
                         subject: eventSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -116,10 +112,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'stakeholder'
-                        },
+                        predicate: 'http://digita.ai/voc/events#stakeholder',
                         subject: eventSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -136,10 +129,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'createdAt'
-                        },
+                        predicate: 'http://digita.ai/voc/events#createdAt',
                         subject: eventSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -156,10 +146,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'icon'
-                        },
+                        predicate: 'http://digita.ai/voc/events#icon',
                         subject: eventSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -176,10 +163,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'uri'
-                        },
+                        predicate: 'http://digita.ai/voc/events#uri',
                         subject: eventSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
@@ -196,10 +180,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         exchange: null,
                         source: event.source,
                         connection: event.connection,
-                        predicate: {
-                            namespace: 'http://digita.ai/voc/events#',
-                            name: 'event',
-                        },
+                        predicate: 'http://digita.ai/voc/events#event',
                         subject: documentSubject,
                         object: eventSubject,
                         originalValue: eventSubject,
@@ -242,30 +223,25 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
 
         const description = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-            value.predicate.name === 'description'
+            value.predicate === 'http://digita.ai/voc/events#description'
         );
 
         const stakeholder = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-            value.predicate.name === 'stakeholder'
+            value.predicate === 'http://digita.ai/voc/events#stakeholder'
         );
 
         const createdAt = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-            value.predicate.name === 'createdAt'
+            value.predicate === 'http://digita.ai/voc/events#createdAt'
         );
         const icon = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-            value.predicate.name === 'icon'
+            value.predicate === 'http://digita.ai/voc/events#icon'
         );
         const stakeholderUri = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
-            value.predicate.namespace === 'http://digita.ai/voc/events#' &&
-            value.predicate.name === 'uri'
+            value.predicate === 'http://digita.ai/voc/events#uri'
         );
 
         const eventTriples = resource.triples.filter(value =>
@@ -273,7 +249,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         );
 
         return {
-            documentUri: documentUri,
+            documentUri,
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
             connection: eventSubjectValue.connection,

@@ -63,10 +63,10 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
     this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
     this.paramChecker.checkParametersNotNull({values, category});
 
-    const emailReferences = values.filter(value => value.predicate.name === 'hasEmail' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
-    const emailValues = values.filter(value => value.predicate.name === 'value' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
+    const emailReferences = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail');
+    const emailValues = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.emailValues = emailValues;
-    const emailTypes = values.filter(value => value.predicate.name === 'type' && value.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+    const emailTypes = values.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 
     this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email values and references', { emailReferences, emailValues });
 

@@ -6,7 +6,6 @@ import { switchMap, map } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
-import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model';
 import { DGTDataGroup } from '../models/data-group.model';
 import { DGTCategory } from '../../linked-data/models/dgt-category.model';
 
@@ -27,9 +26,9 @@ export class DGTDataValueService {
    * get the predicate of a DGTDataValue object
    * @param dataValue
    * @param connection optional
-   * @returns DGTLDPredicate
+   * @returns string - predicate
    */
-  public getPredicateOfValue(dataValue: DGTDataValue, connection?: DGTConnectionSolid): DGTLDPredicate {
+  public getPredicateOfValue(dataValue: DGTDataValue, connection?: DGTConnectionSolid): string {
     this.paramChecker.checkParametersNotNull({ dataValue });
 
     return connection && dataValue.connection !== connection.id ? null : dataValue.predicate;
@@ -40,12 +39,12 @@ export class DGTDataValueService {
    * @param dataValues
    * @param connection
    */
-  public getPredicatesOfValues(dataValues: DGTDataValue[], connection?: DGTConnectionSolid): DGTLDPredicate[] {
+  public getPredicatesOfValues(dataValues: DGTDataValue[], connection?: DGTConnectionSolid): string[] {
     this.paramChecker.checkParametersNotNull({ dataValues });
 
     return _.uniqWith(dataValues.map((value: DGTDataValue) => {
       return this.getPredicateOfValue(value, connection);
-    }).filter(p => p !== null && p.name !== null && p.namespace !== null), _.isEqual);
+    }).filter(p => p !== null && p.length > 0), _.isEqual);
   }
 
   /**
@@ -65,7 +64,7 @@ export class DGTDataValueService {
 
     return of({ categories })
       .pipe(
-        switchMap(data => forkJoin(data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples: triples.filter(triple => !(triple.predicate.name === 'type' && triple.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') && !(triple.predicate.name === 'value' && triple.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#')) })))))
+        switchMap(data => forkJoin(data.categories.map(category => this.filters.run(category.filter, values).pipe(map(triples => ({ category, triples: triples.filter(triple => !(triple.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') && !(triple.predicate === 'http://www.w3.org/2006/vcard/ns#value')) })))))
           .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))),
         map(data => ({ ...data, filteredTriplesPerCategory: data.triplesPerCategory.filter(categoryWithTriples => categoryWithTriples && categoryWithTriples.triples.length > 0) })),
         map(data => data.filteredTriplesPerCategory.map(triplesPerCategory => triplesPerCategory.category)),
