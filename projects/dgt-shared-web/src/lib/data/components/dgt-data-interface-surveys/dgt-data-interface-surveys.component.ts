@@ -68,8 +68,8 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
     surveyReferences.map(surveyReference => {
 
     });
-    // const emailValues = values.filter(value => value.predicate.name === 'value' && value.predicate.namespace === 'http://www.w3.org/2006/vcard/ns#');
-    // const emailTypes = values.filter(value => value.predicate.name === 'type' && value.predicate.namespace === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+    // const emailValues = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+    // const emailTypes = values.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 
     // this.logger.debug(DGTBrowserDataInterfaceEmailComponent.name, 'Filtered email values and references', { emailReferences, emailValues });
 
