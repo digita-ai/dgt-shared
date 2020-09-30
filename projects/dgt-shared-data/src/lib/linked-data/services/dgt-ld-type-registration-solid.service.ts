@@ -122,7 +122,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
             // no need to add those
             const regsAlreadyAdded = data.profile.typeRegistrations.map(reg => reg.forClass);
 
-            const predicate = regsAlreadyAdded.includes(key) ? null : `${key}#`;
+            const predicate = regsAlreadyAdded.includes(key) ? null : key;
 
             const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
               forClass: predicate,
