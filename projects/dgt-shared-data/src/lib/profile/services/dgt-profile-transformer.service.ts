@@ -163,7 +163,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
         const fullName = resource.triples.find(value =>
             value.subject.value === resource.subject.value &&
-            value.predicate === 'http://www.w3.org/2006/vcard/ns#fn'
+            (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name')
         );
 
         const avatar = resource.triples.find(value =>
