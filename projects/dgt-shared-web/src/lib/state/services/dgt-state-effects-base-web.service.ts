@@ -34,6 +34,7 @@ export class DGTStateEffectsBaseWebService {
                     new SetLocale(locale)
                 ];
             }),
+            catchError((error, caught) => of(new HandleError({ typeName: ROOT_EFFECTS_INIT, error, caught }))),
         );
 
     @Effect({ dispatch: false })
@@ -42,7 +43,8 @@ export class DGTStateEffectsBaseWebService {
         .pipe(
             ofType(ActionTypes.NAVIGATE),
             map((action: Navigate) => action.payload),
-            tap(({ path, query: queryParams, extras }) => this.router.navigate(path, { queryParams, ...extras }))
+            tap(({ path, query: queryParams, extras }) => this.router.navigate(path, { queryParams, ...extras })),
+            catchError((error, caught) => of(new HandleError({ typeName: Navigate.name, error, caught }))),
         );
 
     @Effect({ dispatch: false })
@@ -51,7 +53,8 @@ export class DGTStateEffectsBaseWebService {
         .pipe(
             ofType(ActionTypes.NAVIGATE_EXTERNAL),
             map((action: NavigateExternal) => action.payload),
-            tap((payload: any) => window.location.href = payload)
+            tap((payload: any) => window.location.href = payload),
+            catchError((error, caught) => of(new HandleError({ typeName: NavigateExternal.name, error, caught }))),
         );
 
     @Effect({ dispatch: false })
@@ -59,7 +62,8 @@ export class DGTStateEffectsBaseWebService {
     setLocale$ = this.actions$
         .pipe(
             ofType(ActionTypes.SET_LOCALE),
-            tap((action: SetLocale) => this.i8n.applyLocale(action.payload))
+            tap((action: SetLocale) => this.i8n.applyLocale(action.payload)),
+            catchError((error, caught) => of(new HandleError({ typeName: SetLocale.name, error, caught }))),
         );
 
     @Effect({ dispatch: false })
@@ -67,7 +71,8 @@ export class DGTStateEffectsBaseWebService {
     setDefaultLocale$ = this.actions$
         .pipe(
             ofType(ActionTypes.SET_DEFAULT_LOCALE),
-            tap((action: SetDefaultLocale) => this.i8n.applyDefaultLocale(action.payload))
+            tap((action: SetDefaultLocale) => this.i8n.applyDefaultLocale(action.payload)),
+            catchError((error, caught) => of(new HandleError({ typeName: SetDefaultLocale.name, error, caught }))),
         );
 
     @Effect()
@@ -93,7 +98,7 @@ export class DGTStateEffectsBaseWebService {
             mergeMap(() => of(new AddNotification(new DGTNotification(
                 DGTNotificationType.DANGER,
                 'app.notifications.unexpected-error'
-            ))))
+            )))),
         );
 
     @Effect()
@@ -127,6 +132,7 @@ export class DGTStateEffectsBaseWebService {
             ]
         }
         ),
+        catchError((error, caught) => of(new HandleError({ typeName: DGTProfileLoad.name, error, caught }))),
     );
 
     constructor(
