@@ -11,6 +11,7 @@ import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
+import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
 
 /** Service for managing events in Solid. */
 @Injectable()
@@ -27,7 +28,7 @@ export class DGTEventSolidService extends DGTEventService {
 
   readonly predicate = 'http://digita.ai/voc/events#event';
 
-  private isCorrectTypeRegistration = (typeRegistration) => typeRegistration.forClass.name === 'event' && typeRegistration.forClass.namespace === 'http://digita.ai/voc/events#';
+  private isCorrectTypeRegistration = (typeRegistration: DGTLDTypeRegistration) => typeRegistration.forClass === 'http://digita.ai/voc/events#event';
 
   /**
    * Get all events from multiple files.
