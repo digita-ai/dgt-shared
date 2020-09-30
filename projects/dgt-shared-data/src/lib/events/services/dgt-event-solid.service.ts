@@ -12,12 +12,14 @@ import { DGTLDPredicate } from '../../linked-data/models/dgt-ld-predicate.model'
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
+import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
+import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 
 /** Service for managing events in Solid. */
 @Injectable()
 export class DGTEventSolidService extends DGTEventService {
   constructor(
-    private connector: DGTSourceConnector<any, any>,
+    private connector: DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTEventTransformerService,
     private typeRegistrations: DGTLDTypeRegistrationService,
     private logger: DGTLoggerService,
