@@ -82,7 +82,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
 
         const quads: Quad[] = triples.map(triple => {
             const subject = this.toTerm(triple.subject) as Quad_Subject;
-            const predicate = DataFactory.namedNode(triple.predicate + triple.predicate) as Quad_Predicate;
+            const predicate = DataFactory.namedNode(triple.predicate) as Quad_Predicate;
             const object = this.toTerm(triple.object) as Quad_Object;
 
             return DataFactory.quad(subject, predicate, object);

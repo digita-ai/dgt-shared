@@ -11,6 +11,9 @@ import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 import { Quad, Parser } from 'n3';
+import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
+import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
+import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 
 @Injectable()
 export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -23,6 +26,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     private triples: DGTLDTripleFactoryService,
     private crypto: DGTCryptoService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
+    private transformer: DGTSourceSolidTrustedAppTransformerService,
   ) {
     super();
   }
@@ -1018,6 +1022,44 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
       connection.configuration.privateKey,
       source.configuration.client_id,
       connection.configuration.idToken
+    );
+  }
+
+  public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, purpose });
+
+    if (!connection) {
+      throw new DGTErrorArgument('Argument connection should be set.', connection);
+    }
+
+    if (!purpose) {
+      throw new DGTErrorArgument('Argument purpose should be set.', purpose);
+    }
+
+    if (!source) {
+      throw new DGTErrorArgument('Argument source should be set.', source);
+    }
+
+    return of({ connection, purpose }).pipe(
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, purpose, exchange, connection, source, this.transformer).pipe(
+        map(trustedApps => ({ ...data, trustedApps }))
+      )),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
+      map(data => ({ ...data, ourTrustedApp: data.trustedApps.find(app => this.origin.get().includes(app.origin)) })),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Found our trusted app', data.ourTrustedApp)),
+      map(data => {
+        let res = false;
+        const aclsNeeded: string[] = data.purpose.aclNeeded ? data.purpose.aclNeeded : [DGTSourceSolidTrustedAppMode.READ];
+
+
+        if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {
+          res = true
+        }
+
+        this.logger.debug(DGTSourceSolidConnector.name, 'Checked if acl modes are included', { res, aclsNeeded, ourTrustedApp: data.ourTrustedApp })
+
+        return res;
+      })
     );
   }
 }
