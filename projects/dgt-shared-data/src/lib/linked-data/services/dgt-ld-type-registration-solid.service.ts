@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTLDTypeRegistrationTransformerService } from './dgt-ld-type-registration-transformer.service';
 import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service';
 import * as _ from 'lodash';
@@ -15,7 +15,7 @@ import { DGTSourceConnector } from '../../source/models/dgt-source-connector.mod
 import { DGTConfigurationBaseWeb } from '../../configuration/models/dgt-configuration-base-web.model';
 
 /** Service for managing typeRegistrations in Solid. */
-@Injectable()
+@DGTInjectable()
 export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationService {
   constructor(
     private connector: DGTSourceConnector<any, any>,

@@ -1,12 +1,12 @@
 
 import {map} from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+
 import { AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { DGTAuthService } from '../../security/services/dgt-auth.service';
 import { Observable } from 'rxjs';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 
-@Injectable()
+@DGTInjectable()
 export class DGTEmailUniqueValidator {
   constructor(private auth: DGTAuthService, private logger: DGTLoggerService) { }
 

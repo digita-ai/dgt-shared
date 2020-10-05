@@ -1,8 +1,9 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { DGTPlatformType } from '../models/dgt-platform-type.model';
 import { isPlatformServer, isPlatformBrowser } from '@angular/common';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTPlatformService {
 
     public type: DGTPlatformType = DGTPlatformType.NOT_SET;

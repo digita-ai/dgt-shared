@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+
 import moment from 'moment';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTDateToLabelService {
 
     constructor(

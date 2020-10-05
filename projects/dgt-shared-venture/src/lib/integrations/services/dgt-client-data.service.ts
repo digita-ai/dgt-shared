@@ -1,6 +1,6 @@
 
 import { map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+
 import { AngularFirestore, QueryFn } from 'angularfire2/firestore';
 import * as _ from 'lodash';
 import { Observable, from, forkJoin } from 'rxjs';
@@ -8,7 +8,7 @@ import { firestore } from 'firebase';
 import { DGTDataService, DGTEntity, DGTQuery } from '@digita/dgt-shared-data';
 import { DGTLoggerService } from '@digita/dgt-shared-utils';
 
-@Injectable()
+@DGTInjectable()
 export class DGTClientDataService extends DGTDataService {
 
   constructor(

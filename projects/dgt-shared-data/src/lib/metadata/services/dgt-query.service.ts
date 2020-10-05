@@ -1,7 +1,8 @@
+import { DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTQuery } from '../models/dgt-query.model';
-import { Injectable } from '@angular/core';
 
-@Injectable()
+
+@DGTInjectable()
 export class DGTQueryService {
     public execute<T>(entities: T, query: DGTQuery): T {
         let res = entities;

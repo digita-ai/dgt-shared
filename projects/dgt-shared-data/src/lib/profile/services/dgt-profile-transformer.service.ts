@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTProfile } from '../models/dgt-profile.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -9,7 +9,7 @@ import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 
-@Injectable()
+@DGTInjectable()
 /** Transforms profiles to linked data and vice-versa */
 export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile> {
     constructor(

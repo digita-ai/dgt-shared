@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTErrorService {
 
   constructor(

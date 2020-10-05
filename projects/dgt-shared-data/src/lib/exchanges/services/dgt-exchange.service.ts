@@ -1,9 +1,10 @@
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
+import { DGTInjectable } from '@digita/dgt-shared-utils';
 
-@Injectable()
+@DGTInjectable()
 export abstract class DGTExchangeService implements DGTLDResourceService<DGTExchange> {
     public abstract get(id: string): Observable<DGTExchange>;
     public abstract query(filter: Partial<DGTExchange>): Observable<DGTExchange[]>;
