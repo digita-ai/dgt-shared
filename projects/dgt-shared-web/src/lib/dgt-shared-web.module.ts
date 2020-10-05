@@ -84,6 +84,7 @@ import { DGTDataCategoryComponent } from './data/components/dgt-data-category/dg
 import { DGTDataGroupComponent } from './data/components/dgt-data-group/dgt-data-group.component';
 import { DGTSectionAvatarComponent } from './interface/components/dgt-section-avatar/dgt-section-avatar.component';
 import { DGTSectionImageComponent } from './interface/components/dgt-section-image/dgt-section-image.component';
+import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -179,6 +180,7 @@ export const providers = [
   DGTFormAfterValidator,
   DGTFormBeforeValidator,
   DGTBrowserIsSupportedGuard,
+  DGTDateToLabelService,
 ];
 
 @NgModule({
