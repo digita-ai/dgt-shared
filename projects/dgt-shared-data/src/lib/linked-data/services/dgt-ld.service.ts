@@ -14,6 +14,7 @@ import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.servic
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
+import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
 @Injectable()
 export class DGTLDService {
@@ -27,6 +28,7 @@ export class DGTLDService {
         private purposes: DGTPurposeService,
         private paramChecker: DGTParameterCheckerService,
         private workflows: DGTWorkflowService,
+        private connectors: DGTConnectorService,
     ) {
     }
 
@@ -72,7 +74,7 @@ export class DGTLDService {
                     .pipe(map(purpose => ({ purpose, ...data })))),
                 switchMap((data) => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.getTriples(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.connectors.getTriples(data.exchange, data.connection, data.source, data.purpose)),
             );
     }
 }

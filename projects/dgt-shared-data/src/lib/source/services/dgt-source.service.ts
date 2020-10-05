@@ -29,24 +29,6 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
 
   public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
-  public getTriples(exchange: DGTExchange, connection: DGTConnection<any>, source: DGTSource<any>, purpose: DGTPurpose)
-    : Observable<DGTLDTriple[]> {
-    this.logger.debug(DGTSourceService.name, 'Getting source', source);
-
-    if (!source || source.state !== DGTSourceState.PREPARED) {
-      throw new DGTErrorArgument('Argument source || source.state === DGTSourceState. should be set.', source);
-    }
-
-    const connector: DGTSourceConnector<any, any> = this.connectors.get(source.type);
-
-    return connector.query(null, purpose, exchange, connection, source, null)
-      .pipe(
-        map((entities) => entities.map(entity => entity.triples)),
-        map((triples) => _.flatten(triples)),
-        map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate)))
-      );
-  }
-
   // Leaving this function in for backwards compatibility
   public register(sourceType: DGTSourceType, connector: DGTSourceConnector<any, any>) {
     this.connectors.register(sourceType, connector);
