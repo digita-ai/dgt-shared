@@ -16,6 +16,8 @@ import { DGTLDUtils } from './linked-data/services/dgt-ld-utils.service';
 import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/dgt-ld-type-registration-transformer.service';
 import { DGTProfileTransformerService } from './profile/services/dgt-profile-transformer.service';
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
+import { DGTConnectorService } from './connector/services/dgt-connector.service';
+
 export const declarations = [
   DGTDataInterfaceHostDirective
 ];
@@ -37,6 +39,7 @@ export const providers = [
   DGTLDTypeRegistrationTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,
+  DGTConnectorService,
 ];
 
 @NgModule({

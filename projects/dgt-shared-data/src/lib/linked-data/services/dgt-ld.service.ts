@@ -13,6 +13,7 @@ import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
+import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
 
 @Injectable()
 export class DGTLDService {
@@ -25,6 +26,7 @@ export class DGTLDService {
         private connections: DGTConnectionService,
         private purposes: DGTPurposeService,
         private paramChecker: DGTParameterCheckerService,
+        private workflows: DGTWorkflowService,
     ) {
     }
 
@@ -50,8 +52,8 @@ export class DGTLDService {
                 tap(val => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', val)),
                 mergeMap(exchanges => of(exchanges).pipe(
                     mergeMap(exchanges => forkJoin(exchanges.map(exchange => this.connections.get(exchange.connection).pipe(
-                        // TODO pump values into workflows 
-                        mergeMap(connection => this.getValuesForExchange(exchange, connection))
+                        mergeMap(connection => this.getValuesForExchange(exchange, connection)),
+                        mergeMap( values => this.workflows.execute(exchange, values)),
                     )
                     ))),
                     tap(val => this.logger.debug(DGTLDService.name, 'Retrieved values for exchanges', { val })),
