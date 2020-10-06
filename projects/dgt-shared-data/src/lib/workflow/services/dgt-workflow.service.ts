@@ -30,7 +30,7 @@ export class DGTWorkflowService {
             mergeMap( (flows: DGTWorkflow[]) => {
               flows.forEach( flow => {
                   if (flow.destination) {
-                    // save this triple to dest
+                    this.connectors.save(exchange, triple);
                   }
                   return flow.actions.forEach(action => triple = action.execute(triple));
                 });

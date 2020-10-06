@@ -1,17 +1,11 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { DGTErrorArgument, DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Injectable } from '@angular/core';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
 import { DGTSourceType } from '../models/dgt-source-type.model';
-import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import * as _ from 'lodash';
-import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
-import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
-import { DGTSourceState } from '../models/dgt-source-state.model';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
 @Injectable()
