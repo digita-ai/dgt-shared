@@ -6,7 +6,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import * as _ from 'lodash';
 import moment from 'moment';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-form-date',

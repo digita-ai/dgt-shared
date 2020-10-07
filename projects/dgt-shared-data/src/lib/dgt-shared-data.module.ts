@@ -3,7 +3,7 @@ import { DGTMockDataService } from './metadata/services/dgt-mock-data.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTSourceService } from './source/services/dgt-source.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
-import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
+import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
 import { DGTCacheService } from './cache/services/dgt-cache.service';
 import { DGTLDFilterRunnerBGPService } from './linked-data/services/dgt-ld-filter-runner-bgp.service';
 import { DGTLDFilterService } from './linked-data/services/dgt-ld-filter.service';

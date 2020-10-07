@@ -1,4 +1,4 @@
-import { DGTTestRunnerService } from '@digita/dgt-shared-test';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTLoggerService } from './dgt-logger.service';
 import { async } from '@angular/core/testing';

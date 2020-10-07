@@ -8,7 +8,7 @@
   "whitelistedNonPeerDependencies": [
     "@angular/core",
     "@angular/common",
-    "@digita/dgt-shared-utils",
+    "@digita-ai/dgt-shared-utils",
     "uuid"
   ]
 }

@@ -1,11 +1,11 @@
 {
-  "name": "@digita/dgt-shared-data",
+  "name": "@digita-ai/dgt-shared-data",
   "version": "0.1.2-preview-4",
   "peerDependencies": {
     "@angular/common": "^7.2.7",
     "@types/node": "~11.9.5",
     "@angular/core": "^7.2.7",
-    "@digita/dgt-shared-utils": "0.1.2-preview-4",
+    "@digita-ai/dgt-shared-utils": "0.1.2-preview-4",
     "store2": "2.9.0",
     "uuid": "3.4.0",
     "n3": "^1.4.0",
@@ -14,12 +14,18 @@
     "@comunica/bus-sparql-serialize": "^1.16.0"
   },
   "devDependencies": {
-    "@digita/dgt-shared-test": "0.1.2-preview-4",
+    "@digita-ai/dgt-shared-test": "0.1.2-preview-4",
     "@types/n3": "^1.4.0",
     "@types/uuid": "3.4.3"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
   "main": "src/public-api.ts",
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-data"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

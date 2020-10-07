@@ -1,7 +1,7 @@
 import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 export class DGTRemovePrefixWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;

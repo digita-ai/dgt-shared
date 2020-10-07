@@ -1,7 +1,7 @@
 import { configuration } from 'test.configuration';
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { mockValueName, mockCategoryName } from 'test.data.mock-data';
-import { DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTBrowserDataInterfaceStandardComponent } from './data-interface-standard.component';
 
 describe('DGTBrowserDataInterfaceStandardComponent', () => {

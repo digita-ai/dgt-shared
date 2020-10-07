@@ -2,7 +2,7 @@
 import { DGTEvent } from '../models/dgt-event.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTEventTransformerService } from './dgt-event-transformer.service';
 import { DGTEventService } from './dgt-event.service';
 import * as _ from 'lodash';

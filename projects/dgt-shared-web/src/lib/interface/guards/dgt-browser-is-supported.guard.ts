@@ -1,7 +1,7 @@
 
 import { CanLoad, Route, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
 import { Observable } from 'rxjs';
-import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Navigate } from '../../state/models/dgt-actions.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';

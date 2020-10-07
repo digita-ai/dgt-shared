@@ -1,9 +1,8 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
 import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';

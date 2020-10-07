@@ -1,6 +1,6 @@
 import { Directive, ViewContainerRef, EventEmitter, Output } from '@angular/core';
 import { DGTDataValue } from '../models/data-value.model';
-import { DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Directive({
   selector: '[dgtDataInterfaceHost]',

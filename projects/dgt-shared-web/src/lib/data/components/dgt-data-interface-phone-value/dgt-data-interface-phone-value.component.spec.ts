@@ -1,5 +1,5 @@
 import { configuration } from 'test.configuration';
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTBrowserDataInterfacePhoneValueComponent } from './data-interface-phone-value.component';
 
 describe('DGTBrowserDataInterfacePhoneValueComponent', () => {

@@ -1,4 +1,4 @@
-import { DGTMap } from '@digita/dgt-shared-utils';
+import { DGTMap } from '@digita-ai/dgt-shared-utils';
 
 export interface DGTSourceMSSQLConfiguration {
     user: string;

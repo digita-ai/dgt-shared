@@ -1,5 +1,5 @@
 import { async } from '@angular/core/testing';
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTFormDateComponent } from './dgt-form-date.component';
 import moment from 'moment';
 import { configuration } from 'projects/dgt-shared-web/src/test.configuration';

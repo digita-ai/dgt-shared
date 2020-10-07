@@ -1,4 +1,4 @@
-import { DGTMap } from '@digita/dgt-shared-utils';
+import { DGTMap } from '@digita-ai/dgt-shared-utils';
 import { DGTEntity } from './dgt-entity.model';
 
 export class DGTMockDatabase extends DGTMap<string, DGTEntity[]>  {

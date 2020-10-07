@@ -1,4 +1,4 @@
-import { DGTConfigurationBase } from '@digita/dgt-shared-utils';
+import { DGTConfigurationBase } from '@digita-ai/dgt-shared-utils';
 import { DGTEvent } from '../../events/models/dgt-event.model';
 
 /** The configuration of the client */

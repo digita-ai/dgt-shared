@@ -2,7 +2,7 @@
 import { DGTSparqlService } from './dgt-sparql.service';
 import { Observable, from, of } from 'rxjs';
 import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.model';
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { ActorInitSparql } from '@comunica/actor-init-sparql';
 import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
 import { switchMap, map } from 'rxjs/operators';
