@@ -46,7 +46,9 @@ export class DGTConnectorService {
       )),
       map( data => ({...data, triple: { ...triple, documentUri: null, triples: [triple]}})),
       // transformer ??
-      map( data => data.connector.add([data.triple], data.connection, data.source, null) ),
+      // resource ??
+      // TEMP
+      map( data => data.connector.upstreamSync([data.triple], data.connection, data.source, null) ),
     );
     return null;
   }

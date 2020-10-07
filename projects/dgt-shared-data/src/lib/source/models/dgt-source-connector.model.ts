@@ -14,4 +14,5 @@ export abstract class DGTSourceConnector<T, S> {
     public abstract query<R extends DGTLDResource>(holderUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>;
     public abstract delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>;
     public abstract update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>;
+    public abstract upstreamSync<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>;
 }

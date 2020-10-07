@@ -1,7 +1,7 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTSourceConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita/dgt-shared-data';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import { v4 as uuid } from 'uuid';
@@ -375,6 +375,16 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
       )
     );
   }
+
+  public upstreamSync<T extends DGTLDResource>(
+    domainEntities: T[],
+    connection: DGTConnectionSolid,
+    source: DGTSourceSolid,
+    transformer: DGTLDTransformer<T>,
+  ): Observable<T[]> {
+    throw new DGTErrorNotImplemented();
+  }
+
   /**
    * Registers an account on a solid server
    * @param source source to create account on

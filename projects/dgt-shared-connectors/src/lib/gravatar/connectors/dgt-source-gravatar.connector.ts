@@ -119,4 +119,13 @@ export class DGTSourceGravatarConnector extends DGTSourceConnector<DGTSourceGrav
     public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
+
+    public upstreamSync<R extends DGTLDResource>(
+        domainEntities: R[],
+        connection: DGTConnection<DGTConnectionGravatarConfiguration>,
+        source: DGTSource<DGTSourceGravatarConfiguration>,
+        transformer: DGTLDTransformer<R>,
+    ): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
+    }
 }

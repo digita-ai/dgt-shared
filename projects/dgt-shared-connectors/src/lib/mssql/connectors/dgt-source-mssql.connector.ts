@@ -109,4 +109,13 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
     public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
+
+    public upstreamSync<R extends DGTLDResource>(
+        domainEntities: R[],
+        connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
+        source: DGTSource<DGTSourceMSSQLConfiguration>,
+        transformer: DGTLDTransformer<R>,
+    ): Observable<R[]> {
+        throw new DGTErrorNotImplemented();
+    }
 }
