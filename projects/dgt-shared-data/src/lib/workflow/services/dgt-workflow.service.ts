@@ -3,13 +3,13 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { map, mergeMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTWorkflowService {
 
   private workflows: DGTWorkflow[];

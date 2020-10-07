@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 
-@Injectable()
+@DGTInjectable()
 /** A service to check the validity of parameters */
 export class DGTParameterCheckerService {
 

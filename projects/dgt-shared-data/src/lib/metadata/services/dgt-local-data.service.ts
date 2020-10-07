@@ -1,16 +1,16 @@
 import { DGTDataService } from './dgt-data.service';
-import { Injectable } from '@angular/core';
+
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTQueryService } from './dgt-query.service';
 import { DGTQuery } from '../models/dgt-query.model';
 import { DGTEntity } from '../models/dgt-entity.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { v4 as uuid } from 'uuid';
 import store from 'store2';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLocalDataService extends DGTDataService {
     constructor(private logger: DGTLoggerService, private queries: DGTQueryService) {
         super();

@@ -1,17 +1,17 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { switchMap, map, tap, mergeMap } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTQuery } from '../../metadata/models/dgt-query.model';
-import { Injectable } from '@angular/core';
+
 import * as _ from 'lodash';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTCacheService {
 
     public cache: DGTLDTriple[];

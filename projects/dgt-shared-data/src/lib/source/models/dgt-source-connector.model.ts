@@ -4,10 +4,11 @@ import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
-import { Injectable } from '@angular/core';
-import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
 
-@Injectable()
+import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
+import { DGTInjectable } from '@digita/dgt-shared-utils';
+
+@DGTInjectable()
 export abstract class DGTSourceConnector<T, S> {
     public abstract add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<S>, source: DGTSource<T>, transformer: DGTLDTransformer<R>): Observable<R[]>;
     public abstract connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTConnection<S>>;

@@ -1,14 +1,13 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
-import { DGTErrorArgument, DGTLoggerService } from '@digita/dgt-shared-utils';
-import { Injectable } from '@angular/core';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTSourceConnector } from '../models/dgt-source-connector.model';
 import { DGTSourceType } from '../models/dgt-source-type.model';
 import * as _ from 'lodash';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
-@Injectable()
+@DGTInjectable()
 export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
 
   constructor(
@@ -29,10 +28,10 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
   }
 
   /**
- * Returns a list of sources matching query
- * @param query string to match
- * @param sources sources to filter
- */
+   * Returns a list of sources matching query
+   * @param query string to match
+   * @param sources sources to filter
+   */
   public filterSources(query: string, sources: DGTSource<any>[]): DGTSource<any>[] {
     return sources.filter((source: DGTSource<any>) => {
       const issuer: string = source.configuration.issuer.toLowerCase();

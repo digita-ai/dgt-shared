@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+
 import { forkJoin, Observable, of } from 'rxjs';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTConsentService } from './dgt-consent.service';
 import { DGTConsent } from '../models/dgt-consent.model';
 import { DGTConsentTransformerService } from './dgt-consent-transformer.service';
@@ -15,7 +15,7 @@ import { DGTSourceConnector } from '../../source/models/dgt-source-connector.mod
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 
-@Injectable()
+@DGTInjectable()
 /** Service used for working with DGTConsents */
 export class DGTConsentSolidService extends DGTConsentService {
 

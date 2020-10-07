@@ -2,17 +2,17 @@ import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable } from 'rxjs';
 import { DGTLDFilterSparql } from '../models/dgt-ld-filter-sparql.model';
-import { DGTErrorArgument, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DataFactory, Quad, Quad_Subject, Quad_Predicate, Quad_Object } from 'n3';
-import { Injectable } from '@angular/core';
+
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 import { DGTSparqlDatasetType } from '../../sparql/models/dgt-sparql-dataset-type.model';
 import { IActorQueryOperationOutputBindings, Bindings, } from '@comunica/bus-query-operation';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLDFilterRunnerSparqlService implements DGTLDFilterRunnerService<DGTLDFilterSparql> {
     public readonly type: DGTLDFilterType = DGTLDFilterType.SPARQL;
 

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTErrorArgument, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+
+import { DGTLoggerService, DGTErrorArgument, DGTParameterCheckerService, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { Quad, Parser } from 'n3';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLDTripleFactoryService {
     private parser: Parser<Quad> = new Parser();
 

@@ -1,6 +1,6 @@
 import { DGTProfileService } from './dgt-profile.service';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTProfile } from '../models/dgt-profile.model';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
 import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
 
-@Injectable()
+@DGTInjectable()
 /** Service used for retrieving and updating a user's profile */
 export class DGTProfileSolidService extends DGTProfileService {
   constructor(

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+
 import * as _ from 'lodash';
 import { Observable, forkJoin, of } from 'rxjs';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
@@ -9,7 +9,7 @@ import { DGTDataValue } from '../models/data-value.model';
 import { DGTDataGroup } from '../models/data-group.model';
 import { DGTCategory } from '../../linked-data/models/dgt-category.model';
 
-@Injectable()
+@DGTInjectable()
 /**
  * The services' duty is to handle DGTDataValue objects.
  * From getting values to updating and processing them.

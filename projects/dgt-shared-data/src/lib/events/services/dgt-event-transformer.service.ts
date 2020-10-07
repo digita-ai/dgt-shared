@@ -1,6 +1,6 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTEvent } from '../models/dgt-event.model';
 import { v4 } from 'uuid';
@@ -13,7 +13,7 @@ import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 
 /** Transforms linked data to events, and the other way around. */
-@Injectable()
+@DGTInjectable()
 export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
 
     constructor(

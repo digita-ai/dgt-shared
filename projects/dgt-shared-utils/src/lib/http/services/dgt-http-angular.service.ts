@@ -1,13 +1,14 @@
 
 import { map, catchError, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTHttpResponse } from '../models/dgt-http-response.model';
 import { DGTHttpService } from './dgt-http.service';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTHttpAngularService extends DGTHttpService {
 
   constructor(public http: HttpClient, public logger: DGTLoggerService) {

@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+
 import { Title } from '@angular/platform-browser';
+import { DGTInjectable } from '@digita/dgt-shared-utils';
 import * as _ from 'lodash';
 
-@Injectable()
+@DGTInjectable()
 export class DGTTitleService {
 
   constructor(public titleService: Title) { }

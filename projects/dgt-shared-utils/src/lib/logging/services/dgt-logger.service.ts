@@ -1,10 +1,11 @@
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
-import { Injectable } from '@angular/core';
+
 import { DGTConfigurationService } from '../../configuration/services/dgt-configuration.service';
 import { DGTConfigurationBase } from '../../configuration/models/dgt-configuration-base.model';
 import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLoggerService {
     private readonly minimumLevel: DGTLoggerLevel;
 

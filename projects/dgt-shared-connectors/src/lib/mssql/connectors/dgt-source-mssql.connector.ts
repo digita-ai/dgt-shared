@@ -2,12 +2,12 @@ import { Observable, of, from } from 'rxjs';
 import * as sql from 'mssql';
 import { DGTExchange, DGTPurpose, DGTSourceConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { DGTMap, DGTLoggerService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
+import { DGTMap, DGTLoggerService, DGTErrorNotImplemented, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
-import { Injectable } from '@angular/core';
 
-@Injectable()
+
+@DGTInjectable()
 export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
     constructor(private logger: DGTLoggerService) {

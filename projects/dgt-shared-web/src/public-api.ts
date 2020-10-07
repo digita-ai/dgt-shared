@@ -101,3 +101,4 @@ export { DGTDataGroupComponent } from './lib/data/components/dgt-data-group/dgt-
 export { DGTStateEffectsBaseWebService } from './lib/state/services/dgt-state-effects-base-web.service';
 export * from './lib/profile/models/dgt-profile-actions.model';
 export * from './lib/events/models/dgt-events-actions.model';
+export { DGTDateToLabelService } from './lib/date/services/dgt-date-to-label.service';

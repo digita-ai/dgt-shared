@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+
+import { DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTSparqlDataset } from '../models/dgt-sparql-dataset.model';
 
-@Injectable()
+@DGTInjectable()
 export abstract class DGTSparqlService<T extends DGTSparqlDataset> {
     
 }

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+
 import { DGTEvent } from '../models/dgt-event.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTEventTransformerService } from './dgt-event-transformer.service';
 import { DGTEventService } from './dgt-event.service';
 import * as _ from 'lodash';
@@ -16,7 +16,7 @@ import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-soli
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 
 /** Service for managing events in Solid. */
-@Injectable()
+@DGTInjectable()
 export class DGTEventSolidService extends DGTEventService {
   constructor(
     private connector: DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,

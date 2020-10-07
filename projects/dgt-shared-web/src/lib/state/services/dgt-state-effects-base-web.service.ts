@@ -2,7 +2,7 @@ import { mergeMap, map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { DGTErrorService, DGTConnectionService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService } from '@digita/dgt-shared-utils';
+import { DGTErrorService, DGTConnectionService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTProfileService, DGTLDTypeRegistrationService, DGTConfigurationBaseWeb } from '@digita/dgt-shared-data';
 import * as _ from 'lodash';
 import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
@@ -12,9 +12,9 @@ import { ActionTypes, AddNotification, CheckConnection, CheckConnectionFinish, H
 import { DGTNotification } from '../../interface/models/dgt-notification.model';
 import { DGTNotificationType } from '../../interface/models/dgt-notification-type.model';
 import { DGTI8NService } from '../../i8n/services/dgt-i8n.service';
-import { Injectable } from '@angular/core';
 
-@Injectable()
+
+@DGTInjectable()
 export class DGTStateEffectsBaseWebService {
     /**  Determines (default) locale */
     @Effect()

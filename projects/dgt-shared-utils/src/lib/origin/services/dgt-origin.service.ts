@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+
+@DGTInjectable()
 export abstract class DGTOriginService {
     public abstract get(): string;
 }
