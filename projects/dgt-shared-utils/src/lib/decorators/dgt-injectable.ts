@@ -16,7 +16,7 @@ export function DGTInjectable() {
             return require(injectableImport).Injectable();
         } catch (e) {
             injectableImport = '@angular/core';
-            console.log(`[${injectableImport} DGTInjectable] Project type: angular`);
+            console.log(`[${displayDate} DGTInjectable] Project type: angular`);
             return require(injectableImport).Injectable();
         }
     }
