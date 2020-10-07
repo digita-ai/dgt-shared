@@ -1,9 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { DGTPlatformService } from '../../platform/services/dgt-platform.service';
 import { DGTPlatformType } from '../../platform/models/dgt-platform-type.model';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTConnectionService implements OnDestroy {
 
     static EVENT_TYPE_ONLINE = 'online';

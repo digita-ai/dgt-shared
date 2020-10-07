@@ -1,14 +1,14 @@
 import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita/dgt-shared-data';
 import { Observable, of, forkJoin } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
+
+import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 
 /** Transforms linked data to trustedapps, and the other way around. */
-@Injectable()
+@DGTInjectable()
 export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransformer<DGTSourceSolidTrustedApp> {
 
     constructor(

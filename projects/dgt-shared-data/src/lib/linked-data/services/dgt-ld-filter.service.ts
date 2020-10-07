@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import * as _ from 'lodash';
 import { DGTLDFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';
@@ -16,7 +16,7 @@ import { DGTLDFilterRunnerConnectionService } from './dgt-ld-filter-runner-conne
 import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-combination.service';
 import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLDFilterService {
 
   private runners: DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>> = new DGTMap<DGTLDFilterType, DGTLDFilterRunnerService<DGTLDFilter>>();

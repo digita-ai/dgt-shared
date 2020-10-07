@@ -2,11 +2,11 @@ import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, of } from 'rxjs';
-import { DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { Injectable } from '@angular/core';
 
-@Injectable()
+
+@DGTInjectable()
 export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGTLDFilterBGP> {
     public readonly type: DGTLDFilterType = DGTLDFilterType.BGP;
 

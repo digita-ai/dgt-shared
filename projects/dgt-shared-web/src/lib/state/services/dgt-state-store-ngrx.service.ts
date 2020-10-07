@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
+
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DGTBaseRootState } from '../models/dgt-base-root-state.model';
 import { DGTStateStoreService } from './dgt-state-store.service';
 import { DGTAction } from '../models/dgt-action.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { DGTBaseAppState } from '../models/dgt-base-app-state.model';
 import { DGTQueryService } from '@digita/dgt-shared-data';
 import { DGTStateSelector } from '../models/dgt-state-selector.model';
 
-@Injectable()
+@DGTInjectable()
 export class DGTStateStoreNGRXService<T extends DGTBaseRootState<DGTBaseAppState>> extends DGTStateStoreService<T> {
 
     constructor(private logger: DGTLoggerService, private store: Store<T>, private queries: DGTQueryService) {

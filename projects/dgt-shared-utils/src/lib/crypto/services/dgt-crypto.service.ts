@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+
 import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
 
 export abstract class DGTCryptoService {

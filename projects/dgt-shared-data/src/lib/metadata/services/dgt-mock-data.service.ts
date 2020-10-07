@@ -1,5 +1,5 @@
 import { DGTDataService } from './dgt-data.service';
-import { Injectable } from '@angular/core';
+
 import { Observable, of, forkJoin, concat } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -7,10 +7,10 @@ import { DGTQueryService } from './dgt-query.service';
 import { DGTQuery } from '../models/dgt-query.model';
 import { DGTMockDatabase } from '../models/dgt-mock-database.model';
 import { DGTEntity } from '../models/dgt-entity.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
 import { v4 as uuid } from 'uuid';
 
-@Injectable()
+@DGTInjectable()
 export class DGTMockDataService extends DGTDataService {
     constructor(private logger: DGTLoggerService, private queries: DGTQueryService, private database: DGTMockDatabase) {
         super();

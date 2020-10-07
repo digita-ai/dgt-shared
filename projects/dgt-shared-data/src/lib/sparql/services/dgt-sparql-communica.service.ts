@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+
 import { DGTSparqlService } from './dgt-sparql.service';
 import { Observable, from, of } from 'rxjs';
 import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.model';
-import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
 import { ActorInitSparql } from '@comunica/actor-init-sparql';
 import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
 import { switchMap, map } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { DGTSparqlResult } from '../models/dgt-sparql-result.model';
 import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation';
 import { IQueryResultBindings, IQueryResult } from '@comunica/actor-init-sparql/index-browser';
 
-@Injectable()
+@DGTInjectable()
 export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDatasetMemory> {
     private engine: ActorInitSparql;
 

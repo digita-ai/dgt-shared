@@ -1,9 +1,10 @@
 import { DGTAuthService } from './dgt-auth.service';
 import { Observable } from 'rxjs';
 import { DGTUser } from '../models/dgt-user.model';
-import { Injectable } from '@angular/core';
+import { DGTInjectable } from '@digita/dgt-shared-utils';
 
-@Injectable()
+
+@DGTInjectable()
 export class DGTAuthMockService extends DGTAuthService {
     public signIn(email: string, password: string): Observable<DGTUser> {
         throw new Error('Method not implemented.');

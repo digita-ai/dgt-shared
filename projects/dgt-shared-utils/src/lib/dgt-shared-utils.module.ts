@@ -5,7 +5,6 @@ import { DGTPlatformService } from './platform/services/dgt-platform.service';
 import { DGTConnectionService } from './connection/services/dgt-connection.service';
 import { DGTHttpService } from './http/services/dgt-http.service';
 import { DGTHttpAngularService } from './http/services/dgt-http-angular.service';
-import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 import { DGTCryptoBrowserService } from './crypto/services/dgt-crypto-browser.service';
 import { DGTParameterCheckerService } from './parameters/services/parameter-checker.service';
 import { DGTOriginConfigService } from './origin/services/dgt-origin-config.service';
@@ -27,7 +26,6 @@ export const providers = [
   },
   DGTErrorService,
   DGTPlatformService,
-  DGTDateToLabelService,
   DGTParameterCheckerService,
 ];
 

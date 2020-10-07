@@ -1,12 +1,12 @@
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, of } from 'rxjs';
-import { DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { Injectable } from '@angular/core';
+
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerService<DGTLDFilterExchange> {
   public readonly type: DGTLDFilterType = DGTLDFilterType.EXCHANGE;
 

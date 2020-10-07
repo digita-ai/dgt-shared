@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { Observable, of, forkJoin } from 'rxjs';
@@ -14,7 +14,7 @@ import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.servic
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTLDService {
 
     constructor(
