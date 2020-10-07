@@ -1,7 +1,7 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
