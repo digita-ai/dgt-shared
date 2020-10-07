@@ -1,7 +1,7 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
@@ -27,13 +27,15 @@ export class DGTWorkflowService {
         this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
         return forkJoin(data.triples.map( (triple: DGTLDTriple) => {
           return this.get(data.exchange.source, triple).pipe(
+            tap( fleuws => console.log('=============== ', fleuws)),
             mergeMap( (flows: DGTWorkflow[]) => {
               flows.forEach( flow => {
                   if (flow.destination) {
                     this.connectors.save(exchange, triple);
                   }
-                  return flow.actions.forEach(action => triple = action.execute(triple));
+                  flow.actions.forEach(action => triple = action.execute(triple));
                 });
+              console.log('=============== ', triple);
               return of(triple);
             }),
             );
