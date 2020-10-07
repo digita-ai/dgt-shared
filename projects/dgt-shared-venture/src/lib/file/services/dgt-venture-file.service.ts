@@ -1,7 +1,7 @@
-import { DGTFileService, DGTFileType, DGTFile } from '@digita/dgt-shared-data';
+import { DGTFileService, DGTFileType, DGTFile } from '@digita-ai/dgt-shared-data';
 import { Observable, from } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { Injectable } from '@angular/core';
 

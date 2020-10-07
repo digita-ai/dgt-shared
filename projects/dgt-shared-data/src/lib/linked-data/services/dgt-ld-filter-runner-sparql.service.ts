@@ -2,7 +2,7 @@ import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable } from 'rxjs';
 import { DGTLDFilterSparql } from '../models/dgt-ld-filter-sparql.model';
-import { DGTErrorArgument, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DataFactory, Quad, Quad_Subject, Quad_Predicate, Quad_Object } from 'n3';
 import { Injectable } from '@angular/core';

@@ -4,7 +4,7 @@ import { Observable, of, forkJoin } from 'rxjs';
 import * as _ from 'lodash';
 import { DGTQuery } from '../models/dgt-query.model';
 import { DGTEntity } from '../models/dgt-entity.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()

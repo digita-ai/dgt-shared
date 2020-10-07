@@ -3,7 +3,7 @@ import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import * as _ from 'lodash';
 import { DGTLDFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';

@@ -1,10 +1,10 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita/dgt-shared-data';
+import { DGTSourceConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
-import { DGTLoggerService, DGTHttpService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
-import { DGTHttpResponse } from '@digita/dgt-shared-utils/lib/http/models/dgt-http-response.model';
+import { DGTHttpResponse } from '@digita-ai/dgt-shared-utils/lib/http/models/dgt-http-response.model';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
 import { Injectable } from '@angular/core';

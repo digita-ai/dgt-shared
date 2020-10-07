@@ -1,4 +1,4 @@
-import { DGTProfile, DGTEvent, DGTSourceSolid, DGTConnectionSolid } from '@digita/dgt-shared-data';
+import { DGTProfile, DGTEvent, DGTSourceSolid, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
 import { DGTAbstractAction } from '../../state/models/dgt-abstract-action.model';
 import { DGTAction } from '../../state/models/dgt-action.model';
 

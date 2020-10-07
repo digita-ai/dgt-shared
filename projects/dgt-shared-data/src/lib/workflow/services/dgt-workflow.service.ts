@@ -4,7 +4,7 @@ import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { map } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @Injectable()

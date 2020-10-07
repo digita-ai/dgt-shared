@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';

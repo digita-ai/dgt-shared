@@ -1,4 +1,4 @@
-import { DGTTestRunnerService } from '@digita/dgt-shared-test';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTCategoryFilterRunnerSparqlService } from './dgt-ld-filter-runner-sparql.service';

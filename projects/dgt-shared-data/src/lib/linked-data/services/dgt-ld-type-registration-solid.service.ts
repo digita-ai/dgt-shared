@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import { DGTLDTypeRegistrationTransformerService } from './dgt-ld-type-registration-transformer.service';
 import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service';
 import * as _ from 'lodash';

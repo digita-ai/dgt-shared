@@ -1,5 +1,5 @@
 import { Injectable, Type } from '@angular/core';
-import { DGTCategory, DGTDataInterface } from '@digita/dgt-shared-data';
+import { DGTCategory, DGTDataInterface } from '@digita-ai/dgt-shared-data';
 
 @Injectable()
 export abstract class DGTDataInterfaceResolverService {

@@ -1,7 +1,7 @@
-import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita/dgt-shared-data';
+import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
 import { Observable, of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';

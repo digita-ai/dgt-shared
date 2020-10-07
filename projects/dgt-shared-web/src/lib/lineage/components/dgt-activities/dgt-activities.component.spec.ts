@@ -1,8 +1,8 @@
 import { async } from '@angular/core/testing';
 import { configuration } from '../../../../../test.configuration';
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTActivitiesComponent } from './dgt-activities.component';
-import { DGTActivityType, DGTActivityVisibility } from '@digita/dgt-shared-data';
+import { DGTActivityType, DGTActivityVisibility } from '@digita-ai/dgt-shared-data';
 
 describe('DGTActivitiesComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTActivitiesComponent>(configuration);

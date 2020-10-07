@@ -1,6 +1,6 @@
 import { Observable, of, forkJoin } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTConsent } from '../models/dgt-consent.model';
 import { v4 } from 'uuid';

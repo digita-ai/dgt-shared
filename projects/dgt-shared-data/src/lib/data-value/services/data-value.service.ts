@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable, forkJoin, of } from 'rxjs';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';

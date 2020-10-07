@@ -8,8 +8,8 @@
   "whitelistedNonPeerDependencies": [
     "@angular/core",
     "@angular/common",
-    "@digita/dgt-shared-utils",
-    "@digita/dgt-shared-data",
+    "@digita-ai/dgt-shared-utils",
+    "@digita-ai/dgt-shared-data",
     "rdflib",
     "mssql",
     "ts-md5"

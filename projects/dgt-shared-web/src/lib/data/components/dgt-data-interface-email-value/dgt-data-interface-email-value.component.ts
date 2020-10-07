@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { FormGroup, FormControl } from '@angular/forms';
-import { DGTDataValue } from '@digita/dgt-shared-data';
+import { DGTDataValue } from '@digita-ai/dgt-shared-data';
 
 @Component({
     selector: 'dgt-data-interface-email-value',

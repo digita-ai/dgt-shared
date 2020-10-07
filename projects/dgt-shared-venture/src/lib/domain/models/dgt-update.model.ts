@@ -3,7 +3,7 @@ import { DGTUpdateType } from './dgt-update-type.model';
 import { DGTAddress } from './dgt-address.model';
 import { DGTIdentity } from './dgt-identity.model';
 import { DGTDate } from './dgt-date.model';
-import { DGTEntity } from '@digita/dgt-shared-data';
+import { DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export interface DGTUpdate extends DGTEntity {
     brand: string;

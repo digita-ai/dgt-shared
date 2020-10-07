@@ -1,8 +1,8 @@
 {
-  "name": "@digita/dgt-shared-connectors",
+  "name": "@digita-ai/dgt-shared-connectors",
   "version": "0.1.2-preview-4",
   "devDependencies": {
-    "@digita/dgt-shared-test": "0.1.2-preview-4",
+    "@digita-ai/dgt-shared-test": "0.1.2-preview-4",
     "@types/mssql": "^4.3.1",
     "@types/n3": "^1.4.0",
     "@types/rdflib": "^1.0.5",
@@ -12,8 +12,8 @@
     "@types/node": "~11.9.5",
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0",
-    "@digita/dgt-shared-data": "0.1.2-preview-4",
-    "@digita/dgt-shared-utils": "0.1.2-preview-4",
+    "@digita-ai/dgt-shared-data": "0.1.2-preview-4",
+    "@digita-ai/dgt-shared-utils": "0.1.2-preview-4",
     "@solid/jose": "^0.6.0",
     "lodash": "4.17.11",
     "ts-md5": "^1.2.7",
@@ -24,6 +24,12 @@
     "whatwg-url": "6.5.0"
   },
   "main": "src/public-api.ts",
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-connectors"
+  },
   "author": "Wouter Janssens",
   "license": "ISC",
   "browser": {

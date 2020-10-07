@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DGTLoggerService, DGTErrorArgument, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';

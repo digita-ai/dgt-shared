@@ -3,8 +3,8 @@ import { DGTTitleService } from './interface/services/dgt-title.service';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTI8NService } from './i8n/services/dgt-i8n.service';
-import { DGTSharedUtilsModule } from '@digita/dgt-shared-utils';
-import { DGTSharedDataModule } from '@digita/dgt-shared-data';
+import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
+import { DGTSharedDataModule } from '@digita-ai/dgt-shared-data';
 import {
   MatPaginatorModule,
   MatTableModule,

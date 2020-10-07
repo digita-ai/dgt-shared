@@ -1,12 +1,12 @@
 /* tslint:disable:no-unused-variable */
 
 import { async } from '@angular/core/testing';
-import { DGTTestRunnerService } from '@digita/dgt-shared-test';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTSourceSolidConnector } from './dgt-source-solid.connector';
-import { DGTExchange, DGTSourceSolid, DGTConnectionSolid, DGTLDTriple, DGTLDTermType } from '@digita/dgt-shared-data';
+import { DGTExchange, DGTSourceSolid, DGTConnectionSolid, DGTLDTriple, DGTLDTermType } from '@digita-ai/dgt-shared-data';
 import * as _ from 'lodash';
-import { DGTErrorArgument, DGTError } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTError } from '@digita-ai/dgt-shared-utils';
 
 describe('DGTSourceSolidConnector', () => {
     const testService = new DGTTestRunnerService<DGTSourceSolidConnector>(configuration);

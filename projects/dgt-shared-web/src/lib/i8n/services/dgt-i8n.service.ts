@@ -3,7 +3,7 @@ import * as locale2 from 'locale2';
 import * as _ from 'lodash';
 import { DGTI8NLocale } from '../models/dgt-i8n-locale.model';
 import { TranslateService } from '@ngx-translate/core';
-import { DGTLoggerService, DGTPlatformService, DGTPlatformType } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTPlatformService, DGTPlatformType } from '@digita-ai/dgt-shared-utils';
 
 @Injectable()
 export class DGTI8NService {
