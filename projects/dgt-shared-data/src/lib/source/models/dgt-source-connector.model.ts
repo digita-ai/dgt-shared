@@ -6,7 +6,7 @@ import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.mo
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
-import { DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export abstract class DGTSourceConnector<T, S> {

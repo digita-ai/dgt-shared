@@ -2,7 +2,7 @@
 import moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of } from 'rxjs';
-import { DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export class DGTDateToLabelService {
