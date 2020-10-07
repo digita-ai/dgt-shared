@@ -1,18 +1,14 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTSourceConnector } from '../models/dgt-source-connector.model';
-import { DGTSourceType } from '../models/dgt-source-type.model';
 import * as _ from 'lodash';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
-import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
 @DGTInjectable()
 export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
 
   constructor(
     protected logger: DGTLoggerService,
-    private connectors: DGTConnectorService,
   ) { }
 
   public abstract get(id: string): Observable<DGTSource<any>>;
@@ -21,11 +17,6 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
   public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
 
   public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
-
-  // Leaving this function in for backwards compatibility
-  public register(sourceType: DGTSourceType, connector: DGTSourceConnector<any, any>) {
-    this.connectors.register(sourceType, connector);
-  }
 
   /**
    * Returns a list of sources matching query
