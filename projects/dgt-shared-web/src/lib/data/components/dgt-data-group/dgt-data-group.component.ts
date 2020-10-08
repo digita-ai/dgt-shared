@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DGTDataValueService, DGTCategory, DGTDataGroup, DGTDataValue } from '@digita/dgt-shared-data';
+import { DGTDataValueService, DGTCategory, DGTDataGroup, DGTDataValue } from '@digita-ai/dgt-shared-data';
 import * as _ from 'lodash';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-data-group',

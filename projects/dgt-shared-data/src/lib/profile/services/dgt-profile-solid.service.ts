@@ -1,6 +1,6 @@
 import { DGTProfileService } from './dgt-profile.service';
 
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTProfile } from '../models/dgt-profile.model';
 import { Observable, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';

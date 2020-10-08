@@ -3,7 +3,7 @@ import { MediaObserver, MediaChange } from '@angular/flex-layout';
 import { of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-page',

@@ -3,7 +3,7 @@ import { DGTDate } from './dgt-date.model';
 import { DGTIdentity } from './dgt-identity.model';
 import { DGTMilestoneState } from './dgt-milestone-state.model';
 import { DGTAcknowledgement } from './dgt-acknowledgement.model';
-import { DGTEntity } from '@digita/dgt-shared-data';
+import { DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export interface DGTMilestone extends DGTEntity {
   lastAcknowledgement: Date;

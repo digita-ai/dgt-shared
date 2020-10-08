@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { DGTConnection } from '../models/dgt-connection.model';
 
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
-import { DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export abstract class DGTConnectionService implements DGTLDResourceService<DGTConnection<any>> {

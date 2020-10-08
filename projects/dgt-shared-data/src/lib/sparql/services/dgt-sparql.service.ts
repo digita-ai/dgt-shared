@@ -1,5 +1,5 @@
 
-import { DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTSparqlDataset } from '../models/dgt-sparql-dataset.model';
 
 @DGTInjectable()

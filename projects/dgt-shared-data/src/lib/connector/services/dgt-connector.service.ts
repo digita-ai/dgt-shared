@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
-import { DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { Observable } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, mergeAll } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
@@ -36,8 +36,8 @@ export class DGTConnectorService {
     return this.connectors.get(sourceType);
   }
 
-  public save(exchange: DGTExchange, triple: DGTLDTriple) {
-    this.sources.get(exchange.source).pipe(
+  public save(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
+    return this.sources.get(exchange.source).pipe(
       map( source => ({ source, connector: this.connectors.get(source.type)})),
       mergeMap( data => this.connections.get(exchange.connection).pipe(
         map( connection => ({...data, connection})),
@@ -46,9 +46,9 @@ export class DGTConnectorService {
       // transformer ??
       // resource ??
       // TEMP
-      map( data => data.connector.upstreamSync([data.triple], data.connection, data.source, null) ),
+      mergeMap( data => data.connector.upstreamSync([data.triple], data.connection, data.source, null) ),
+      mergeAll(),
     );
-    return null;
   }
 
   public getTriples(

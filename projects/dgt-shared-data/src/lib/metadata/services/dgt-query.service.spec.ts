@@ -2,7 +2,7 @@
 
 import { async } from '@angular/core/testing';
 import { DGTQueryService } from './dgt-query.service';
-import { DGTTestRunnerService } from '@digita/dgt-shared-test';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTQuery } from '../models/dgt-query.model';
 

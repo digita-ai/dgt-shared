@@ -1,5 +1,5 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { DGTTestConfiguration } from '@digita/dgt-shared-test';
+import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
 import { declarations, imports, providers } from './lib/dgt-shared-data.module';
 import { DGTDataService } from './lib/metadata/services/dgt-data.service';
 import { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';

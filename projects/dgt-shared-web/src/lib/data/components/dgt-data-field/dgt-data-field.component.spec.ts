@@ -1,9 +1,9 @@
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTBrowserDataFieldComponent } from './data-field.component';
 import { configuration } from 'test.configuration';
 import { mockValueName } from 'test.data.mock-data';
-import { DGTCategoryField } from '@digita/dgt-shared-data';
-import { DGTErrorArgument } from '@digita/dgt-shared-utils';
+import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 
 describe('DGTBrowserDataFieldComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTBrowserDataFieldComponent>(configuration);

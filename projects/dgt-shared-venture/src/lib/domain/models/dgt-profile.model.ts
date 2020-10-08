@@ -1,5 +1,5 @@
 import { DGTProfileType } from './dgt-profile-type.model';
-import { DGTUser } from '@digita/dgt-shared-web';
+import { DGTUser } from '@digita-ai/dgt-shared-web';
 
 
 export interface DGTProfile extends DGTUser {

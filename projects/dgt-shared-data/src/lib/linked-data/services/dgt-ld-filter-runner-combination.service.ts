@@ -2,7 +2,7 @@
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDFilterCombination } from '../models/dgt-ld-filter-combination.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTParameterCheckerService, DGTErrorArgument, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTParameterCheckerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { Observable, forkJoin } from 'rxjs';
 import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-combination-type.model';

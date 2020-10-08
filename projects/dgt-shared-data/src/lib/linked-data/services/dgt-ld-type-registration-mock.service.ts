@@ -6,7 +6,7 @@ import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTErrorNotImplemented, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export class DGTLDTypeRegistrationMockService extends DGTLDTypeRegistrationService {

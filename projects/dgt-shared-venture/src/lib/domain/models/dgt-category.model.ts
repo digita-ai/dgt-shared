@@ -1,4 +1,4 @@
-import { DGTI8NEntity } from '@digita/dgt-shared-web';
+import { DGTI8NEntity } from '@digita-ai/dgt-shared-web';
 
 export interface DGTCategory extends DGTI8NEntity {
     description: string;

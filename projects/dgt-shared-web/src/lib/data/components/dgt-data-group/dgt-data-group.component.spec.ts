@@ -1,4 +1,4 @@
-import { DGTTestRunnerComponent } from '@digita/dgt-shared-test';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { configuration } from 'test.configuration';
 import { mockValueName, mockGroupIdentiy, mockValues, mockCategoryName } from 'test.data.mock-data';
 import { DGTDataGroupComponent } from './data-group.component';

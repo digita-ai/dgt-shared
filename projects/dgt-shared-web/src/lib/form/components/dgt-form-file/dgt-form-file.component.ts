@@ -5,8 +5,8 @@ import { Subject } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import * as _ from 'lodash';
-import { DGTFile } from '@digita/dgt-shared-data';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTFile } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-form-file',

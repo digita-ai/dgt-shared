@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap, mergeMap } from 'rxjs/operators';
 import { DGTDataService } from '../../metadata/services/dgt-data.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';

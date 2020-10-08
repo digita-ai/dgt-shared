@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
-import { DGTLoggerService, DGTMap, DGTErrorArgument } from '@digita/dgt-shared-utils';
-import { DGTCategory } from '@digita/dgt-shared-data';
-import { DGTDataValue, DGTDataInterface } from '@digita/dgt-shared-data';
+import { DGTLoggerService, DGTMap, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTCategory } from '@digita-ai/dgt-shared-data';
+import { DGTDataValue, DGTDataInterface } from '@digita-ai/dgt-shared-data';
 
 @Component({
   selector: 'dgt-data-interface-surveys',

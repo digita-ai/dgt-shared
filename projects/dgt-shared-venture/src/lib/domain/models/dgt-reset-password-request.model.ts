@@ -1,4 +1,4 @@
-import { DGTEntity } from '@digita/dgt-shared-data';
+import { DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export interface DGTResetPasswordRequest extends DGTEntity {
   state: string;

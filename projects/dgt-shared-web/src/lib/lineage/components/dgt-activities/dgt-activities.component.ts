@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DGTActivity, DGTActivityVisibility } from '@digita/dgt-shared-data';
+import { DGTActivity, DGTActivityVisibility } from '@digita-ai/dgt-shared-data';
 
 @Component({
   selector: 'dgt-activities',

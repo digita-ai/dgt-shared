@@ -1,5 +1,5 @@
 import { DGTConnection } from '../models/dgt-connection.model';
-import { DGTLoggerService, DGTHttpService, DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { Observable, of, forkJoin } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTConnectionSolid } from '../models/dgt-connection-solid.model';

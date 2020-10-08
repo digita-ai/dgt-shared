@@ -1,7 +1,7 @@
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, of } from 'rxjs';
-import { DGTInjectable, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';

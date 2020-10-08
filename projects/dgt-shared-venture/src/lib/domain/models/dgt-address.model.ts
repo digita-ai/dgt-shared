@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { DGTEntity } from '@digita/dgt-shared-data';
+import { DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export interface DGTAddress extends DGTEntity {
     country: string,

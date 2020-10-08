@@ -4,7 +4,7 @@ import { DGTAbstractAction } from './dgt-abstract-action.model';
 import { DGTAction } from './dgt-action.model';
 import { DGTNotification } from '../../interface/models/dgt-notification.model';
 import { DGTI8NLocale } from '../../i8n/models/dgt-i8n-locale.model';
-import { DGTQuery, DGTEntity } from '@digita/dgt-shared-data';
+import { DGTQuery, DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export const ActionTypes = {
   SET_LOCALE: '[App] Set locale',

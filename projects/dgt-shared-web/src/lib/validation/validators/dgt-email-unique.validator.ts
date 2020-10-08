@@ -4,7 +4,7 @@ import {map} from 'rxjs/operators';
 import { AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { DGTAuthService } from '../../security/services/dgt-auth.service';
 import { Observable } from 'rxjs';
-import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export class DGTEmailUniqueValidator {

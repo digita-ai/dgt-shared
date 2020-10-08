@@ -1,13 +1,14 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, tap, mergeAll } from 'rxjs/operators';
 import * as _ from 'lodash';
 
-import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
+import { flow } from 'lodash';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -20,44 +21,36 @@ export class DGTWorkflowService {
     private connectors: DGTConnectorService,
   ) { }
 
+  public executeHelper(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
+    return this.get(exchange.source, triple).pipe(
+      map(flows => {
+        let res = triple;
+        console.log('======================== ', res);
+        flows.forEach(flow => {
+          flow.actions.forEach(action =>
+            action.execute(res).pipe(
+              map(actionRes => res = actionRes)
+            )
+          );
+          if (flow.destination) {
+            this.connectors.save(exchange, res).pipe(
+              tap(data => console.log('======== saved to destination ', data, triple))
+            );
+          }
+        });
+        console.log('======================== ', res);
+        return res;
+      }),
+    );
+  }
+
   public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
     this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
-    of({ exchange, triples }).pipe(
-      // for every triple, get the workflows, for every workflow, execute it and return triple
-      map( data => data.triples.map(triple =>
-        // get the workflows
-        this.get(data.exchange.source, triple).pipe(
-          // for every workflow of this triple
-          map(workflows => workflows.map(workflow => {
-            // if destination is set, save the new value
-            if (workflow.destination) {
-              this.connectors.save(exchange, triple);
-            }
-            // execute every action on this workflow on triple
-            // and return the new, modified triple
-            let res = triple;
-            workflow.actions.forEach(action => res = action.execute(res));
-            return res;
-          }))
-        )
-      )),
-
-      // mergeMap(data => {
-      //   this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows', { exchanges: data.exchange, triples: data.triples });
-      //   return forkJoin(data.triples.map( (triple: DGTLDTriple) => {
-      //     return this.get(data.exchange.source, triple).pipe(
-      //       mergeMap( (flows: DGTWorkflow[]) => {
-      //         flows.forEach( flow => {
-      //             if (flow.destination) {
-      //               this.connectors.save(exchange, triple);
-      //             }
-      //             return flow.actions.forEach(action => triple = action.execute(triple));
-      //           });
-      //         return of(triple);
-      //       }),
-      //       );
-      //   }));
-      // }),
+    return of({ exchange, triples }).pipe(
+      map(data => forkJoin(data.triples.map(triple => {
+        return this.executeHelper(exchange, triple);
+      }))),
+      mergeAll(),
     );
   }
 
@@ -65,21 +58,19 @@ export class DGTWorkflowService {
   public get(source: string, triple: DGTLDTriple): Observable<DGTWorkflow[]> {
     this.logger.debug(DGTWorkflowService.name, 'Getting workflow for triple', { triple });
 
-    const res: DGTWorkflow[] = [];
+    const allWorkflows = this.workflows.filter(workflow => workflow && workflow.source === source);
 
-    if (triple && this.workflows && this.workflows.length > 0) {
-      // filter on sourceId
-      const tempFlows = this.workflows.filter(workflow => workflow && workflow.source === source);
-      // filter on workflow.filter
-      return of({ triple, tempFlows }).pipe(
-        mergeMap( data => forkJoin(data.tempFlows.filter( flow => {
-          return this.filters.run(flow.filter, [data.triple]).pipe(
-            map( filtered => filtered.length !== 0 ),
-          );
-        }))),
-      );
-    }
-    return of(res);
+    return of({ triple, allWorkflows }).pipe(
+      mergeMap(data => forkJoin(
+        data.allWorkflows.map(workflow =>
+          this.filters.run(workflow.filter, [data.triple]).pipe(
+            map(triples => ({ workflow, triples })),
+          )
+        )
+      ).pipe(map(triplesPerWorkflow => ({ ...data, triplesPerWorkflow })))),
+      map(data => ({ ...data, workflowsToExecute: data.triplesPerWorkflow.filter(w => w.triples.length > 0).map(w => w.workflow) })),
+      map(data => data.workflowsToExecute)
+    );
   }
 
   public register(workflow: DGTWorkflow) {

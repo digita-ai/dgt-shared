@@ -1,6 +1,6 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 

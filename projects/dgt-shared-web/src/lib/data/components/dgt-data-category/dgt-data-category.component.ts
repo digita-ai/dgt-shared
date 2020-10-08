@@ -1,9 +1,9 @@
 import { Component, Input, ViewChild, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import * as _ from 'lodash';
-import { DGTCategory } from '@digita/dgt-shared-data';
-import { DGTParameterCheckerService, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTCategory } from '@digita-ai/dgt-shared-data';
+import { DGTParameterCheckerService, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTDataInterfaceFactoryService } from '../../services/dgt-data-interface-factory.service';
-import { DGTDataValue, DGTDataInterfaceHostDirective } from '@digita/dgt-shared-data';
+import { DGTDataValue, DGTDataInterfaceHostDirective } from '@digita-ai/dgt-shared-data';
 
 @Component({
   selector: 'dgt-data-category',

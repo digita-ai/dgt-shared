@@ -1,4 +1,4 @@
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 // tslint:disable:no-bitwise
 // tslint:disable:triple-equals

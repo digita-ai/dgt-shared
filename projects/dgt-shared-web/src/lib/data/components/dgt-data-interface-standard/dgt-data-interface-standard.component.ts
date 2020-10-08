@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import * as _ from 'lodash';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
-import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita/dgt-shared-data';
-import { DGTLDFilterBGP } from '@digita/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTLDFilterBGP } from '@digita-ai/dgt-shared-data';
 import { map } from 'rxjs/operators';
 
 @Component({

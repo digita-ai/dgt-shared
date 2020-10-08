@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { DGTQueryService } from './dgt-query.service';
 import { DGTQuery } from '../models/dgt-query.model';
 import { DGTEntity } from '../models/dgt-entity.model';
-import { DGTInjectable, DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { v4 as uuid } from 'uuid';
 import store from 'store2';
 

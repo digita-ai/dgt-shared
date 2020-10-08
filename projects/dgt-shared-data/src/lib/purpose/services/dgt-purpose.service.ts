@@ -1,5 +1,5 @@
 
-import { DGTInjectable } from '@digita/dgt-shared-utils';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { Observable } from 'rxjs';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTPurpose } from '../models/dgt-purpose.model';

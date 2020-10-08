@@ -4,7 +4,7 @@ import { DGTLDFilterHolder } from '../models/dgt-ld-filter-holder.model';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTErrorArgument, DGTInjectable, DGTParameterCheckerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { map, tap } from 'rxjs/operators';
 

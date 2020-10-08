@@ -1,6 +1,6 @@
 import { User } from 'firebase';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
-import { DGTBaseAppState } from '@digita/dgt-shared-web';
+import { DGTBaseAppState } from '@digita-ai/dgt-shared-web';
 
 export interface DGTFirebaseBaseAppState extends DGTBaseAppState {
     authenticatedUser: User;
