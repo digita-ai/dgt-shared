@@ -13,7 +13,9 @@ export class DGTRemovePrefixWorkflowAction implements DGTWorkflowAction {
         this.logger.debug(DGTRemovePrefixWorkflowAction.name, 'Executing remove prefix action', { prefix: this.prefix, value });
 
         if (value && value.object) {
-            value.object = value.object.value.replace(this.prefix, '');
+            if (value.object.value.startsWith(this.prefix)) {
+                value.object.value = value.object.value.replace(this.prefix, '');
+            }
         }
 
         return of(value);
