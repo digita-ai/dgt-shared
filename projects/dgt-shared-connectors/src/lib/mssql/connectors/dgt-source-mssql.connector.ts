@@ -117,7 +117,9 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
         transformer: DGTLDTransformer<R>,
         purpose: DGTPurpose,
         exchange: DGTExchange,
-    ): Observable<R[]> {
+    ): Observable<R> {
+
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Upstream Syncing data', domainEntity);
 
         // find possible existing values
         return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
@@ -125,9 +127,9 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                 if (existingValues[0]) {
                     // convert to list of {original: Object, updated: Object}
                     const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
-                    return this.update([updateDomainEntity], connection, source, transformer);
+                    return this.update([updateDomainEntity], connection, source, transformer)[0];
                 } else {
-                    return this.add([domainEntity], connection, source, transformer);
+                    return this.add([domainEntity], connection, source, transformer)[0];
                 }
             }),
         );

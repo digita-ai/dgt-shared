@@ -127,7 +127,7 @@ export class DGTSourceGravatarConnector extends DGTSourceConnector<DGTSourceGrav
         transformer: DGTLDTransformer<R>,
         purpose: DGTPurpose,
         exchange: DGTExchange,
-    ): Observable<R[]> {
+    ): Observable<R> {
         throw new DGTErrorNotImplemented();
     }
 }

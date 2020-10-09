@@ -40,7 +40,7 @@ export class DGTConnectorService {
 
   public save(exchange: DGTExchange, triple: DGTLDTriple, destination: string): Observable<DGTLDTriple> {
     this.logger.debug(DGTConnectorService.name, 'preparing upstream sync', {exchange, triple, destination});
-
+  
     return this.connections.get(destination).pipe(
       map( connection => ({ connection })),
       mergeMap( data => this.sources.get(data.connection.source).pipe(
@@ -52,7 +52,7 @@ export class DGTConnectorService {
         map( purpose => ({ ... data, purpose })),
       )),
       mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange) ),
-      mergeAll(),
+      //mergeAll(),
     );
   }
 

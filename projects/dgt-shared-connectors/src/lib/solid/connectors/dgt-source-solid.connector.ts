@@ -384,7 +384,7 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
     transformer: DGTLDTransformer<T>,
     purpose: DGTPurpose,
     exchange: DGTExchange,
-  ): Observable<T[]> {
+  ): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
