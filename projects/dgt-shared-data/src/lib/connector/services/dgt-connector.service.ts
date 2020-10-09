@@ -11,6 +11,7 @@ import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -22,6 +23,7 @@ export class DGTConnectorService {
     private sources: DGTSourceService,
     private connections: DGTConnectionService,
     private paramChecker: DGTParameterCheckerService,
+    private purposes: DGTPurposeService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTSourceConnector<any, any>) {
@@ -36,17 +38,20 @@ export class DGTConnectorService {
     return this.connectors.get(sourceType);
   }
 
-  public save(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
-    return this.sources.get(exchange.source).pipe(
-      map( source => ({ source, connector: this.connectors.get(source.type)})),
-      mergeMap( data => this.connections.get(exchange.connection).pipe(
-        map( connection => ({...data, connection})),
+  public save(exchange: DGTExchange, triple: DGTLDTriple, destination: string): Observable<DGTLDTriple> {
+    this.logger.debug(DGTConnectorService.name, 'preparing upstream sync', {exchange, triple, destination});
+
+    return this.connections.get(destination).pipe(
+      map( connection => ({ connection })),
+      mergeMap( data => this.sources.get(data.connection.source).pipe(
+        map( source => ({ ...data, source })),
       )),
-      map( data => ({...data, triple: { ...triple, documentUri: null, triples: [triple]}})),
-      // transformer ??
-      // resource ??
-      // TEMP, THIS FUNCTION ISNT TESTED YET, LOOK feature/544645000-upstream-connectors
-      mergeMap( data => data.connector.upstreamSync([data.triple], data.connection, data.source, null) ),
+      map( data => ({ ...data, connector: this.connectors.get(data.source.type) })),
+      map( data => ({ ...data, triple: { ...triple, documentUri: null, triples: [triple]}})),
+      mergeMap( data => this.purposes.get(exchange.purpose).pipe(
+        map( purpose => ({ ... data, purpose })),
+      )),
+      mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange) ),
       mergeAll(),
     );
   }

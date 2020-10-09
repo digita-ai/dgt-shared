@@ -378,10 +378,12 @@ export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidCo
   }
 
   public upstreamSync<T extends DGTLDResource>(
-    domainEntities: T[],
+    domainEntities: T,
     connection: DGTConnectionSolid,
     source: DGTSourceSolid,
     transformer: DGTLDTransformer<T>,
+    purpose: DGTPurpose,
+    exchange: DGTExchange,
   ): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }

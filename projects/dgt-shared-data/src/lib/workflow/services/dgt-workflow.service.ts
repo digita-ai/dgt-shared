@@ -30,7 +30,7 @@ export class DGTWorkflowService {
             )
           );
           if (workflow.destination) {
-            this.connectors.save(exchange, res);
+            this.connectors.save(exchange, res, workflow.destination);
           }
         });
         return res;
