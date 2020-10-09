@@ -51,7 +51,9 @@ export class DGTConnectorService {
       mergeMap( data => this.purposes.get(exchange.purpose).pipe(
         map( purpose => ({ ... data, purpose })),
       )),
-      mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange) ),
+      mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange).pipe(
+        map( tripleRes => tripleRes ),
+      )),
       mergeAll(),
     );
   }

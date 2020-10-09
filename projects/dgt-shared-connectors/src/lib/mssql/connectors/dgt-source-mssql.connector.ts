@@ -19,24 +19,14 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
     }
 
     public query<T extends DGTLDResource>(holderUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-        const config = {
-            user: source.configuration.user,
-            password: source.configuration.password,
-            server: source.configuration.server, // You can use 'localhost\\instance' to connect to named instance
-            database: source.configuration.database,
 
-            options: {
-                encrypt: false // Use this if you're on Windows Azure
-            }
-        };
-
+        const config = this.extractConfig(source);
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting query, creating connection pool', {
             exchange,
             source
         });
 
-        const pool = new sql.ConnectionPool(config);
-
+        const pool = this.getPool(config);
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Created connection pool', { pool });
 
         return of({ pool, config })
@@ -118,6 +108,9 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
         purpose: DGTPurpose,
         exchange: DGTExchange,
     ): Observable<R[]> {
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'upstream syncing',
+        {domainEntity, connection, source, transformer, purpose, exchange});
+
 
         // find possible existing values
         return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
@@ -131,5 +124,22 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                 }
             }),
         );
+    }
+
+    private extractConfig(source: DGTSource<any>) {
+        return {
+            user: source.configuration.user,
+            password: source.configuration.password,
+            server: source.configuration.server, // You can use 'localhost\\instance' to connect to named instance
+            database: source.configuration.database,
+
+            options: {
+                encrypt: false // Use this if you're on Windows Azure
+            }
+        };
+    }
+
+    private getPool(config) {
+        return new sql.ConnectionPool(config);
     }
 }
