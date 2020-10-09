@@ -111,11 +111,25 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
     }
 
     public upstreamSync<R extends DGTLDResource>(
-        domainEntities: R[],
+        domainEntity: R,
         connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
         source: DGTSource<DGTSourceMSSQLConfiguration>,
         transformer: DGTLDTransformer<R>,
+        purpose: DGTPurpose,
+        exchange: DGTExchange,
     ): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+
+        // find possible existing values
+        return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
+            switchMap(existingValues => {
+                if (existingValues[0]) {
+                    // convert to list of {original: Object, updated: Object}
+                    const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
+                    return this.update([updateDomainEntity], connection, source, transformer);
+                } else {
+                    return this.add([domainEntity], connection, source, transformer);
+                }
+            }),
+        );
     }
 }
