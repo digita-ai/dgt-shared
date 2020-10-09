@@ -1,5 +1,5 @@
 /** Used to store require object */
-let injectableImport = null;
+let res;
 
 /**
  * This is a wrapper decorator that can be used in both Angular and nestjs projects
@@ -7,18 +7,12 @@ let injectableImport = null;
  * So that services written in Angular projects can be used in nestjs projects and vice-versa
  */
 export function DGTInjectable() {
-    if (!injectableImport) {
-        const displayDate: string = new Date().toLocaleTimeString();
-        console.log(`[${displayDate} DGTInjectable] Figuring out project type`);
+    if (!res) {
         try {
-            injectableImport = '@nestjs/common';
-            console.log(`[${displayDate} DGTInjectable] Project type: nestjs`);
-            return require(injectableImport).Injectable();
+            res = require('@nestjs/common').Injectable;
         } catch (e) {
-            injectableImport = '@angular/core';
-            console.log(`[${displayDate} DGTInjectable] Project type: angular`);
-            return require(injectableImport).Injectable();
+            res = require('@angular/core').Injectable;
         }
     }
-    return require(injectableImport).Injectable();
+    return res();
 }

@@ -1,6 +1,5 @@
 import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
 import { Observable, of, forkJoin } from 'rxjs';
-
 import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';

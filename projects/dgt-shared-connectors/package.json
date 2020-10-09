@@ -24,6 +24,12 @@
     "whatwg-url": "6.5.0"
   },
   "main": "src/public-api.ts",
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-connectors"
+  },
   "author": "Wouter Janssens",
   "license": "ISC",
   "browser": {

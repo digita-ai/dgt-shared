@@ -5,6 +5,12 @@
     "@angular/common": "~7.2.0",
     "@angular/core": "~7.2.0"
   },
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-test"
+  },
   "main": "src/public-api.ts",
   "author": "Wouter Janssens",
   "license": "ISC"
