@@ -109,7 +109,7 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                     .pipe(map(newPool => ({ newPool, ...data })))
                 ),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
-                switchMap(data => from(data.pool.request().query(source.configuration.commands.insert(connection.configuration.personId, )))
+                switchMap(data => from(data.pool.request().query(source.configuration.commands.insert(connection.configuration.personId, 'name', '123')))
                     .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
                 //map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
