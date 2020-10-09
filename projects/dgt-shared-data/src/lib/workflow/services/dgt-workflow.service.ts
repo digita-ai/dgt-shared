@@ -1,14 +1,12 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, tap, mergeAll } from 'rxjs/operators';
+import { map, mergeMap, mergeAll } from 'rxjs/operators';
 import * as _ from 'lodash';
-
 import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
-import { flow } from 'lodash';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -25,20 +23,16 @@ export class DGTWorkflowService {
     return this.get(exchange.source, triple).pipe(
       map(flows => {
         let res = triple;
-        console.log('======================== ', res);
-        flows.forEach(flow => {
-          flow.actions.forEach(action =>
+        flows.forEach(workflow => {
+          workflow.actions.forEach(action =>
             action.execute(res).pipe(
               map(actionRes => res = actionRes)
             )
           );
-          if (flow.destination) {
-            this.connectors.save(exchange, res).pipe(
-              tap(data => console.log('======== saved to destination ', data, triple))
-            );
+          if (workflow.destination) {
+            this.connectors.save(exchange, res);
           }
         });
-        console.log('======================== ', res);
         return res;
       }),
     );
