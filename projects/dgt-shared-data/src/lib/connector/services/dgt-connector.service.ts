@@ -54,7 +54,6 @@ export class DGTConnectorService {
       mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange).pipe(
         map( tripleRes => tripleRes ),
       )),
-      mergeAll(),
     );
   }
 
