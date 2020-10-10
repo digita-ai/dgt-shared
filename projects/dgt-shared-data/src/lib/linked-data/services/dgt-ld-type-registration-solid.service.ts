@@ -11,14 +11,14 @@ import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
+import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTConfigurationBaseWeb } from '../../configuration/models/dgt-configuration-base-web.model';
 
 /** Service for managing typeRegistrations in Solid. */
 @DGTInjectable()
 export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationService {
   constructor(
-    private connector: DGTSourceConnector<any, any>,
+    private connector: DGTConnector<any, any>,
     private transformer: DGTLDTypeRegistrationTransformerService,
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,

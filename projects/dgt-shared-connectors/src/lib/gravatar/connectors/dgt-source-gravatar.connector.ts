@@ -1,5 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTSourceConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
+import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
@@ -11,7 +11,7 @@ import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gra
 
 
 @DGTInjectable()
-export class DGTSourceGravatarConnector extends DGTSourceConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
+export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
         super();
     }
