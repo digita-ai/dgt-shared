@@ -1,7 +1,9 @@
 import { DGTWorkflowAction } from './dgt-workflow-action.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 export interface DGTWorkflow {
     actions: DGTWorkflowAction[];
-    predicates: string[];
+    filter: DGTLDFilter;
     source: string;
+    destination?: string;
 }

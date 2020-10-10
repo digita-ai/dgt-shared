@@ -8,13 +8,13 @@ import { DGTProfileTransformerService } from './dgt-profile-transformer.service'
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
+import { DGTConnector } from '../../connector/models/dgt-connector.model';
 
 @DGTInjectable()
 /** Service used for retrieving and updating a user's profile */
 export class DGTProfileSolidService extends DGTProfileService {
   constructor(
-    private connector: DGTSourceConnector<any, any>,
+    private connector: DGTConnector<any, any>,
     private transformer: DGTProfileTransformerService,
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,

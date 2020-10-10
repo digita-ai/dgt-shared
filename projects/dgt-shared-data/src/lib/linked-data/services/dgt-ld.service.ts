@@ -13,6 +13,8 @@ import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
+import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
+import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 
 @DGTInjectable()
 export class DGTLDService {
@@ -25,6 +27,8 @@ export class DGTLDService {
         private connections: DGTConnectionService,
         private purposes: DGTPurposeService,
         private paramChecker: DGTParameterCheckerService,
+        private workflows: DGTWorkflowService,
+        private connectors: DGTConnectorService,
     ) {
     }
 
@@ -50,8 +54,8 @@ export class DGTLDService {
                 tap(val => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', val)),
                 mergeMap(exchanges => of(exchanges).pipe(
                     mergeMap(exchanges => forkJoin(exchanges.map(exchange => this.connections.get(exchange.connection).pipe(
-                        // TODO pump values into workflows 
-                        mergeMap(connection => this.getValuesForExchange(exchange, connection))
+                        mergeMap(connection => this.getValuesForExchange(exchange, connection)),
+                        mergeMap( values => this.workflows.execute(exchange, values)),
                     )
                     ))),
                     tap(val => this.logger.debug(DGTLDService.name, 'Retrieved values for exchanges', { val })),
@@ -70,7 +74,7 @@ export class DGTLDService {
                     .pipe(map(purpose => ({ purpose, ...data })))),
                 switchMap((data) => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.getTriples(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.connectors.query(data.exchange, data.connection, data.source, data.purpose)),
             );
     }
 }

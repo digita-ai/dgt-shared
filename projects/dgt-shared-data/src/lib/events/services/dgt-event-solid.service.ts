@@ -6,7 +6,7 @@ import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@di
 import { DGTEventTransformerService } from './dgt-event-transformer.service';
 import { DGTEventService } from './dgt-event.service';
 import * as _ from 'lodash';
-import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
+import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
@@ -19,7 +19,7 @@ import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-con
 @DGTInjectable()
 export class DGTEventSolidService extends DGTEventService {
   constructor(
-    private connector: DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
+    private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTEventTransformerService,
     private typeRegistrations: DGTLDTypeRegistrationService,
     private logger: DGTLoggerService,

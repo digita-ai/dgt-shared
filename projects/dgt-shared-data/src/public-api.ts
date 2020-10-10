@@ -62,9 +62,8 @@ export { DGTSourceService } from './lib/source/services/dgt-source.service';
 export { DGTSource } from './lib/source/models/dgt-source.model';
 export { DGTSourceSolid } from './lib/source/models/dgt-source-solid.model';
 export { DGTSourceSolidConfiguration } from './lib/source/models/dgt-source-solid-configuration.model';
-export { DGTSourceConnector } from './lib/source/models/dgt-source-connector.model';
+export { DGTConnector } from './lib/connector/models/dgt-connector.model';
 export { DGTSourceType } from './lib/source/models/dgt-source-type.model';
-export { DGTSourceResult } from './lib/source/models/dgt-source-result.model';
 export { DGTLDDataType } from './lib/linked-data/models/dgt-ld-data-type.model';
 export { DGTLDResource } from './lib/linked-data/models/dgt-ld-resource.model';
 export { DGTLDNode } from './lib/linked-data/models/dgt-ld-node.model';
@@ -102,3 +101,4 @@ export { DGTSparqlDatasetType } from './lib/sparql/models/dgt-sparql-dataset-typ
 export { DGTSparqlDatasetMemory} from './lib/sparql/models/dgt-sparql-dataset-memory.model';
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
+export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
