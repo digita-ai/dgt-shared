@@ -1,5 +1,6 @@
 import { Strategy } from 'passport-strategy';
 import * as jwt from 'jsonwebtoken';
+import { JWT } from '@solid/jose';
 
 /**
  * Strategy constructor
@@ -81,6 +82,8 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
     public JwtVerifier(token, secretOrKey, options, callback) {
         // return jwt.verify(token, secretOrKey, options, callback);
         const decoded = jwt.decode(token);
+
+        
 
         callback(null, decoded);
 
