@@ -89,16 +89,55 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
     }
 
     public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+        const config = this.extractConfig(source);
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting DELETE, creating connection pool', {
+            source
+        });
+
+        const pool = this.getPool(config);
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Created connection pool', { pool });
+
+        return of({ pool, config })
+            .pipe(
+                switchMap(data => from(data.pool.connect())
+                    .pipe(map(newPool => ({ newPool, ...data })))
+                ),
+                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
+                switchMap(data => {
+                    const columns = `name = ${domainEntities[0].updated}, points = '124`;
+                    return from(data.pool.request().query(source.configuration.commands.update(connection.configuration.personId, columns)))
+                    .pipe(map(result => ({ result, ...data })))
+                }),
+                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished DELETE', { data })),
+                map(data => domainEntities.map(entity => entity.updated)),
+            );
     }
 
     public delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+        const config = this.extractConfig(source);
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting DELETE, creating connection pool', {
+            source
+        });
+
+        const pool = this.getPool(config);
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Created connection pool', { pool });
+
+        return of({ pool, config })
+            .pipe(
+                switchMap(data => from(data.pool.connect())
+                    .pipe(map(newPool => ({ newPool, ...data })))
+                ),
+                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
+                switchMap(data => from(data.pool.request().query(source.configuration.commands.delete(connection.configuration.personId)))
+                    .pipe(map(result => ({ result, ...data })))),
+                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished DELETE', { data })),
+                map(data => domainEntities),
+            );
     }
 
     public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
         const config = this.extractConfig(source);
-        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting query, creating connection pool', {source});
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting INSERT, creating connection pool', {source});
 
         const pool = this.getPool(config);
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Created connection pool', {pool});
