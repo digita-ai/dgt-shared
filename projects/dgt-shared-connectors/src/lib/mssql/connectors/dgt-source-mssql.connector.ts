@@ -109,8 +109,14 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                     .pipe(map(newPool => ({ newPool, ...data })))
                 ),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
-                switchMap(data => from(data.pool.request().query(source.configuration.commands.insert(connection.configuration.personId, 'name', '123')))
-                    .pipe(map(result => ({ result, ...data })))),
+                switchMap(data => from(data.pool.request().query(
+                    source.configuration.commands.insert(
+                        connection.configuration.personId,
+                        domainEntities[0].subject.value, // temp, webid as name to have a variable
+                        '123'
+                    )
+                ))
+                .pipe(map(result => ({ result, ...data })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
                 //map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
@@ -137,8 +143,10 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                 if (existingValues[0]) {
                     // convert to list of {original: Object, updated: Object}
                     const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
+                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Updating value in DB', updateDomainEntity);
                     return this.update([updateDomainEntity], connection, source, transformer)[0];
                 } else {
+                    this.logger.debug(DGTSourceMSSQLConnector.name, 'adding value to DB', domainEntity);
                     return this.add([domainEntity], connection, source, transformer)[0];
                 }
             }),
