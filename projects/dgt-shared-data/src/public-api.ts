@@ -22,7 +22,6 @@ export { DGTQueryConditionOperator } from './lib/metadata/models/dgt-query-condi
 export { DGTQueryService } from './lib/metadata/services/dgt-query.service';
 export { DGTQueryPagination } from './lib/metadata/models/dgt-query-pagination.model';
 export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
-export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/linked-data/models/dgt-category.model';
@@ -46,9 +45,7 @@ export { DGTFile } from './lib/file/models/dgt-file.model';
 export { DGTFileService } from './lib/file/services/dgt-file.service';
 export { DGTFileType } from './lib/file/models/dgt-file-type.model';
 export { DGTEntity } from './lib/metadata/models/dgt-entity.model';
-export { DGTDataService } from './lib/metadata/services/dgt-data.service';
 export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
-export { DGTLocalDataService } from './lib/metadata/services/dgt-local-data.service';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTConnection } from './lib/connection/models/dgt-connection.model';
 export { DGTConnectionSolid } from './lib/connection/models/dgt-connection-solid.model';
@@ -72,7 +69,6 @@ export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.mo
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
 export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';
 export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
-export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';

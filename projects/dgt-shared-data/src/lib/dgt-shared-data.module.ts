@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { DGTMockDataService } from './metadata/services/dgt-mock-data.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
 import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
@@ -29,7 +28,6 @@ export const providers = [
   DGTLDFilterRunnerBGPService,
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
-  DGTMockDataService,
   DGTCacheService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
