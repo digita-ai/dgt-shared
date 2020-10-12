@@ -31,14 +31,18 @@ export class DGTWorkflowService {
             )
           );
           if (workflow.destination) {
-            triplesToSave.push({exchange, triple: res, destination: workflow.destination});
+            triplesToSave.push({
+              exchange,
+              triple: {...res, subject: {...res.subject}, object: {...res.object}},
+              destination: workflow.destination
+            });
           }
         });
         return {res, triplesToSave};
       }),
-      tap( data => this.logger.debug(DGTWorkflowService.name, 'Saving all these triples', data.triplesToSave)),
       mergeMap( data => forkJoin(
         data.triplesToSave.map( entry => {
+          this.logger.debug(DGTWorkflowService.name, 'Saving this triple', entry);
           return this.connectors.save(entry.exchange, entry.triple, entry.destination);
         })
       )),
