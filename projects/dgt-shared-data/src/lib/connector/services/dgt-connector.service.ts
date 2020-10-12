@@ -4,7 +4,7 @@ import { DGTSourceConnector } from '../../source/models/dgt-source-connector.mod
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { Observable } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, mergeAll } from 'rxjs/operators';
+import { map, mergeMap, mergeAll, tap } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
@@ -41,10 +41,12 @@ export class DGTConnectorService {
   public save(exchange: DGTExchange, triple: DGTLDTriple, destination: string): Observable<DGTLDTriple> {
     this.logger.debug(DGTConnectorService.name, 'preparing upstream sync', {exchange, triple, destination});
 
-    return this.connections.get(destination).pipe(
-      map( connection => ({ connection })),
-      mergeMap( data => this.sources.get(data.connection.source).pipe(
-        map( source => ({ ...data, source })),
+    return this.sources.get(destination).pipe(
+      map( source => ({ source })),
+      tap( data => console.log('=================== ', data)),
+      mergeMap( data => this.connections.query({holder: exchange.holder, source: data.source.id}).pipe(
+        tap( connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+        map( connection => ({ ...data, connection: connection[0] })),
       )),
       map( data => ({ ...data, connector: this.connectors.get(data.source.type) })),
       map( data => ({ ...data, triple: { ...triple, documentUri: null, triples: [triple]}})),
