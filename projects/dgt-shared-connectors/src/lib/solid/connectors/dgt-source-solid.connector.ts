@@ -706,8 +706,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       source,
     });
 
-    const baseUri = this.config.get((c) => c.baseURI);
-
     const encodedCallbackUri = source.configuration.callbackUri;
     const uri = `${source.configuration.registration_endpoint}`;
     const headers = { 'Content-Type': 'application/json' };
