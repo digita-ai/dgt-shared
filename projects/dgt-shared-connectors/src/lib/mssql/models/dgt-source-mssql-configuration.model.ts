@@ -5,6 +5,8 @@ export interface DGTSourceMSSQLConfiguration {
     password: string;
     server: string;
     database: string;
-    command: (identifier: string) => string;
+    commands: {
+        [key: string]: Function,
+    };
     mapping: DGTMap<string, string>;
 }
