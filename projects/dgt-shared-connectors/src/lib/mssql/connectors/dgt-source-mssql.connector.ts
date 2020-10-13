@@ -10,10 +10,14 @@ import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-
 @DGTInjectable()
 export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
-    private pool: ConnectionPool = null;
+    /**
+     * Map of DGTSource IDs -> ConnectionPools
+     */
+    private pools: DGTMap<string, ConnectionPool>;
 
     constructor(private logger: DGTLoggerService) {
         super();
+        this.pools = new DGTMap();
     }
 
     public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTConnection<DGTConnectionMSSQLConfiguration>> {
@@ -215,18 +219,19 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
     }
 
     private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
-        if (!this.pool) {
+        if (!this.pools || !this.pools.get(source.id)) {
             const config = this.extractConfig(source);
             this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
-            this.pool = new ConnectionPool(config);
-            this.pool.on('error', err => {
+            const pool = new ConnectionPool(config);
+            pool.on('error', err => {
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
             });
+            this.pools.set(source.id, pool);
             this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
-            return from(this.pool.connect()).pipe(
-                map( () => this.pool),
+            return from(this.pools.get(source.id).connect()).pipe(
+                map( () => this.pools.get(source.id)),
             );
         }
-        return of(this.pool);
+        return of(this.pools.get(source.id));
     }
 }
