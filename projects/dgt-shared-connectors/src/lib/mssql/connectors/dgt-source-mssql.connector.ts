@@ -103,7 +103,7 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                     let columns = '';
                     domainEntities.forEach(entity => {
                         const columnName = source.configuration.mapping.getByValue(entity.updated.triples[0].predicate)
-                        columns.concat(`${columnName}=${entity.updated.triples[0].object.value}, `);
+                        columns = columns.concat(`${columnName}=${entity.updated.triples[0].object.value}, `);
                     });
                     // remove last comma
                     columns = columns.replace(/,\s*$/, "");
