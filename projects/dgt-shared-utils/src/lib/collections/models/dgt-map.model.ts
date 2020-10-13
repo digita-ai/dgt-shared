@@ -92,4 +92,8 @@ export class DGTMap<T, S> {
         return Array.from(this.array);
     }
 
+    public getByValue(value: S): T {
+        return this.array.find(entry => entry.value === value).key;
+    }
+
 }

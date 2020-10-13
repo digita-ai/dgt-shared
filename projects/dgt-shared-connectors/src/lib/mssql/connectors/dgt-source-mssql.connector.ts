@@ -104,7 +104,15 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                 ),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
                 switchMap(data => {
-                    const columns = `name = ${domainEntities[0].updated}, points = '124`;
+                    // construct columns part of query
+                    // e.g. name="Tom Haegemans", points=1760
+                    let columns = '';
+                    domainEntities.forEach(entity => {
+                        const columnName = source.configuration.mapping.getByValue(entity.updated.triples[0].predicate)
+                        columns.concat(`${columnName}=${entity.updated.triples[0].object.value}, `);
+                    });
+                    // remove last comma
+                    columns = columns.replace(/,\s*$/, "");
                     return from(data.pool.request().query(source.configuration.commands.update(connection.configuration.personId, columns)))
                     .pipe(map(result => ({ result, ...data })))
                 }),
