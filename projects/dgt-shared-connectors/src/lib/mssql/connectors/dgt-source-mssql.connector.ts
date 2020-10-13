@@ -94,26 +94,29 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting UPDATE, creating connection pool', {domainEntities, connection, source, transformer});
 
         return this.getPool(source).pipe(
-                tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
-                // map( pool => ({ pool, columns: `fn='${domainEntities[0].updated.subject.value}', points=6969`})),
-                // tap( data => this.logger.debug(DGTSourceMSSQLConnector.name, 'columns added to data', data )),
-                switchMap(data => {
-                    // construct columns part of query
-                    // e.g. name="Tom Haegemans", points=1760
-                    let columns = '';
-                    domainEntities.forEach(entity => {
-                        const columnName = source.configuration.mapping.getByValue(entity.updated.triples[0].predicate)
-                        columns.concat(`${columnName}=${entity.updated.triples[0].object.value}, `);
-                    });
-                    // remove last comma
-                    columns = columns.replace(/,\s*$/, "");
-                    console.log(source.configuration.commands.update(connection.configuration.personId, columns));
-                    return from(data.pool.request().query(source.configuration.commands.update(connection.configuration.personId, columns)))
-                    .pipe(map(result => ({ result, ...data })))
-                }),
-                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished UPDATE', { data })),
-                map( () => domainEntities.map(entity => entity.updated)),
-            );
+            tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
+            // map( pool => ({ pool, columns: `fn='${domainEntities[0].updated.subject.value}', points=6969`})),
+            // tap( data => this.logger.debug(DGTSourceMSSQLConnector.name, 'columns added to data', data )),
+            switchMap(pool => {
+                // construct columns part of query
+                // e.g. name="Tom Haegemans", points=1760
+                let columns = '';
+                domainEntities.forEach(entity => {
+                    const columnName = source.configuration.mapping.getByValue(entity.updated.triples[0].predicate);
+                    columns = columns.concat(`${columnName}='${entity.updated.triples[0].object.value}', `);
+                });
+                // remove last comma
+                columns = columns.replace(/,\s*$/, '');
+                const query = source.configuration.commands.update(
+                    connection.configuration.personId, columns
+                );
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
+                return from(pool.request().query(query))
+                .pipe(map(result => ({ result, pool })));
+            }),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished UPDATE', { data })),
+            map( () => domainEntities.map(entity => entity.updated)),
+        );
     }
 
     public delete<R extends DGTLDResource>(
@@ -131,6 +134,7 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
                 const query = source.configuration.commands.delete(
                     connection.configuration.personId
                 );
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
                 return from(pool.request().query(query))
                 .pipe(map(result => ({ result, pool })));
             }),
