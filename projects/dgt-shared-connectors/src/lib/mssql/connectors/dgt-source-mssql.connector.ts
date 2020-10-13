@@ -95,8 +95,6 @@ export class DGTSourceMSSQLConnector extends DGTSourceConnector<DGTSourceMSSQLCo
 
         return this.getPool(source).pipe(
             tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
-            // map( pool => ({ pool, columns: `fn='${domainEntities[0].updated.subject.value}', points=6969`})),
-            // tap( data => this.logger.debug(DGTSourceMSSQLConnector.name, 'columns added to data', data )),
             switchMap(pool => {
                 // construct columns part of query
                 // e.g. name="Tom Haegemans", points=1760
