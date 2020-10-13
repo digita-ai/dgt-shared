@@ -1,9 +1,9 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, concat } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, mergeAll, tap } from 'rxjs/operators';
+import { last, map, mergeMap, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
@@ -17,14 +17,46 @@ export class DGTWorkflowService {
     private logger: DGTLoggerService,
     private filters: DGTLDFilterService,
     private connectors: DGTConnectorService,
+    private paramChecker: DGTParameterCheckerService,
   ) { }
 
-  public executeHelper(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
-    return this.get(exchange.source, triple).pipe(
-      map(flows => {
-        let res = triple;
-        let triplesToSave = [];
-        flows.forEach(workflow => {
+  public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
+    this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
+
+    this.paramChecker.checkParametersNotNull({exchange, triples});
+
+    return of({ exchange, triples }).pipe(
+      switchMap(data => forkJoin(data.triples.map(triple => this.executeForTriple(exchange, triple)))),
+    );
+  }
+
+  private executeForTriple(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
+    this.logger.debug(DGTWorkflowService.name, 'Executing an exchange for triple', { exchange, triple });
+
+    this.paramChecker.checkParametersNotNull({exchange, triple});
+
+    return of({ exchange, triple })
+      .pipe(
+        switchMap(data => this.get(exchange.source, triple)
+          .pipe(map(workflows => ({ ...data, workflows })))),
+        switchMap(data => (data.workflows && data.workflows.length > 0 ?
+            concat(data.workflows.map(workflow =>
+              this.executeForWorkflow(workflow, data.exchange, data.triple)
+            )) : of(of(triple)))
+          .pipe(last(), switchMap(a => a), map(a => ({ ...data, triple: a })))),
+        map(data => data.triple),
+      );
+  }
+
+  private executeForWorkflow(workflow: DGTWorkflow, exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
+    this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow for triple', { workflow, exchange, triple });
+
+    this.paramChecker.checkParametersNotNull({workflow, triple});
+
+    return of({ workflow, triple, exchange }).pipe(
+        map(data => {
+          let res = data.triple;
+          let triplesToSave = [];
           workflow.actions.forEach(action =>
             action.execute(res).pipe(
               map(actionRes => res = actionRes)
@@ -37,8 +69,7 @@ export class DGTWorkflowService {
               destination: workflow.destination
             });
           }
-        });
-        return {res, triplesToSave};
+          return {res, triplesToSave};
       }),
       mergeMap( data => forkJoin(
         data.triplesToSave.map( entry => {
@@ -50,19 +81,10 @@ export class DGTWorkflowService {
     );
   }
 
-  public execute(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, triples });
-    return of({ exchange, triples }).pipe(
-      map(data => forkJoin(data.triples.map(triple => {
-        return this.executeHelper(exchange, triple);
-      }))),
-      mergeAll(),
-    );
-  }
-
-
   public get(source: string, triple: DGTLDTriple): Observable<DGTWorkflow[]> {
     this.logger.debug(DGTWorkflowService.name, 'Getting workflow for triple', { triple });
+
+    this.paramChecker.checkParametersNotNull({source, triple});
 
     const allWorkflows = this.workflows.filter(workflow => workflow && workflow.source === source);
 
@@ -81,6 +103,8 @@ export class DGTWorkflowService {
 
   public register(workflow: DGTWorkflow) {
     this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
+
+    this.paramChecker.checkParametersNotNull({workflow});
 
     if (!this.workflows) {
       this.workflows = [];

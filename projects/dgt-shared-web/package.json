@@ -32,6 +32,12 @@
   "devDependencies": {
     "@types/solid-auth-client": "^2.3.1"
   },
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-web"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

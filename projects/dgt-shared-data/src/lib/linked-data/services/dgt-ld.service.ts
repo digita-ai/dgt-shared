@@ -74,7 +74,7 @@ export class DGTLDService {
                     .pipe(map(purpose => ({ purpose, ...data })))),
                 switchMap((data) => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.connectors.getTriples(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.connectors.query(data.exchange, data.connection, data.source, data.purpose)),
             );
     }
 }

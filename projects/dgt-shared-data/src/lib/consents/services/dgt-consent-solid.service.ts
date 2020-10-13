@@ -11,7 +11,7 @@ import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTSourceConnector } from '../../source/models/dgt-source-connector.model';
+import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 
@@ -108,7 +108,7 @@ export class DGTConsentSolidService extends DGTConsentService {
   constructor(
     protected logger: DGTLoggerService,
     private typeRegistrations: DGTLDTypeRegistrationService,
-    private connector: DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
+    private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTConsentTransformerService,
     private paramChecker: DGTParameterCheckerService,
   ) {

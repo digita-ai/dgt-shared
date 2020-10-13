@@ -1,6 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTSourceConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita-ai/dgt-shared-data';
-
+import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -16,7 +15,7 @@ import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 
 @DGTInjectable()
-export class DGTSourceSolidConnector extends DGTSourceConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
+export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
 
   private parser: Parser<Quad> = new Parser();
 
