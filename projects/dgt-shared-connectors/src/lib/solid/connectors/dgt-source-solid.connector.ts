@@ -117,9 +117,9 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           Authorization: 'Bearer ' + token,
           Accept: 'text/turtle'
         }, true)),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { data })),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { uri })),
         map(data => data.data ? this.triples.createFromString(data.data, uri, exchange, source, connection) : []),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { data })),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { uri })),
         map(triples =>
           ({
             triples,
@@ -130,9 +130,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               value: uri,
               termType: DGTLDTermType.REFERENCE
             },
-          }),
+          } as DGTLDResource),
         ),
-        switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
+        switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed to domain objects', data)),
       );
   }
 
@@ -182,12 +183,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                     Authorization: 'Bearer ' + token,
                   }
                 )
-              )
-            );
+                )
+              );
           })
         ).pipe(map((response) => data.entities as T[]))
-      )
-    );
+        )
+      );
   }
 
   public delete<T extends DGTLDResource>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
@@ -825,16 +826,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               .then((encodedParams) => {
                 params = encodedParams;
               })
-          );
-        }
-      }),
-      map((data) => {
-        const url = new URL(endpoint);
-        url.search = this.encode(params);
+            );
+          }
+        }),
+        map((data) => {
+          const url = new URL(endpoint);
+          url.search = this.encode(params);
 
-        return url.href;
-      })
-    );
+          return url.href;
+        })
+      );
   }
 
   public retrieveWebId(connection: DGTConnectionSolid): string {
@@ -903,13 +904,13 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     let res: DGTLDTriple[] = null;
 
     const quads = this.parser.parse(response);
-    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { quads });
+    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { documentUri });
 
     if (quads) {
       this.logger.debug(
         DGTSourceSolidConnector.name,
         'Starting to convert quads to values',
-        { quads, webId: documentUri }
+        { documentUri }
       );
       res = quads.map((quad) =>
         this.convertOne(documentUri, quad, exchange, source, connection)
@@ -1022,12 +1023,18 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
-    return DGTSourceSolidToken.issueFor(
-      uri,
-      connection.configuration.privateKey,
-      source.configuration.client_id,
-      connection.configuration.idToken
-    );
+    let res = of('');
+
+    if (connection.configuration && connection.configuration.privateKey) {
+      res = DGTSourceSolidToken.issueFor(
+        uri,
+        connection.configuration.privateKey,
+        source.configuration.client_id,
+        connection.configuration.idToken
+      );
+    }
+
+    return res;
   }
 
   public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
