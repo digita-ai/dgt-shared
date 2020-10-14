@@ -1096,7 +1096,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
 
         if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {
-          res = true
+          res = true;
         }
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Checked if acl modes are included', { res, aclsNeeded, ourTrustedApp: data.ourTrustedApp })
