@@ -24,7 +24,8 @@ export { DGTQueryPagination } from './lib/metadata/models/dgt-query-pagination.m
 export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
-export { DGTCategory } from './lib/linked-data/models/dgt-category.model';
+export { DGTCategory } from './lib/categories/models/dgt-category.model';
+export { DGTCategoryService } from './lib/categories/services/dgt-category.service';
 export { DGTLDFilter } from './lib/linked-data/models/dgt-ld-filter.model';
 export { DGTLDFilterService } from './lib/linked-data/services/dgt-ld-filter.service';
 export { DGTLDFilterType } from './lib/linked-data/models/dgt-ld-filter-type.model';
