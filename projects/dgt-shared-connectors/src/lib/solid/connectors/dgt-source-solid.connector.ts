@@ -99,13 +99,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   public query<T extends DGTLDResource>(documentUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-
     if (connection == null || connection.id == null || connection.configuration == null || connection.configuration.webId == null) {
-      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection: connection });
+      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection });
     }
 
     if (!source || !source.id) {
-      throw new DGTErrorArgument('source and source.id should be set', { source: source });
+      throw new DGTErrorArgument('source and source.id should be set', { source });
     }
 
     const uri = documentUri ? documentUri : connection.configuration.webId;
@@ -284,8 +283,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         transformer.toTriples([update.original], connection).pipe(
           map((uTransfored) => ({ ...update, original: uTransfored[0] })),
           switchMap((u) =>
-            transformer
-              .toTriples([u.updated], connection)
+            transformer.toTriples([u.updated], connection)
               .pipe(map((uTransfored) => ({ ...u, updated: uTransfored[0] })))
           )
         )
@@ -332,7 +330,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           updates.map((update) =>
             this.generateToken(
-              update.delta.updated.documentUri,
+              update.delta.updated.documentUri ? update.delta.updated.documentUri : connection.configuration.webId,
               connection,
               source
             ).pipe(
@@ -390,7 +388,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
 
     // find possible existing values
-    return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
+    return this.query(connection.configuration.webId, purpose, exchange, connection, source, transformer).pipe(
         switchMap(existingValues => {
             if (existingValues[0]) {
                 // convert to list of {original: Object, updated: Object}
@@ -1047,7 +1045,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
-
+    this.logger.debug(DGTSourceSolidConnector.name, 'Generating Token...', {uri, connection, source});
     if (source.state === DGTSourceState.NOTPREPARED) {
       return this.prepare(connection, source).pipe(
         tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Preparing source', src)),

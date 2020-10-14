@@ -1,7 +1,7 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin, concat } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { last, map, mergeMap, switchMap } from 'rxjs/operators';
+import { last, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
@@ -56,7 +56,7 @@ export class DGTWorkflowService {
     return of({ workflow, triple, exchange }).pipe(
         map(data => {
           let res = data.triple;
-          let triplesToSave = [];
+          const triplesToSave = [];
           workflow.actions.forEach(action =>
             action.execute(res).pipe(
               map(actionRes => res = actionRes)
@@ -88,16 +88,21 @@ export class DGTWorkflowService {
 
     const allWorkflows = this.workflows.filter(workflow => workflow && workflow.source === source);
 
+    if (allWorkflows.length < 1) {
+      this.logger.debug(DGTWorkflowService.name, 'No workflows found for this triple', triple);
+      return of([]);
+    }
+
     return of({ triple, allWorkflows }).pipe(
-      mergeMap(data => forkJoin(
-        data.allWorkflows.map(workflow =>
-          this.filters.run(workflow.filter, [data.triple]).pipe(
-            map(triples => ({ workflow, triples })),
-          )
+    mergeMap(data => forkJoin(
+      data.allWorkflows.map(workflow =>
+        this.filters.run(workflow.filter, [data.triple]).pipe(
+          map(triples => ({ workflow, triples })),
         )
-      ).pipe(map(triplesPerWorkflow => ({ ...data, triplesPerWorkflow })))),
-      map(data => ({ ...data, workflowsToExecute: data.triplesPerWorkflow.filter(w => w.triples.length > 0).map(w => w.workflow) })),
-      map(data => data.workflowsToExecute)
+      )
+    ).pipe(map(triplesPerWorkflow => ({ ...data, triplesPerWorkflow })))),
+    map(data => ({ ...data, workflowsToExecute: data.triplesPerWorkflow.filter(w => w.triples.length > 0).map(w => w.workflow) })),
+    map(data => data.workflowsToExecute)
     );
   }
 
