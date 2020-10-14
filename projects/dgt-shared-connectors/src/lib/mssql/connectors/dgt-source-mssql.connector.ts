@@ -2,7 +2,7 @@ import { Observable, of, from } from 'rxjs';
 import { ConnectionPool, IResult } from 'mssql';
 import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { DGTMap, DGTLoggerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 
@@ -220,17 +220,22 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
 
     private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
         if (!this.pools || !this.pools.get(source.id)) {
-            const config = this.extractConfig(source);
-            this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
-            const pool = new ConnectionPool(config);
-            pool.on('error', err => {
-                this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
-            });
-            this.pools.set(source.id, pool);
-            this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
-            return from(this.pools.get(source.id).connect()).pipe(
-                map( () => this.pools.get(source.id)),
-            );
+            try {
+                const config = this.extractConfig(source);
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
+                const pool = new ConnectionPool(config);
+                pool.on('error', err => {
+                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
+                });
+                this.pools.set(source.id, pool);
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
+                return from(this.pools.get(source.id).connect()).pipe(
+                    map( () => this.pools.get(source.id)),
+                );
+            } catch (err) {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, pools: this.pools, source });
+                throw new DGTErrorArgument(err, err);
+            }
         }
         return of(this.pools.get(source.id));
     }
