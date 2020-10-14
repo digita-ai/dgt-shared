@@ -86,14 +86,14 @@ export { DGTDataValueTransformerService } from './lib/data-value/services/data-t
 export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-interface-host.directive';
 export { DGTDataValueService } from './lib/data-value/services/data-value.service';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
-export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model'
+export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model';
 export { DGTConnectionsService } from './lib/connection/services/dgt-connections.service';
 export { DGTEvent } from './lib/events/models/dgt-event.model';
 export { DGTEventService } from './lib/events/services/dgt-event.service';
 export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.service';
 export { DGTEventMockService } from './lib/events/services/dgt-event-mock.service';
 export { DGTEventTransformerService } from './lib/events/services/dgt-event-transformer.service';
-export { DGTPurpose } from './lib/purpose/models/dgt-purpose.model'
+export { DGTPurpose } from './lib/purpose/models/dgt-purpose.model';
 export { DGTSparqlService } from './lib/sparql/services/dgt-sparql.service';
 export { DGTSparqlCommunicaService } from './lib/sparql/services/dgt-sparql-communica.service';
 export { DGTSparqlDataset } from './lib/sparql/models/dgt-sparql-dataset.model';

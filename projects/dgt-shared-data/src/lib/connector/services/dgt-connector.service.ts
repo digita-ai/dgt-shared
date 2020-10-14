@@ -12,6 +12,7 @@ import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTConnector } from '../models/dgt-connector.model';
+import { DGTDataValueTransformerService } from '../../data-value/services/data-transformer-value.service';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -24,6 +25,7 @@ export class DGTConnectorService {
     private connections: DGTConnectionService,
     private paramChecker: DGTParameterCheckerService,
     private purposes: DGTPurposeService,
+    private dataValueTransformer: DGTDataValueTransformerService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
@@ -66,7 +68,7 @@ export class DGTConnectorService {
       mergeMap( data => this.purposes.get(exchange.purpose).pipe(
         map( purpose => ({ ... data, purpose })),
       )),
-      mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, null, data.purpose, exchange).pipe(
+      mergeMap( data => data.connector.upstreamSync(data.triple, data.connection, data.source, this.dataValueTransformer, data.purpose, exchange).pipe(
         map( tripleRes => tripleRes ),
       )),
     );

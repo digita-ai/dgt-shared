@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita-ai/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -27,6 +27,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private crypto: DGTCryptoService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
     private transformer: DGTSourceSolidTrustedAppTransformerService,
+    private sources: DGTSourceService,
   ) {
     super();
   }
@@ -377,14 +378,31 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   public upstreamSync<T extends DGTLDResource>(
-    domainEntities: T,
+    domainEntity: T,
     connection: DGTConnectionSolid,
     source: DGTSourceSolid,
     transformer: DGTLDTransformer<T>,
     purpose: DGTPurpose,
     exchange: DGTExchange,
   ): Observable<T> {
-    throw new DGTErrorNotImplemented();
+    this.logger.debug(DGTSourceSolidConnector.name, 'upstream syncing',
+    {domainEntity, connection, source, transformer, purpose, exchange});
+
+
+    // find possible existing values
+    return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
+        switchMap(existingValues => {
+            if (existingValues[0]) {
+                // convert to list of {original: Object, updated: Object}
+                const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
+                this.logger.debug(DGTSourceSolidConnector.name, 'Updating value in pod', updateDomainEntity);
+                return this.update([updateDomainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
+            } else {
+                this.logger.debug(DGTSourceSolidConnector.name, 'adding value to pod', domainEntity);
+                return this.add([domainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
+            }
+        }),
+    );
   }
 
   /**
@@ -1029,6 +1047,21 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
+
+    if (source.state === DGTSourceState.NOTPREPARED) {
+      return this.prepare(connection, source).pipe(
+        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Preparing source', src)),
+        map(src => this.sources.save(src)),
+        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source', src)),
+        switchMap(() => DGTSourceSolidToken.issueFor(
+          uri,
+          connection.configuration.privateKey,
+          source.configuration.client_id,
+          connection.configuration.idToken
+        ))
+      );
+    }
+
     return DGTSourceSolidToken.issueFor(
       uri,
       connection.configuration.privateKey,

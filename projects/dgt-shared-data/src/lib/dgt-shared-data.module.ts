@@ -17,6 +17,7 @@ import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/
 import { DGTProfileTransformerService } from './profile/services/dgt-profile-transformer.service';
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTConnectorService } from './connector/services/dgt-connector.service';
+import { DGTDataValueTransformerService } from './data-value/services/data-transformer-value.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -37,6 +38,7 @@ export const providers = [
   DGTLDTripleFactoryService,
   DGTConnectionsService,
   DGTLDTypeRegistrationTransformerService,
+  DGTDataValueTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,
   DGTConnectorService,
