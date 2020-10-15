@@ -30,7 +30,6 @@ export { DGTSmartElement } from './lib/interface/models/dgt-smart-element.model'
 export { DGTSmartForm } from './lib/interface/models/dgt-smart-form.model';
 export { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
 export { DGTTitleService } from './lib/interface/services/dgt-title.service';
-export { DGTAuthenticatedState } from './lib/security/models/dgt-authenticated-state.model';
 export { DGTAuthService } from './lib/security/services/dgt-auth.service';
 export { DGTAuthMockService } from './lib/security/services/dgt-auth-mock.service';
 export { DGTI8NLocale } from './lib/i8n/models/dgt-i8n-locale.model';
@@ -104,3 +103,10 @@ export * from './lib/events/models/dgt-events-actions.model';
 export { DGTDateToLabelService } from './lib/date/services/dgt-date-to-label.service';
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
+export { DGTSourceRemoteService } from './lib/source/services/dgt-source-remote.service';
+export { DGTPurposeRemoteService } from './lib/purposes/services/dgt-purpose-remote.service';
+export { DGTCategoryRemoteService } from './lib/categories/services/dgt-category-remote.service';
+export { DGTConnectionRemoteService } from './lib/connection/services/dgt-connection-remote.service';
+export { DGTExchangeRemoteService } from './lib/exchanges/services/dgt-exchange-remote.service';
+export { DGTHolderRemoteService } from './lib/holders/services/dgt-holder-remote.service';
+export { DGTValueRemoteService } from './lib/values/services/dgt-value-remote.service';
