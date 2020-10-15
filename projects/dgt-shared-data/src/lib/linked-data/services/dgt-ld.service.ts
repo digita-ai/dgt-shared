@@ -33,48 +33,37 @@ export class DGTLDService {
     }
 
     public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[] | T[]> {
-        // this.paramChecker.checkParametersNotNull({ filter, transformer });
         this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
-        // check cache
-        // if (!this.cache.isFilled()) {
-        //     return this.fillCacheFromDataService().pipe(
-        //         mergeMap(_ => this.cache.query<T>(filter, transformer)),
-        //     );
-        // }
-        // return this.cache.query<T>(filter, transformer);
 
-        return this.fillCacheFromDataService().pipe(
-            mergeMap(_ => this.cache.query<T>(filter, transformer)),
-        );
-    }
-
-    private fillCacheFromDataService(): Observable<DGTLDTriple[]> {
-        return this.exchanges.query({})
+        return of({})
             .pipe(
-                tap(val => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', val)),
-                mergeMap(exchanges => of(exchanges).pipe(
-                    mergeMap(exchanges => forkJoin(exchanges.map(exchange => this.connections.get(exchange.connection).pipe(
-                        mergeMap(connection => this.getValuesForExchange(exchange, connection)),
-                        mergeMap( values => this.workflows.execute(exchange, values)),
-                    )
-                    ))),
-                    tap(val => this.logger.debug(DGTLDService.name, 'Retrieved values for exchanges', { val })),
-                    map(val => _.flatten(val))
-                )),
-                tap(values => this.cache.cache = values)
+                switchMap(data => this.exchanges.query({})
+                    .pipe(map(exchanges => ({ ...data, exchanges })))),
+                tap(data => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
+                mergeMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
+                    .pipe(map(valuesOfValues => ({ ...data, values: _.flatten(valuesOfValues) })))),
+                tap(data => this.cache.cache = data.values),
+                tap(data => this.logger.debug(DGTLDService.name, 'Stored valeues in cache', data)),
+                mergeMap(_ => this.cache.query<T>(filter, transformer)),
             );
     }
 
-    private getValuesForExchange(exchange: DGTExchange, connection: DGTConnection<any>): Observable<DGTLDTriple[]> {
-        this.logger.debug(DGTLDService.name, 'Getting values for exchange ', { exchange, connection });
-        this.paramChecker.checkParametersNotNull({ exchange, connection });
-        return of({ exchange, connection })
+    private getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
+        this.logger.debug(DGTLDService.name, 'Getting values for exchange', { exchange });
+
+        this.paramChecker.checkParametersNotNull({ exchange });
+
+        return of({ exchange })
             .pipe(
+                switchMap(data => this.connections.get(exchange.connection)
+                    .pipe(map(connection => ({ ...data, connection })))),
                 switchMap((data) => this.purposes.get(data.exchange.purpose)
                     .pipe(map(purpose => ({ purpose, ...data })))),
                 switchMap((data) => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.connectors.query(data.exchange, data.connection, data.source, data.purpose)),
+                switchMap((data) => this.connectors.query(data.exchange, data.connection, data.source, data.purpose)
+                    .pipe(map(values => ({ ...data, values })))),
+                switchMap(data => this.workflows.execute(data.exchange, data.values))
             );
     }
 }

@@ -7,7 +7,6 @@ export interface DGTConnectionSolidConfiguration {
   requestHistory: { [key: string]: string };
   privateKey: string;
   loginUri: string;
-  callbackUri: string;
   accountId: string;
   protocol: string;
 }

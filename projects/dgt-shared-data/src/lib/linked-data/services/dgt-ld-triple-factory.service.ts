@@ -36,7 +36,7 @@ export class DGTLDTripleFactoryService {
 
         try {
             const quads = this.parser.parse(response);
-            this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { quads });
+            this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { documentUri });
 
             res = this.createFromQuads(quads, documentUri, exchange, source, connection);
         } catch (err) {
@@ -53,7 +53,7 @@ export class DGTLDTripleFactoryService {
 
         let res: DGTLDTriple[] = null;
 
-        this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { quads, documentUri });
+        this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { documentUri });
         res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
         
         res = this.clean(res);

@@ -11,6 +11,7 @@ import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTConnector } from '../models/dgt-connector.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -47,13 +48,13 @@ export class DGTConnectorService {
     return this.connectors.get(sourceType);
   }
 
-  public save(exchange: DGTExchange, triple: DGTLDTriple): Observable<DGTLDTriple> {
+  public save(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
     if (!exchange) {
       throw new DGTErrorArgument('Argument exchange should be set.', exchange);
     }
 
-    if (!triple) {
-      throw new DGTErrorArgument('Argument triple should be set.', triple);
+    if (!triples) {
+      throw new DGTErrorArgument('Argument triple should be set.', triples);
     }
 
     return this.sources.get(exchange.source).pipe(
@@ -61,12 +62,13 @@ export class DGTConnectorService {
       mergeMap(data => this.connections.get(exchange.connection).pipe(
         map(connection => ({ ...data, connection })),
       )),
-      map(data => ({ ...data, triple: { ...triple, documentUri: null, triples: [triple] } })),
+      map(data => ({ ...data, resource: { connection: exchange.connection, source: exchange.source, subject: null, documentUri: null, triples } as DGTLDResource })),
       // transformer ??
       // resource ??
       // TEMP, THIS FUNCTION ISNT TESTED YET, LOOK feature/544645000-upstream-connectors
-      mergeMap(data => data.connector.upstreamSync([data.triple], data.connection, data.source, null)),
-      mergeAll(),
+      mergeMap(data => data.connector.upstreamSync([data.resource], data.connection, data.source, null)
+        .pipe(map(resources => _.flatten(resources.map(resource => resource.triples))))),
+      // mergeAll(),
     );
   }
 

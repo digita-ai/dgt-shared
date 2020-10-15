@@ -22,10 +22,10 @@ export { DGTQueryConditionOperator } from './lib/metadata/models/dgt-query-condi
 export { DGTQueryService } from './lib/metadata/services/dgt-query.service';
 export { DGTQueryPagination } from './lib/metadata/models/dgt-query-pagination.model';
 export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
-export { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
-export { DGTCategory } from './lib/linked-data/models/dgt-category.model';
+export { DGTCategory } from './lib/categories/models/dgt-category.model';
+export { DGTCategoryService } from './lib/categories/services/dgt-category.service';
 export { DGTLDFilter } from './lib/linked-data/models/dgt-ld-filter.model';
 export { DGTLDFilterService } from './lib/linked-data/services/dgt-ld-filter.service';
 export { DGTLDFilterType } from './lib/linked-data/models/dgt-ld-filter-type.model';
@@ -46,9 +46,7 @@ export { DGTFile } from './lib/file/models/dgt-file.model';
 export { DGTFileService } from './lib/file/services/dgt-file.service';
 export { DGTFileType } from './lib/file/models/dgt-file-type.model';
 export { DGTEntity } from './lib/metadata/models/dgt-entity.model';
-export { DGTDataService } from './lib/metadata/services/dgt-data.service';
 export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
-export { DGTLocalDataService } from './lib/metadata/services/dgt-local-data.service';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTConnection } from './lib/connection/models/dgt-connection.model';
 export { DGTConnectionSolid } from './lib/connection/models/dgt-connection-solid.model';
@@ -72,7 +70,6 @@ export { DGTLDTransformer } from './lib/linked-data/models/dgt-ld-transformer.mo
 export { DGTLDTriple } from './lib/linked-data/models/dgt-ld-triple.model';
 export { DGTLDUtils } from './lib/linked-data/services/dgt-ld-utils.service';
 export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-triple-factory.service';
-export { DGTVoidDataService } from './lib/metadata/services/dgt-void-data.service';
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
@@ -87,7 +84,6 @@ export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-
 export { DGTDataValueService } from './lib/data-value/services/data-value.service';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
 export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model'
-export { DGTConnectionsService } from './lib/connection/services/dgt-connections.service';
 export { DGTEvent } from './lib/events/models/dgt-event.model';
 export { DGTEventService } from './lib/events/services/dgt-event.service';
 export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.service';
@@ -102,3 +98,4 @@ export { DGTSparqlDatasetMemory} from './lib/sparql/models/dgt-sparql-dataset-me
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
+export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
