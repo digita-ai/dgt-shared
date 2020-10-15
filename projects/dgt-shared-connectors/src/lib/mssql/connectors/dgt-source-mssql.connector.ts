@@ -1,6 +1,6 @@
 import { Observable, of, from } from 'rxjs';
 import { ConnectionPool, IResult } from 'mssql';
-import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
+import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType } from '@digita-ai/dgt-shared-data';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
@@ -67,7 +67,8 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                                 predicate: field,
                                 object: {
                                     value,
-                                    termType: DGTLDTermType.LITERAL
+                                    termType: DGTLDTermType.LITERAL,
+                                    dataType: DGTLDDataType.STRING
                                 },
                                 originalValue: value,
                             });

@@ -182,12 +182,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                     Authorization: 'Bearer ' + token,
                   }
                 )
-              )
-            );
+                )
+              );
           })
         ).pipe(map((response) => data.entities as T[]))
-      )
-    );
+        )
+      );
   }
 
   public delete<T extends DGTLDResource>(domainEntities: T[], connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
@@ -335,6 +335,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               source
             ).pipe(
               switchMap((token) => {
+                this.logger.debug(DGTSourceSolidConnector.name, 'Using token for auth', token);
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
                     update.delta.updated.documentUri,
@@ -384,22 +385,23 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     exchange: DGTExchange,
   ): Observable<T> {
     this.logger.debug(DGTSourceSolidConnector.name, 'upstream syncing',
-    {domainEntity, connection, source, transformer, purpose, exchange});
+      { domainEntity, connection, source, transformer, purpose, exchange });
 
-
+    domainEntity.documentUri = connection.configuration.webId;
     // find possible existing values
     return this.query(connection.configuration.webId, purpose, exchange, connection, source, transformer).pipe(
-        switchMap(existingValues => {
-            if (existingValues[0]) {
-                // convert to list of {original: Object, updated: Object}
-                const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
-                this.logger.debug(DGTSourceSolidConnector.name, 'Updating value in pod', updateDomainEntity);
-                return this.update([updateDomainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
-            } else {
-                this.logger.debug(DGTSourceSolidConnector.name, 'adding value to pod', domainEntity);
-                return this.add([domainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
-            }
-        }),
+      switchMap(existingValues => {
+        const foundTriple = existingValues.find( v => domainEntity.triples[0].predicate === v.triples[0].predicate);
+        if (foundTriple) {
+          // convert to list of {original: Object, updated: Object}
+          const updateDomainEntity = { original: foundTriple, updated: domainEntity };
+          this.logger.debug(DGTSourceSolidConnector.name, 'Updating value in pod', updateDomainEntity);
+          return this.update([updateDomainEntity], connection, source, transformer).pipe(map(triples => triples[0]));
+        } else {
+          this.logger.debug(DGTSourceSolidConnector.name, 'adding value to pod', domainEntity);
+          return this.add([domainEntity], connection, source, transformer).pipe(map(triples => triples[0]));
+        }
+      }),
     );
   }
 
@@ -848,16 +850,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               .then((encodedParams) => {
                 params = encodedParams;
               })
-          );
-        }
-      }),
-      map((data) => {
-        const url = new URL(endpoint);
-        url.search = this.encode(params);
+            );
+          }
+        }),
+        map((data) => {
+          const url = new URL(endpoint);
+          url.search = this.encode(params);
 
-        return url.href;
-      })
-    );
+          return url.href;
+        })
+      );
   }
 
   public retrieveWebId(connection: DGTConnectionSolid): string {
@@ -1045,7 +1047,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Generating Token...', {uri, connection, source});
+    this.logger.debug(DGTSourceSolidConnector.name, 'Generating Token...', { uri, connection, source });
     if (source.state === DGTSourceState.NOTPREPARED) {
       return this.prepare(connection, source).pipe(
         tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Preparing source', src)),
