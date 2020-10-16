@@ -15,6 +15,9 @@ export interface DGTConfigurationBaseWeb extends DGTConfigurationBase {
             country: string
         }[]
     };
+    server: {
+        uri: string,
+    },
     events: {
         file: string,
         templates: {

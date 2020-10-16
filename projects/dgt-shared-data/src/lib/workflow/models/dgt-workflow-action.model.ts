@@ -4,5 +4,5 @@ import { Observable } from 'rxjs';
 
 export interface DGTWorkflowAction {
     type: DGTWorkflowActionType;
-    execute(values: DGTLDTriple): Observable<DGTLDTriple>;
+    execute(triples: DGTLDTriple[]): Observable<DGTLDTriple[]>;
 }

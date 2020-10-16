@@ -5,7 +5,7 @@ import { DGTPlatformType } from '../../platform/models/dgt-platform-type.model';
 import { DGTInjectable } from '../../decorators/dgt-injectable';
 
 @DGTInjectable()
-export class DGTConnectionService implements OnDestroy {
+export class DGTConnectivityService implements OnDestroy {
 
     static EVENT_TYPE_ONLINE = 'online';
     static EVENT_TYPE_OFFLINE = 'offline';
@@ -14,15 +14,15 @@ export class DGTConnectionService implements OnDestroy {
     constructor(private platform: DGTPlatformService) {
         if (this.platform.type === DGTPlatformType.BROWSER && window) {
             this.bind();
-            window.addEventListener(DGTConnectionService.EVENT_TYPE_ONLINE, this.onOnline);
-            window.addEventListener(DGTConnectionService.EVENT_TYPE_OFFLINE, this.onOffline);
+            window.addEventListener(DGTConnectivityService.EVENT_TYPE_ONLINE, this.onOnline);
+            window.addEventListener(DGTConnectivityService.EVENT_TYPE_OFFLINE, this.onOffline);
         }
     }
 
     ngOnDestroy() {
         if (this.platform.type === DGTPlatformType.BROWSER && window) {
-            window.removeEventListener(DGTConnectionService.EVENT_TYPE_ONLINE, this.onOnline);
-            window.removeEventListener(DGTConnectionService.EVENT_TYPE_OFFLINE, this.onOffline);
+            window.removeEventListener(DGTConnectivityService.EVENT_TYPE_ONLINE, this.onOnline);
+            window.removeEventListener(DGTConnectivityService.EVENT_TYPE_OFFLINE, this.onOffline);
         }
     }
 

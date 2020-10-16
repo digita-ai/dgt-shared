@@ -7,20 +7,28 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTDataGroup } from '../models/data-group.model';
-import { DGTCategory } from '../../linked-data/models/dgt-category.model';
+import { DGTCategory } from '../../categories/models/dgt-category.model';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { DGTHolder } from '../../holder/models/dgt-holder.model';
 
 @DGTInjectable()
 /**
  * The services' duty is to handle DGTDataValue objects.
  * From getting values to updating and processing them.
  */
-export class DGTDataValueService {
+export abstract class DGTDataValueService implements DGTLDResourceService<DGTDataValue> {
 
   constructor(
-    private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService,
-    private filters: DGTLDFilterService
+    protected logger: DGTLoggerService,
+    protected paramChecker: DGTParameterCheckerService,
+    protected filters: DGTLDFilterService
   ) { }
+
+  public abstract get(id: string): Observable<DGTDataValue>;
+  public abstract query(filter: Partial<DGTDataValue>): Observable<DGTDataValue[]>;
+  public abstract save(resource: DGTDataValue): Observable<DGTDataValue>;
+  public abstract delete(resource: DGTDataValue): Observable<DGTDataValue>;
+  public abstract getForHolder(holder: DGTHolder): Observable<DGTDataValue[]>;
 
   /**
    * get the predicate of a DGTDataValue object
