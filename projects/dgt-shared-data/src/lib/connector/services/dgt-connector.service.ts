@@ -12,7 +12,6 @@ import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTConnector } from '../models/dgt-connector.model';
-import { DGTDataValueTransformerService } from '../../data-value/services/data-transformer-value.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
@@ -26,7 +25,6 @@ export class DGTConnectorService {
     private connections: DGTConnectionService,
     private paramChecker: DGTParameterCheckerService,
     private purposes: DGTPurposeService,
-    private dataValueTransformer: DGTDataValueTransformerService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
