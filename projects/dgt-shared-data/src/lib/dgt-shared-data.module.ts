@@ -15,6 +15,10 @@ import { DGTProfileTransformerService } from './profile/services/dgt-profile-tra
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTConnectorService } from './connector/services/dgt-connector.service';
 
+import { DGTCacheInMemoryService } from './cache/services/dgt-cache-in-memory.service';
+import { DGTCacheBlazeGraphService } from './cache/services/dgt-cache-blazegraph.service';
+import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
+
 export const declarations = [
   DGTDataInterfaceHostDirective
 ];
@@ -29,12 +33,16 @@ export const providers = [
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
   DGTCacheService,
+  //DGTMockDataService,
+  DGTCacheInMemoryService,
+  DGTCacheBlazeGraphService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,
   DGTConnectorService,
+  DGTSparqlQueryService,
 ];
 
 @NgModule({

@@ -70,9 +70,9 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data entities.
      */
-    public toTriples(consents: DGTConsent[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
-        this.paramChecker.checkParametersNotNull({ consents: consents, connection });
-        this.logger.debug(DGTConsentTransformerService.name, 'Starting to transform to linked data', { consents: consents, connection });
+    public toTriples(consents: DGTConsent[]): Observable<DGTLDResource[]> {
+        this.paramChecker.checkParametersNotNull({ consents: consents });
+        this.logger.debug(DGTConsentTransformerService.name, 'Starting to transform to linked data', { consents: consents });
 
         const entities = consents.map<DGTLDResource>(consent => {
             let triples = consent.triples;

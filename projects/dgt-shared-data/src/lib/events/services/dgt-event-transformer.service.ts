@@ -72,8 +72,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
      * @returns Observable of linked data entities.
      */
     public toTriples(events: DGTEvent[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
-        this.paramChecker.checkParametersNotNull({ events, connection });
-        this.logger.debug(DGTEventTransformerService.name, 'Starting to transform to linked data', { events, connection });
+        this.paramChecker.checkParametersNotNull({ events });
+        this.logger.debug(DGTEventTransformerService.name, 'Starting to transform to linked data', { events });
 
         const entities = events.map<DGTLDResource>(event => {
             let triples = event.triples;
@@ -134,12 +134,12 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.DATETIME,
-                            value: event.createdAt.toISOString()
+                            value: event.createdAt ? event.createdAt.toISOString() : ''
                         },
                         originalValue: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.DATETIME,
-                            value: event.createdAt.toISOString()
+                            value: event.createdAt ? event.createdAt.toISOString() : ''
                         },
                     },
                     {

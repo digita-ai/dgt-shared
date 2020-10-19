@@ -25,7 +25,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     return of(res);
   }
 
-  toTriples(objects: DGTDataValue[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
+  toTriples(objects: DGTDataValue[]): Observable<DGTLDResource[]> {
     this.paramChecker.checkParametersNotNull({ objects });
     return of(objects);
   }
