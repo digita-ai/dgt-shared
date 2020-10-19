@@ -3,7 +3,7 @@ import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DG
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { Observable, forkJoin } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap, tap, catchError } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
@@ -30,7 +30,7 @@ export class DGTConnectorService {
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
-    this.paramChecker.checkParametersNotNull({sourceType, connector});
+    this.paramChecker.checkParametersNotNull({ sourceType, connector });
 
     if (!this.connectors) {
       this.connectors = new DGTMap<DGTSourceType, DGTConnector<any, any>>();
@@ -48,22 +48,31 @@ export class DGTConnectorService {
   }
 
   public save(exchange: DGTExchange, triples: DGTLDTriple[], destination: string): Observable<DGTLDTriple[]> {
-    this.paramChecker.checkParametersNotNull({exchange, triples});
+    this.paramChecker.checkParametersNotNull({ exchange, triples });
 
     return this.sources.get(destination).pipe(
-      map( source => ({ source })),
+      map(source => ({ source })),
       // get connection
-      mergeMap( data => this.connections.query({holder: exchange.holder, source: data.source.id}).pipe(
-        tap( connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
-        map( connection => ({ ...data, connection: connection[0] })),
+      mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.id }).pipe(
+        tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+        map(connection => connection.length > 0 ? connection : [null]),
+        map(connection => ({ ...data, connection: connection[0] })),
       )),
+      // check if connection is set
+      map(data => {
+        if (data.connection !== null) {
+          return data;
+        } else {
+          throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
+        }
+      }),
       // get connector
-      map( data => ({ ...data, connector: this.connectors.get(data.source.type) })),
+      map(data => ({ ...data, connector: this.connectors.get(data.source.type) })),
       // get purpose
-      mergeMap( data => this.purposes.get(exchange.purpose).pipe(
-        map( purpose => ({ ... data, purpose })),
+      mergeMap(data => this.purposes.get(exchange.purpose).pipe(
+        map(purpose => ({ ...data, purpose })),
       )),
-      mergeMap(data => forkJoin(triples.map( triple =>
+      mergeMap(data => forkJoin(triples.map(triple =>
         data.connector.upstreamSync(
           {
             ...triple,
@@ -73,8 +82,13 @@ export class DGTConnectorService {
             documentUri: null,
             triples: [triple],
           } as DGTLDResource, data.connection, data.source, null, data.purpose, exchange)
-      )).pipe( map( resultFromUpstream => ({ ...data, resultFromUpstream }) ) )),
-      map( data => _.flatten(data.resultFromUpstream.map( res => res.triples))),
+      )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })))),
+      map(data => _.flatten(data.resultFromUpstream.map(res => res.triples))),
+      // catch error if no connection found
+      catchError(() => {
+        this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
+        return [triples];
+      }),
     );
   }
 
@@ -86,7 +100,7 @@ export class DGTConnectorService {
   ): Observable<DGTLDTriple[]> {
     this.logger.debug(DGTConnectorService.name, 'Getting triples', { exchange, connection, source, purpose });
 
-    this.paramChecker.checkParametersNotNull({exchange, connection, source, purpose});
+    this.paramChecker.checkParametersNotNull({ exchange, connection, source, purpose });
 
     const connector: DGTConnector<any, any> = this.get(source.type);
 
