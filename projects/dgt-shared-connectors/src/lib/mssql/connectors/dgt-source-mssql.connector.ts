@@ -1,7 +1,7 @@
 import { Observable, of, from } from 'rxjs';
 import { ConnectionPool, IResult } from 'mssql';
 import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType } from '@digita-ai/dgt-shared-data';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
@@ -42,6 +42,10 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
             map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
             tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
             switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL');
+                throw new DGTErrorArgument('Error while querying MSSQL', null);
+            }),
         );
     }
 
@@ -119,6 +123,10 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
             }),
             tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished UPDATE', { data })),
             map( () => domainEntities.map(entity => entity.updated)),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while updating MSSQL');
+                throw new DGTErrorArgument('Error while updating MSSQL', null);
+            }),
         );
     }
 
@@ -143,6 +151,10 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
             }),
             tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished DELETE', { data })),
             map( () => domainEntities),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while deleteing MSSQL');
+                throw new DGTErrorArgument('Error while deleteing MSSQL', null);
+            }),
         );
     }
 
@@ -175,6 +187,10 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
             }),
             tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished ADD', { data })),
             map( () => domainEntities),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while adding MSSQL');
+                throw new DGTErrorArgument('Error while adding MSSQL', null);
+            }),
         );
     }
 
@@ -189,7 +205,6 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
         this.logger.debug(DGTSourceMSSQLConnector.name, 'upstream syncing',
         {domainEntity, connection, source, transformer, purpose, exchange});
 
-
         // find possible existing values
         return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
             switchMap(existingValues => {
@@ -197,10 +212,22 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                     // convert to list of {original: Object, updated: Object}
                     const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Updating value in DB', updateDomainEntity);
-                    return this.update([updateDomainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
+                    return this.update([updateDomainEntity], connection, source, transformer).pipe(
+                        map(triples => triples[0]),
+                        catchError( () => {
+                            this.logger.debug(DGTSourceMSSQLConnector.name, '[upstreamSync] error updating', domainEntity);
+                            return of(domainEntity);
+                        }),
+                    );
                 } else {
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'adding value to DB', domainEntity);
-                    return this.add([domainEntity], connection, source, transformer).pipe( map(triples => triples[0]));
+                    return this.add([domainEntity], connection, source, transformer).pipe(
+                        map(triples => triples[0]),
+                        catchError( () => {
+                            this.logger.debug(DGTSourceMSSQLConnector.name, '[upstreamSync] error adding', domainEntity);
+                            return of(domainEntity);
+                        }),
+                    );
                 }
             }),
         );

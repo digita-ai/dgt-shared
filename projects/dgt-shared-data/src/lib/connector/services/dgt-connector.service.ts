@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { map, mergeMap, tap, catchError } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
@@ -70,8 +70,11 @@ export class DGTConnectorService {
       mergeMap(data => this.purposes.get(exchange.purpose).pipe(
         map(purpose => ({ ...data, purpose })),
       )),
-      mergeMap(data => forkJoin(triples.map(triple =>
-        data.connector.upstreamSync(
+      mergeMap(data => {
+        if (triples.length === 0) {
+          throw new DGTErrorArgument('triples can not be an empty list', triples);
+        };
+        return forkJoin(triples.map(triple => data.connector.upstreamSync(
           {
             ...triple,
             connection: exchange.connection,
@@ -80,7 +83,8 @@ export class DGTConnectorService {
             documentUri: null,
             triples: [triple],
           } as DGTLDResource, data.connection, data.source, null, data.purpose, exchange)
-      )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })))),
+      )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })))
+      }),
       map(data => _.flatten(data.resultFromUpstream.map(res => res.triples))),
       // catch error if no connection found
       catchError(() => {
@@ -107,6 +111,7 @@ export class DGTConnectorService {
         map((entities) => entities.map(entity => entity.triples)),
         map((triples) => _.flatten(triples)),
         map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
+        catchError( () => of([])),
       );
   }
 }

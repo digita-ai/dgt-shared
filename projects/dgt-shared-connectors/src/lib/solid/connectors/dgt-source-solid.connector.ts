@@ -1,7 +1,7 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import { v4 as uuid } from 'uuid';
 import base64url from 'base64url';
@@ -390,17 +390,28 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
     domainEntity.documentUri = connection.configuration.webId;
     // find possible existing values
-    return this.query(connection.configuration.webId, purpose, exchange, connection, source, transformer).pipe(
+    return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
       switchMap(existingValues => {
-        const foundTriple = existingValues.find( v => domainEntity.triples[0].predicate === v.triples[0].predicate);
-        if (foundTriple) {
+        if (existingValues[0]) {
           // convert to list of {original: Object, updated: Object}
-          const updateDomainEntity = { original: foundTriple, updated: domainEntity };
+          const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
           this.logger.debug(DGTSourceSolidConnector.name, 'Updating value in pod', updateDomainEntity);
-          return this.update([updateDomainEntity], connection, source, transformer).pipe(map(triples => triples[0]));
+          return this.update([updateDomainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError(() => {
+              this.logger.debug(DGTSourceSolidConnector.name, '[upstreamSync] error updating', domainEntity);
+              return of(domainEntity);
+            }),
+          );
         } else {
           this.logger.debug(DGTSourceSolidConnector.name, 'adding value to pod', domainEntity);
-          return this.add([domainEntity], connection, source, transformer).pipe(map(triples => triples[0]));
+          return this.add([domainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError(() => {
+              this.logger.debug(DGTSourceSolidConnector.name, '[upstreamSync] error adding', domainEntity);
+              return of(domainEntity);
+            }),
+          );
         }
       }),
     );
