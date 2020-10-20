@@ -194,45 +194,6 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
         );
     }
 
-    public upstreamSync<R extends DGTLDResource>(
-        domainEntity: R,
-        connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
-        source: DGTSource<DGTSourceMSSQLConfiguration>,
-        transformer: DGTLDTransformer<R>,
-        purpose: DGTPurpose,
-        exchange: DGTExchange,
-    ): Observable<R> {
-        this.logger.debug(DGTSourceMSSQLConnector.name, 'upstream syncing',
-        {domainEntity, connection, source, transformer, purpose, exchange});
-
-        // find possible existing values
-        return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
-            switchMap(existingValues => {
-                if (existingValues[0]) {
-                    // convert to list of {original: Object, updated: Object}
-                    const updateDomainEntity = {original: existingValues[0], updated: domainEntity};
-                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Updating value in DB', updateDomainEntity);
-                    return this.update([updateDomainEntity], connection, source, transformer).pipe(
-                        map(triples => triples[0]),
-                        catchError( () => {
-                            this.logger.debug(DGTSourceMSSQLConnector.name, '[upstreamSync] error updating', domainEntity);
-                            return of(domainEntity);
-                        }),
-                    );
-                } else {
-                    this.logger.debug(DGTSourceMSSQLConnector.name, 'adding value to DB', domainEntity);
-                    return this.add([domainEntity], connection, source, transformer).pipe(
-                        map(triples => triples[0]),
-                        catchError( () => {
-                            this.logger.debug(DGTSourceMSSQLConnector.name, '[upstreamSync] error adding', domainEntity);
-                            return of(domainEntity);
-                        }),
-                    );
-                }
-            }),
-        );
-    }
-
     private extractConfig(source: DGTSource<any>) {
         return {
             user: source.configuration.user,

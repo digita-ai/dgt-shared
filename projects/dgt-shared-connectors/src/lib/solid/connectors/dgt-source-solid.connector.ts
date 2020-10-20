@@ -377,46 +377,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     );
   }
 
-  public upstreamSync<T extends DGTLDResource>(
-    domainEntity: T,
-    connection: DGTConnectionSolid,
-    source: DGTSourceSolid,
-    transformer: DGTLDTransformer<T>,
-    purpose: DGTPurpose,
-    exchange: DGTExchange,
-  ): Observable<T> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'upstream syncing',
-      { domainEntity, connection, source, transformer, purpose, exchange });
-
-    domainEntity.documentUri = connection.configuration.webId;
-    // find possible existing values
-    return this.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
-      switchMap(existingValues => {
-        if (existingValues[0]) {
-          // convert to list of {original: Object, updated: Object}
-          const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
-          this.logger.debug(DGTSourceSolidConnector.name, 'Updating value in pod', updateDomainEntity);
-          return this.update([updateDomainEntity], connection, source, transformer).pipe(
-            map(triples => triples[0]),
-            catchError(() => {
-              this.logger.debug(DGTSourceSolidConnector.name, '[upstreamSync] error updating', domainEntity);
-              return of(domainEntity);
-            }),
-          );
-        } else {
-          this.logger.debug(DGTSourceSolidConnector.name, 'adding value to pod', domainEntity);
-          return this.add([domainEntity], connection, source, transformer).pipe(
-            map(triples => triples[0]),
-            catchError(() => {
-              this.logger.debug(DGTSourceSolidConnector.name, '[upstreamSync] error adding', domainEntity);
-              return of(domainEntity);
-            }),
-          );
-        }
-      }),
-    );
-  }
-
   /**
    * Registers an account on a solid server
    * @param source source to create account on
