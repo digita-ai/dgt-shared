@@ -15,7 +15,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     private paramChecker: DGTParameterCheckerService
   ) { }
 
-  toDomain(entities: DGTLDResource[]): Observable<DGTDataValue[]> {
+  public toDomain(entities: DGTLDResource[]): Observable<DGTDataValue[]> {
     this.paramChecker.checkParametersNotNull({ entities });
 
     this.logger.debug(DGTDataValueTransformerService.name, 'Starting to transform entity to domain', { entities });
@@ -25,7 +25,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     return of(res);
   }
 
-  toTriples(objects: DGTDataValue[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
+  public toTriples(objects: DGTDataValue[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
     this.paramChecker.checkParametersNotNull({ objects });
     return of(objects);
   }

@@ -1,8 +1,8 @@
 import { Observable, of, from } from 'rxjs';
-import * as sql from 'mssql';
-import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
-import { switchMap, map, tap } from 'rxjs/operators';
-import { DGTMap, DGTLoggerService, DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { ConnectionPool, IResult } from 'mssql';
+import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType } from '@digita-ai/dgt-shared-data';
+import { switchMap, map, tap, catchError } from 'rxjs/operators';
+import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 
@@ -10,51 +10,46 @@ import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-
 @DGTInjectable()
 export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
+    /**
+     * Map of DGTSource IDs -> ConnectionPools
+     */
+    private pools: DGTMap<string, ConnectionPool>;
+
     constructor(private logger: DGTLoggerService) {
         super();
+        this.pools = new DGTMap();
     }
 
-    connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTConnection<DGTConnectionMSSQLConfiguration>> {
+    public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>): Observable<DGTConnection<DGTConnectionMSSQLConfiguration>> {
         return of(null);
     }
 
-    public query<T extends DGTLDResource>(holderUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-        const config = {
-            user: source.configuration.user,
-            password: source.configuration.password,
-            server: source.configuration.server, // You can use 'localhost\\instance' to connect to named instance
-            database: source.configuration.database,
-
-            options: {
-                encrypt: false // Use this if you're on Windows Azure
-            }
-        };
-
-        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting query, creating connection pool', {
-            exchange,
-            source
-        });
-
-        const pool = new sql.ConnectionPool(config);
-
-        this.logger.debug(DGTSourceMSSQLConnector.name, 'Created connection pool', { pool });
-
-        return of({ pool, config })
-            .pipe(
-                switchMap(data => from(data.pool.connect())
-                    .pipe(map(newPool => ({ newPool, ...data })))
-                ),
-                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
-                switchMap(data => from(data.pool.request().query(source.configuration.command(connection.configuration.personId)))
-                    .pipe(map(result => ({ result, ...data })))),
-                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
-                map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
-                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
-                switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[])))
-            );
+    public query<T extends DGTLDResource>(
+        holderUri: string,
+        purpose: DGTPurpose,
+        exchange: DGTExchange,
+        connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
+        source: DGTSource<DGTSourceMSSQLConfiguration>,
+        transformer: DGTLDTransformer<T> = null,
+    ): Observable<T[]> {
+        return this.getPool(source).pipe(
+            tap(pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
+            switchMap(pool => from(pool.request().query(
+                source.configuration.commands.select(connection.configuration.personId)
+            ),
+            ).pipe(map(result => ({ result, pool })))),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query', { data })),
+            map(data => this.convertResult(holderUri, data.result, exchange, source.configuration.mapping, connection)),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
+            switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL');
+                throw new DGTErrorArgument('Error while querying MSSQL', null);
+            }),
+        );
     }
 
-    private convertResult(uri: string, sqlResult: sql.IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, string>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResource {
+    private convertResult(uri: string, sqlResult: IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, string>, connection: DGTConnection<DGTConnectionMSSQLConfiguration>): DGTLDResource {
         this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
         const triples: DGTLDTriple[] = [];
 
@@ -76,7 +71,8 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                                 predicate: field,
                                 object: {
                                     value,
-                                    termType: DGTLDTermType.LITERAL
+                                    termType: DGTLDTermType.LITERAL,
+                                    dataType: DGTLDDataType.STRING
                                 },
                                 originalValue: value,
                             });
@@ -98,24 +94,138 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
         };
     }
 
-    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+    public update<R extends DGTLDResource>(
+        domainEntities: { original: R, updated: R }[],
+        connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
+        source: DGTSource<DGTSourceMSSQLConfiguration>,
+        transformer: DGTLDTransformer<R>,
+    ): Observable<R[]> {
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting UPDATE, creating connection pool', {domainEntities, connection, source, transformer});
+
+        return this.getPool(source).pipe(
+            tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
+            switchMap(pool => {
+                // construct columns part of query
+                // e.g. name="Tom Haegemans", points=1760
+                let columns = '';
+                domainEntities.forEach(entity => {
+                    const columnName = source.configuration.mapping.getByValue(entity.updated.triples[0].predicate);
+                    columns = columns.concat(`${columnName}='${entity.updated.triples[0].object.value}', `);
+                });
+                // remove last comma
+                columns = columns.replace(/,\s*$/, '');
+                const query = source.configuration.commands.update(
+                    connection.configuration.personId, columns
+                );
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
+                return from(pool.request().query(query))
+                .pipe(map(result => ({ result, pool })));
+            }),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished UPDATE', { data })),
+            map( () => domainEntities.map(entity => entity.updated)),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while updating MSSQL');
+                throw new DGTErrorArgument('Error while updating MSSQL', null);
+            }),
+        );
     }
 
-    public delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
-    }
-
-    public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionMSSQLConfiguration>, source: DGTSource<DGTSourceMSSQLConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
-    }
-
-    public upstreamSync<R extends DGTLDResource>(
+    public delete<R extends DGTLDResource>(
         domainEntities: R[],
         connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
         source: DGTSource<DGTSourceMSSQLConfiguration>,
         transformer: DGTLDTransformer<R>,
     ): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+        // At this points just delete the connection.configuration.personId 's record
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting DELETE, creating connection pool', {domainEntities, connection, source, transformer});
+
+        return this.getPool(source).pipe(
+            tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
+            switchMap(pool => {
+                const query = source.configuration.commands.delete(
+                    connection.configuration.personId
+                );
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
+                return from(pool.request().query(query))
+                .pipe(map(result => ({ result, pool })));
+            }),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished DELETE', { data })),
+            map( () => domainEntities),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while deleteing MSSQL');
+                throw new DGTErrorArgument('Error while deleteing MSSQL', null);
+            }),
+        );
+    }
+
+    public add<R extends DGTLDResource>(
+        domainEntities: R[],
+        connection: DGTConnection<DGTConnectionMSSQLConfiguration>,
+        source: DGTSource<DGTSourceMSSQLConfiguration>,
+        transformer: DGTLDTransformer<R>,
+    ): Observable<R[]> {
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting ADD, creating connection pool', {domainEntities, connection, source, transformer});
+
+        return this.getPool(source).pipe(
+            tap( pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
+            switchMap(pool => {
+                let cols = '';
+                let values = '';
+                source.configuration.mapping.forEach( (value: string, key: string) => {
+                    cols += key + ', ';
+                    // TEMP TEMP TEMP TEMP TEMP TEMP
+                    const temp = domainEntities.find( e => e.triples[0].predicate === value);
+                    values += temp ? `'${temp.triples[0].object.value}',`  : 'NULL, ';
+                });
+                const query = source.configuration.commands.insert(
+                    connection.configuration.personId,
+                    cols.slice(0, -2), values.slice(0, -2)
+                );
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
+                return from(pool.request().query(query))
+                .pipe(map(result => ({ result, pool })));
+            }),
+            tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished ADD', { data })),
+            map( () => domainEntities),
+            catchError( () => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while adding MSSQL');
+                throw new DGTErrorArgument('Error while adding MSSQL', null);
+            }),
+        );
+    }
+
+    private extractConfig(source: DGTSource<any>) {
+        return {
+            user: source.configuration.user,
+            password: source.configuration.password,
+            server: source.configuration.server, // You can use 'localhost\\instance' to connect to named instance
+            database: source.configuration.database,
+
+            options: {
+                encrypt: false // Use this if you're on Windows Azure
+            }
+        };
+    }
+
+    private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
+        if (!this.pools || !this.pools.get(source.id)) {
+            try {
+                const config = this.extractConfig(source);
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
+                const pool = new ConnectionPool(config);
+                pool.on('error', err => {
+                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
+                });
+                this.pools.set(source.id, pool);
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
+                return from(this.pools.get(source.id).connect()).pipe(
+                    map( () => this.pools.get(source.id)),
+                );
+            } catch (err) {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, pools: this.pools, source });
+                throw new DGTErrorArgument(err, err);
+            }
+        }
+        return of(this.pools.get(source.id));
     }
 }

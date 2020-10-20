@@ -26,3 +26,4 @@ export { DGTInjectable } from './lib/decorators/dgt-injectable';
 export { DGTOriginService } from './lib/origin/services/dgt-origin.service';
 export { DGTOriginConfigService } from './lib/origin/services/dgt-origin-config.service';
 export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
+export { DGTHttpResponse } from './lib/http/models/dgt-http-response.model';

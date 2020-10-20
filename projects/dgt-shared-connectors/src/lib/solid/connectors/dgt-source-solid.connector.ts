@@ -1,7 +1,7 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState } from '@digita-ai/dgt-shared-data';
+import { DGTLDTripleFactoryService, DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import { v4 as uuid } from 'uuid';
 import base64url from 'base64url';
@@ -27,6 +27,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private crypto: DGTCryptoService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
     private transformer: DGTSourceSolidTrustedAppTransformerService,
+    private sources: DGTSourceService,
   ) {
     super();
   }
@@ -98,13 +99,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   public query<T extends DGTLDResource>(documentUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-
     if (connection == null || connection.id == null || connection.configuration == null || connection.configuration.webId == null) {
-      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection: connection });
+      throw new DGTErrorArgument('connection, connection.id, connection.configuration and connection.configuration.webId should be set', { connection });
     }
 
     if (!source || !source.id) {
-      throw new DGTErrorArgument('source and source.id should be set', { source: source });
+      throw new DGTErrorArgument('source and source.id should be set', { source });
     }
 
     const uri = documentUri ? documentUri : connection.configuration.webId;
@@ -284,8 +284,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         transformer.toTriples([update.original], connection).pipe(
           map((uTransfored) => ({ ...update, original: uTransfored[0] })),
           switchMap((u) =>
-            transformer
-              .toTriples([u.updated], connection)
+            transformer.toTriples([u.updated], connection)
               .pipe(map((uTransfored) => ({ ...u, updated: uTransfored[0] })))
           )
         )
@@ -332,11 +331,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           updates.map((update) =>
             this.generateToken(
-              update.delta.updated.documentUri,
+              update.delta.updated.documentUri ? update.delta.updated.documentUri : connection.configuration.webId,
               connection,
               source
             ).pipe(
               switchMap((token) => {
+                this.logger.debug(DGTSourceSolidConnector.name, 'Using token for auth', token);
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
                     update.delta.updated.documentUri,
@@ -375,15 +375,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         )
       )
     );
-  }
-
-  public upstreamSync<T extends DGTLDResource>(
-    domainEntities: T[],
-    connection: DGTConnectionSolid,
-    source: DGTSourceSolid,
-    transformer: DGTLDTransformer<T>,
-  ): Observable<T[]> {
-    throw new DGTErrorNotImplemented();
   }
 
   /**
@@ -1023,18 +1014,27 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
-    let res = of('');
-
-    if (connection.configuration && connection.configuration.privateKey) {
-      res = DGTSourceSolidToken.issueFor(
-        uri,
-        connection.configuration.privateKey,
-        source.configuration.client_id,
-        connection.configuration.idToken
+    this.logger.debug(DGTSourceSolidConnector.name, 'Generating Token...', { uri, connection, source });
+    if (source.state === DGTSourceState.NOTPREPARED) {
+      return this.prepare(source).pipe(
+        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Preparing source', src)),
+        map(src => this.sources.save(src)),
+        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source', src)),
+        switchMap(() => DGTSourceSolidToken.issueFor(
+          uri,
+          connection.configuration.privateKey,
+          source.configuration.client_id,
+          connection.configuration.idToken
+        ))
       );
     }
 
-    return res;
+    return DGTSourceSolidToken.issueFor(
+      uri,
+      connection.configuration.privateKey,
+      source.configuration.client_id,
+      connection.configuration.idToken
+    );
   }
 
   public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange, source: DGTSourceSolid): Observable<boolean> {
@@ -1065,7 +1065,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
 
         if (data.ourTrustedApp && aclsNeeded.every(acl => data.ourTrustedApp.modes.includes(acl as DGTSourceSolidTrustedAppMode))) {
-          res = true
+          res = true;
         }
 
         this.logger.debug(DGTSourceSolidConnector.name, 'Checked if acl modes are included', { res, aclsNeeded, ourTrustedApp: data.ourTrustedApp })

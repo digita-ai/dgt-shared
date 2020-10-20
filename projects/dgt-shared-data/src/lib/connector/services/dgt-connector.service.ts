@@ -1,17 +1,19 @@
 import * as _ from 'lodash';
-import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { map, mergeMap, mergeAll } from 'rxjs/operators';
+import { map, mergeMap, tap, catchError, switchMap } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 import { DGTPurpose } from '../../purpose/models/dgt-purpose.model';
 import { DGTSource } from '../../source/models/dgt-source.model';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTConnector } from '../models/dgt-connector.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -22,16 +24,12 @@ export class DGTConnectorService {
     private logger: DGTLoggerService,
     private sources: DGTSourceService,
     private connections: DGTConnectionService,
+    private paramChecker: DGTParameterCheckerService,
+    private purposes: DGTPurposeService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
-    if (!sourceType) {
-      throw new DGTErrorArgument('Argument sourceType should be set.', sourceType);
-    }
-
-    if (!connector) {
-      throw new DGTErrorArgument('Argument connector should be set.', connector);
-    }
+    this.paramChecker.checkParametersNotNull({ sourceType, connector });
 
     if (!this.connectors) {
       this.connectors = new DGTMap<DGTSourceType, DGTConnector<any, any>>();
@@ -48,27 +46,94 @@ export class DGTConnectorService {
     return this.connectors.get(sourceType);
   }
 
-  public save(exchange: DGTExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    if (!exchange) {
-      throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-    }
+  public save(exchange: DGTExchange, triples: DGTLDTriple[], destination: string): Observable<DGTLDTriple[]> {
+    this.paramChecker.checkParametersNotNull({ exchange, triples });
 
-    if (!triples) {
-      throw new DGTErrorArgument('Argument triple should be set.', triples);
-    }
-
-    return this.sources.get(exchange.source).pipe(
-      map(source => ({ source, connector: this.connectors.get(source.type) })),
-      mergeMap(data => this.connections.get(exchange.connection).pipe(
-        map(connection => ({ ...data, connection })),
+    return this.sources.get(destination).pipe(
+      map(source => ({ source })),
+      // get connection
+      mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.id }).pipe(
+        tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+        map(connection => connection.length > 0 ? connection : [null]),
+        map(connection => ({ ...data, connection: connection[0] })),
       )),
-      map(data => ({ ...data, resource: { connection: exchange.connection, source: exchange.source, subject: null, documentUri: null, triples } as DGTLDResource })),
-      // transformer ??
-      // resource ??
-      // TEMP, THIS FUNCTION ISNT TESTED YET, LOOK feature/544645000-upstream-connectors
-      mergeMap(data => data.connector.upstreamSync([data.resource], data.connection, data.source, null)
-        .pipe(map(resources => _.flatten(resources.map(resource => resource.triples))))),
-      // mergeAll(),
+      // check if connection is set
+      map(data => {
+        if (data.connection !== null) {
+          return data;
+        } else {
+          throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
+        }
+      }),
+      // get connector
+      map(data => ({ ...data, connector: this.connectors.get(data.source.type) })),
+      // get purpose
+      mergeMap(data => this.purposes.get(exchange.purpose).pipe(
+        map(purpose => ({ ...data, purpose })),
+      )),
+      mergeMap(data => {
+        if (triples.length === 0) {
+          throw new DGTErrorArgument('triples can not be an empty list', triples);
+        }
+        return forkJoin(triples.map(triple => this.upstreamSync(
+          data.connector,
+          {
+            ...triple,
+            connection: exchange.connection,
+            source: exchange.source,
+            subject: null,
+            documentUri: null,
+            triples: [triple],
+          } as DGTLDResource, data.connection, data.source, null, data.purpose, exchange)
+        )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
+      }),
+      map(data => _.flatten(data.resultFromUpstream.map(res => res.triples))),
+      // catch error if no connection found or triples was an empty list
+      catchError(() => {
+        this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
+        return [triples];
+      }),
+    );
+  }
+
+  public upstreamSync<T extends DGTLDResource>(
+    connector: DGTConnector<any, any>,
+    domainEntity: T,
+    connection: DGTConnection<any>,
+    source: DGTSource<any>,
+    transformer: DGTLDTransformer<T>,
+    purpose: DGTPurpose,
+    exchange: DGTExchange,
+  ): Observable<T> {
+    this.logger.debug(DGTConnectorService.name, 'upstream syncing',
+      { connector, domainEntity, connection, source, transformer, purpose, exchange });
+
+    domainEntity.documentUri = connection.configuration.webId;
+    // find possible existing values
+    return connector.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
+      switchMap(existingValues => {
+        if (existingValues[0]) {
+          // convert to list of {original: Object, updated: Object}
+          const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
+          this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updateDomainEntity });
+          return connector.update([updateDomainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError(() => {
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error updating', { connector, updateDomainEntity });
+              return of(domainEntity);
+            }),
+          );
+        } else {
+          this.logger.debug(DGTConnectorService.name, 'adding value', { connector, domainEntity });
+          return connector.add([domainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError(() => {
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding',  { connector, domainEntity });
+              return of(domainEntity);
+            }),
+          );
+        }
+      }),
     );
   }
 
@@ -80,21 +145,7 @@ export class DGTConnectorService {
   ): Observable<DGTLDTriple[]> {
     this.logger.debug(DGTConnectorService.name, 'Getting triples', { exchange, connection, source, purpose });
 
-    if (!exchange) {
-      throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-    }
-
-    if (!connection) {
-      throw new DGTErrorArgument('Argument connection should be set.', connection);
-    }
-
-    if (!source) {
-      throw new DGTErrorArgument('Argument source should be set.', source);
-    }
-
-    if (!purpose) {
-      throw new DGTErrorArgument('Argument purpose should be set.', purpose);
-    }
+    this.paramChecker.checkParametersNotNull({ exchange, connection, source, purpose });
 
     const connector: DGTConnector<any, any> = this.get(source.type);
 
@@ -102,7 +153,8 @@ export class DGTConnectorService {
       .pipe(
         map((entities) => entities.map(entity => entity.triples)),
         map((triples) => _.flatten(triples)),
-        map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate)))
+        map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
+        catchError(() => of([])),
       );
   }
 }

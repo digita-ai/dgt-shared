@@ -19,7 +19,7 @@ export class DGTRemovePrefixWorkflowAction implements DGTWorkflowAction {
         const res = triples.map(triple => {
             const updatedTriple = triple;
 
-            if (updatedTriple && updatedTriple.object) {
+            if (updatedTriple && updatedTriple.object && updatedTriple.object.value.startsWith(this.prefix)) {
                 updatedTriple.object.value = updatedTriple.object.value.replace(this.prefix, '');
             }
 
