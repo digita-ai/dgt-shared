@@ -3,9 +3,6 @@ import { DGTEvent } from '../../events/models/dgt-event.model';
 
 /** The configuration of the client */
 export interface DGTConfigurationBaseWeb extends DGTConfigurationBase {
-    typeRegistrations?: {
-        [key: string]: string;
-    };
     locale: {
         default: string,
         mapping: {
@@ -17,7 +14,7 @@ export interface DGTConfigurationBaseWeb extends DGTConfigurationBase {
     };
     server: {
         uri: string,
-    },
+    };
     events: {
         file: string,
         templates: {
