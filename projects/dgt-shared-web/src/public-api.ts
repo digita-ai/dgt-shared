@@ -110,3 +110,4 @@ export { DGTConnectionRemoteService } from './lib/connection/services/dgt-connec
 export { DGTExchangeRemoteService } from './lib/exchanges/services/dgt-exchange-remote.service';
 export { DGTHolderRemoteService } from './lib/holders/services/dgt-holder-remote.service';
 export { DGTValueRemoteService } from './lib/values/services/dgt-value-remote.service';
+export { DGTMenuComponent } from './lib/interface/components/dgt-menu/dgt-menu.component';
