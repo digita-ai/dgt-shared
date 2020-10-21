@@ -14,6 +14,7 @@ import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTConnector } from '../models/dgt-connector.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTProfileSolidService } from '../../profile/services/dgt-profile-solid.service';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -26,6 +27,7 @@ export class DGTConnectorService {
     private connections: DGTConnectionService,
     private paramChecker: DGTParameterCheckerService,
     private purposes: DGTPurposeService,
+    private profilesSolid: DGTProfileSolidService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
@@ -128,7 +130,7 @@ export class DGTConnectorService {
           return connector.add([domainEntity], connection, source, transformer).pipe(
             map(triples => triples[0]),
             catchError(() => {
-              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding',  { connector, domainEntity });
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, domainEntity });
               return of(domainEntity);
             }),
           );
@@ -149,12 +151,42 @@ export class DGTConnectorService {
 
     const connector: DGTConnector<any, any> = this.get(source.type);
 
-    return connector.query(null, purpose, exchange, connection, source, null)
-      .pipe(
-        map((entities) => entities.map(entity => entity.triples)),
-        map((triples) => _.flatten(triples)),
-        map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
-        catchError(() => of([])),
+    if (connector && source.type === DGTSourceType.SOLID ) {
+      return this.profilesSolid.get(connection, source).pipe(
+        mergeMap( profile => {
+          this.logger.debug(DGTConnectorService.name, 'Typeregistrations found', profile.typeRegistrations);
+          if ( profile.typeRegistrations.length > 0 ) {
+            return forkJoin(profile.typeRegistrations.map( typereg => {
+              if ( purpose.predicates.includes(typereg.forClass) ) {
+                this.logger.debug(DGTConnectorService.name, 'getting values for TypeRegistration', typereg);
+                return connector.query(typereg.instance, purpose, exchange, connection, source, null);
+              } else {
+                return of([] as DGTLDResource[]);
+              }
+            })).pipe(
+              map( resources => _.flatten(resources) ),
+              map( resources => resources.map(resource => resource.triples)),
+              map( triples => _.flatten(triples)),
+              map( triples => [ ...triples, ...profile.triples])
+            );
+          } else {
+            // of() is needed because the if above returns an Observable
+            // and that Observable needs a mergeMap to function
+            return of( profile.triples );
+          }
+        }),
+        tap( triples => this.logger.debug(DGTConnectorService.name, `${triples.length} Triples before filtering predicate values`)),
+        map( triples => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
+        tap( triples => this.logger.debug(DGTConnectorService.name, `${triples.length} Triples after filtering predicate values`)),
       );
+    } else {
+      return connector.query(null, purpose, exchange, connection, source, null)
+        .pipe(
+          map((entities) => entities.map(entity => entity.triples)),
+          map((triples) => _.flatten(triples)),
+          map(triples => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
+          catchError(() => of([])),
+        );
+    }
   }
 }

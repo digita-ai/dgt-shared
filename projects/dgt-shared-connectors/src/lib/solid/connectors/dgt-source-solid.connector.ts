@@ -134,6 +134,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         ),
         switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed to domain objects', data)),
+        catchError( error => {
+          this.logger.debug(DGTSourceSolidConnector.name, 'Error while querying', error );
+          return of([]);
+        }),
       );
   }
 
