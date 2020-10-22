@@ -123,32 +123,49 @@ export class DGTConnectorService {
     this.logger.debug(DGTConnectorService.name, 'upstream syncing',
       { connector, domainEntity, connection, source, transformer, purpose, exchange });
 
+    // probably want to make a seperate function for this and add it to the pipe
     // profile will only have a value when we have a solid source / connection
     if (profile && source.type === DGTSourceType.SOLID) {
       // find typeregistration
-      console.log('================================= ', profile);
       const typeRegFound = profile.typeRegistrations.filter( reg =>
         reg.forClass === domainEntity.triples[0].predicate
       );
+      const origin = new URL(connection.configuration.webId).origin;
       if (typeRegFound.length > 0) {
-        // typereg present in profile
+        this.logger.debug(DGTConnectorService.name, 'Typeregistration found in profile', typeRegFound[0]);
+        // typeregistration found in profile
+        domainEntity.documentUri = typeRegFound[0].instance;
       } else {
         // check config for typeReg
         const typeRegsInConfig = this.config.get( c => c.typeRegistrations);
         const typeRegFoundInConfig = Object.keys(typeRegsInConfig).filter(key =>
           key === domainEntity.triples[0].predicate
         );
-        console.log('=============================== ', typeRegsInConfig);
-        console.log('=============================== ', typeRegFoundInConfig);
-        // if not use fallback file
-        domainEntity.documentUri = connection.configuration.webId;
+        if ( typeRegFoundInConfig && typeRegFoundInConfig.length > 0) {
+          this.logger.debug(DGTConnectorService.name, 'Typeregistration found in config', typeRegFoundInConfig[0]);
+          // typeReg found in config
+          // TODO add typreg to the typeregs on users profile
+          domainEntity.documentUri = origin + typeRegsInConfig[typeRegFoundInConfig[0]];
+        } else {
+          this.logger.debug(DGTConnectorService.name, 'no Typeregistration found in config');
+          // saving to default location  =>  profile ??
+          // maybe a dump file also specified in config ??
+          domainEntity.documentUri = connection.configuration.webId;
+        }
       }
+    } else {
+      // not sure how important documentUri is when saving
+      // to a source that is not a solid pod
+      // this shouldnt matter, mssql worked fine with 'undefined'
+      domainEntity.documentUri = connection.configuration.webId;
     }
+
+    // TEMP LOG
+    console.log('============================', domainEntity.documentUri);
 
     // find possible existing values
     return connector.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
       switchMap(existingValues => {
-        console.log('====================================', existingValues);
         if (existingValues[0]) {
           // convert to list of {original: Object, updated: Object}
           const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
