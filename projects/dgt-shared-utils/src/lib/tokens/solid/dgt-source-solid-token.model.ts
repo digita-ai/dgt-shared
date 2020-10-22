@@ -1,7 +1,7 @@
 import { JWT, JWK } from '@solid/jose';
 import { Observable, from } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 
 const DEFAULT_MAX_AGE = 3600; // Default token expiration, in seconds
 
