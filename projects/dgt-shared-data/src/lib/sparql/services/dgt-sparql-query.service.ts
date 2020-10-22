@@ -1,4 +1,5 @@
-import { DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
+import { DGTSourceSolidToken } from '@digita-ai/dgt-shared-connectors';
+import { DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';

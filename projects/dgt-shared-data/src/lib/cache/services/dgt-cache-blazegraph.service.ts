@@ -25,7 +25,7 @@ export class DGTCacheBlazeGraphService extends DGTCacheService {
     constructor(private http: DGTHttpService,
         private sparqlService : DGTSparqlQueryService, 
         private queries: DGTQueryService, 
-        private logger: DGTLoggerService;) {
+        private logger: DGTLoggerService,) {
         super();
     }
 

@@ -33,7 +33,6 @@ export const providers = [
   DGTLDFilterRunnerBGPService,
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
-  DGTCacheService,
   //DGTMockDataService,
   DGTCacheInMemoryService,
   DGTCacheBlazeGraphService,
