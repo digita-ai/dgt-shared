@@ -43,7 +43,7 @@ export class DGTLDService {
                 mergeMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
                     .pipe(map(valuesOfValues => ({ ...data, values: _.flatten(valuesOfValues) })))),
                 tap(data => this.cache.cache = data.values),
-                tap(data => this.logger.debug(DGTLDService.name, 'Stored valeues in cache', data)),
+                tap(data => this.logger.debug(DGTLDService.name, `Stored ${data.values.length} valeues and ${data.exchanges.length} exchanges in cache`)),
                 mergeMap(_ => this.cache.query<T>(filter, transformer)),
             );
     }

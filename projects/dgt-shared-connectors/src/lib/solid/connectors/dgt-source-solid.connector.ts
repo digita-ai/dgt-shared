@@ -1021,9 +1021,8 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     this.logger.debug(DGTSourceSolidConnector.name, 'Generating Token...', { uri, connection, source });
     if (source.state === DGTSourceState.NOTPREPARED) {
       return this.prepare(source).pipe(
-        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Preparing source', src)),
-        map(src => this.sources.save(src)),
-        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source', src)),
+        tap(src => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source', { sourceId: src.id, sourceType: src.type, sourceDescription: src.description } )),
+        switchMap(src => this.sources.save(src)),
         switchMap(() => DGTSourceSolidToken.issueFor(
           uri,
           connection.configuration.privateKey,

@@ -97,14 +97,14 @@ export class DGTConnectorService {
             source: exchange.source,
             subject: null,
             documentUri: null,
-            triples: [triple],
+            triples: [triple],                // which transformer do we use ???
           } as DGTLDResource, data.connection, data.source, null, data.purpose, exchange, data.profile)
         )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
       }),
       map(data => _.flatten(data.resultFromUpstream.map(res => res.triples))),
-      // catch error if no connection found or triples was an empty list
-      catchError(() => {
-        this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
+      // catch error if no connection found or triples was an empty list / any other error
+      catchError( (error) => {
+        this.logger.debug(DGTConnectorService.name, 'Error for this upstreamSync', error);
         return [triples];
       }),
     );
@@ -126,6 +126,7 @@ export class DGTConnectorService {
     // profile will only have a value when we have a solid source / connection
     if (profile && source.type === DGTSourceType.SOLID) {
       // find typeregistration
+      console.log('================================= ', profile);
       const typeRegFound = profile.typeRegistrations.filter( reg =>
         reg.forClass === domainEntity.triples[0].predicate
       );
@@ -147,6 +148,7 @@ export class DGTConnectorService {
     // find possible existing values
     return connector.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
       switchMap(existingValues => {
+        console.log('====================================', existingValues);
         if (existingValues[0]) {
           // convert to list of {original: Object, updated: Object}
           const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
