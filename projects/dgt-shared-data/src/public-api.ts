@@ -99,3 +99,4 @@ export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
 export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
+export { DGTCacheType } from './lib/cache/models/DGTCacheType.model'
