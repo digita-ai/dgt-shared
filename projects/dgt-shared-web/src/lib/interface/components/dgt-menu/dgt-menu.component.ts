@@ -10,10 +10,6 @@ import { MatMenu } from '@angular/material';
   styleUrls: ['./dgt-menu.component.scss'],
 })
 
-/**
- * Menu that open when the three dots are clicked in the EventSummaryComponent
- * Contains buttons for giving feedback and removing events
- */
 export class DGTMenuComponent {
   /**
    * Angular Material Menu to display
