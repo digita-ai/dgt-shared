@@ -1,10 +1,9 @@
 import { Observable, of } from 'rxjs';
-import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer } from '@digita-ai/dgt-shared-data';
+import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
-import { DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTHttpResponse, DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
-import { DGTHttpResponse } from '@digita-ai/dgt-shared-utils/lib/http/models/dgt-http-response.model';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
 
@@ -12,7 +11,7 @@ import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gra
 
 @DGTInjectable()
 export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
-    constructor(private logger: DGTLoggerService, private http: DGTHttpService) {
+    constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService,) {
         super();
     }
 
@@ -20,23 +19,28 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
         return of(null);
     }
 
-    public query<T extends DGTLDResource>(holderUri: string, purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<T> = null): Observable<T[]> {
-        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, source });
+    public query<T extends DGTLDResource>(holderUri: string, exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
+        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, holderUri });
+
+        if (!exchange) {
+            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        }
 
         let res = null;
 
-        if (exchange && source) {
-            const hash = Md5.hashStr(connection.configuration.email);
-            const uri = `https://www.gravatar.com/${hash}.json`;
-
-            res = this.http.get<DGTSourceGravatarResponse>(uri)
-                .pipe(
-                    tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
-                    map(data => this.convertResponse(holderUri, data, exchange, source, connection)),
-                    tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
-                    switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
-                );
-        }
+        res = of({ holderUri, exchange, transformer })
+            .pipe(
+                switchMap(data => this.connections.get(exchange.connection)
+                    .pipe(map(connection => ({ ...data, connection, uri: `https://www.gravatar.com/${Md5.hashStr(connection.configuration.email)}.json` })))),
+                switchMap(data => this.sources.get(exchange.source)
+                    .pipe(map(source => ({ ...data, source })))),
+                switchMap(data => this.http.get<DGTSourceGravatarResponse>(data.uri)
+                    .pipe(map(response => ({ ...data, response })))),
+                tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
+                map(data => this.convertResponse(data.holderUri, data.response, exchange, data.source, data.connection)),
+                tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
+                switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
+            );
 
         return res;
     }
@@ -54,69 +58,50 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
             if (entry.preferredUsername) {
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found username', { entry });
                 triples.push({
-                    exchange: exchange.id,
                     subject: {
                         value: exchange.holder,
                         termType: DGTLDTermType.REFERENCE
                     },
-                    source: exchange.source,
                     predicate: source.configuration.usernameField,
                     object: {
                         value: entry.preferredUsername,
                         termType: DGTLDTermType.LITERAL
                     },
-                    originalValue: {
-                        value: entry.preferredUsername,
-                        termType: DGTLDTermType.LITERAL
-                    },
-                    connection: connection.id
                 });
             }
 
             if (entry.thumbnailUrl) {
                 this.logger.debug(DGTSourceGravatarConnector.name, 'Found thumbnail', { entry });
                 triples.push({
-                    exchange: exchange.id,
                     subject: {
                         value: exchange.holder,
                         termType: DGTLDTermType.REFERENCE
                     },
-                    source: exchange.source,
                     predicate: source.configuration.thumbnailField,
                     object: {
                         value: entry.thumbnailUrl,
                         termType: DGTLDTermType.LITERAL
                     },
-                    originalValue: {
-                        value: entry.thumbnailUrl,
-                        termType: DGTLDTermType.LITERAL
-                    },
-                    connection: connection.id
                 });
             }
         }
 
         return {
             triples,
-            connection: connection.id,
-            source: connection.source,
             documentUri: holderUri,
-            subject: {
-                value: holderUri,
-                termType: DGTLDTermType.REFERENCE
-            },
+            exchange: exchange.id,
         };
     }
 
-    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
 
-    public delete<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+    public delete<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
 
-    public add<R extends DGTLDResource>(domainEntities: R[], connection: DGTConnection<DGTConnectionGravatarConfiguration>, source: DGTSource<DGTSourceGravatarConfiguration>, transformer: DGTLDTransformer<R>): Observable<R[]> {
+    public add<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
 }

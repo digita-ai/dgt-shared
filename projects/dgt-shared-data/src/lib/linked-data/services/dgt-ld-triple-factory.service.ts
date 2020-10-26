@@ -1,13 +1,9 @@
 import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { DGTSource } from '../../source/models/dgt-source.model';
-import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDNode } from '../models/dgt-ld-node.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { v4 as uuid } from 'uuid';
 import { Quad, Parser } from 'n3';
-import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
 
 @DGTInjectable()
 export class DGTLDTripleFactoryService {
@@ -15,7 +11,7 @@ export class DGTLDTripleFactoryService {
 
     constructor(private logger: DGTLoggerService) { }
 
-    public createFromString(response: string, documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+    public createFromString(response: string, documentUri: string): DGTLDTriple[] {
         if (!response) {
             throw new DGTErrorArgument('Argument response should be set.', response);
         }
@@ -24,21 +20,13 @@ export class DGTLDTripleFactoryService {
             throw new DGTErrorArgument('Argument documentUri should be set.', documentUri);
         }
 
-        if (!source) {
-            throw new DGTErrorArgument('Argument source should be set.', source);
-        }
-
-        if (!connection) {
-            throw new DGTErrorArgument('Argument connection should be set.', connection);
-        }
-
         let res: DGTLDTriple[] = [];
 
         try {
             const quads = this.parser.parse(response);
             this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { documentUri });
 
-            res = this.createFromQuads(quads, documentUri, exchange, source, connection);
+            res = this.createFromQuads(quads, documentUri);
         } catch (err) {
             this.logger.error(DGTLDTripleFactoryService.name, 'Caught exception', { response, error: err })
         }
@@ -46,7 +34,7 @@ export class DGTLDTripleFactoryService {
         return res;
     }
 
-    public createFromQuads(quads: Quad[], documentUri: string, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple[] {
+    public createFromQuads(quads: Quad[], documentUri: string): DGTLDTriple[] {
         if (!quads) {
             throw new DGTErrorArgument('Argument quads should be set.', quads);
         }
@@ -54,14 +42,14 @@ export class DGTLDTripleFactoryService {
         let res: DGTLDTriple[] = null;
 
         this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { documentUri });
-        res = quads.map(quad => this.convertOne(documentUri, quad, exchange, source, connection));
+        res = quads.map(quad => this.convertOne(documentUri, quad));
         
         res = this.clean(res);
 
         return res;
     }
 
-    private convertOne(documentUri: string, quad: Quad, exchange: DGTExchange, source: DGTSource<any>, connection: DGTConnection<any>): DGTLDTriple {
+    private convertOne(documentUri: string, quad: Quad): DGTLDTriple {
         if (!quad) {
             throw new DGTErrorArgument('Argument quad should be set.', quad);
         }
@@ -70,22 +58,18 @@ export class DGTLDTripleFactoryService {
             throw new DGTErrorArgument('Argument quad.predicate should be set.', quad.predicate);
         }
 
-        const subject = quad && quad.subject ? this.convertOneSubject(documentUri, quad, connection) : null;
+        const subject = quad && quad.subject ? this.convertOneSubject(documentUri, quad) : null;
         const object = quad && quad.object ? this.convertOneObject(documentUri, quad) : null;
 
         return {
             id: uuid(),
-            exchange: exchange ? exchange.id : null,
-            connection: connection ? connection.id : null,
             predicate: quad.predicate.value,
             subject,
             object,
-            originalValue: object,
-            source: source ? source.id : null
         };
     }
 
-    private convertOneSubject(documentUri: string, quad: Quad, connection: DGTConnectionSolid): DGTLDNode {
+    private convertOneSubject(documentUri: string, quad: Quad): DGTLDNode {
         let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
 

@@ -1,7 +1,7 @@
 import { JWT, JWK } from '@solid/jose';
 import { Observable, from } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 
 const DEFAULT_MAX_AGE = 3600; // Default token expiration, in seconds
 
@@ -11,7 +11,7 @@ export class DGTSourceSolidToken extends JWT {
         super(data, other);
     }
 
-    static issueFor(resourceServerUri, sessionKey: string, clientId: string, idToken: string): Observable<any> {
+    static issueFor(resourceServerUri: string, sessionKey: string, clientId: string, idToken: string): Observable<any> {
         if (resourceServerUri == null) {
             throw new DGTErrorArgument('resourceServerUri is undefined', { resourceServerUri });
         }
@@ -30,7 +30,7 @@ export class DGTSourceSolidToken extends JWT {
             .pipe(
                 map(importedSessionJwk => {
                     const options = {
-                        aud: (new URL(resourceServerUri)).origin,
+                        aud: new URL(resourceServerUri).origin,
                         key: importedSessionJwk,
                         iss: clientId,
                         idToken

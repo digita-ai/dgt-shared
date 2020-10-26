@@ -111,3 +111,6 @@ export { DGTExchangeRemoteService } from './lib/exchanges/services/dgt-exchange-
 export { DGTHolderRemoteService } from './lib/holders/services/dgt-holder-remote.service';
 export { DGTValueRemoteService } from './lib/values/services/dgt-value-remote.service';
 export { DGTMenuComponent } from './lib/interface/components/dgt-menu/dgt-menu.component';
+export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-state.service';
+export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
+export { DGTSourceStateService } from './lib/source/services/dgt-source-state.service';

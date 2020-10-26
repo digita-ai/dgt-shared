@@ -3,7 +3,7 @@ import { Observable, of, forkJoin } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import uuid, { v4 } from 'uuid';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
@@ -28,10 +28,13 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
    * @returns Observable of typeRegistrations
    */
   public toDomain(resources: DGTLDResource[]): Observable<DGTLDTypeRegistration[]> {
+    this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Starting to transform resources to type registrations', { resources });
+
     this.paramChecker.checkParametersNotNull({ entities: resources });
 
     return forkJoin(resources.map(entity => this.toDomainOne(entity)))
       .pipe(
+        tap(typeRegistrations => this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Finished transforming type registrations', { typeRegistrations })),
         map(typeRegistrations => _.flatten(typeRegistrations)),
         map(typeRegistrations => typeRegistrations.filter(t => t !== null)),
       );
@@ -73,9 +76,9 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of linked data entities.
    */
-  public toTriples(typeRegistrations: DGTLDTypeRegistration[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
-    this.paramChecker.checkParametersNotNull({ typeRegistrations, connection });
-    this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Starting to transform to linked data', { typeRegistrations, connection });
+  public toTriples(typeRegistrations: DGTLDTypeRegistration[]): Observable<DGTLDResource[]> {
+    this.paramChecker.checkParametersNotNull({ typeRegistrations });
+    this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Starting to transform to linked data', { typeRegistrations });
 
     const entities = typeRegistrations.map<DGTLDResource>(typeRegistration => {
       let triples = typeRegistration.triples;
@@ -91,9 +94,6 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       if (!triples) {
         triples = [
           {
-            exchange: null,
-            source: typeRegistration.source,
-            connection: typeRegistration.connection,
             predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
             subject: documentSubject,
             object: {
@@ -101,16 +101,8 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
               dataType: DGTLDDataType.STRING,
               value: 'http://www.w3.org/ns/solid/terms#TypeRegistration'
             },
-            originalValue: {
-              termType: DGTLDTermType.REFERENCE,
-              dataType: DGTLDDataType.STRING,
-              value: 'http://www.w3.org/ns/solid/terms#TypeRegistration'
-            },
           },
           {
-            exchange: null,
-            source: typeRegistration.source,
-            connection: typeRegistration.connection,
             predicate: 'http://www.w3.org/ns/solid/terms#forClass',
             subject: documentSubject,
             object: {
@@ -118,24 +110,11 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
               dataType: DGTLDDataType.STRING,
               value: typeRegistration.forClass
             },
-            originalValue: {
-              termType: DGTLDTermType.REFERENCE,
-              dataType: DGTLDDataType.STRING,
-              value: typeRegistration.forClass
-            },
           },
           {
-            exchange: null,
-            source: typeRegistration.source,
-            connection: typeRegistration.connection,
             predicate: 'http://www.w3.org/ns/solid/terms#instance',
             subject: documentSubject,
             object: {
-              termType: DGTLDTermType.REFERENCE,
-              dataType: DGTLDDataType.STRING,
-              value: typeRegistration.instance
-            },
-            originalValue: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
               value: typeRegistration.instance
@@ -147,10 +126,6 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       const newEntity: DGTLDResource = {
         ...typeRegistration,
         documentUri,
-        subject: {
-          value: typeRegistrationSubjectUri,
-          termType: DGTLDTermType.REFERENCE
-        },
         triples
       };
 
@@ -195,13 +170,8 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       documentUri,
       forClass: forClass ? forClass.object.value : null,
       instance: instance ? instance.object.value : null,
-      connection: typeRegistrationSubjectValue.connection,
-      source: typeRegistrationSubjectValue.source,
-      subject: {
-        value: typeRegistrationSubjectValue.object.value,
-        termType: DGTLDTermType.REFERENCE
-      },
       triples: [...typeRegistrationTriples, typeRegistrationSubjectValue],
+      exchange: resource.exchange,
     };
   }
 }

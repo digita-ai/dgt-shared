@@ -1,4 +1,4 @@
-import { DGTProfile, DGTConnectionSolid, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
+import { DGTProfile, DGTConnectionSolid, DGTSourceSolid, DGTExchange } from '@digita-ai/dgt-shared-data';
 import { DGTAbstractAction } from '../../state/models/dgt-abstract-action.model';
 import { DGTAction } from '../../state/models/dgt-action.model';
 
@@ -8,8 +8,7 @@ export const DGTProfileActionTypes = {
 };
 
 export interface DGTProfileLoadPayload {
-  connection: DGTConnectionSolid,
-  source: DGTSourceSolid,
+  exchange: DGTExchange;
 }
 
 export class DGTProfileLoad implements DGTAbstractAction<DGTProfileLoadPayload> {
@@ -19,9 +18,7 @@ export class DGTProfileLoad implements DGTAbstractAction<DGTProfileLoadPayload> 
 }
 
 export interface DGTProfileLoadFinishedPayload {
-  connection: DGTConnectionSolid,
-  source: DGTSourceSolid,
-  profile: DGTProfile,
+  profile: DGTProfile;
 }
 
 export class DGTProfileLoadFinished implements DGTAbstractAction<DGTProfileLoadFinishedPayload> {

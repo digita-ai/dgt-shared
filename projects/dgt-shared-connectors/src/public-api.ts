@@ -5,7 +5,6 @@
 export { DGTSourceMSSQLConnector } from './lib/mssql/connectors/dgt-source-mssql.connector';
 export { DGTSourceMSSQLConfiguration } from './lib/mssql/models/dgt-source-mssql-configuration.model';
 export { DGTSourceSolidConnector } from './lib/solid/connectors/dgt-source-solid.connector';
-export { DGTSourceSolidToken } from './lib/solid/models/dgt-source-solid-token.model';
 export { DGTSourceSolidTrustedApp } from './lib/solid/models/dgt-source-solid-trusted-app.model';
 export { DGTSourceSolidTrustedAppMode } from './lib/solid/models/dgt-source-solid-trusted-app-mode.model';
 export { DGTSourceSolidTrustedAppTransformerService } from './lib/solid/services/dgt-source-solid-trusted-app-transformer.service';

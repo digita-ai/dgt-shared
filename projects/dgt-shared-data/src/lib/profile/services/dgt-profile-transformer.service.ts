@@ -42,14 +42,14 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data entities.
      */
-    public toTriples(profiles: DGTProfile[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
-        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform to linked data', { events: profiles, connection });
-        this.paramChecker.checkParametersNotNull({ profiles, connection });
+    public toTriples(profiles: DGTProfile[]): Observable<DGTLDResource[]> {
+        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform to linked data', { events: profiles });
+        this.paramChecker.checkParametersNotNull({ profiles });
 
         const entities = profiles.map<DGTLDResource>(profile => {
             let triples = profile.triples;
-            const documentUri = connection.configuration.webId;
-            const accountUri = connection.configuration.webId.split('/profile/card#me')[0];
+            const documentUri = profile.documentUri;
+            const accountUri = documentUri.split('/profile/card#me')[0];
             const profileUri = `${accountUri}/profile`;
             const documentSubject = {
                 value: '#me',
@@ -58,9 +58,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
             triples = [
                 {
-                    exchange: null,
-                    source: profile.source,
-                    connection: profile.connection,
                     predicate: 'http://www.w3.org/2006/vcard/ns#fn',
                     subject: documentSubject,
                     object: {
@@ -68,16 +65,8 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                         dataType: DGTLDDataType.STRING,
                         value: profile.fullName
                     },
-                    originalValue: {
-                        termType: DGTLDTermType.LITERAL,
-                        dataType: DGTLDDataType.STRING,
-                        value: profile.fullName
-                    },
                 },
                 {
-                    exchange: null,
-                    source: profile.source,
-                    connection: profile.connection,
                     predicate: 'http://www.w3.org/2006/vcard/ns#hasPhoto',
                     subject: documentSubject,
                     object: {
@@ -85,16 +74,8 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                         dataType: DGTLDDataType.STRING,
                         value: profile.avatar ? `${profileUri}/${profile.avatar}` : null
                     },
-                    originalValue: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: profile.avatar ? `${profileUri}/${profile.avatar}` : null
-                    },
                 },
                 {
-                    exchange: null,
-                    source: profile.source,
-                    connection: profile.connection,
                     predicate: 'http://www.w3.org/ns/solid/terms#publicTypeIndex',
                     subject: documentSubject,
                     object: {
@@ -102,24 +83,11 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                         dataType: DGTLDDataType.STRING,
                         value: profile.publicTypeIndex
                     },
-                    originalValue: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: profile.publicTypeIndex
-                    },
                 },
                 {
-                    exchange: null,
-                    source: profile.source,
-                    connection: profile.connection,
                     predicate: 'http://www.w3.org/ns/solid/terms#privateTypeIndex',
                     subject: documentSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: profile.privateTypeIndex
-                    },
-                    originalValue: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
                         value: profile.privateTypeIndex
@@ -130,10 +98,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             const newResource: DGTLDResource = {
                 ...profile,
                 documentUri,
-                subject: {
-                    value: documentUri,
-                    termType: DGTLDTermType.REFERENCE
-                },
                 triples: [...triples]
             };
 
@@ -154,7 +118,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
      * @returns The converted profile.
      */
     private transformOne(resource: DGTLDResource): DGTProfile {
-        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { entity: resource });
+        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { resource });
         this.paramChecker.checkParametersNotNull({ entity: resource });
 
         const documentUri = resource.documentUri;
@@ -162,28 +126,23 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
         const profileUri = `${accountUri}/profile`;
 
         const fullName = resource.triples.find(value =>
-            value.subject.value === resource.subject.value &&
+            value.subject.value === documentUri &&
             (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name')
         );
 
         const avatar = resource.triples.find(value =>
-            value.subject.value === resource.subject.value &&
+            value.subject.value === documentUri &&
             value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto'
         );
 
         const publicTypeIndex = resource.triples.find(value =>
-            value.subject.value === resource.subject.value &&
+            value.subject.value === documentUri &&
             value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex'
         );
 
         const privateTypeIndex = resource.triples.find(value =>
-            value.subject.value === resource.subject.value &&
+            value.subject.value === documentUri &&
             value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex'
-        );
-
-        const calculationFiles = resource.triples.filter(value =>
-            value.subject.value === resource.subject.value &&
-            value.predicate === 'http://digita.ai/voc/calculations#file'
         );
 
         return {
@@ -192,11 +151,9 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
             avatar: avatar ? `${profileUri}/${avatar.object.value}` : null,
-            connection: resource.connection,
-            source: resource.source,
-            subject: resource.subject,
             triples: resource.triples,
-            typeRegistrations: []
+            typeRegistrations: [],
+            exchange: resource.exchange,
         };
     }
 }
