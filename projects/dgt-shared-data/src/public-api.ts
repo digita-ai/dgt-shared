@@ -46,7 +46,7 @@ export { DGTFile } from './lib/file/models/dgt-file.model';
 export { DGTFileService } from './lib/file/services/dgt-file.service';
 export { DGTFileType } from './lib/file/models/dgt-file-type.model';
 export { DGTEntity } from './lib/metadata/models/dgt-entity.model';
-export { DGTExchange } from './lib/holder/models/dgt-holder-exchange.model';
+export { DGTExchange } from './lib/exchanges/models/dgt-exchange.model';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTConnection } from './lib/connection/models/dgt-connection.model';
 export { DGTConnectionSolid } from './lib/connection/models/dgt-connection-solid.model';
@@ -98,8 +98,9 @@ export { DGTSparqlDatasetMemory } from './lib/sparql/models/dgt-sparql-dataset-m
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
-export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
+export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
 export { DGTCacheType } from './lib/cache/models/DGTCacheType.model'
 export { DGTCacheInMemoryService } from './lib/cache/services/dgt-cache-in-memory.service';
 export { DGTCacheBlazeGraphService } from './lib/cache/services/dgt-cache-blazegraph.service';
 export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.service';
+export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-ld-resource-transformer.service';

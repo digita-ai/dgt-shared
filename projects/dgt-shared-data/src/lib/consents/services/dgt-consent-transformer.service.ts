@@ -8,7 +8,6 @@ import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 
@@ -91,9 +90,6 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             if (!triples) {
                 triples = [
                     {
-                        exchange: null,
-                        source: consent.source,
-                        connection: consent.connection,
                         predicate: 'http://digita.ai/voc/consents#expirationDate',
                         subject: consentSubject,
                         object: {
@@ -101,16 +97,8 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                             dataType: DGTLDDataType.DATETIME,
                             value: consent.expirationDate
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.DATETIME,
-                            value: consent.expirationDate
-                        },
                     },
                     {
-                        exchange: null,
-                        source: consent.source,
-                        connection: consent.connection,
                         predicate: 'http://digita.ai/voc/consents#createdAt',
                         subject: consentSubject,
                         object: {
@@ -118,16 +106,8 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                             dataType: DGTLDDataType.DATETIME,
                             value: consent.createdAt
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.DATETIME,
-                            value: consent.createdAt
-                        },
                     },
                     {
-                        exchange: null,
-                        source: consent.source,
-                        connection: consent.connection,
                         predicate: 'http://digita.ai/voc/consent#purposeLabel',
                         subject: consentSubject,
                         object: {
@@ -135,16 +115,8 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                             dataType: DGTLDDataType.STRING,
                             value: consent.purposeLabel
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: consent.purposeLabel
-                        },
                     },
                     {
-                        exchange: null,
-                        source: consent.source,
-                        connection: consent.connection,
                         predicate: 'http://digita.ai/voc/consent#controller',
                         subject: consentSubject,
                         object: {
@@ -152,20 +124,11 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                             dataType: DGTLDDataType.STRING,
                             value: consent.controller
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: consent.controller
-                        },
                     },
                     {
-                        exchange: null,
-                        source: consent.source,
-                        connection: consent.connection,
                         predicate: 'http://digita.ai/voc/consents#consent',
                         subject: documentSubject,
                         object: consentSubject,
-                        originalValue: consentSubject,
                     }
                 ];
             }
@@ -173,10 +136,6 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             const newEntity: DGTLDResource = {
                 ...consent,
                 documentUri: consent.documentUri,
-                subject: {
-                    value: consentSubjectUri,
-                    termType: DGTLDTermType.REFERENCE
-                },
                 triples
             };
 
@@ -230,17 +189,12 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         return {
             documentUri: documentUri,
             expirationDate: expirationDate ? expirationDate.object.value : null,
-            connection: consentSubjectValue.connection,
-            source: consentSubjectValue.source,
-            subject: {
-                value: consentSubjectValue.object.value,
-                termType: DGTLDTermType.REFERENCE
-            },
             triples: [...consentTriples, consentSubjectValue],
             createdAt: createdAt ? new Date(createdAt.object.value) : null,
             id: v4(),
             purposeLabel: purposeLabel ? purposeLabel.object.value : '',
-            controller: controller ? controller.object.value : ''
+            controller: controller ? controller.object.value : '',
+            exchange: resource.exchange,
         };
     }
 }

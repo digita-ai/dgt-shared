@@ -21,14 +21,10 @@ export { DGTErrorNotImplemented } from './lib/errors/models/dgt-error-not-implem
 export { DGTErrorService } from './lib/errors/services/dgt-error.service';
 export { DGTHttpService } from './lib/http/services/dgt-http.service';
 export { DGTHttpAngularService } from './lib/http/services/dgt-http-angular.service';
-export { DGTConnectivityService as DGTConnectionService } from './lib/connectivity/services/dgt-connectivity.service';
+export { DGTConnectivityService } from './lib/connectivity/services/dgt-connectivity.service';
 export { DGTInjectable } from './lib/decorators/dgt-injectable';
 export { DGTOriginService } from './lib/origin/services/dgt-origin.service';
 export { DGTOriginConfigService } from './lib/origin/services/dgt-origin-config.service';
 export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
-<<<<<<< HEAD
-export { DGTHttpResponse } from './lib/http/models/dgt-http-response.model';
-=======
 export { DGTSourceSolidToken } from './lib/tokens/solid/dgt-source-solid-token.model';
 export { DGTHttpResponse } from './lib/http/models/dgt-http-response.model';
->>>>>>> 560776177--support-blazegraph-as-cache-storage-

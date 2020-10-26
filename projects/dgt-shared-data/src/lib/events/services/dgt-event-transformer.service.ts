@@ -52,8 +52,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                 value.predicate === 'http://digita.ai/voc/events#event'
             );
 
-            this.logger.debug(DGTEventTransformerService.name, 'Found event subjects to transform', { eventSubjectValues });
-
             if (eventSubjectValues) {
                 res = eventSubjectValues.map(eventSubjectValue => this.transformOne(eventSubjectValue, resource));
             }
@@ -71,7 +69,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data entities.
      */
-    public toTriples(events: DGTEvent[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
+    public toTriples(events: DGTEvent[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ events });
         this.logger.debug(DGTEventTransformerService.name, 'Starting to transform to linked data', { events });
 
@@ -92,9 +90,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
             if (!triples) {
                 triples = [
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#description',
                         subject: eventSubject,
                         object: {
@@ -102,16 +97,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                             dataType: DGTLDDataType.STRING,
                             value: event.description
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: event.description
-                        },
                     },
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#stakeholder',
                         subject: eventSubject,
                         object: {
@@ -119,16 +106,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                             dataType: DGTLDDataType.STRING,
                             value: event.stakeholder
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: event.stakeholder
-                        },
                     },
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#createdAt',
                         subject: eventSubject,
                         object: {
@@ -136,16 +115,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                             dataType: DGTLDDataType.DATETIME,
                             value: event.createdAt ? event.createdAt.toISOString() : ''
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.DATETIME,
-                            value: event.createdAt ? event.createdAt.toISOString() : ''
-                        },
                     },
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#icon',
                         subject: eventSubject,
                         object: {
@@ -153,16 +124,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                             dataType: DGTLDDataType.STRING,
                             value: event.icon
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: event.icon
-                        },
                     },
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#uri',
                         subject: eventSubject,
                         object: {
@@ -170,20 +133,11 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                             dataType: DGTLDDataType.STRING,
                             value: event.stakeholderUri
                         },
-                        originalValue: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.STRING,
-                            value: event.stakeholderUri
-                        },
                     },
                     {
-                        exchange: null,
-                        source: event.source,
-                        connection: event.connection,
                         predicate: 'http://digita.ai/voc/events#event',
                         subject: documentSubject,
                         object: eventSubject,
-                        originalValue: eventSubject,
                     }
                 ];
             }
@@ -191,14 +145,8 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
             const newEntity: DGTLDResource = {
                 ...event,
                 documentUri,
-                subject: {
-                    value: eventSubjectUri,
-                    termType: DGTLDTermType.REFERENCE
-                },
                 triples
             };
-
-            this.logger.debug(DGTEventTransformerService.name, 'Transformed event to linked data', { newEntity, event });
 
             return newEntity;
         });
@@ -217,7 +165,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
      */
     private transformOne(eventSubjectValue: DGTLDTriple, resource: DGTLDResource): DGTEvent {
         this.paramChecker.checkParametersNotNull({ eventSubjectValue, entity: resource });
-        this.logger.debug(DGTEventTransformerService.name, 'Starting to transform one entity', { eventSubjectValue, entity: resource });
 
         const documentUri = resource.documentUri ? resource.documentUri : eventSubjectValue.subject.value;
 
@@ -252,16 +199,11 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
             documentUri,
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
-            connection: eventSubjectValue.connection,
-            source: eventSubjectValue.source,
-            subject: {
-                value: eventSubjectValue.object.value,
-                termType: DGTLDTermType.REFERENCE
-            },
             triples: [...eventTriples, eventSubjectValue],
             createdAt: createdAt ? new Date(createdAt.object.value) : null,
             icon: icon ? icon.object.value : null,
-            stakeholderUri: stakeholderUri ? stakeholderUri.object.value : null
+            stakeholderUri: stakeholderUri ? stakeholderUri.object.value : null,
+            exchange: resource.exchange,
         };
     }
 }

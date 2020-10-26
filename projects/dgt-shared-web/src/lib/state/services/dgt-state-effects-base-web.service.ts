@@ -2,7 +2,7 @@ import { mergeMap, map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { DGTErrorService, DGTConnectionService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable, DGTConnectivityService } from '@digita-ai/dgt-shared-utils';
 import { DGTProfileService, DGTLDTypeRegistrationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
 import * as _ from 'lodash';
 import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
@@ -105,10 +105,12 @@ export class DGTStateEffectsBaseWebService {
     /** Loads profiles, registers an event */
     loadProfile$ = this.actions$.pipe(
         ofType(DGTProfileActionTypes.LOAD_PROFILE),
-        mergeMap((action: DGTProfileLoad) => this.profiles.get(action.payload.connection, action.payload.source)
+        mergeMap((action: DGTProfileLoad) => this.profiles.get(action.payload.exchange)
             .pipe(map(profile => ({ profile, action })))),
-        switchMap(data => this.registrationsService.registerMissingTypeRegistrations(data.profile, data.action.payload.connection, data.action.payload.source)
+        tap(data => this.logger.debug(DGTProfileLoad.name, 'Retrieved profile for exchange', data)),
+        switchMap(data => this.registrationsService.registerMissingTypeRegistrations(data.profile)
             .pipe(map(typeRegistrationsRegistered => ({ ...data, typeRegistrationsRegistered })))),
+        tap(data => this.logger.debug(DGTProfileLoad.name, 'Registered missing type registrations', data)),
         // add typeRegistrations to the profile
         map(data => ({ ...data, profile: { ...data.profile, typeRegistrations: [...data.profile.typeRegistrations, ...data.typeRegistrationsRegistered] } })),
         switchMap(data => {
@@ -118,16 +120,13 @@ export class DGTStateEffectsBaseWebService {
                 throw new DGTErrorConfig('Config key events.templates.profileLoaded should be set.', profileLoaded);
             }
             return [
-                new DGTProfileLoadFinished({ profile: data.profile, connection: data.action.payload.connection, source: data.action.payload.source }),
+                new DGTProfileLoadFinished({ profile: data.profile }),
                 new DGTEventsRegister({
                     event: {
                         ...profileLoaded,
-                        connection: data.action.payload.connection.id,
-                        source: data.action.payload.connection.source,
+                        exchange: data.action.payload.exchange.id,
                     },
-                    connection: data.action.payload.connection,
-                    source: data.action.payload.source,
-                    profile: data.profile
+                    profile: data.profile,
                 }),
             ]
         }
@@ -139,7 +138,7 @@ export class DGTStateEffectsBaseWebService {
         protected errors: DGTErrorService,
         protected actions$: Actions,
         protected router: Router,
-        protected connection: DGTConnectionService,
+        protected connection: DGTConnectivityService,
         protected i8n: DGTI8NService,
         protected logger: DGTLoggerService,
         protected config: DGTConfigurationService<DGTConfigurationBaseWeb>,

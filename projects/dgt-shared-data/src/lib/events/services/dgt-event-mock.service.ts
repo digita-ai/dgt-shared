@@ -3,24 +3,23 @@ import { DGTEvent } from '../models/dgt-event.model';
 import { Observable, of } from 'rxjs';
 import { DGTEventService } from './dgt-event.service';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
-import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 
 @DGTInjectable()
 export class DGTEventMockService extends DGTEventService {
   events = [null];
 
-  public getAll(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTEvent[]> {
+  public getAll(profile: DGTProfile): Observable<DGTEvent[]> {
     return of(this.events);
   }
 
-  public register(profile: DGTProfile, events: DGTEvent[], connection: DGTConnectionSolid): Observable<DGTEvent[]> {
+  public register(profile: DGTProfile, events: DGTEvent[]): Observable<DGTEvent[]> {
     this.events.push(...events);
     return of(events);
   }
 
-  public remove(events: DGTEvent[], connection: DGTConnectionSolid): Observable<DGTEvent[]> {
+  public remove(events: DGTEvent[]): Observable<DGTEvent[]> {
     return of(events);
   }
 }

@@ -68,7 +68,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data entities.
      */
-    public toTriples(trustedapps: DGTSourceSolidTrustedApp[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
+    public toTriples(trustedapps: DGTSourceSolidTrustedApp[]): Observable<DGTLDResource[]> {
         throw new Error();
     }
 
@@ -112,15 +112,10 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         return {
             documentUri,
-            connection: trustedAppTriple.connection,
-            source: trustedAppTriple.source,
-            subject: {
-                value: trustedAppTriple.object.value,
-                termType: DGTLDTermType.REFERENCE
-            },
             triples: [...triples, trustedAppTriple],
             origin: origin ? origin.object.value : null,
-            modes: parsedModes
+            modes: parsedModes,
+            exchange: entity.exchange,
         };
     }
 }

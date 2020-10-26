@@ -1,6 +1,5 @@
 import { DGTConnectionService, DGTConnection, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
-import { Injectable } from '@angular/core';
-import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -8,7 +7,7 @@ import { DGTStateStoreService } from '../../state/services/dgt-state-store.servi
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
-@Injectable()
+@DGTInjectable()
 export class DGTConnectionRemoteService extends DGTConnectionService {
 
   constructor(
