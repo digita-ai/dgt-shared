@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase } from '@digita-ai/dgt-shared-utils';
+import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBase, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { Observable, forkJoin, of } from 'rxjs';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
@@ -16,6 +16,11 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTProfileSolidService } from '../../profile/services/dgt-profile-solid.service';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
+import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTypeRegistrationSolidService } from '../../linked-data/services/dgt-ld-type-registration-solid.service';
+import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
+import uuid from 'uuid';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -30,6 +35,7 @@ export class DGTConnectorService {
     private purposes: DGTPurposeService,
     private profilesSolid: DGTProfileSolidService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
+    private typeregistrationService: DGTLDTypeRegistrationSolidService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
@@ -123,10 +129,50 @@ export class DGTConnectorService {
     this.logger.debug(DGTConnectorService.name, 'upstream syncing',
       { connector, domainEntity, connection, source, transformer, purpose, exchange });
 
-    // probably want to make a seperate function for this and add it to the pipe
+    return this.prepareDomainEntity(domainEntity, profile, source, connection).pipe(
+      switchMap(preparedDomainEntity =>
+        // find possible existing values to determine add or update
+        connector.query(preparedDomainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
+          map( existingValues => ({ existingValues, domainEntity: preparedDomainEntity})),
+        )
+      ),
+      switchMap(data => {
+        if (data.existingValues[0]) {
+          // convert to list of {original: Object, updated: Object}
+          const updateDomainEntity = { original: data.existingValues[0], updated: data.domainEntity };
+          this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updateDomainEntity });
+          return connector.update([updateDomainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError((error) => {
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error updating', { connector, updateDomainEntity, error });
+              return of(data.domainEntity);
+            }),
+          );
+        } else {
+          this.logger.debug(DGTConnectorService.name, 'adding value', { connector, domainEntity: data.domainEntity });
+          return connector.add([data.domainEntity], connection, source, transformer).pipe(
+            map(triples => triples[0]),
+            catchError((error) => {
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, domainEntity: data.domainEntity, error });
+              return of(data.domainEntity);
+            }),
+          );
+        }
+      }),
+    );
+  }
+
+  public prepareDomainEntity<T extends DGTLDResource>(
+    domainEntity: T,
+    profile: DGTProfile,
+    source: DGTSource<any>,
+    connection: DGTConnection<any>,
+  ): Observable<T> {
+    console.log('===============', profile.typeRegistrations);
+    let typeRegToAdd: DGTLDTypeRegistration = null;
     // profile will only have a value when we have a solid source / connection
     if (profile && source.type === DGTSourceType.SOLID) {
-      // find typeregistration
+      // find typeregistration in profile
       const typeRegFound = profile.typeRegistrations.filter( reg =>
         reg.forClass === domainEntity.triples[0].predicate
       );
@@ -144,13 +190,20 @@ export class DGTConnectorService {
         if ( typeRegFoundInConfig && typeRegFoundInConfig.length > 0) {
           this.logger.debug(DGTConnectorService.name, 'Typeregistration found in config', typeRegFoundInConfig[0]);
           // typeReg found in config
-          // TODO add typreg to the typeregs on users profile
+          typeRegToAdd = {
+            forClass: domainEntity.triples[0].predicate,
+            instance: typeRegsInConfig[typeRegFoundInConfig[0]],
+            connection: connection.id,
+            source: source.id,
+            documentUri: profile.publicTypeIndex,
+            triples: null,
+            subject: null,
+          } as DGTLDTypeRegistration;
           domainEntity.documentUri = origin + typeRegsInConfig[typeRegFoundInConfig[0]];
         } else {
           this.logger.debug(DGTConnectorService.name, 'no Typeregistration found in config');
-          // saving to default location  =>  profile ??
-          // maybe a dump file also specified in config ??
-          domainEntity.documentUri = connection.configuration.webId;
+          // tslint:disable-next-line:max-line-length
+          throw new DGTErrorConfig('No TypeRegistration was found in the config matching this predicate', domainEntity.triples[0].predicate);
         }
       }
     } else {
@@ -160,34 +213,26 @@ export class DGTConnectorService {
       domainEntity.documentUri = connection.configuration.webId;
     }
 
-    // TEMP LOG
-    console.log('============================', domainEntity.documentUri);
+    // Entities comming from e.g. MSSQL will not have a subject
+    // Here we set it again
+    if ( !domainEntity.subject ) {
+      domainEntity.subject = {
+        value: domainEntity.documentUri + '#' + uuid(),
+        termType: DGTLDTermType.REFERENCE,
+      } as DGTLDNode;
+      domainEntity.triples[0].subject = domainEntity.subject;
+    }
 
-    // find possible existing values
-    return connector.query(domainEntity.documentUri, purpose, exchange, connection, source, transformer).pipe(
-      switchMap(existingValues => {
-        if (existingValues[0]) {
-          // convert to list of {original: Object, updated: Object}
-          const updateDomainEntity = { original: existingValues[0], updated: domainEntity };
-          this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updateDomainEntity });
-          return connector.update([updateDomainEntity], connection, source, transformer).pipe(
-            map(triples => triples[0]),
-            catchError(() => {
-              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error updating', { connector, updateDomainEntity });
-              return of(domainEntity);
-            }),
+    return of(domainEntity).pipe(
+      mergeMap( entity => {
+        if (typeRegToAdd) {
+          return this.typeregistrationService.register([typeRegToAdd], profile, connection, source).pipe(
+            map( () => entity),
           );
         } else {
-          this.logger.debug(DGTConnectorService.name, 'adding value', { connector, domainEntity });
-          return connector.add([domainEntity], connection, source, transformer).pipe(
-            map(triples => triples[0]),
-            catchError(() => {
-              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, domainEntity });
-              return of(domainEntity);
-            }),
-          );
+          return of(entity);
         }
-      }),
+      })
     );
   }
 

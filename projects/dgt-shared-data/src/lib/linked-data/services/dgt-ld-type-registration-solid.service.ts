@@ -155,7 +155,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
     connection: DGTConnectionSolid,
     source: DGTSourceSolid,
   ): Observable<DGTLDTypeRegistration[]> {
-    
+    this.logger.debug(DGTLDTypeRegistrationService.name, 'Registering new typregistration', typeRegistrations);
 
     return of({ typeRegistrations, connection, source, profile })
       .pipe(

@@ -157,13 +157,9 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       throw new DGTErrorArgument('source should be set.', source);
     }
 
-    if (!transformer) {
-      throw new DGTErrorArgument('transformer should be set.', transformer);
-    }
-
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { domainEntities, connection });
 
-    return transformer.toTriples(domainEntities, connection)
+    return (transformer ? transformer.toTriples(domainEntities, connection) : of(domainEntities))
       .pipe(
         map(entities => ({
           entities,
@@ -171,7 +167,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           groupedEntities: _.groupBy(entities, 'subject.value'),
           domainEntities,
         })),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add entities', data)),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add entities', {data, temp: { obj: data.entities[0].triples[0].object, subj: data.entities[0].triples[0].subject}})),
         switchMap(data => forkJoin(
           Object.keys(data.groupedEntities).map(uri => {
             return this.generateToken(uri, connection, source)
@@ -274,10 +270,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       throw new DGTErrorArgument('source should be set.', source);
     }
 
-    if (!transformer) {
-      throw new DGTErrorArgument('transformer should be set.', transformer);
-    }
-
     this.logger.debug(
       DGTSourceSolidConnector.name,
       'Starting to update entity',
@@ -285,10 +277,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     );
     return forkJoin(
       domainEntities.map((update) =>
-        transformer.toTriples([update.original], connection).pipe(
+        (transformer ? transformer.toTriples([update.original], connection) : of([update.original])).pipe(
           map((uTransfored) => ({ ...update, original: uTransfored[0] })),
           switchMap((u) =>
-            transformer.toTriples([u.updated], connection)
+            (transformer ? transformer.toTriples([u.updated], connection) : of([u.updated]))
               .pipe(map((uTransfored) => ({ ...u, updated: uTransfored[0] })))
           )
         )
@@ -629,7 +621,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     });
 
     const generator = new Generator();
-    const body = generator.stringify(query);
+    const body = generator.stringify(query).split('\n').join('');
 
     this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', {
       body,
