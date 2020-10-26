@@ -14,6 +14,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatSelectModule,
+  MatMenuModule,
 } from '@angular/material';
 import { DGTButtonComponent } from './interface/components/dgt-button/dgt-button.component';
 import { DGTButtonConfirmComponent } from './interface/components/dgt-button-confirm/dgt-button-confirm.component';
@@ -85,6 +86,7 @@ import { DGTDataGroupComponent } from './data/components/dgt-data-group/dgt-data
 import { DGTSectionAvatarComponent } from './interface/components/dgt-section-avatar/dgt-section-avatar.component';
 import { DGTSectionImageComponent } from './interface/components/dgt-section-image/dgt-section-image.component';
 import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
+import { DGTMenuComponent } from './interface/components/dgt-menu/dgt-menu.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -154,6 +156,7 @@ export const declarations = [
   DGTDataInterfaceDescentComponent,
   DGTDataCategoryComponent,
   DGTDataGroupComponent,
+  DGTMenuComponent,
 ];
 export const imports: (any[] | Type<any>)[] = [
   CommonModule,
@@ -171,6 +174,7 @@ export const imports: (any[] | Type<any>)[] = [
   MatSelectModule,
   DGTSharedUtilsModule,
   DGTSharedDataModule,
+  MatMenuModule,
 ];
 export const providers = [
   DGTTitleService,
@@ -198,4 +202,4 @@ export const providers = [
   ],
   exports: [...imports, ...declarations],
 })
-export class DGTSharedWebModule {}
+export class DGTSharedWebModule { }
