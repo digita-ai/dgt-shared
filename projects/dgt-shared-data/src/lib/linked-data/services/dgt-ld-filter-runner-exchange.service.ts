@@ -1,10 +1,10 @@
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
 
 @DGTInjectable()
 export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerService<DGTLDFilterExchange> {
@@ -12,15 +12,15 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
 
   constructor(private paramChecker: DGTParameterCheckerService) { }
 
-  run(filter: DGTLDFilterExchange, triples: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    this.paramChecker.checkParametersNotNull({ filter, triples });
-    return of(triples.filter(triple => this.runOne(filter, triple)));
+  run(filter: DGTLDFilterExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    this.paramChecker.checkParametersNotNull({ filter, resources });
+    return of(resources.filter(triple => this.runOne(filter, triple)));
   }
 
-  private runOne(filter: DGTLDFilterExchange, triple: DGTLDTriple): boolean {
-    this.paramChecker.checkParametersNotNull({ filter, triple });
+  private runOne(filter: DGTLDFilterExchange, resource: DGTLDResource): boolean {
+    this.paramChecker.checkParametersNotNull({ filter, resource });
     const match = filter.exchanges.find(
-      exchange => exchange.id === triple.exchange
+      exchange => exchange.id === resource.exchange
     );
     return match ? true : false;
   }

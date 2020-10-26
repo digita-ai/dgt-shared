@@ -1,4 +1,4 @@
-import { DGTProfile, DGTEvent, DGTSourceSolid, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
+import { DGTProfile, DGTEvent, DGTSourceSolid, DGTConnectionSolid, DGTExchange } from '@digita-ai/dgt-shared-data';
 import { DGTAbstractAction } from '../../state/models/dgt-abstract-action.model';
 import { DGTAction } from '../../state/models/dgt-action.model';
 
@@ -13,8 +13,7 @@ export const DGTEventsActionTypes = {
 };
 
 export interface DGTEventsLoadPayload {
-    connection: DGTConnectionSolid;
-    source: DGTSourceSolid;
+    exchange: DGTExchange;
     profile: DGTProfile;
 }
 
@@ -28,7 +27,7 @@ export class DGTEventsLoad implements DGTAbstractAction<DGTEventsLoadPayload> {
 
 export interface DGTEventsLoadFinishedPayload {
     events: DGTEvent[];
-    connection: DGTConnectionSolid;
+    exchange: DGTExchange;
 }
 
 export class DGTEventsLoadFinished implements DGTAbstractAction<DGTEventsLoadFinishedPayload> {
@@ -40,9 +39,8 @@ export class DGTEventsLoadFinished implements DGTAbstractAction<DGTEventsLoadFin
 
 
 export interface DGTEventsRemovePayload {
-    connection: DGTConnectionSolid;
-    events: DGTEvent[];
-    source: DGTSourceSolid;
+    exchange: DGTExchange;
+    events: DGTEvent[]
 }
 
 export class DGTEventsRemove implements DGTAbstractAction<DGTEventsRemovePayload> {
@@ -77,9 +75,7 @@ export class DGTEventsFeedback implements DGTAbstractAction<DGTEventsFeedbackPay
 }
 
 export interface DGTEventsRegisterPayload {
-    connection: DGTConnectionSolid;
     event: DGTEvent;
-    source: DGTSourceSolid;
     profile: DGTProfile;
 }
 export class DGTEventsRegister implements DGTAbstractAction<DGTEventsRegisterPayload> {

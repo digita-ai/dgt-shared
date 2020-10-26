@@ -12,7 +12,7 @@ import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTSparqlResult } from '../models/dgt-sparql-result.model';
 import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation';
-import { IQueryResultBindings, IQueryResult } from '@comunica/actor-init-sparql/index-browser';
+import { IQueryResult } from '@comunica/actor-init-sparql/index-browser';
 
 @DGTInjectable()
 export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDatasetMemory> {

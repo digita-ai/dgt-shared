@@ -1,69 +1,56 @@
-
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, zip } from 'rxjs';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { mergeMap, tap, map, switchMap } from 'rxjs/operators';
-import { DGTExchange } from '../../holder/models/dgt-holder-exchange.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import * as _ from 'lodash';
-import { DGTConnection } from '../../connection/models/dgt-connection.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
-import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
-import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
-import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
 
 @DGTInjectable()
 export class DGTLDService {
 
     constructor(
-        private sources: DGTSourceService,
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private exchanges: DGTExchangeService,
-        private connections: DGTConnectionService,
-        private purposes: DGTPurposeService,
         private paramChecker: DGTParameterCheckerService,
-        private workflows: DGTWorkflowService,
         private connectors: DGTConnectorService,
+        private workflows: DGTWorkflowService
     ) {
     }
 
-    public query<T>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<DGTLDTriple[] | T[]> {
+    public query<T extends DGTLDResource>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
 
-        return of({})
+        return of({ filter, transformer })
             .pipe(
                 switchMap(data => this.exchanges.query({})
                     .pipe(map(exchanges => ({ ...data, exchanges })))),
                 tap(data => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
-                mergeMap(data => forkJoin(data.exchanges.map(exchange => this.getValuesForExchange(exchange)))
+                mergeMap(data => zip(...data.exchanges.map(exchange => this.queryForExchange(exchange, data.transformer)))
                     .pipe(map(valuesOfValues => ({ ...data, values: _.flatten(valuesOfValues) })))),
-                tap(data => this.cache.cache = data.values),
-                tap(data => this.logger.debug(DGTLDService.name, 'Stored valeues in cache', data)),
-                mergeMap(_ => this.cache.query<T>(filter, transformer)),
+                switchMap(data => this.cache.save<T>(transformer, data.values)
+                    .pipe(map(saved => ({ ...data, saved })))),
+                tap(data => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
+                switchMap(data => this.cache.query<T>(transformer, filter)),
             );
     }
 
-    private getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
+    private queryForExchange<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTLDService.name, 'Getting values for exchange', { exchange });
 
         this.paramChecker.checkParametersNotNull({ exchange });
 
-        return of({ exchange })
+        return of({ exchange, transformer })
             .pipe(
-                switchMap(data => this.connections.get(exchange.connection)
-                    .pipe(map(connection => ({ ...data, connection })))),
-                switchMap((data) => this.purposes.get(data.exchange.purpose)
-                    .pipe(map(purpose => ({ purpose, ...data })))),
-                switchMap((data) => this.sources.get(data.exchange.source)
-                    .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.connectors.query(data.exchange, data.connection, data.source, data.purpose)
-                    .pipe(map(values => ({ ...data, values })))),
-                switchMap(data => this.workflows.execute(data.exchange, data.values))
+                switchMap((data) => this.connectors.query<T>(data.exchange, transformer)
+                    .pipe(map(resources => ({ ...data, resources })))),
+                switchMap(data => this.workflows.execute<T>(data.exchange, data.resources))
             );
     }
 }

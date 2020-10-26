@@ -4,7 +4,6 @@ import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@di
 import { DGTDataValue } from '../models/data-value.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
@@ -25,7 +24,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     return of(res);
   }
 
-  public toTriples(objects: DGTDataValue[], connection: DGTConnectionSolid): Observable<DGTLDResource[]> {
+  toTriples(objects: DGTDataValue[]): Observable<DGTLDResource[]> {
     this.paramChecker.checkParametersNotNull({ objects });
     return of(objects);
   }
@@ -36,10 +35,8 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     return entity.triples.map((triple: DGTLDTriple) => {
       // TODO check if subject or holder?
       return {
-        connection: entity.connection,
-        source: entity.source,
-        subject: entity.subject,
         documentUri: entity.documentUri,
+        exchange: entity.exchange,
         ...triple,
         triples: [triple]
       } as DGTDataValue;

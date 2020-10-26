@@ -1,11 +1,11 @@
-import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTConfigurationBaseWeb, DGTDataValueTransformerService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from "@digita-ai/dgt-shared-utils";
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
-
+import * as _ from 'lodash';
 @DGTInjectable()
 export class DGTValueRemoteService extends DGTDataValueService {
     constructor(
@@ -13,6 +13,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
         private http: DGTHttpService,
         logger: DGTLoggerService,
         private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
+        private transformer: DGTDataValueTransformerService,
         paramChecker: DGTParameterCheckerService,
         filters: DGTLDFilterService
     ) {
@@ -31,7 +32,8 @@ export class DGTValueRemoteService extends DGTDataValueService {
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${data.id}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => response.data),
+                switchMap(response => this.transformer.toDomain([response.data])),
+                map(values => _.head(values)),
             );
     }
     query(filter: Partial<DGTDataValue>): Observable<DGTDataValue[]> {
@@ -52,10 +54,10 @@ export class DGTValueRemoteService extends DGTDataValueService {
 
         return of({ holder })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.id}/values` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.id}/resources` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => response.data),
+                switchMap(response => this.transformer.toDomain(response.data)),
             );
     }
 }
