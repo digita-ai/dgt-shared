@@ -105,3 +105,4 @@ export { DGTCacheBlazeGraphService } from './lib/cache/services/dgt-cache-blazeg
 export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.service';
 export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-ld-resource-transformer.service';
 export { DGTLDFilterConnection } from './lib/linked-data/models/dgt-ld-filter-connection.model';
+export { DGTInviteService } from './lib/invite/services/dgt-invite-abstract.service';
