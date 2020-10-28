@@ -55,4 +55,12 @@ export class DGTConnectionStateService extends DGTConnectionService {
   public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
     throw new DGTErrorNotImplemented();
   }
+
+  public getConnectionForInvite(inviteId: string, sourceId: string): Observable<any> {
+    throw new DGTErrorNotImplemented();
+  }
+  
+  public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
+    throw new DGTErrorNotImplemented();
+  }
 }
