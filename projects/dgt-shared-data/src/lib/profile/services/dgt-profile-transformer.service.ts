@@ -48,8 +48,8 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
         const entities = profiles.map<DGTLDResource>(profile => {
             let triples = profile.triples;
-            const documentUri = profile.documentUri;
-            const accountUri = documentUri.split('/profile/card#me')[0];
+            const uri = profile.uri;
+            const accountUri = uri.split('/profile/card#me')[0];
             const profileUri = `${accountUri}/profile`;
             const documentSubject = {
                 value: '#me',
@@ -97,7 +97,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
             const newResource: DGTLDResource = {
                 ...profile,
-                documentUri,
+                uri,
                 triples: [...triples]
             };
 
@@ -121,32 +121,32 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
         this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { resource });
         this.paramChecker.checkParametersNotNull({ entity: resource });
 
-        const documentUri = resource.documentUri;
-        const accountUri = documentUri.split('/profile/card#me')[0];
+        const uri = resource.uri;
+        const accountUri = uri.split('/profile/card#me')[0];
         const profileUri = `${accountUri}/profile`;
 
         const fullName = resource.triples.find(value =>
-            value.subject.value === documentUri &&
+            value.subject.value === uri &&
             (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name')
         );
 
         const avatar = resource.triples.find(value =>
-            value.subject.value === documentUri &&
+            value.subject.value === uri &&
             value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto'
         );
 
         const publicTypeIndex = resource.triples.find(value =>
-            value.subject.value === documentUri &&
+            value.subject.value === uri &&
             value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex'
         );
 
         const privateTypeIndex = resource.triples.find(value =>
-            value.subject.value === documentUri &&
+            value.subject.value === uri &&
             value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex'
         );
 
         return {
-            documentUri,
+            uri,
             fullName: fullName ? fullName.object.value : null,
             privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,

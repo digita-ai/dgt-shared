@@ -69,7 +69,7 @@ export class DGTConsentSolidService extends DGTConsentService {
 
     const resource: DGTConsent = {
       id: v4(),
-      documentUri: null,
+      uri: null,
       triples: null,
       createdAt: new Date(),
       expirationDate: expirationDate,
@@ -81,7 +81,7 @@ export class DGTConsentSolidService extends DGTConsentService {
     return of({ resource, profile })
       .pipe(
         switchMap(data => this.typeRegistrations.registerForResources('http://digita.ai/voc/consents#consent', data.resource, data.profile)
-          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, documentUri: typeRegistrations[0].instance }) })))),
+          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, uri: typeRegistrations[0].instance }) })))),
         switchMap(data => this.connector.add<DGTConsent>([data.resource], this.transformer)
           .pipe(map(addedConsents => ({ ...data, addedConsents, })))),
         tap(data => this.logger.debug(DGTConsentSolidService.name, 'Added new consent', data)),

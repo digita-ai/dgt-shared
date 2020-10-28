@@ -95,9 +95,9 @@ export class DGTConnectorService {
     this.logger.debug(DGTConnectorService.name, 'upstream syncing',
       { connector, domainEntity, connection, transformer, exchange });
 
-    domainEntity.documentUri = connection.configuration.webId;
+    domainEntity.uri = connection.configuration.webId;
     // find possible existing values
-    return connector.query(domainEntity.documentUri, exchange, transformer).pipe(
+    return connector.query(domainEntity.uri, exchange, transformer).pipe(
       switchMap(existingValues => {
         if (existingValues[0]) {
           // convert to list of {original: Object, updated: Object}
