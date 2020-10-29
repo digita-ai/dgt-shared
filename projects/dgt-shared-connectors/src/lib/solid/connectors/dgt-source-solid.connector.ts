@@ -49,7 +49,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => this.exchanges.get(_.head(resources).exchange)
           .pipe(map(exchange => ({ ...data, exchange })))),
         switchMap(data => data.transformer.toTriples(resources)
-          .pipe(map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'triples[0].subject.value'), domainEntities: resources, })))),
+          .pipe(map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'subject.value'), domainEntities: resources, })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add resource', data)),
         switchMap(data => this.connections.get(data.exchange.connection)
           .pipe(map(connection => ({ ...data, connection })))),
@@ -785,10 +785,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   /**
-   * Check if a solid server is running on the given url
-   * @param url url to test
-   * @returns true if the specified url is a solid server, false if not
-   */
+     * Check if a solid server is running on the given url
+     * @param url url to test
+     * @returns true if the specified url is a solid server, false if not
+     */
   public isSolidServer(url: string): Observable<boolean> {
     if (!url) {
       this.logger.debug(

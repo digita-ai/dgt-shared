@@ -26,18 +26,11 @@ export class DGTSourceSolidToken extends JWT {
         }
         const jwk = JSON.parse(sessionKey);
 
-        let aud = '';
-        try {
-            aud = new URL(resourceServerUri).origin;
-        } catch (e) {
-            throw new DGTErrorArgument(DGTSourceSolidToken.name, `Error while parsing uri: ${resourceServerUri}`, e);
-        }
-ß
         return from(JWK.importKey(jwk))
             .pipe(
                 map(importedSessionJwk => {
                     const options = {
-                        aud,
+                        aud: new URL(resourceServerUri).origin,
                         key: importedSessionJwk,
                         iss: clientId,
                         idToken
