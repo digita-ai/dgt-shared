@@ -83,8 +83,8 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       );
   }
 
-  query<T extends DGTLDResource>(documentUri: string, exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { documentUri, exchange, transformer });
+  query<T extends DGTLDResource>(uri: string, exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { uri, exchange, transformer });
 
     if (!exchange) {
       throw new DGTErrorArgument('Argument exchange should be set.', exchange);
@@ -94,10 +94,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       throw new DGTErrorArgument('Argument transformer should be set.', transformer);
     }
 
-    return of({ exchange, documentUri })
+    return of({ exchange, uri })
       .pipe(
         switchMap(data => this.connections.get(data.exchange.connection)
-          .pipe(map(connection => ({ ...data, connection, uri: data.documentUri ? data.documentUri : connection.configuration.webId })))),
+          .pipe(map(connection => ({ ...data, connection, uri: data.uri ? data.uri : connection.configuration.webId })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
         switchMap(data => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ ...data, source })))),
@@ -113,7 +113,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
         switchMap(data => transformer.toDomain([{
           triples: data.triples,
-          documentUri: data.uri,
+          uri: data.uri,
           exchange: data.exchange.id
         }])),
         // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
@@ -141,7 +141,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return transformer.toTriples(domainEntities).pipe(
       map((entities) => ({
         entities,
-        groupedEntities: _.groupBy(entities, 'documentUri'),
+        groupedEntities: _.groupBy(entities, 'uri'),
         domainEntities,
       })),
       switchMap(data => this.exchanges.get(_.head(domainEntities).exchange)
@@ -256,14 +256,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           data.updates.map((update) =>
             this.generateToken(
-              update.delta.updated.documentUri,
+              update.delta.updated.uri,
               data.connection,
               data.source
             ).pipe(
               switchMap((token) => {
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
-                    update.delta.updated.documentUri,
+                    update.delta.updated.uri,
                     this.sparql.generateSparqlUpdate([update.delta.updated], 'insert'),
                     {
                       'Content-Type': 'application/sparql-update',
@@ -280,7 +280,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                 }
 
                 return this.http.patch(
-                  update.delta.updated.documentUri,
+                  update.delta.updated.uri,
                   this.sparql.generateSparqlUpdate(
                     [update.delta.updated],
                     'insertdelete',
@@ -641,7 +641,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
   public convert(
     response: string,
-    documentUri: string,
+    uri: string,
     exchange: DGTExchange,
     source: DGTSource<any>,
     connection: DGTConnection<any>
@@ -649,16 +649,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     let res: DGTLDTriple[] = null;
 
     const quads = this.parser.parse(response);
-    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { documentUri });
+    this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { uri });
 
     if (quads) {
       this.logger.debug(
         DGTSourceSolidConnector.name,
         'Starting to convert quads to values',
-        { documentUri }
+        { uri }
       );
       res = quads.map((quad) =>
-        this.convertOne(documentUri, quad, exchange, source, connection)
+        this.convertOne(uri, quad, exchange, source, connection)
       );
       res = res.map((value) => ({
         ...value,
@@ -672,14 +672,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   private convertOne(
-    documentUri: string,
+    uri: string,
     quad: Quad,
     exchange: DGTExchange,
     source: DGTSource<any>,
     connection: DGTConnection<any>
   ): DGTLDTriple {
-    const subject = this.convertOneSubject(documentUri, quad);
-    const object = this.convertOneObject(documentUri, quad);
+    const subject = this.convertOneSubject(uri, quad);
+    const object = this.convertOneObject(uri, quad);
 
     return {
       id: uuid(),
@@ -690,7 +690,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
   private convertOneSubject(
-    documentUri: string,
+    uri: string,
     quad: Quad): DGTLDNode {
     let subject: DGTLDNode = {
       value: quad.subject.value,
@@ -700,12 +700,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       // const me = connection.configuration.webId.split('/profile/card#me')[0];
 
       subject = {
-        value: `${documentUri}`,
+        value: `${uri}`,
         termType: DGTLDTermType.REFERENCE,
       };
     } else if (subject && subject.value && subject.value.startsWith('#')) {
       subject = {
-        value: `${documentUri.split('#')[0]}${quad.subject.value}`,
+        value: `${uri.split('#')[0]}${quad.subject.value}`,
         termType: DGTLDTermType.REFERENCE,
       };
     }
@@ -713,7 +713,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return subject;
   }
 
-  private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
+  private convertOneObject(uri: string, quad: Quad): DGTLDNode {
     let res = null;
 
     if (quad.object.termType === 'Literal') {
@@ -725,7 +725,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     } else {
       if (quad.object.value.startsWith('#')) {
         res = {
-          value: `${documentUri.split('#')[0]}${quad.object.value}`,
+          value: `${uri.split('#')[0]}${quad.object.value}`,
           termType: DGTLDTermType.REFERENCE,
         };
       } else {

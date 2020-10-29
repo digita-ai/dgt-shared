@@ -78,7 +78,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
 
         return {
             triples,
-            documentUri: uri,
+            uri,
             exchange: exchange.id,
         };
     }

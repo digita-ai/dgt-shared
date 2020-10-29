@@ -82,7 +82,7 @@ export class DGTEventSolidService extends DGTEventService {
             of({})
               .pipe(
                 switchMap(() => this.typeRegistrations.registerForResources(this.predicate, resource, data.profile)),
-                map(typeRegistrations => ({ ...resource, documentUri: typeRegistrations[0].instance }))
+                map(typeRegistrations => ({ ...resource, uri: typeRegistrations[0].instance }))
               )
           )
           )

@@ -81,7 +81,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             };
             const consentId = consent.id ? consent.id : v4();
             this.logger.debug(DGTConsentTransformerService.name, 'starting to transform to linked data without id for consent', { consent })
-            const consentSubjectUri = `${consent.documentUri}#${consentId}`;
+            const consentSubjectUri = `${consent.uri}#${consentId}`;
             const consentSubject = {
                 value: consentSubjectUri,
                 termType: DGTLDTermType.REFERENCE
@@ -135,7 +135,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
             const newEntity: DGTLDResource = {
                 ...consent,
-                documentUri: consent.documentUri,
+                uri: consent.uri,
                 triples
             };
 
@@ -160,7 +160,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         this.paramChecker.checkParametersNotNull({ consentSubjectValue: consentSubjectValue, entity: resource });
         this.logger.debug(DGTConsentTransformerService.name, 'Starting to transform one entity', { consentSubjectValue, entity: resource });
 
-        const documentUri = resource.documentUri ? resource.documentUri : consentSubjectValue.subject.value;
+        const uri = resource.uri ? resource.uri : consentSubjectValue.subject.value;
 
         const expirationDate = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
@@ -187,7 +187,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         );
 
         return {
-            documentUri: documentUri,
+            uri,
             expirationDate: expirationDate ? expirationDate.object.value : null,
             triples: [...consentTriples, consentSubjectValue],
             createdAt: createdAt ? new Date(createdAt.object.value) : null,
