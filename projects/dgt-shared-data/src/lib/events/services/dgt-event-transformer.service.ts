@@ -7,7 +7,6 @@ import { v4 } from 'uuid';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
@@ -108,15 +107,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         },
                     },
                     {
-                        predicate: 'http://digita.ai/voc/events#createdAt',
-                        subject: eventSubject,
-                        object: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.DATETIME,
-                            value: event.createdAt ? event.createdAt.toISOString() : ''
-                        },
-                    },
-                    {
                         predicate: 'http://digita.ai/voc/events#icon',
                         subject: eventSubject,
                         object: {
@@ -177,11 +167,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
             value.subject.value === eventSubjectValue.object.value &&
             value.predicate === 'http://digita.ai/voc/events#stakeholder'
         );
-
-        const createdAt = resource.triples.find(value =>
-            value.subject.value === eventSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/events#createdAt'
-        );
         const icon = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
             value.predicate === 'http://digita.ai/voc/events#icon'
@@ -200,7 +185,6 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
             triples: [...eventTriples, eventSubjectValue],
-            createdAt: createdAt ? new Date(createdAt.object.value) : null,
             icon: icon ? icon.object.value : null,
             stakeholderUri: stakeholderUri ? stakeholderUri.object.value : null,
             exchange: resource.exchange,

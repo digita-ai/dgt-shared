@@ -1,5 +1,4 @@
 import { Observable, of, forkJoin } from 'rxjs';
-
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTConsent } from '../models/dgt-consent.model';
@@ -70,7 +69,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
      * @returns Observable of linked data entities.
      */
     public toTriples(consents: DGTConsent[]): Observable<DGTLDResource[]> {
-        this.paramChecker.checkParametersNotNull({ consents: consents });
+        this.paramChecker.checkParametersNotNull({ consents });
         this.logger.debug(DGTConsentTransformerService.name, 'Starting to transform to linked data', { consents: consents });
 
         const entities = consents.map<DGTLDResource>(consent => {
@@ -96,15 +95,6 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.DATETIME,
                             value: consent.expirationDate
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/consents#createdAt',
-                        subject: consentSubject,
-                        object: {
-                            termType: DGTLDTermType.LITERAL,
-                            dataType: DGTLDDataType.DATETIME,
-                            value: consent.createdAt
                         },
                     },
                     {
@@ -157,7 +147,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
      * @returns The transformed consent.
      */
     private transformOne(consentSubjectValue: DGTLDTriple, resource: DGTLDResource): DGTConsent {
-        this.paramChecker.checkParametersNotNull({ consentSubjectValue: consentSubjectValue, entity: resource });
+        this.paramChecker.checkParametersNotNull({ consentSubjectValue, entity: resource });
         this.logger.debug(DGTConsentTransformerService.name, 'Starting to transform one entity', { consentSubjectValue, entity: resource });
 
         const uri = resource.uri ? resource.uri : consentSubjectValue.subject.value;
@@ -177,11 +167,6 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             value.predicate === 'http://digita.ai/voc/consent#controller'
         );
 
-        const createdAt = resource.triples.find(value =>
-            value.subject.value === consentSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/consents#createdAt'
-        );
-
         const consentTriples = resource.triples.filter(value =>
             value.subject.value === consentSubjectValue.object.value
         );
@@ -190,7 +175,6 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             uri,
             expirationDate: expirationDate ? expirationDate.object.value : null,
             triples: [...consentTriples, consentSubjectValue],
-            createdAt: createdAt ? new Date(createdAt.object.value) : null,
             id: v4(),
             purposeLabel: purposeLabel ? purposeLabel.object.value : '',
             controller: controller ? controller.object.value : '',

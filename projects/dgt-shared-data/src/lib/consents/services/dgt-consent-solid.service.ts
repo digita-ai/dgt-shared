@@ -71,9 +71,8 @@ export class DGTConsentSolidService extends DGTConsentService {
       id: v4(),
       uri: null,
       triples: null,
-      createdAt: new Date(),
-      expirationDate: expirationDate,
-      purposeLabel: purposeLabel,
+      expirationDate,
+      purposeLabel,
       controller: 'Vito.be',
       exchange: profile.exchange,
     };
