@@ -32,7 +32,7 @@ export class DGTSourceSolidToken extends JWT {
         } catch (e) {
             throw new DGTErrorArgument(DGTSourceSolidToken.name, `Error while parsing uri: ${resourceServerUri}`, e);
         }
-ß
+
         return from(JWK.importKey(jwk))
             .pipe(
                 map(importedSessionJwk => {

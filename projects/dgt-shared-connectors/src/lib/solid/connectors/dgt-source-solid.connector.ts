@@ -51,7 +51,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => data.transformer.toTriples(resources)
           .pipe(
             tap(triples => {
-              if (triples) {
+              if (!triples) {
                 throw new DGTErrorArgument(DGTSourceSolidConnector.name, 'No triples created by transformer');
               }
             }),
