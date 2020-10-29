@@ -7,12 +7,12 @@ import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service
 import * as _ from 'lodash';
 import { DGTLDUtils } from './dgt-ld-utils.service';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
-import { DGTSourceSolid } from '../../source/models/dgt-source-solid.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTConfigurationBaseWeb } from '../../configuration/models/dgt-configuration-base-web.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 
 /** Service for managing typeRegistrations in Solid. */
 @DGTInjectable()
@@ -24,6 +24,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
     private paramChecker: DGTParameterCheckerService,
     private utils: DGTLDUtils,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
+    private exchanges: DGTExchangeService,
   ) {
     super();
   }
@@ -36,16 +37,26 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of typeRegistrations.
    */
-  public all(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
-    this.paramChecker.checkParametersNotNull({ profile, connection, source });
+  public all(profile: DGTProfile): Observable<DGTLDTypeRegistration[]> {
+    this.logger.debug(DGTLDTypeRegistrationService.name, 'Starting to retrieve all type registration for profile.', { profile });
 
-    return of({ profile, connection, source })
+    this.paramChecker.checkParametersNotNull({ profile });
+
+    return of({ profile })
       .pipe(
-        switchMap(data => forkJoin([
-          this.connector.query<DGTLDTypeRegistration>(data.profile.publicTypeIndex, null, null, connection, source, this.transformer),
-          this.connector.query<DGTLDTypeRegistration>(data.profile.privateTypeIndex, null, null, connection, source, this.transformer),
-        ])
-          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations: _.flatten(typeRegistrations) })))),
+        switchMap(data => this.exchanges.get(profile.exchange)
+          .pipe(map(exchange => ({ ...data, exchange })))),
+        switchMap(data => this.connector.query<DGTLDTypeRegistration>(data.profile.publicTypeIndex, data.exchange, this.transformer)
+          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations })))),
+        tap(data => this.logger.debug(DGTLDTypeRegistrationService.name, 'Retrieved public type registration for profile.', data)),
+        switchMap(data => this.connector.query<DGTLDTypeRegistration>(data.profile.privateTypeIndex, data.exchange, this.transformer)
+          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations: [...data.typeRegistrations, ...typeRegistrations] })))),
+        // switchMap(data => forkJoin([
+        //   this.connector.query<DGTLDTypeRegistration>(data.profile.publicTypeIndex, data.exchange, this.transformer),
+        //   this.connector.query<DGTLDTypeRegistration>(data.profile.privateTypeIndex, data.exchange, this.transformer),
+        // ])
+        //   .pipe(map(typeRegistrations => ({ ...data, typeRegistrations: _.flatten(typeRegistrations) })))),
+        tap(data => this.logger.debug(DGTLDTypeRegistrationService.name, 'Retrieved all type registration for profile.', data)),
         map(data => data.typeRegistrations)
       );
   }
@@ -59,12 +70,12 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of registered typeRegistration.
    */
-  public registerForResources(predicate: string, resource: DGTLDResource, profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
-    this.logger.debug(DGTLDTypeRegistrationService.name, 'Preparing to register typeRegistration.', { profile, connection, source, predicate, resource });
+  public registerForResources(predicate: string, resource: DGTLDResource, profile: DGTProfile): Observable<DGTLDTypeRegistration[]> {
+    this.logger.debug(DGTLDTypeRegistrationService.name, 'Preparing to register typeRegistration.', { profile, predicate, resource });
 
     let res = of(null);
 
-    this.paramChecker.checkParametersNotNull({ profile, connection, source, predicate, resource });
+    this.paramChecker.checkParametersNotNull({ profile, predicate, resource });
 
     const foundTypeRegistrations = profile.typeRegistrations.filter(typeRegistration =>
       (!resource.documentUri || typeRegistration.instance === resource.documentUri) &&
@@ -79,16 +90,14 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
       const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
         forClass: predicate,
         instance: resource.documentUri,
-        connection: connection.id,
-        source: source.id,
         documentUri: profile.privateTypeIndex,
         triples: null,
-        subject: null
+        exchange: profile.exchange,
       };
 
-      res = of({ typeRegistrationsToBeAdded, connection, source, profile })
+      res = of({ typeRegistrationsToBeAdded, profile })
         .pipe(
-          switchMap(data => this.connector.add<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], data.connection, data.source, this.transformer)
+          switchMap(data => this.connector.add<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], this.transformer)
             .pipe(map(addedTypeRegistrations => ({
               ...data, addedTypeRegistrations,
             })))),
@@ -111,8 +120,10 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
     return res;
   }
 
-  public registerMissingTypeRegistrations(profile: DGTProfile, connection: DGTConnectionSolid, source: DGTSourceSolid): Observable<DGTLDTypeRegistration[]> {
-    return of({ profile, connection, source })
+  public registerMissingTypeRegistrations(profile: DGTProfile): Observable<DGTLDTypeRegistration[]> {
+    this.logger.debug(DGTLDTypeRegistrationService.name, 'Starting to add missing typeRegistration.', { profile });
+
+    return of({ profile })
       .pipe(
         map(data => {
           const typeRegistrationsInConfig = this.config.get(c => c.typeRegistrations);
@@ -127,11 +138,9 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
             const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
               forClass: predicate,
               instance: typeRegistrationsInConfig[key],
-              connection: connection.id,
-              source: source.id,
               documentUri: profile.privateTypeIndex,
               triples: null,
-              subject: null
+              exchange: profile.exchange,
             };
 
             return typeRegistrationsToBeAdded;
@@ -141,7 +150,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
           return { ...data, typeRegistrationsMissing };
         }),
         switchMap(data => data.typeRegistrationsMissing && data.typeRegistrationsMissing.length > 0 ?
-          this.register(data.typeRegistrationsMissing, data.profile, data.connection, data.source)
+          this.register(data.typeRegistrationsMissing, data.profile)
             .pipe(map(typeRegistrationsRegistered => _.flatten(typeRegistrationsRegistered).map(reg => ({ ...reg, instance: new URL(data.profile.documentUri).origin + reg.instance }))))
           :
           of([])
@@ -149,19 +158,14 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
       );
   }
 
-  public register(
-    typeRegistrations: DGTLDTypeRegistration[],
-    profile: DGTProfile,
-    connection: DGTConnectionSolid,
-    source: DGTSourceSolid,
-  ): Observable<DGTLDTypeRegistration[]> {
-    this.logger.debug(DGTLDTypeRegistrationService.name, 'Registering new typregistration', typeRegistrations);
+  public register(typeRegistrations: DGTLDTypeRegistration[], profile: DGTProfile): Observable<DGTLDTypeRegistration[]> {
+    this.logger.debug(DGTLDTypeRegistrationService.name, 'Starting to register typeRegistration.', { profile, typeRegistrations });
 
-    return of({ typeRegistrations, connection, source, profile })
+    return of({ typeRegistrations, profile })
       .pipe(
         switchMap(data =>
           // add the typeRegistration to the TypeIndex file
-          this.connector.add<DGTLDTypeRegistration>(typeRegistrations, data.connection, data.source, this.transformer)
+          this.connector.add<DGTLDTypeRegistration>(typeRegistrations, this.transformer)
             .pipe(map(addedTypeRegistrations => ({
               ...data, addedTypeRegistrations,
             })))
