@@ -49,7 +49,15 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => this.exchanges.get(_.head(resources).exchange)
           .pipe(map(exchange => ({ ...data, exchange })))),
         switchMap(data => data.transformer.toTriples(resources)
-          .pipe(map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'triples[0].subject.value'), domainEntities: resources, })))),
+          .pipe(
+            tap(triples => {
+              if (triples) {
+                throw new DGTErrorArgument(DGTSourceSolidConnector.name, 'No triples created by transformer');
+              }
+            }),
+            map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'triples[0].subject.value'), domainEntities: resources, }))
+          )
+        ),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add resource', data)),
         switchMap(data => this.connections.get(data.exchange.connection)
           .pipe(map(connection => ({ ...data, connection })))),
