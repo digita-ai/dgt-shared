@@ -200,8 +200,15 @@ export class DGTConnectorService {
       .pipe(
         switchMap((data) => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ source, ...data, connector: this.get(source.type) })))),
+        switchMap(data => this.purposes.get(data.exchange.purpose)
+          .pipe(map(purpose => ({ ...data, purpose })))),
+        mergeMap(data => this.profiles.get(exchange).pipe(
+          map(profile => ({ ...data, profile, typeRegistrations: profile && profile.typeRegistrations ? profile.typeRegistrations.filter(typeRegistration => data.purpose.predicates.includes(typeRegistration.forClass)) : [] }))
+        )),
         switchMap(data => data.connector.query<T>(null, exchange, transformer)
           .pipe(map(resources => ({ ...data, resources })))),
+        switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0 ? forkJoin(data.profile.typeRegistrations.map(typeRegistration => data.connector.query<T>(typeRegistration.instance, exchange, transformer))) : of([[]]))
+          .pipe(map(resourcesOfResources => ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] })))),
         // map(resources => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
         tap(data => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
         map(data => data.resources),

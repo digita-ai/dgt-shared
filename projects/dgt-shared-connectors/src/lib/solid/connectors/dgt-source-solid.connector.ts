@@ -1,21 +1,17 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTProfileService, DGTPurposeService, DGTLDResourceTransformerService } from '@digita-ai/dgt-shared-data';
+import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { Quad, Parser } from 'n3';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 
 @DGTInjectable()
 export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
-
-
-  private parser: Parser<Quad> = new Parser();
 
   constructor(
     private logger: DGTLoggerService,
@@ -26,11 +22,8 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private triples: DGTLDTripleFactoryService,
     private connections: DGTConnectionService,
     private sources: DGTSourceService,
-    private profiles: DGTProfileService,
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
-    private purposes: DGTPurposeService,
-    private resourceTransformer: DGTLDResourceTransformerService,
   ) {
     super();
   }
@@ -49,118 +42,31 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { documentUri });
 
-    if (documentUri) {
-      return of({ exchange, documentUri, transformer })
-        .pipe(
-          switchMap(data => this.connections.get(data.exchange.connection)
-            .pipe(map(connection => ({ ...data, connection, uri: data.documentUri ? data.documentUri : connection.configuration.webId })))),
-          tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
-          switchMap(data => this.sources.get(data.exchange.source)
-            .pipe(map(source => ({ ...data, source })))),
-          tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved source', data)),
-          switchMap(data => this.generateToken(data.uri, data.connection, data.source)
-            .pipe(map(token => ({ ...data, token })))),
-          tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated token', data)),
-          switchMap(data => this.http.get<string>(data.uri, {
-            Authorization: 'Bearer ' + data.token,
-            Accept: 'text/turtle'
-          }, true)
-            .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
-          tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
-          switchMap(data => transformer.toDomain([{
-            triples: data.triples,
-            uri: data.uri,
-            exchange: data.exchange.id
-          }])),
-          // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
-        );
-      // return this.generateToken(documentUri, connection, source).pipe(
-      //   switchMap(token => this.http.get<string>(documentUri, {
-      //     Authorization: 'Bearer ' + token,
-      //     Accept: 'text/turtle'
-      //   }, true)),
-      //   tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Received response from connection', { documentUri })),
-      //   map(data => data.data ? this.triples.createFromString(data.data, documentUri, exchange, source, connection) : []),
-      //   tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Parsed values', { documentUri })),
-      //   map(triples =>
-      //     ({
-      //       triples,
-      //       connection: connection.id,
-      //       source: source.id,
-      //       documentUri,
-      //       subject: {
-      //         value: documentUri,
-      //         termType: DGTLDTermType.REFERENCE
-      //       },
-      //     } as DGTLDResource),
-      //   ),
-      //   switchMap((entity: DGTLDResource) => transformer ? transformer.toDomain([entity]) : (of([entity] as T[]))),
-      //   tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed to domain objects', data)),
-      //   catchError(error => {
-      //     this.logger.debug(DGTSourceSolidConnector.name, 'Error while querying', error);
-      //     return of([]);
-      //   }),
-      // );
-    } else {
-      // when documenturi is null we crawl for available triples
-      return of({ exchange, documentUri, transformer })
-        .pipe(
-          switchMap(data => this.profiles.get(exchange)
-            .pipe(map(profile => ({ ...data, profile })))),
-          switchMap(data => this.purposes.get(data.exchange.purpose)
-            .pipe(map(purpose => ({ ...data, purpose })))),
-          switchMap(data => {
-            this.logger.debug(DGTSourceSolidConnector.name, 'Typeregistrations found', data);
-            if (data.profile.typeRegistrations.length > 0) {
-              return forkJoin(data.profile.typeRegistrations.map(typereg => {
-                if (data.purpose.predicates.includes(typereg.forClass)) {
-                  this.logger.debug(DGTSourceSolidConnector.name, 'getting values for TypeRegistration', typereg);
-                  return this.query(typereg.instance, exchange, this.resourceTransformer);
-                } else {
-                  return of([] as DGTLDResource[]);
-                }
-              })).pipe(
-                map(resources => _.flatten(resources)),
-                // triples from profile ?
-              );
-            } else {
-              // triples from profile ?
-              return of([]);
-            }
-          }),
-        );
-    }
+    return of({ exchange, documentUri, transformer })
+      .pipe(
+        switchMap(data => this.connections.get(data.exchange.connection)
+          .pipe(map(connection => ({ ...data, connection, uri: data.documentUri ? data.documentUri : connection.configuration.webId })))),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
+        switchMap(data => this.sources.get(data.exchange.source)
+          .pipe(map(source => ({ ...data, source })))),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved source', data)),
+        switchMap(data => this.generateToken(data.uri, data.connection, data.source)
+          .pipe(map(token => ({ ...data, token })))),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated token', data)),
+        switchMap(data => this.http.get<string>(data.uri, {
+          Authorization: 'Bearer ' + data.token,
+          Accept: 'text/turtle'
+        }, true)
+          .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
+        switchMap(data => transformer.toDomain([{
+          triples: data.triples,
+          uri: data.uri,
+          exchange: data.exchange.id
+        }])),
+        // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
+      );
   }
-
-  // if (!transformer) {
-  //   throw new DGTErrorArgument('Argument transformer should be set.', transformer);
-  // }
-
-  // return of({ exchange, documentUri })
-  //   .pipe(
-  //     switchMap(data => this.connections.get(data.exchange.connection)
-  //       .pipe(map(connection => ({ ...data, connection, uri: data.documentUri ? data.documentUri : connection.configuration.webId })))),
-  //     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
-  //     switchMap(data => this.sources.get(data.exchange.source)
-  //       .pipe(map(source => ({ ...data, source })))),
-  //     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved source', data)),
-  //     switchMap(data => this.generateToken(data.uri, data.connection, data.source)
-  //       .pipe(map(token => ({ ...data, token })))),
-  //     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated token', data)),
-  //     switchMap(data => this.http.get<string>(data.uri, {
-  //       Authorization: 'Bearer ' + data.token,
-  //       Accept: 'text/turtle'
-  //     }, true)
-  //       .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
-  //     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
-  //     switchMap(data => transformer.toDomain([{
-  //       triples: data.triples,
-  //       documentUri: data.uri,
-  //       exchange: data.exchange.id
-  //     }])),
-  //     // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
-  //   );
-  // }
 
   add<T extends DGTLDResource>(resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { domainEntities: resources });
@@ -203,43 +109,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         )
       );
   }
-  // this.logger.debug(DGTSourceSolidConnector.name, 'Starting to add entity', { domainEntities, connection });
-
-  // if (!resources) {
-  //   throw new DGTErrorArgument('Argument resources should be set.', resources);
-  // }
-
-  // return transformer.toTriples(domainEntities)
-  //   .pipe(
-  //     map(entities => ({
-  //       entities,
-  //       //TODO check if subject.value below is correct or should be renamed to holder
-  //       groupedEntities: _.groupBy(entities, 'subject.value'),
-  //       domainEntities,
-  //     })),
-  //     tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add entities', { data, temp: { obj: data.entities[0].triples[0].object, subj: data.entities[0].triples[0].subject } })),
-  //     switchMap(data => forkJoin(
-  //       Object.keys(data.groupedEntities).map(uri => {
-  //         return this.generateToken(uri, connection, source)
-  //           .pipe(
-  //             switchMap(token => this.http.patch(
-  //               uri,
-  //               this.generateSparqlUpdate(
-  //                 data.groupedEntities[uri],
-  //                 'insert'
-  //               ),
-  //               {
-  //                 'Content-Type': 'application/sparql-update',
-  //                 Authorization: 'Bearer ' + token,
-  //               }
-  //             )
-  //             )
-  //           );
-  //       })
-  //     ).pipe(map((response) => data.entities as T[]))
-  //     )
-  //   );
-  //     }
 
   delete<T extends DGTLDResource>(domainEntities: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
     if (!domainEntities) {
@@ -632,125 +501,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     }
   }
 
-  // private generateSparqlUpdate(
-  //   updatedEntities: DGTLDResource[],
-  //   updateType: 'insert' | 'delete' | 'insertdelete',
-  //   originalEntities?: DGTLDResource[]
-  // ): string {
-  //   if (!updatedEntities) {
-  //     throw new DGTErrorArgument(
-  //       'updatedEntities should be set.',
-  //       updatedEntities
-  //     );
-  //   }
-  //   if (!updateType) {
-  //     throw new DGTErrorArgument('updateType should be set.', updateType);
-  //   }
-  //   if (updateType === 'insertdelete' && !originalEntities) {
-  //     throw new DGTErrorArgument(
-  //       'originalEntities should be set.',
-  //       originalEntities
-  //     );
-  //   }
-
-  //   this.logger.debug(
-  //     DGTSourceSolidConnector.name,
-  //     'Starting to generate SparQL for update',
-  //     { updatedEntities }
-  //   );
-
-  //   const updatedTriples: DGTLDTriple[] = _.flatten(
-  //     updatedEntities.map((entity) => entity.triples)
-  //   );
-
-  //   this.logger.debug(
-  //     DGTSourceSolidConnector.name,
-  //     'Transformed updatedEntities to triples',
-  //     { updatedTriples, updatedEntities }
-  //   );
-
-  //   const insertTriples: Triple[] = this.convertToTriples(updatedTriples);
-
-  //   let deleteTriples: Triple[];
-  //   if (updateType === 'insertdelete') {
-  //     const originalTriples: DGTLDTriple[] = _.flatten(
-  //       originalEntities.map((entity) => entity.triples)
-  //     );
-  //     this.logger.debug(
-  //       DGTSourceSolidConnector.name,
-  //       'Transformed originalEntities to triples',
-  //       { originalTriples, originalEntities }
-  //     );
-  //     deleteTriples = this.convertToTriples(originalTriples);
-  //   }
-
-  //   this.logger.debug(DGTSourceSolidConnector.name, 'Parsed triples.', {
-  //     insertTriples,
-  //     deleteTriples,
-  //   });
-
-  //   let query: Update = null;
-
-  //   if (updateType === 'delete') {
-  //     query = {
-  //       type: 'update',
-  //       prefixes: {},
-  //       updates: [
-  //         {
-  //           updateType,
-  //           delete: [{ type: 'bgp', triples: insertTriples }],
-  //         },
-  //       ],
-  //     };
-  //   } else if (updateType === 'insert') {
-  //     query = {
-  //       type: 'update',
-  //       prefixes: {},
-  //       updates: [
-  //         {
-  //           updateType,
-  //           insert: [{ type: 'bgp', triples: insertTriples }],
-  //         },
-  //       ],
-  //     };
-  //   } else if (updateType === 'insertdelete') {
-  //     query = {
-  //       type: 'update',
-  //       prefixes: {},
-  //       updates: [
-  //         {
-  //           updateType,
-  //           insert: [{ type: 'bgp', triples: insertTriples }],
-  //           delete: [{ type: 'bgp', triples: deleteTriples }],
-  //           where: [{ type: 'bgp', triples: deleteTriples }],
-  //         },
-  //       ],
-  //     };
-  //   }
-
-  //   this.logger.debug(DGTSourceSolidConnector.name, 'Created query object.', {
-  //     query,
-  //     updatedEntities,
-  //     insertTriples,
-  //     deleteTriples,
-  //   });
-
-  //   const generator = new Generator();
-  //   const body = generator.stringify(query).split('\n').join('');
-
-  //   this.logger.debug(DGTSourceSolidConnector.name, 'Created query string.', {
-  //     body,
-  //     query,
-  //   });
-
-  //   return body;
-  // }
-
-  // private convertToTriples(triples: DGTLDTriple[]): Triple[] {
-  //   return triples.map((triple: DGTLDTriple) => {
-  //     let object: Term = `${triple.object.value}` as Term;
-
-
   private discover(
     source: DGTSourceSolid
   ): Observable<DGTSourceSolidConfiguration> {
@@ -957,124 +707,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return pairs.join('&');
   }
 
-  // public convert(
-  //   response: string,
-  //   documentUri: string,
-  //   exchange: DGTExchange,
-  //   source: DGTSource<any>,
-  //   connection: DGTConnection<any>
-  // ): DGTLDTriple[] {
-  //   let res: DGTLDTriple[] = null;
-
-  //   const quads = this.parser.parse(response);
-  //   this.logger.debug(DGTSourceSolidConnector.name, 'Parsed quads', { documentUri });
-
-  //   if (quads) {
-  //     this.logger.debug(
-  //       DGTSourceSolidConnector.name,
-  //       'Starting to convert quads to values',
-  //       { documentUri }
-  //     );
-  //     res = quads.map((quad) =>
-  //       this.convertOne(documentUri, quad, exchange, source, connection)
-  //     );
-  //     res = res.map((value) => ({
-  //       ...value,
-  //       subject: value.subject.value === '#me' ? value.subject : value.subject,
-  //       // { value: webId, type: DGTLDTermType.REFERENCE } : value.subject
-  //     }));
-  //     res = this.clean(res);
-  //   }
-
-  //   return res;
-  // }
-
-  // private convertOne(
-  //   documentUri: string,
-  //   quad: Quad,
-  //   exchange: DGTExchange,
-  //   source: DGTSource<any>,
-  //   connection: DGTConnection<any>
-  // ): DGTLDTriple {
-  //   const subject = this.convertOneSubject(documentUri, quad);
-  //   const object = this.convertOneObject(documentUri, quad);
-
-  //   return {
-  //     id: uuid(),
-  //     predicate: quad.predicate.value,
-  //     subject,
-  //     object,
-  //   };
-  // }
-
-  // private convertOneSubject(
-  //   documentUri: string,
-  //   quad: Quad): DGTLDNode {
-  //   let subject: DGTLDNode = {
-  //     value: quad.subject.value,
-  //     termType: DGTLDTermType.REFERENCE,
-  //   };
-  //   if (subject && subject.value && subject.value.startsWith('#me')) {
-  //     // const me = connection.configuration.webId.split('/profile/card#me')[0];
-
-  //     subject = {
-  //       value: `${documentUri}`,
-  //       termType: DGTLDTermType.REFERENCE,
-  //     };
-  //   } else if (subject && subject.value && subject.value.startsWith('#')) {
-  //     subject = {
-  //       value: `${documentUri.split('#')[0]}${quad.subject.value}`,
-  //       termType: DGTLDTermType.REFERENCE,
-  //     };
-  //   }
-
-  //   return subject;
-  // }
-
-  // private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
-  //   let res = null;
-
-  //   if (quad.object.termType === 'Literal') {
-  //     res = {
-  //       dataType: quad.object.datatypeString,
-  //       value: quad.object.value,
-  //       termType: DGTLDTermType.LITERAL,
-  //     };
-  //   } else {
-  //     if (quad.object.value.startsWith('#')) {
-  //       res = {
-  //         value: `${documentUri.split('#')[0]}${quad.object.value}`,
-  //         termType: DGTLDTermType.REFERENCE,
-  //       };
-  //     } else {
-  //       res = {
-  //         value: quad.object.value,
-  //         termType: DGTLDTermType.REFERENCE,
-  //       };
-  //     }
-  //   }
-
-  //   return res;
-  // }
-
-  // private clean(values: DGTLDTriple[]): DGTLDTriple[] {
-  //   return values.map((value) => {
-  //     const updatedValue = value;
-  //     const stringValue = value.object.value as string;
-
-  //     if (value && stringValue.startsWith('undefined/')) {
-  //       const stringValueSplit = stringValue.split('undefined/')[1];
-  //       const stringSubjectBase = value.subject.value.split(
-  //         '/profile/card#me'
-  //       )[0];
-
-  //       updatedValue.object.value = stringSubjectBase + '/' + stringValueSplit;
-  //     }
-
-  //     return updatedValue;
-  //   });
-  // }
-
   public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange): Observable<boolean> {
     this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, purpose });
 
@@ -1108,86 +740,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       })
     );
   }
-
-  /**
-     * Check if a solid server is running on the given url
-     * @param url url to test
-     * @returns true if the specified url is a solid server, false if not
-     */
-  // public isSolidServer(url: string): Observable<boolean> {
-  //   if (!url) {
-  //     this.logger.debug(
-  //       DGTSourceSolidConnector.name,
-  //       'URL was undefined or null',
-  //       url
-  //     );
-  //     return of(false);
-  //   }
-  //   // Test if url is valid
-  //   // Copyright (c) 2010-2018 Diego Perini (http://www.iport.it)
-  //   const reg = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
-  //   if (!reg.test(url)) {
-  //     this.logger.debug(DGTSourceSolidConnector.name, 'URL was not valid', url);
-  //     return of(false);
-  //   } else {
-  //     // Check headers for Link
-  //     return (
-  //       this.http.head(url).pipe(
-  //         map((res) => {
-  //           const headers = res.headers;
-  //           if (res.status !== 200) {
-  //             this.logger.debug(
-  //               DGTSourceSolidConnector.name,
-  //               'Status was not 200',
-  //               res.status
-  //             );
-  //             return false;
-  //           } else if (!headers.has('link')) {
-  //             this.logger.debug(
-  //               DGTSourceSolidConnector.name,
-  //               'Headers did not contain Link',
-  //               headers
-  //             );
-  //             return false;
-  //           } else if (
-  //             headers.get('link') !==
-  //             '<.acl>; rel="acl", <.meta>; rel="describedBy", <http://www.w3.org/ns/ldp#Resource>; rel="type"'
-  //           ) {
-  //             this.logger.debug(
-  //               DGTSourceSolidConnector.name,
-  //               'Link header value did not match',
-  //               headers.get('link')
-  //             );
-  //             return false;
-  //           } else {
-  //             return true;
-  //           }
-  //         })
-  //       ) &&
-  //       // Check if /.well-known/openid-configuration exists on server
-  //       this.http.get(url + '/.well-known/openid-configuration').pipe(
-  //         map((getRes) => {
-  //           if (getRes.status !== 200) {
-  //             this.logger.debug(
-  //               DGTSourceSolidConnector.name,
-  //               'Status was not 200',
-  //               getRes.status
-  //             );
-  //             return false;
-  //           } else {
-  //             this.logger.debug(
-  //               DGTSourceSolidConnector.name,
-  //               'URL has a solid server',
-  //               url
-  //             );
-  //             // When the url passes all of the previous checks, it is granted 'solid-server' status
-  //             return true;
-  //           }
-  //         })
-  //       )
-  //     );
-  //   }
-  // }
 
   public generateToken(
     uri,
