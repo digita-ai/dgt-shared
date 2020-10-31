@@ -8,7 +8,7 @@ import { DGTSparqlQueryService } from '../../sparql/services/dgt-sparql-query.se
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
-export class DGTCacheBlazeGraphService extends DGTCacheService {
+export class DGTCacheSolidService extends DGTCacheService {
 
     public databaseUrl = 'http://192.168.0.224:9999/blazegraph/namespace/kb/sparql';
 
@@ -43,7 +43,7 @@ export class DGTCacheBlazeGraphService extends DGTCacheService {
 
     public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, objects: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
-        
+
         // toBeSaved is a domain object that has to be transformed to triples
         // then a correct sparql query can be formed with the transformer and triples
         // TODO Do we need the connection here : 

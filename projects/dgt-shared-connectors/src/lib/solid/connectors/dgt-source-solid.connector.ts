@@ -69,7 +69,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
           switchMap(data => transformer.toDomain([{
             triples: data.triples,
-            documentUri: data.uri,
+            uri: data.uri,
             exchange: data.exchange.id
           }])),
           // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
@@ -170,7 +170,15 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => this.exchanges.get(_.head(resources).exchange)
           .pipe(map(exchange => ({ ...data, exchange })))),
         switchMap(data => data.transformer.toTriples(resources)
-          .pipe(map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'subject.value'), domainEntities: resources, })))),
+          .pipe(
+            tap(triples => {
+              if (!triples) {
+                throw new DGTErrorArgument(DGTSourceSolidConnector.name, 'No triples created by transformer');
+              }
+            }),
+            map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'triples[0].subject.value'), domainEntities: resources, }))
+          )
+        ),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add resource', data)),
         switchMap(data => this.connections.get(data.exchange.connection)
           .pipe(map(connection => ({ ...data, connection })))),
@@ -254,7 +262,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return transformer.toTriples(domainEntities).pipe(
       map((entities) => ({
         entities,
-        groupedEntities: _.groupBy(entities, 'documentUri'),
+        groupedEntities: _.groupBy(entities, 'uri'),
         domainEntities,
       })),
       switchMap(data => this.exchanges.get(_.head(domainEntities).exchange)
@@ -369,14 +377,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           data.updates.map((update) =>
             this.generateToken(
-              update.delta.updated.documentUri,
+              update.delta.updated.uri,
               data.connection,
               data.source
             ).pipe(
               switchMap((token) => {
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
-                    update.delta.updated.documentUri,
+                    update.delta.updated.uri,
                     this.sparql.generateSparqlUpdate([update.delta.updated], 'insert'),
                     {
                       'Content-Type': 'application/sparql-update',
@@ -393,7 +401,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                 }
 
                 return this.http.patch(
-                  update.delta.updated.documentUri,
+                  update.delta.updated.uri,
                   this.sparql.generateSparqlUpdate(
                     [update.delta.updated],
                     'insertdelete',

@@ -109,7 +109,7 @@ export class DGTConnectorService {
     return this.calculateDocumentUri(resource, profile, connection).pipe(
       switchMap(preparedDomainEntity =>
         // find possible existing values to determine add or update
-        connector.query(preparedDomainEntity.documentUri, exchange, transformer).pipe(
+        connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
           map(existingValues => ({ existingValues, domainEntity: preparedDomainEntity })),
         )
       ),
@@ -159,7 +159,7 @@ export class DGTConnectorService {
     if (typeRegFound.length > 0) {
       this.logger.debug(DGTConnectorService.name, 'Typeregistration found in profile', typeRegFound[0]);
       // typeregistration found in profile
-      domainEntity.documentUri = typeRegFound[0].instance;
+      domainEntity.uri = typeRegFound[0].instance;
     } else {
       // check config for typeReg
       const typeRegsInConfig = this.config.get(c => c.typeRegistrations);
@@ -170,7 +170,7 @@ export class DGTConnectorService {
         this.logger.debug(DGTConnectorService.name, 'Typeregistration found in config', typeRegFoundInConfig[0]);
         // typeReg found in config
         missingTypeReg = true;
-        domainEntity.documentUri = origin + typeRegsInConfig[typeRegFoundInConfig[0]];
+        domainEntity.uri = origin + typeRegsInConfig[typeRegFoundInConfig[0]];
       } else {
         this.logger.debug(DGTConnectorService.name, 'no Typeregistration found in config');
         // tslint:disable-next-line:max-line-length

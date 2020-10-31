@@ -90,7 +90,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
             throw new DGTErrorArgument('Argument entity should be set.', entity);
         }
 
-        const documentUri = entity.documentUri ? entity.documentUri : trustedAppTriple.subject.value;
+        const uri = entity.uri ? entity.uri : trustedAppTriple.subject.value;
 
         const origin = entity.triples.find(value =>
             value.subject.value === trustedAppTriple.object.value &&
@@ -111,7 +111,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
         );
 
         return {
-            documentUri,
+            uri,
             triples: [...triples, trustedAppTriple],
             origin: origin ? origin.object.value : null,
             modes: parsedModes,

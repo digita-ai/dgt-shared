@@ -75,13 +75,13 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
 
         const entities = events.map<DGTLDResource>(event => {
             let triples = event.triples;
-            const documentUri = event.documentUri;
+            const uri = event.uri;
             const documentSubject = {
                 value: '#',
                 termType: DGTLDTermType.REFERENCE
             };
             const eventId = v4();
-            const eventSubjectUri = `${documentUri}#${eventId}`;
+            const eventSubjectUri = `${uri}#${eventId}`;
             const eventSubject = {
                 value: eventSubjectUri,
                 termType: DGTLDTermType.REFERENCE
@@ -144,7 +144,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
 
             const newEntity: DGTLDResource = {
                 ...event,
-                documentUri,
+                uri,
                 triples
             };
 
@@ -166,7 +166,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
     private transformOne(eventSubjectValue: DGTLDTriple, resource: DGTLDResource): DGTEvent {
         this.paramChecker.checkParametersNotNull({ eventSubjectValue, entity: resource });
 
-        const documentUri = resource.documentUri ? resource.documentUri : eventSubjectValue.subject.value;
+        const uri = resource.uri ? resource.uri : eventSubjectValue.subject.value;
 
         const description = resource.triples.find(value =>
             value.subject.value === eventSubjectValue.object.value &&
@@ -196,7 +196,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         );
 
         return {
-            documentUri,
+            uri,
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
             triples: [...eventTriples, eventSubjectValue],

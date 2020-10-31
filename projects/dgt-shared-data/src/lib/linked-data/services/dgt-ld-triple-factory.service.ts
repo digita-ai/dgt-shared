@@ -11,22 +11,22 @@ export class DGTLDTripleFactoryService {
 
     constructor(private logger: DGTLoggerService) { }
 
-    public createFromString(response: string, documentUri: string): DGTLDTriple[] {
+    public createFromString(response: string, uri: string): DGTLDTriple[] {
         if (!response) {
             throw new DGTErrorArgument('Argument response should be set.', response);
         }
 
-        if (!documentUri) {
-            throw new DGTErrorArgument('Argument documentUri should be set.', documentUri);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
         let res: DGTLDTriple[] = [];
 
         try {
             const quads = this.parser.parse(response);
-            this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { documentUri });
+            this.logger.debug(DGTLDTripleFactoryService.name, 'Parsed quads', { uri });
 
-            res = this.createFromQuads(quads, documentUri);
+            res = this.createFromQuads(quads, uri);
         } catch (err) {
             this.logger.error(DGTLDTripleFactoryService.name, 'Caught exception', { response, error: err })
         }
@@ -34,22 +34,22 @@ export class DGTLDTripleFactoryService {
         return res;
     }
 
-    public createFromQuads(quads: Quad[], documentUri: string): DGTLDTriple[] {
+    public createFromQuads(quads: Quad[], uri: string): DGTLDTriple[] {
         if (!quads) {
             throw new DGTErrorArgument('Argument quads should be set.', quads);
         }
 
         let res: DGTLDTriple[] = null;
 
-        this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { documentUri });
-        res = quads.map(quad => this.convertOne(documentUri, quad));
+        this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { uri });
+        res = quads.map(quad => this.convertOne(uri, quad));
         
         res = this.clean(res);
 
         return res;
     }
 
-    private convertOne(documentUri: string, quad: Quad): DGTLDTriple {
+    private convertOne(uri: string, quad: Quad): DGTLDTriple {
         if (!quad) {
             throw new DGTErrorArgument('Argument quad should be set.', quad);
         }
@@ -58,8 +58,8 @@ export class DGTLDTripleFactoryService {
             throw new DGTErrorArgument('Argument quad.predicate should be set.', quad.predicate);
         }
 
-        const subject = quad && quad.subject ? this.convertOneSubject(documentUri, quad) : null;
-        const object = quad && quad.object ? this.convertOneObject(documentUri, quad) : null;
+        const subject = quad && quad.subject ? this.convertOneSubject(uri, quad) : null;
+        const object = quad && quad.object ? this.convertOneObject(uri, quad) : null;
 
         return {
             id: uuid(),
@@ -69,17 +69,17 @@ export class DGTLDTripleFactoryService {
         };
     }
 
-    private convertOneSubject(documentUri: string, quad: Quad): DGTLDNode {
+    private convertOneSubject(uri: string, quad: Quad): DGTLDNode {
         let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
 
             subject = {
-                value: `${documentUri}`,
+                value: `${uri}`,
                 termType: DGTLDTermType.REFERENCE
             };
         } else if (subject && subject.value && subject.value.startsWith('#')) {
             subject = {
-                value: `${documentUri.split('#')[0]}#${quad.subject.value.split('#')[1]}`,
+                value: `${uri.split('#')[0]}#${quad.subject.value.split('#')[1]}`,
                 termType: DGTLDTermType.REFERENCE
             };
         }
@@ -87,7 +87,7 @@ export class DGTLDTripleFactoryService {
         return subject;
     }
 
-    private convertOneObject(documentUri: string, quad: Quad): DGTLDNode {
+    private convertOneObject(uri: string, quad: Quad): DGTLDNode {
         let res = null;
 
         if (quad.object.termType === 'Literal') {
@@ -100,7 +100,7 @@ export class DGTLDTripleFactoryService {
             if (quad.object.value.startsWith('#')) {
                 // here, the object is a reference to another triple
                 res = {
-                    value: documentUri.split('#')[0] + quad.object.value,
+                    value: uri.split('#')[0] + quad.object.value,
                     termType: DGTLDTermType.REFERENCE
                 };
             } else if (quad.object.value.startsWith('undefined/')) {
@@ -113,7 +113,7 @@ export class DGTLDTripleFactoryService {
                 res = {
                     // the origin of an url: [[https://www.youtube.com]]/watch?v=y8kEiL81_R4
                     // to this, add the relative path
-                    value: new URL(documentUri).origin + quad.object.value.replace('undefined', ''),
+                    value: new URL(uri).origin + quad.object.value.replace('undefined', ''),
                     termType: DGTLDTermType.REFERENCE
                 }
             } else {

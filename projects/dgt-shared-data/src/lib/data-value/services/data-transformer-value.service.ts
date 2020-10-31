@@ -35,7 +35,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
     return entity.triples.map((triple: DGTLDTriple) => {
       // TODO check if subject or holder?
       return {
-        documentUri: entity.documentUri,
+        uri: entity.uri,
         exchange: entity.exchange,
         ...triple,
         triples: [triple]
