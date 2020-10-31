@@ -99,9 +99,9 @@ export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
 export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
-export { DGTCacheType } from './lib/cache/models/DGTCacheType.model'
+export { DGTCacheType } from './lib/cache/models/DGTCacheType.model';
 export { DGTCacheInMemoryService } from './lib/cache/services/dgt-cache-in-memory.service';
-export { DGTCacheBlazeGraphService } from './lib/cache/services/dgt-cache-blazegraph.service';
+export { DGTCacheSolidService } from './lib/cache/services/dgt-cache-solid.service';
 export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.service';
 export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-ld-resource-transformer.service';
 export { DGTLDFilterConnection } from './lib/linked-data/models/dgt-ld-filter-connection.model';
