@@ -78,19 +78,19 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
     this.paramChecker.checkParametersNotNull({ profile, predicate, resource });
 
     const foundTypeRegistrations = profile.typeRegistrations.filter(typeRegistration =>
-      (!resource.documentUri || typeRegistration.instance === resource.documentUri) &&
+      (!resource.uri || typeRegistration.instance === resource.uri) &&
       this.utils.same(typeRegistration.forClass, predicate)
     );
     this.logger.debug(DGTLDTypeRegistrationService.name, 'Found typeRegistrations.', { foundTypeRegistrations });
 
-    if (resource.documentUri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
-      // documenturi exists, and corresponding type registration does not exist -> create type registration
+    if (resource.uri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
+      // uri exists, and corresponding type registration does not exist -> create type registration
       this.logger.debug(DGTLDTypeRegistrationService.name, 'Creating the relevant typeRegistration.', { foundTypeRegistrations, resource });
 
       const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
         forClass: predicate,
-        instance: resource.documentUri,
-        documentUri: profile.privateTypeIndex,
+        instance: resource.uri,
+        uri: profile.privateTypeIndex,
         triples: null,
         exchange: profile.exchange,
       };
@@ -104,15 +104,15 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
           tap(data => this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Added new typeRegistrations', data)),
           map(data => data.addedTypeRegistrations)
         );
-    } else if (!resource.documentUri && foundTypeRegistrations && foundTypeRegistrations.length > 0) {
-      // documenturi does not exist, but type registration exist -> set document uri based on type registration
+    } else if (!resource.uri && foundTypeRegistrations && foundTypeRegistrations.length > 0) {
+      // uri does not exist, but type registration exist -> set document uri based on type registration
 
       this.logger.debug(DGTLDTypeRegistrationService.name, 'Returning the relevant typeRegistration.', { foundTypeRegistrations, resource });
 
       res = of(foundTypeRegistrations);
-    } else if (!resource.documentUri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
+    } else if (!resource.uri && (!foundTypeRegistrations || foundTypeRegistrations.length === 0)) {
       throw new DGTErrorNotImplemented();
-      // documenturi does not exist, and type registration does not exist => create type registration based on defaults and set documenturi
+      // uri does not exist, and type registration does not exist => create type registration based on defaults and set uri
       // this.logger.debug(DGTLDTypeRegistrationService.name, 'Creating the relevant typeRegistration...', { foundTypeRegistrations, resource });
       // res = this.register(predicate, profile, connection, source);
     }
@@ -138,7 +138,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
             const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
               forClass: predicate,
               instance: typeRegistrationsInConfig[key],
-              documentUri: profile.privateTypeIndex,
+              uri: profile.privateTypeIndex,
               triples: null,
               exchange: profile.exchange,
             };
@@ -151,7 +151,7 @@ export class DGTLDTypeRegistrationSolidService extends DGTLDTypeRegistrationServ
         }),
         switchMap(data => data.typeRegistrationsMissing && data.typeRegistrationsMissing.length > 0 ?
           this.register(data.typeRegistrationsMissing, data.profile)
-            .pipe(map(typeRegistrationsRegistered => _.flatten(typeRegistrationsRegistered).map(reg => ({ ...reg, instance: new URL(data.profile.documentUri).origin + reg.instance }))))
+            .pipe(map(typeRegistrationsRegistered => _.flatten(typeRegistrationsRegistered).map(reg => ({ ...reg, instance: new URL(data.profile.uri).origin + reg.instance }))))
           :
           of([])
         ),
