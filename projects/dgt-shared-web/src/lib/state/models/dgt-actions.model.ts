@@ -13,7 +13,7 @@ export const ActionTypes = {
   NAVIGATE_EXTERNAL: '[App] Navigate external',
   ADD_NOTIFICATION: '[App] Add notification',
   DISMISS_NOTIFICATION: '[App] Dismiss notification',
-  DISMISS_All_NOTIFICATIONS: '[App] Dismiss all notifications',
+  DISMISS_ALL_NOTIFICATIONS: '[App] Dismiss all notifications',
   CHECK_CONNECTION: '[App] Check connection',
   CHECK_CONNECTION_FINISH: '[App] Check connection finish',
   HANDLE_ERROR: '[App] Handle error',
@@ -103,7 +103,7 @@ export class CookiesNoticeDecision implements DGTAbstractAction<boolean> {
 }
 
 export class DismissAllNotifications implements DGTAbstractAction<{}> {
-  type = ActionTypes.DISMISS_All_NOTIFICATIONS;
+  type = ActionTypes.DISMISS_ALL_NOTIFICATIONS;
   constructor(public payload: {}, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
   }
 }

@@ -72,7 +72,7 @@ export class DGTStateEffectsBaseWebService {
         .pipe(
             ofType(ActionTypes.NGRX_NAVIGATED),
             map(() => new DismissAllNotifications({})),
-            catchError((error, caught) => of(new HandleError({ typeName: NavigationEnd.name, error, caught }))),
+            catchError((error, caught) => of(new HandleError({ typeName: ActionTypes.NGRX_NAVIGATED, error, caught }))),
         );
 
     @Effect({ dispatch: false })
