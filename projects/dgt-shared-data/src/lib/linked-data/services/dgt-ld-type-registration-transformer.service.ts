@@ -82,14 +82,14 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
     const entities = typeRegistrations.map<DGTLDResource>(typeRegistration => {
       let triples = typeRegistration.triples;
-      const documentUri = typeRegistration.documentUri;
+      const uri = typeRegistration.uri;
       const documentSubject = {
         // This line is only for human readability in the raw file
         value: '#' + uuid(),
         termType: DGTLDTermType.REFERENCE
       };
       const typeRegistrationId = v4();
-      const typeRegistrationSubjectUri = `${documentUri}#${typeRegistrationId}`;
+      const typeRegistrationSubjectUri = `${uri}#${typeRegistrationId}`;
 
       if (!triples) {
         triples = [
@@ -125,7 +125,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
       const newEntity: DGTLDResource = {
         ...typeRegistration,
-        documentUri,
+        uri,
         triples
       };
 
@@ -150,7 +150,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
     this.paramChecker.checkParametersNotNull({ typeRegistrationSubjectValue, entity: resource });
     this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Starting to transform one entity', { typeRegistrationSubjectValue, entity: resource });
 
-    const documentUri = resource.documentUri ? resource.documentUri : typeRegistrationSubjectValue.subject.value;
+    const uri = resource.uri ? resource.uri : typeRegistrationSubjectValue.subject.value;
 
     const forClass = resource.triples.find(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value &&
@@ -167,7 +167,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
     );
 
     return {
-      documentUri,
+      uri,
       forClass: forClass ? forClass.object.value : null,
       instance: instance ? instance.object.value : null,
       triples: [...typeRegistrationTriples, typeRegistrationSubjectValue],
