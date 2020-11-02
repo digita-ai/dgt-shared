@@ -21,7 +21,7 @@ describe('DGTBrowserDataCategoryComponent', () => {
         it('should dispatch Navigate', () => {
             spyOn(testService.component.store, 'dispatch');
             testService.component.viewCategoryPage(mockCategoryName);
-            expect(testService.component.store.dispatch).toHaveBeenCalledWith(new Navigate( { path: [`/data/category/${mockCategoryName.id}`] } ));
+            expect(testService.component.store.dispatch).toHaveBeenCalledWith(new Navigate( { path: [`/data/category/${mockCategoryName.title}`] } ));
         });
     });
 
@@ -46,7 +46,7 @@ describe('DGTBrowserDataCategoryComponent', () => {
             const newValue = {value: mockValueRole, newObject: 'test-role'};
             testService.component.onValueUpdated(newValue);
             expect(testService.component.valuesToUpdate.size).toBeGreaterThan(originalLength);
-            expect(testService.component.valuesToUpdate.get(newValue.value.id)).toBeTruthy();
+            expect(testService.component.valuesToUpdate.get(newValue.value.uri)).toBeTruthy();
         });
     });
 
@@ -78,13 +78,13 @@ describe('DGTBrowserDataCategoryComponent', () => {
                 expect(button).toBeFalsy();
             });
             it('should display when valuesToUpdate has values', () => {
-                testService.component.valuesToUpdate.set(mockValueName.id, {value: mockValueName, newObject: 'test-name-two'});
+                testService.component.valuesToUpdate.set(mockValueName.uri, {value: mockValueName, newObject: 'test-name-two'});
                 testService.fixture.detectChanges();
-                const button:  HTMLButtonElement = hostElement.querySelector('dgt-section-content dgt-button button');
+                const button: HTMLButtonElement = hostElement.querySelector('dgt-section-content dgt-button button');
                 expect(button).toBeTruthy();
             });
             it('should call updateValues on click', () => {
-                testService.component.valuesToUpdate.set(mockValueName.id, {value: mockValueName, newObject: 'test-name-two'});
+                testService.component.valuesToUpdate.set(mockValueName.uri, {value: mockValueName, newObject: 'test-name-two'});
                 testService.fixture.detectChanges();
                 spyOn(testService.component, 'updateValues');
                 const button:  HTMLButtonElement = hostElement.querySelector('dgt-section-content dgt-button button');

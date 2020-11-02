@@ -68,8 +68,7 @@ export class DGTConsentSolidService extends DGTConsentService {
     expirationDate = new Date(year + 100, month, day);
 
     const resource: DGTConsent = {
-      id: v4(),
-      uri: null,
+      uri: v4(),
       triples: null,
       expirationDate,
       purposeLabel,

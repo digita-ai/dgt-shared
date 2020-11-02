@@ -106,7 +106,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => transformer.toDomain([{
           triples: data.triples,
           uri: data.uri,
-          exchange: data.exchange.id
+          exchange: data.exchange.uri
         }])),
         // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
       );

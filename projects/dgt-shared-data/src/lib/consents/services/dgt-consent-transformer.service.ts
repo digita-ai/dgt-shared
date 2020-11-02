@@ -78,8 +78,8 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                 value: '#',
                 termType: DGTLDTermType.REFERENCE
             };
-            const consentId = consent.id ? consent.id : v4();
-            this.logger.debug(DGTConsentTransformerService.name, 'starting to transform to linked data without id for consent', { consent })
+            const consentId = consent.uri ? consent.uri : v4();
+            this.logger.debug(DGTConsentTransformerService.name, 'starting to transform to linked data without uri for consent', { consent })
             const consentSubjectUri = `${consent.uri}#${consentId}`;
             const consentSubject = {
                 value: consentSubjectUri,
@@ -172,10 +172,9 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         );
 
         return {
-            uri,
             expirationDate: expirationDate ? expirationDate.object.value : null,
             triples: [...consentTriples, consentSubjectValue],
-            id: v4(),
+            uri: v4(),
             purposeLabel: purposeLabel ? purposeLabel.object.value : '',
             controller: controller ? controller.object.value : '',
             exchange: resource.exchange,

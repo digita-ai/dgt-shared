@@ -3,6 +3,7 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 export interface DGTCategory extends DGTLDResource {
     icon: string;
+    title: string;
     description: string;
     filter: DGTLDFilter;
     groupId: string;

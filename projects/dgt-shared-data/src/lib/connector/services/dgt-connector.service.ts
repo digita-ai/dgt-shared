@@ -49,7 +49,7 @@ export class DGTConnectorService {
     return this.sources.get(destination).pipe(
       map(source => ({ source })),
       // get connection
-      mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.id }).pipe(
+      mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.uri }).pipe(
         tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
         map(connection => connection.length > 0 ? connection : [null]),
         map(connection => ({ ...data, connection: connection[0] })),

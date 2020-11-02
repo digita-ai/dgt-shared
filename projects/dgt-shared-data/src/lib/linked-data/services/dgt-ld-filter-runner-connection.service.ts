@@ -34,7 +34,7 @@ export class DGTLDFilterRunnerConnectionService implements DGTLDFilterRunnerServ
 private runOne(filter: DGTLDFilterConnection, resource: DGTLDResource): Observable<boolean> {
   this.paramChecker.checkParametersNotNull({ filter, resource });
   return this.exchanges.get(resource.exchange).pipe(
-      map(exchange => exchange && exchange.connection ? filter.connections.find(connection => connection.id === exchange.connection) : null),
+      map(exchange => exchange && exchange.connection ? filter.connections.find(connection => connection.uri === exchange.connection) : null),
       map(holder => holder !== null && holder !== undefined ? true : false)
   );
 }

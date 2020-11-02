@@ -20,16 +20,16 @@ export class DGTValueRemoteService extends DGTDataValueService {
         super(logger, paramChecker, filters);
     }
 
-    get(id: string): Observable<DGTDataValue> {
-        this.logger.debug(DGTValueRemoteService.name, 'Starting to get', { id });
+    get(uri: string): Observable<DGTDataValue> {
+        this.logger.debug(DGTValueRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${data.uri}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain([response.data])),
@@ -54,7 +54,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
 
         return of({ holder })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.id}/resources` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.uri}/resources` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),
