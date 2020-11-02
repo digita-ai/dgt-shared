@@ -13,10 +13,12 @@ export const ActionTypes = {
   NAVIGATE_EXTERNAL: '[App] Navigate external',
   ADD_NOTIFICATION: '[App] Add notification',
   DISMISS_NOTIFICATION: '[App] Dismiss notification',
+  DISMISS_All_NOTIFICATIONS: '[App] Dismiss all notifications',
   CHECK_CONNECTION: '[App] Check connection',
   CHECK_CONNECTION_FINISH: '[App] Check connection finish',
   HANDLE_ERROR: '[App] Handle error',
   COOKIES_NOTICE_DECISION: '[App] Cookies notice decision made',
+  NGRX_NAVIGATED: '@ngrx/router-store/navigated',
 };
 
 export class SetLocale implements DGTAbstractAction<DGTI8NLocale> {
@@ -97,5 +99,11 @@ export class CookiesNoticeDecision implements DGTAbstractAction<boolean> {
   type = ActionTypes.COOKIES_NOTICE_DECISION;
 
   constructor(public payload: boolean, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
+  }
+}
+
+export class DismissAllNotifications implements DGTAbstractAction<{}> {
+  type = ActionTypes.DISMISS_All_NOTIFICATIONS;
+  constructor(public payload: {}, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
   }
 }
