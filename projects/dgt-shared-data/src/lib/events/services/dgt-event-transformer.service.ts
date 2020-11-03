@@ -116,6 +116,15 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                         },
                     },
                     {
+                        predicate: 'http://digita.ai/voc/events#createdAt',
+                        subject: eventSubject,
+                        object: {
+                            termType: DGTLDTermType.LITERAL,
+                            dataType: DGTLDDataType.STRING,
+                            value: event.date
+                        },
+                    },
+                    {
                         predicate: 'http://digita.ai/voc/events#uri',
                         subject: eventSubject,
                         object: {
@@ -179,9 +188,14 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         const eventTriples = resource.triples.filter(value =>
             value.subject.value === eventSubjectValue.object.value
         );
+        const date = resource.triples.find(value =>
+            value.subject.value === eventSubjectValue.object.value &&
+            value.predicate === 'http://digita.ai/voc/events#createdAt'
+        );
 
         return {
             uri,
+            date: date ? new Date(date.object.value) : null,
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
             triples: [...eventTriples, eventSubjectValue],
