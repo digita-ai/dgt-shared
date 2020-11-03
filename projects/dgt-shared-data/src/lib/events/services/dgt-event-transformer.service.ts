@@ -10,6 +10,7 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
+import { values } from 'lodash';
 
 /** Transforms linked data to events, and the other way around. */
 @DGTInjectable()
@@ -194,7 +195,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         );
 
         return {
-            uri,
+            uri: eventSubjectValue.object.value,
             date: date ? new Date(date.object.value) : null,
             description: description ? description.object.value : null,
             stakeholder: stakeholder ? stakeholder.object.value : null,
