@@ -1,14 +1,14 @@
 import { mergeMap, map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { DGTErrorService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable, DGTConnectivityService } from '@digita-ai/dgt-shared-utils';
 import { DGTProfileService, DGTLDTypeRegistrationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
 import * as _ from 'lodash';
 import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
 import { DGTEventsRegister } from '../../events/models/dgt-events-actions.model';
 import { DGTI8NLocale } from '../../i8n/models/dgt-i8n-locale.model';
-import { ActionTypes, AddNotification, CheckConnection, CheckConnectionFinish, HandleError, Navigate, NavigateExternal, SetDefaultLocale, SetLocale } from '../models/dgt-actions.model';
+import { ActionTypes, AddNotification, CheckConnection, CheckConnectionFinish, DismissAllNotifications, HandleError, Navigate, NavigateExternal, SetDefaultLocale, SetLocale } from '../models/dgt-actions.model';
 import { DGTNotification } from '../../interface/models/dgt-notification.model';
 import { DGTNotificationType } from '../../interface/models/dgt-notification-type.model';
 import { DGTI8NService } from '../../i8n/services/dgt-i8n.service';
@@ -64,6 +64,15 @@ export class DGTStateEffectsBaseWebService {
             ofType(ActionTypes.SET_LOCALE),
             tap((action: SetLocale) => this.i8n.applyLocale(action.payload)),
             catchError((error, caught) => of(new HandleError({ typeName: SetLocale.name, error, caught }))),
+        );
+
+    @Effect()
+    /** Dismisses all notifications */
+    onNavigate$ = this.actions$
+        .pipe(
+            ofType(ActionTypes.NGRX_NAVIGATED),
+            map(() => new DismissAllNotifications({})),
+            catchError((error, caught) => of(new HandleError({ typeName: ActionTypes.NGRX_NAVIGATED, error, caught }))),
         );
 
     @Effect({ dispatch: false })

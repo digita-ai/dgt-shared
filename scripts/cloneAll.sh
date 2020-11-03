@@ -1,6 +1,6 @@
 #!/bin/bash
 LOCAL_PATH="/Users/sander/digita"
-declare -a arr=("git@github.com:digita-ai/dgt-shared.git" "git@github.com:digita-ai/dgt-platform-api.git" "git@github.com:digita-ai/dgt-browser.git" "git@github.com:digita-ai/dgt-platform-web.git" "git@github.com:digita-ai/dgt-platform-public.git" "git@github.com:digita-ai/dgt-docs.git" "git@github.com:digita-ai/dgt-platform-blazegraph.git")
+declare -a arr=("git@github.com:digita-ai/dgt-shared.git" "git@github.com:digita-ai/dgt-platform-api.git" "git@github.com:digita-ai/dgt-browser.git" "git@github.com:digita-ai/dgt-platform-web.git" "git@github.com:digita-ai/dgt-platform-public.git" "git@github.com:digita-ai/dgt-docs.git")
 USERNAME="John Doe"
 EMAIL="john@digita.ai"
 

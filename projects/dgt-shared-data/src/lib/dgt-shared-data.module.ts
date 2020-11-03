@@ -17,7 +17,7 @@ import { DGTConnectorService } from './connector/services/dgt-connector.service'
 import { DGTDataValueTransformerService } from './data-value/services/data-transformer-value.service';
 
 import { DGTCacheInMemoryService } from './cache/services/dgt-cache-in-memory.service';
-import { DGTCacheBlazeGraphService } from './cache/services/dgt-cache-blazegraph.service';
+import { DGTCacheSolidService } from './cache/services/dgt-cache-solid.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
 
 export const declarations = [
@@ -35,7 +35,7 @@ export const providers = [
   DGTQueryService,
   //DGTMockDataService,
   DGTCacheInMemoryService,
-  DGTCacheBlazeGraphService,
+  DGTCacheSolidService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
