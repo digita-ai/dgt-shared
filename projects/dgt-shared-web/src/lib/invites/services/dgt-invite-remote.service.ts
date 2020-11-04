@@ -1,15 +1,19 @@
 import { DGTInvite, DGTInviteService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @Injectable()
 export class DGTInviteRemoteService extends DGTInviteService {
   constructor(
     private http: DGTHttpService,
     private logger: DGTLoggerService,
-    private config: DGTConfigurationService<DGTConfigurationBaseWeb>
+    private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
+    public store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
   ) {
     super();
   }
@@ -19,16 +23,13 @@ export class DGTInviteRemoteService extends DGTInviteService {
       throw new DGTErrorArgument('Argument inviteId should be set.', id);
     }
 
-    return this.http.get<DGTInvite>(`${this.config.get(c => c.server.uri)}invite/${id}`).pipe(
-      map(res => {
-        if (res.status === 200) {
-          return res.data;
-        } else {
-          this.logger.debug(DGTInviteRemoteService.name, 'Response status is ', res.status);
-          return null;
-        }
-      }),
-    );
+    return of({ id })
+      .pipe(
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.id}` })),
+        switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+        switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+        map(response => response.data),
+      );
   }
   query(filter: Partial<DGTInvite>): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
@@ -47,9 +48,13 @@ export class DGTInviteRemoteService extends DGTInviteService {
       throw new DGTErrorArgument('Argument inviteId should be set.', inviteId);
     }
 
-    return this.http.get<DGTInvite>(`${this.config.get(c => c.server.uri)}invite/${inviteId}/verify`).pipe(
-      map(res => res.data),
-      tap(invite => this.logger.debug(DGTInviteRemoteService.name, 'Verified invite', invite))
+    return of({ inviteId })
+    .pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/verify` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      tap(invite => this.logger.debug(DGTInviteRemoteService.name, 'Verified invite', invite)),
+      map(response => response.data),
     );
   }
 }
