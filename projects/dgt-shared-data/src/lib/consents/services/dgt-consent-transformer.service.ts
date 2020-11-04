@@ -98,6 +98,15 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         },
                     },
                     {
+                        predicate: 'http://digita.ai/voc/consents#createdAt',
+                        subject: consentSubject,
+                        object: {
+                            termType: DGTLDTermType.LITERAL,
+                            dataType: DGTLDDataType.DATETIME,
+                            value: consent.createdAt
+                        },
+                    },
+                    {
                         predicate: 'http://digita.ai/voc/consent#purposeLabel',
                         subject: consentSubject,
                         object: {
@@ -167,6 +176,11 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             value.predicate === 'http://digita.ai/voc/consent#controller'
         );
 
+        const createdAt = resource.triples.find(value =>
+            value.subject.value === consentSubjectValue.object.value &&
+            value.predicate === 'http://digita.ai/voc/consent#createdAt'
+        );
+
         const consentTriples = resource.triples.filter(value =>
             value.subject.value === consentSubjectValue.object.value
         );
@@ -178,6 +192,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             purposeLabel: purposeLabel ? purposeLabel.object.value : '',
             controller: controller ? controller.object.value : '',
             exchange: resource.exchange,
+            createdAt: createdAt ? new Date(createdAt.object.value) : null,
         };
     }
 }
