@@ -4,7 +4,6 @@ import { DGTAbstractAction } from './dgt-abstract-action.model';
 import { DGTAction } from './dgt-action.model';
 import { DGTNotification } from '../../interface/models/dgt-notification.model';
 import { DGTI8NLocale } from '../../i8n/models/dgt-i8n-locale.model';
-import { DGTQuery, DGTEntity } from '@digita-ai/dgt-shared-data';
 
 export const ActionTypes = {
   SET_LOCALE: '[App] Set locale',
@@ -16,6 +15,7 @@ export const ActionTypes = {
   DISMISS_ALL_NOTIFICATIONS: '[App] Dismiss all notifications',
   CHECK_CONNECTION: '[App] Check connection',
   CHECK_CONNECTION_FINISH: '[App] Check connection finish',
+  CHECK_UPDATES: '[App] Check updates',
   HANDLE_ERROR: '[App] Handle error',
   COOKIES_NOTICE_DECISION: '[App] Cookies notice decision made',
   NGRX_NAVIGATED: '@ngrx/router-store/navigated',
@@ -64,6 +64,14 @@ export class DismissNotification implements DGTAbstractAction<string> {
   type = ActionTypes.DISMISS_NOTIFICATION;
 
   constructor(public payload: string, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
+  }
+}
+
+export class CheckUpdates implements DGTAbstractAction<void> {
+  type = ActionTypes.CHECK_UPDATES;
+  payload = null;
+
+  constructor(public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
   }
 }
 
