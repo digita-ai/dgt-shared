@@ -16,6 +16,7 @@ export class DGTButtonComponent implements OnInit {
   @Input() public disabled = false;
   @Input() public loading = false;
   @Input() public showContent = true;
+  @Input() public loadingEnabled = true;
   @Output() public called: EventEmitter<any> = new EventEmitter<any>();
 
   public get colorBase(): string {
@@ -35,7 +36,7 @@ export class DGTButtonComponent implements OnInit {
 
   public onClick() {
 
-    this.loading = true;
+    this.loading = true && this.loadingEnabled;
 
     if (this.confirm) {
       this.logger.debug(DGTButtonComponent.name, 'Button clicked, launching confirm dialog');

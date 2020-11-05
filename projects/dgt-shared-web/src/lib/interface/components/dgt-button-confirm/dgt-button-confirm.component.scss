@@ -2,16 +2,10 @@
 .dashboard-information {
     height: 100%;
     .dashboard-information-icon {
-        height: 56px;
-        width: 56px;
-        border-radius: 50%;
-        border: 5px solid $color-primary-normal;
         background-color: $color-foreground-inverse;
         padding: 0px;
         text-align: center;
         img {
-            width: 40px;
-            height: 40px;
             border-radius: 50%;
         }
     }
