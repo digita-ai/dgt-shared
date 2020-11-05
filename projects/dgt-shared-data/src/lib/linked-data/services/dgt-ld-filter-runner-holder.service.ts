@@ -36,7 +36,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
     private runOne(filter: DGTLDFilterHolder, resource: DGTLDResource): Observable<boolean> {
         this.paramChecker.checkParametersNotNull({ filter, resource });
         return this.exchanges.get(resource.exchange).pipe(
-            map(exchange => exchange && exchange.holder ? filter.holders.find(holder => holder.id === exchange.holder) : null),
+            map(exchange => exchange && exchange.holder ? filter.holders.find(holder => holder.uri === exchange.holder) : null),
             map(holder => holder !== null && holder !== undefined ? true : false)
         );
     }

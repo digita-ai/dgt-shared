@@ -20,7 +20,7 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
   private runOne(filter: DGTLDFilterExchange, resource: DGTLDResource): boolean {
     this.paramChecker.checkParametersNotNull({ filter, resource });
     const match = filter.exchanges.find(
-      exchange => exchange.id === resource.exchange
+      exchange => exchange.uri === resource.exchange
     );
     return match ? true : false;
   }

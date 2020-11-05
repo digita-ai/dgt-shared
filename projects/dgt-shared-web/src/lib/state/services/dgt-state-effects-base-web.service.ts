@@ -164,7 +164,7 @@ export class DGTStateEffectsBaseWebService {
                 new DGTEventsRegister({
                     event: {
                         ...profileLoaded,
-                        exchange: data.action.payload.exchange.id,
+                        exchange: data.action.payload.exchange.uri,
                     },
                     profile: data.profile,
                 }),

@@ -18,18 +18,18 @@ export class DGTSourceStateService extends DGTSourceService {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(id: string): Observable<DGTSource<any>> {
-    this.logger.debug(DGTSourceStateService.name, 'Starting to get', { id });
+  public get(uri: string): Observable<DGTSource<any>> {
+    this.logger.debug(DGTSourceStateService.name, 'Starting to get', { uri });
 
-    if (!id) {
-      throw new DGTErrorArgument('Argument id should be set.', id);
+    if (!uri) {
+      throw new DGTErrorArgument('Argument uri should be set.', uri);
     }
 
-    return of({ id })
+    return of({ uri })
       .pipe(
         switchMap(data => this.store.select<DGTSource<any>[]>(state => state.app.sources)
           .pipe(map(sources => ({ ...data, sources })))),
-        map(data => data.sources ? data.sources.find(c => c.id === data.id) : null),
+        map(data => data.sources ? data.sources.find(c => c.uri === data.uri) : null),
       );
   }
 

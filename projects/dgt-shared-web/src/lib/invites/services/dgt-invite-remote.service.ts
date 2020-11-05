@@ -14,12 +14,12 @@ export class DGTInviteRemoteService extends DGTInviteService {
     super();
   }
 
-  get(id: string): Observable<DGTInvite> {
-    if (!id) {
-      throw new DGTErrorArgument('Argument inviteId should be set.', id);
+  get(uri: string): Observable<DGTInvite> {
+    if (!uri) {
+      throw new DGTErrorArgument('Argument inviteId should be set.', uri);
     }
 
-    return this.http.get<DGTInvite>(`${this.config.get(c => c.server.uri)}invite/${id}`).pipe(
+    return this.http.get<DGTInvite>(`${this.config.get(c => c.server.uri)}invite/${uri}`).pipe(
       map(res => {
         if (res.status === 200) {
           return res.data;

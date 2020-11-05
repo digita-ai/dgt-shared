@@ -14,16 +14,16 @@ export class DGTPurposeRemoteService extends DGTPurposeService {
         super();
     }
     
-    get(id: string): Observable<DGTPurpose> {
-        this.logger.debug(DGTPurposeRemoteService.name, 'Starting to get', { id });
+    get(uri: string): Observable<DGTPurpose> {
+        this.logger.debug(DGTPurposeRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${data.uri}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTPurpose>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
