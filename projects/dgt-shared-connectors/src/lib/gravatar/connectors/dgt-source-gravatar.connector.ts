@@ -89,7 +89,7 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
         return {
             triples,
             uri: holderUri,
-            exchange: exchange.id,
+            exchange: exchange.uri,
         };
     }
 

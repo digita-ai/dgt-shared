@@ -13,16 +13,16 @@ export class DGTHolderRemoteService extends DGTHolderService {
         super();
     }
 
-    public get(id: string): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderRemoteService.name, 'Starting to get', { id });
+    public get(uri: string): Observable<DGTHolder> {
+        this.logger.debug(DGTHolderRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.uri}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTHolder>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),

@@ -13,16 +13,16 @@ export class DGTCategoryRemoteService extends DGTCategoryService {
         super();
     }
     
-    get(id: string): Observable<DGTCategory> {
-        this.logger.debug(DGTCategoryRemoteService.name, 'Starting to get', { id });
+    get(uri: string): Observable<DGTCategory> {
+        this.logger.debug(DGTCategoryRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${data.uri}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTCategory>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
@@ -49,5 +49,4 @@ export class DGTCategoryRemoteService extends DGTCategoryService {
     delete(resource: DGTCategory): Observable<DGTCategory> {
         throw new Error('Method not implemented.');
     }
-
 }

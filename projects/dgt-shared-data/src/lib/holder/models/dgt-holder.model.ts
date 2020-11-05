@@ -1,4 +1,4 @@
-import { DGTEntity } from '../../metadata/models/dgt-entity.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
-export interface DGTHolder extends DGTEntity {
+export interface DGTHolder extends DGTLDResource {
 }

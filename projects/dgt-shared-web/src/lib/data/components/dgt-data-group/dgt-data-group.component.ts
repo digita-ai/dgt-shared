@@ -42,9 +42,9 @@ export class DGTDataGroupComponent implements OnInit {
   @Output()
   infoClicked: EventEmitter<DGTCategory>;
 
-  /** Data values grouped by category ID */
+  /** Data values grouped by category uri */
   public groupedValues;
-  /** Categories grouped by category ID */
+  /** Categories grouped by category uri */
   public groupedCategories;
 
   constructor(
@@ -61,7 +61,7 @@ export class DGTDataGroupComponent implements OnInit {
 
   /**
    * This function will be called when values or categories get updated
-   * It groups the categories and values by category ID
+   * It groups the categories and values by category uri
    * @param values values to group
    * @param categories categories to group
    */
@@ -71,18 +71,18 @@ export class DGTDataGroupComponent implements OnInit {
     if (values && categories) {
       // Categories for which a value exists
       if (this.categories.length > 0) {
-        this.groupedCategories = _.groupBy(categories, category => category.id);
+        this.groupedCategories = _.groupBy(categories, category => category.uri);
 
         // grouping values by category
         this.categories.forEach(category => {
-          if (category.id) {
+          if (category.uri) {
             this.datavalueService.getValuesOfCategories([category], values)
               .subscribe(valuesOfCategory => {
                 this.groupedValues.set(
-                  category.id,
+                  category.uri,
                   valuesOfCategory
                 );
-              })
+              });
           }
         });
       }

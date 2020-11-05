@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
 
     /**
-     * Map of DGTSource IDs -> ConnectionPools
+     * Map of DGTSource uri -> ConnectionPools
      */
     private pools: DGTMap<string, ConnectionPool>;
 
@@ -79,7 +79,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
         return {
             triples,
             uri,
-            exchange: exchange.id,
+            exchange: exchange.uri,
         };
     }
 
@@ -212,7 +212,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
     }
 
     private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
-        if (!this.pools || !this.pools.get(source.id)) {
+        if (!this.pools || !this.pools.get(source.uri)) {
             try {
                 const config = this.extractConfig(source);
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
@@ -220,16 +220,16 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 pool.on('error', err => {
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
                 });
-                this.pools.set(source.id, pool);
+                this.pools.set(source.uri, pool);
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
-                return from(this.pools.get(source.id).connect()).pipe(
-                    map(() => this.pools.get(source.id)),
+                return from(this.pools.get(source.uri).connect()).pipe(
+                    map(() => this.pools.get(source.uri)),
                 );
             } catch (err) {
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, pools: this.pools, source });
                 throw new DGTErrorArgument(err, err);
             }
         }
-        return of(this.pools.get(source.id));
+        return of(this.pools.get(source.uri));
     }
 }

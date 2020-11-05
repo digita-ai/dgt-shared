@@ -24,7 +24,7 @@ describe('DGTSourceSolidConnector', () => {
 
             expect(() => {
                 testService.service.query('bla', {
-                    id: null,
+                    uri: null,
                     icon: null,
                     description: null,
                     fields: null,
@@ -42,25 +42,30 @@ describe('DGTSourceSolidConnector', () => {
        :me dgt-events:event :1.`;
             const webId = 'https://john.my.id/';
             const exchange: DGTExchange = {
-                id: 'e-1',
+                uri: 'e-1',
+                exchange: null,
+                triples: null,
                 purpose: null,
                 holder: null,
                 source: 's-1',
                 connection: 'c-1',
             };
             const source: DGTSourceSolid = {
-                id: 's-1',
+                uri: 's-1',
+                exchange: null,
+                triples: null,
                 icon: null,
                 description: null,
                 type: null,
                 configuration: null,
             };
             const connection: DGTConnectionSolid = {
-                id: 'c-1',
+                uri: 'c-1',
+                exchange: null,
+                triples: null,
                 configuration: null,
                 state: null,
                 source: 's-1',
-                subject: null,
             };
 
             const expectedResult: DGTLDTriple[] = [
