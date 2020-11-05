@@ -32,7 +32,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                     .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => from(this.getPool(data.source).connect())
                     .pipe(map(pool => ({ ...data, pool })))),
-                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool')),
+                tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', data)),
                 switchMap(data => from(data.pool.request().query(
                     data.source.configuration.commands.select(data.connection.configuration.personId)
                 )).pipe(map(result => ({ ...data, result })))),
@@ -40,12 +40,12 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 // tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query')),
                 map(data => this.convertResult(data.holderUri, data.result, data.exchange, data.source.configuration.mapping)),
                 // tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Converted results', { data })),
-                switchMap(resource => transformer.toDomain([resource])),
+                switchMap(resource => transformer ? transformer.toDomain([resource]) : of([resource])),
                 catchError(error => {
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL', error);
                     throw new DGTErrorArgument('Error while querying MSSQL', null);
                 }),
-            );
+            ) as Observable<T[]>;
 
         // return of({ holderUri, exchange, transformer })
         //     .pipe(
@@ -145,7 +145,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while updating MSSQL');
                     throw new DGTErrorArgument('Error while updating MSSQL', null);
                 }),
-            );
+            ) as Observable<R[]>;
         // this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting UPDATE, creating connection pool', { resources, transformer });
 
         // return of({ resources, transformer })
@@ -343,7 +343,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
     private getPool(source: DGTSource<any>): ConnectionPool {
         try {
             const config = this.extractConfig(source);
-            this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
+            this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool', config);
             const pool = new ConnectionPool(config);
             pool.on('error', err => {
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);

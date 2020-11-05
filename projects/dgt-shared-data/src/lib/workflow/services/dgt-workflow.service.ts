@@ -1,12 +1,13 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, mergeMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -18,6 +19,7 @@ export class DGTWorkflowService {
     private filters: DGTLDFilterService,
     private connectors: DGTConnectorService,
     private paramChecker: DGTParameterCheckerService,
+    private exchanges: DGTExchangeService,
   ) { }
 
   public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
@@ -44,12 +46,19 @@ export class DGTWorkflowService {
           .pipe(map(triples => ({ ...data, triples })))),
         switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.triples)))
           .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
-        switchMap(data =>
-          data.workflow.destination ?
-            this.connectors.save(data.exchange, data.updatedTriples, data.workflow.destination).pipe(
-              map(newTriple => ({ ...data, newTriple }))
-            ) : of(data)
-        ),
+        mergeMap(data => data.workflow.destination ? this.exchanges.query({ source: data.workflow.destination, holder: exchange.holder, purpose: exchange.purpose }).pipe(
+          tap( exchangesRes => {
+            if ( !exchangesRes[0]) {
+              this.logger.debug(DGTWorkflowService.name, 'No exchange found for this upstreamsync', data);
+              throw new DGTErrorArgument('No exchange found for this upstreamsync', null);
+            }
+          }),
+          // tslint:disable-next-line:max-line-length
+          map(exchangesRes => ({ ...data, exchange: exchangesRes[0], updatedTriples: data.updatedTriples.map( tr => ({ ...tr, exchange: exchangesRes[0].id }) )})),
+          // tslint:disable-next-line:max-line-length
+          switchMap( data2 => this.connectors.save(data2.exchange, data2.updatedTriples).pipe( map( () => data) )),
+          catchError( error => of(data)),
+        ) : of(data)),
         map(data => data.triples),
       );
   }

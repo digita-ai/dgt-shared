@@ -49,10 +49,10 @@ export class DGTConnectorService {
     return this.connectors.get(sourceType);
   }
 
-  public save<T extends DGTLDResource>(exchange: DGTExchange, resources: T[], destination: string): Observable<T[]> {
+  public save<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
     this.paramChecker.checkParametersNotNull({ exchange, triples: resources });
 
-    return this.sources.get(destination).pipe(
+    return this.sources.get(exchange.source).pipe(
       map(source => ({ source })),
       // get connection
       mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.id }).pipe(
@@ -65,6 +65,7 @@ export class DGTConnectorService {
         if (data.connection !== null) {
           return data;
         } else {
+          this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
           throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
         }
       }),
@@ -75,11 +76,12 @@ export class DGTConnectorService {
         map(purpose => ({ ...data, purpose })),
       )),
       // get profile to pass to upstreamsync
-      mergeMap(data => this.profiles.get(exchange).pipe(
+      mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
         map(profile => ({ ...data, profile }))
-      )),
+      ) : of({ ...data, profile: null })),
       mergeMap(data => {
         if (resources.length === 0) {
+          this.logger.debug(DGTConnectorService.name, 'triples can not be an empty list');
           throw new DGTErrorArgument('triples can not be an empty list', resources);
         }
         return forkJoin(resources.map(resource => this.upstreamSync(
@@ -89,10 +91,9 @@ export class DGTConnectorService {
       map(data => _.flatten(data.resultFromUpstream)),
       // catch error if no connection found or triples was an empty list
       catchError(() => {
-        this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
         return [resources];
       }),
-    );
+    ) as Observable<T[]>;
   }
 
   public upstreamSync<T extends DGTLDResource>(
@@ -107,20 +108,17 @@ export class DGTConnectorService {
       { connector, resource, connection, transformer, exchange });
 
     return this.calculateDocumentUri(resource, profile, connection).pipe(
-      switchMap(preparedDomainEntity =>
+      tap( prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', prepared)),
+      mergeMap(preparedDomainEntity =>
         // find possible existing values to determine add or update
         connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
+          tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.length}`, data)),
           map(existingValues => ({ existingValues, domainEntity: preparedDomainEntity })),
         )
       ),
+      tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.existingValues.length}`, data)),
       switchMap(data => {
         if (data.existingValues[0]) {
-          // domainEntity.documentUri = connection.configuration.webId;
-          // // find possible existing values
-          // return connector.query(domainEntity.documentUri, exchange, transformer).pipe(
-          //   switchMap(existingValues => {
-          //     if (existingValues[0]) {
-          // convert to list of {original: Object, updated: Object}
           const updatedResource = { original: data.existingValues[0], updated: data.domainEntity };
           this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updatedResource });
           return connector.update<T>([updatedResource], transformer).pipe(
@@ -149,8 +147,12 @@ export class DGTConnectorService {
     profile: DGTProfile,
     connection: DGTConnection<any>,
   ): Observable<T> {
+    this.logger.debug(DGTConnectorService.name, 'Calculating document uri', {domainEntity, profile, connection});
     let missingTypeReg = false;
     // profile will only have a value when we have a solid source / connection
+    if ( !profile ) {
+      return of(domainEntity);
+    }
     // find typeregistration in profile
     const typeRegFound = profile.typeRegistrations.filter(reg =>
       reg.forClass === domainEntity.triples[0].predicate
