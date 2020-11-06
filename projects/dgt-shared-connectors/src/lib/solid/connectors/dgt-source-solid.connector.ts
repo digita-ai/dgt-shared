@@ -45,7 +45,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return of({ exchange, documentUri, transformer }).pipe(
       switchMap(data => this.connections.get(data.exchange.connection)
         .pipe(map(connection => ({ ...data, connection, uri: data.documentUri ? data.documentUri : connection.configuration.webId })))),
-      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
+      tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connection', data)),
       switchMap(data => this.sources.get(data.exchange.source)
         .pipe(map(source => ({ ...data, source })))),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved source', data)),
@@ -58,11 +58,11 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       }, true)
         .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
-      switchMap(data => transformer.toDomain([{
+      switchMap(data => transformer ? transformer.toDomain([{
         triples: data.triples,
         uri: data.uri,
         exchange: data.exchange.id
-      }])),
+      }]) : of([{ triples: data.triples, uri: data.uri, exchange: data.exchange.id} as DGTLDResource])),
       catchError((error) => {
         this.logger.debug(DGTSourceSolidConnector.name, 'Error querying solid connector', { documentUri, exchange, error });
         return of([]);

@@ -105,17 +105,17 @@ export class DGTConnectorService {
     profile: DGTProfile,
   ): Observable<T> {
     this.logger.debug(DGTConnectorService.name, 'upstream syncing',
-      { connector, resource, connection, transformer, exchange });
+      { connector, resource, connection, transformer, exchange, profile });
 
     return this.calculateDocumentUri(resource, profile, connection).pipe(
-      tap( prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', prepared)),
-      mergeMap(preparedDomainEntity =>
+      tap( prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', {prepared, s: prepared.triples[0].subject})),
+      switchMap(preparedDomainEntity => {
         // find possible existing values to determine add or update
-        connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
+        return connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
           tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.length}`, data)),
           map(existingValues => ({ existingValues, domainEntity: preparedDomainEntity })),
-        )
-      ),
+        );
+      }),
       tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.existingValues.length}`, data)),
       switchMap(data => {
         if (data.existingValues[0]) {
@@ -180,8 +180,10 @@ export class DGTConnectorService {
       }
     }
 
+    domainEntity.triples[0].subject.value = domainEntity.uri;
+
     return of(domainEntity).pipe(
-      mergeMap(entity => {
+      switchMap(entity => {
         if (missingTypeReg) {
           return this.typeregistrationService.registerMissingTypeRegistrations(profile).pipe(
             map(() => entity),
