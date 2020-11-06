@@ -1,6 +1,6 @@
-import { DGTEntity } from '../../metadata/models/dgt-entity.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
-export interface DGTPurpose extends DGTEntity {
+export interface DGTPurpose extends DGTLDResource {
   icon: string;
   description: string;
   predicates: string[];

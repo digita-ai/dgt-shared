@@ -23,4 +23,5 @@ export interface DGTEvent extends DGTLDResource {
      * the website of a stakeholder that accessed their data.
      */
     stakeholderUri: string;
+    date: Date;
 }

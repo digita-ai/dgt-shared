@@ -18,18 +18,18 @@ export class DGTExchangeStateService extends DGTExchangeService {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(id: string): Observable<DGTExchange> {
-    this.logger.debug(DGTExchangeStateService.name, 'Starting to get', { id });
+  public get(uri: string): Observable<DGTExchange> {
+    this.logger.debug(DGTExchangeStateService.name, 'Starting to get', { uri });
 
-    if (!id) {
-      throw new DGTErrorArgument('Argument id should be set.', id);
+    if (!uri) {
+      throw new DGTErrorArgument('Argument uri should be set.', uri);
     }
 
-    return of({ id })
+    return of({ uri })
       .pipe(
         switchMap(data => this.store.select<DGTExchange[]>(state => state.app.exchanges)
           .pipe(map(exchanges => ({ ...data, exchanges })))),
-        map(data => data.exchanges ? data.exchanges.find(c => c.id === data.id) : null),
+        map(data => data.exchanges ? data.exchanges.find(c => c.uri === data.uri) : null),
       );
   }
 

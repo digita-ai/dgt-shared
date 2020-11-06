@@ -66,16 +66,16 @@ export class DGTConsentSolidService extends DGTConsentService {
     const day = expirationDate.getDate();
     //TODO how long default ? Now 100 years - set expiry date to now to invalidate.
     expirationDate = new Date(year + 100, month, day);
+    const createdAt = new Date();
 
     const resource: DGTConsent = {
-      id: v4(),
-      uri: null,
+      uri: v4(),
       triples: null,
-      createdAt: new Date(),
-      expirationDate: expirationDate,
-      purposeLabel: purposeLabel,
+      expirationDate,
+      purposeLabel,
       controller: 'Vito.be',
       exchange: profile.exchange,
+      createdAt,
     };
 
     return of({ resource, profile })

@@ -23,16 +23,16 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(id: string): Observable<DGTConnection<any>> {
-    this.logger.debug(DGTConnectionRemoteService.name, 'Starting to get', { id });
+  public get(uri: string): Observable<DGTConnection<any>> {
+    this.logger.debug(DGTConnectionRemoteService.name, 'Starting to get', { uri });
 
-    if (!id) {
-      throw new DGTErrorArgument('Argument id should be set.', id);
+    if (!uri) {
+      throw new DGTErrorArgument('Argument uri should be set.', uri);
     }
 
-    return of({ id })
+    return of({ uri })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${data.id}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${data.uri}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.get<DGTConnection<any>>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),

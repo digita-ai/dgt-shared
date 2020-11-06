@@ -68,7 +68,7 @@ export class DGTDataCategoryComponent implements AfterViewInit {
   */
   public onValueUpdated(val: {value: DGTDataValue, newObject: any}): void {
     this.paramChecker.checkParametersNotNull({val}, 1);
-    this.valuesToUpdate.set(val.value.id, val);
+    this.valuesToUpdate.set(val.value.uri, val);
   }
 
   public updateValues(values: Map<string, {value: DGTDataValue, newObject: any}>): void {

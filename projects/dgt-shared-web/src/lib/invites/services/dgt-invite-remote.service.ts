@@ -18,14 +18,14 @@ export class DGTInviteRemoteService extends DGTInviteService {
     super();
   }
 
-  get(id: string): Observable<DGTInvite> {
-    if (!id) {
-      throw new DGTErrorArgument('Argument inviteId should be set.', id);
+  get(uri: string): Observable<DGTInvite> {
+    if (!uri) {
+      throw new DGTErrorArgument('Argument inviteId should be set.', uri);
     }
 
-    return of({ id })
+    return of({ uri })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.id}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.uri}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),
