@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService } from '@digita-ai/dgt-shared-data';
+import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -26,6 +26,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private transformer: DGTSourceSolidTrustedAppTransformerService,
     private triples: DGTLDTripleFactoryService,
     private connections: DGTConnectionService,
+    private purposes: DGTPurposeService,
     private sources: DGTSourceService,
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
@@ -758,19 +759,17 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
 
-  public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange): Observable<boolean> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, purpose });
+  public checkAccessRights(exchange: DGTExchange): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', exchange);
 
-    if (!connection) {
-      throw new DGTErrorArgument('Argument connection should be set.', connection);
-    }
-
-    if (!purpose) {
-      throw new DGTErrorArgument('Argument purpose should be set.', purpose);
-    }
-
-    return of({ connection, purpose }).pipe(
-      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, exchange, this.transformer).pipe(
+    return of(exchange).pipe(
+      switchMap(data => this.connections.get(exchange.connection).pipe(
+        map(connection => ({ ...data, connection }))
+      )),
+      switchMap(data => this.purposes.get(exchange.purpose).pipe(
+        map(purpose => ({ ...data, purpose }))
+      )),
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(data.connection.configuration.webId, exchange, this.transformer).pipe(
         map(trustedApps => ({ ...data, trustedApps }))
       )),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
