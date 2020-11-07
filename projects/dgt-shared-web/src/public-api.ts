@@ -15,7 +15,6 @@ export { DGTButtonComponent } from './lib/interface/components/dgt-button/dgt-bu
 export { DGTButtonConfirmComponent } from './lib/interface/components/dgt-button-confirm/dgt-button-confirm.component';
 export { DGTCharmComponent } from './lib/interface/components/dgt-charm/dgt-charm.component';
 export { DGTCompareValidator } from './lib/validation/validators/dgt-compare.validator';
-export { DGTEmailUniqueValidator } from './lib/validation/validators/dgt-email-unique.validator';
 export { DGTFeature } from './lib/state/models/dgt-feature.model';
 export { DGTFeatureDefinition } from './lib/state/models/dgt-feature-definition.model';
 export { DGTNotification } from './lib/interface/models/dgt-notification.model';
@@ -30,15 +29,9 @@ export { DGTSmartElement } from './lib/interface/models/dgt-smart-element.model'
 export { DGTSmartForm } from './lib/interface/models/dgt-smart-form.model';
 export { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
 export { DGTTitleService } from './lib/interface/services/dgt-title.service';
-export { DGTAuthService } from './lib/security/services/dgt-auth.service';
-export { DGTAuthMockService } from './lib/security/services/dgt-auth-mock.service';
 export { DGTI8NLocale } from './lib/i8n/models/dgt-i8n-locale.model';
 export { DGTI8NService } from './lib/i8n/services/dgt-i8n.service';
-export { DGTI8NReference } from './lib/i8n/models/dgt-i8n-reference.model';
-export { DGTUser } from './lib/security/models/dgt-user.model';
-export { DGTI8NEntity } from './lib/i8n/models/dgt-i8n-entity.model';
 export * from './lib/state/models/dgt-actions.model';
-export { DGTActivitiesComponent } from './lib/lineage/components/dgt-activities/dgt-activities.component';
 export { DGTFormDateComponent } from './lib/form/components/dgt-form-date/dgt-form-date.component';
 export { DGTFormBeforeValidator } from './lib/form/validators/dgt-form-before.validator';
 export { DGTFormAfterValidator } from './lib/form/validators/dgt-form-after.validator';
@@ -48,7 +41,6 @@ export { DGTFormControlComponent } from './lib/form/components/dgt-form-control/
 export { DGTFormElementComponent } from './lib/form/components/dgt-form-element/dgt-form-element.component';
 export { DGTFormComponent } from './lib/form/components/dgt-form/dgt-form.component';
 export { DGTFormLabelComponent } from './lib/form/components/dgt-form-label/dgt-form-label.component';
-export { DGTStandardPageComponent } from './lib/interface/components/dgt-standard-page/dgt-standard-page.component';
 export { DGTSectionComponent } from './lib/interface/components/dgt-section/dgt-section.component';
 export { DGTSectionActionComponent } from './lib/interface/components/dgt-section-action/dgt-section-action.component';
 export { DGTSectionAvatarComponent } from './lib/interface/components/dgt-section-avatar/dgt-section-avatar.component';
