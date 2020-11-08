@@ -104,3 +104,14 @@ export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.se
 export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-ld-resource-transformer.service';
 export { DGTLDFilterConnection } from './lib/linked-data/models/dgt-ld-filter-connection.model';
 export { DGTInviteService } from './lib/invite/services/dgt-invite-abstract.service';
+export { DGTHolderTransformerService } from './lib/holder/services/dgt-holder-transformer.service';
+export { DGTHolderCacheService } from './lib/holder/services/dgt-holder-cache.service';
+export { DGTLDFilterPartial } from './lib/linked-data/models/dgt-ld-filter-partial.model';
+export { DGTLDFilterRunnerPartialService } from './lib/linked-data/services/dgt-ld-filter-runner-partial.service';
+export { DGTSourceMockService } from './lib/source/services/dgt-source-mock.service';
+export { DGTCategoryMockService } from './lib/categories/services/dgt-category-mock.service';
+export { DGTPurposeMockService } from './lib/purpose/services/dgt-purpose-mock.service';
+export { DGTInviteMockService } from './lib/invite/services/dgt-invite-mock.service';
+export { DGTExchangeMockService } from './lib/exchanges/services/dgt-exchange-mock.service';
+export { DGTHolderMockService } from './lib/holder/services/dgt-holder-mock.service';
+export { DGTConnectionMockService } from './lib/connection/services/dgt-connection-mock.service';

@@ -1,4 +1,4 @@
-import { DGTConnectionService, DGTConnection } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionService, DGTConnection, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 @DGTInjectable()
 export class DGTConnectionStateService extends DGTConnectionService {
 
-  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService,) {
+  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService, private filters: DGTLDFilterService) {
     super();
   }
 
@@ -37,18 +37,14 @@ export class DGTConnectionStateService extends DGTConnectionService {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter: Partial<DGTConnection<any>>): Observable<DGTConnection<any>[]> {
+  public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
     this.logger.debug(DGTConnectionStateService.name, 'Starting to query', { filter });
-
-    if (!filter) {
-      throw new DGTErrorArgument('Argument filter should be set.', filter);
-    }
 
     return of({ filter })
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map(connections => ({ ...data, connections })))),
-        map(data => _.filter(data.connections, data.filter))
+        switchMap(data => data.filter ? this.filters.run<DGTConnection<any>>(data.filter, data.connections) : of(data.connections)),
       )
   }
 
@@ -59,7 +55,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
   public getConnectionForInvite(inviteId: string, sourceId: string): Observable<any> {
     throw new DGTErrorNotImplemented();
   }
-  
+
   public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
     throw new DGTErrorNotImplemented();
   }

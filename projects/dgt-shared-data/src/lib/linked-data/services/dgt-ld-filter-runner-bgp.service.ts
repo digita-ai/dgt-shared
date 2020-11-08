@@ -10,7 +10,7 @@ import { DGTLDResource } from '../models/dgt-ld-resource.model';
 export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGTLDFilterBGP> {
     public readonly type: DGTLDFilterType = DGTLDFilterType.BGP;
 
-    run(filter: DGTLDFilterBGP, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    run<R extends DGTLDResource>(filter: DGTLDFilterBGP, resources: R[]): Observable<R[]> {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
         }
@@ -19,10 +19,10 @@ export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGT
             throw new DGTErrorArgument('Argument triresourcesples should be set.', resources);
         }
 
-        return of(resources.map(resource => this.runOne(filter, resource)));
+        return of(resources.map(resource => this.runOne<R>(filter, resource)));
     }
 
-    private runOne(filter: DGTLDFilterBGP, resource: DGTLDResource): DGTLDResource {
+    private runOne<R extends DGTLDResource>(filter: DGTLDFilterBGP, resource: R): R {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
         }

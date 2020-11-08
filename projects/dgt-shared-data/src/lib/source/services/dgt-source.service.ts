@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 @DGTInjectable()
 export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
@@ -12,11 +13,9 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
   ) { }
 
   public abstract get(id: string): Observable<DGTSource<any>>;
-  public abstract query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]>;
+  public abstract query(filter?: DGTLDFilter): Observable<DGTSource<any>[]>;
   public abstract save(resource: DGTSource<any>): Observable<DGTSource<any>>;
   public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
-
-  public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
   /**
    * Returns a list of sources matching query

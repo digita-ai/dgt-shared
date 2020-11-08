@@ -1,4 +1,4 @@
-import { DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
@@ -14,6 +14,12 @@ export class DGTCacheSolidService extends DGTCacheService {
 
     constructor(private http: DGTHttpService, private sparqlService: DGTSparqlQueryService, private logger: DGTLoggerService,) {
         super();
+    }
+
+    public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
+        this.logger.debug(DGTCacheSolidService.name, 'Starting to get', { transformer, uri });
+
+        throw new DGTErrorNotImplemented();
     }
 
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {

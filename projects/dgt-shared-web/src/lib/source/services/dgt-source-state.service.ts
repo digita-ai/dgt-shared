@@ -1,4 +1,4 @@
-import { DGTSourceService, DGTSource } from '@digita-ai/dgt-shared-data';
+import { DGTSourceService, DGTSource, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class DGTSourceStateService extends DGTSourceService {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]> {
+  public query(filter?: DGTLDFilter): Observable<DGTSource<any>[]> {
     throw new DGTErrorNotImplemented();
   }
 

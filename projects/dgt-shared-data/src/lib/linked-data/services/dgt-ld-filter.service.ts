@@ -16,6 +16,7 @@ import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-comb
 import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDFilterRunnerPartialService } from './dgt-ld-filter-runner-partial.service';
 
 @DGTInjectable()
 export class DGTLDFilterService {
@@ -26,15 +27,16 @@ export class DGTLDFilterService {
     private logger: DGTLoggerService,
     private triples: DGTLDTripleFactoryService,
     private paramChecker: DGTParameterCheckerService,
-    private exchanges: DGTExchangeService,
+    // private exchanges: DGTExchangeService,
     private sparql: DGTSparqlCommunicaService
   ) {
     this.register(new DGTLDFilterRunnerBGPService());
-    this.register(new DGTLDFilterRunnerSparqlService(logger, this.triples, this.sparql));
-    this.register(new DGTLDFilterRunnerHolderService(exchanges, paramChecker));
-    this.register(new DGTLDFilterRunnerExchangeService(paramChecker));
-    this.register(new DGTLDFilterRunnerConnectionService(exchanges, paramChecker));
-    this.register(new DGTLDFilterRunnerCombinationService(paramChecker, this));
+    this.register(new DGTLDFilterRunnerSparqlService(this.logger, this.triples, this.sparql));
+    // this.register(new DGTLDFilterRunnerHolderService(this.exchanges, this.paramChecker));
+    this.register(new DGTLDFilterRunnerExchangeService(this.paramChecker));
+    this.register(new DGTLDFilterRunnerPartialService(this.paramChecker));
+    // this.register(new DGTLDFilterRunnerConnectionService(this.exchanges, this.paramChecker));
+    this.register(new DGTLDFilterRunnerCombinationService(this.paramChecker, this));
   }
 
   public register<T extends DGTLDFilter>(runner: DGTLDFilterRunnerService<T>) {
@@ -42,13 +44,14 @@ export class DGTLDFilterService {
     this.runners.set(runner.type, runner);
   }
 
-  public run(filter: DGTLDFilter, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+  public run<T extends DGTLDResource>(filter: DGTLDFilter, resources: T[]): Observable<T[]> {
+    this.logger.debug(DGTLDFilterService.name, 'Running filter', { filter });
     // TODO log on lower level then debug
     //this.logger.debug(DGTLDFilterService.name, 'Starting to run filters', { filter, triples });
     this.paramChecker.checkParametersNotNull({ filter, resources });
     const runner = this.runners.get(filter.type);
     if (!runner) {
-      throw new DGTErrorArgument('No runner registered for the given filter type.', runner);
+      throw new DGTErrorArgument('No runner registered for the given filter type.', { filter, runner });
     }
     return runner.run(filter, resources);
   }

@@ -1,4 +1,4 @@
-import { DGTConnectionService, DGTConnection, DGTConfigurationBaseWeb, DGTConnectionState } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionService, DGTConnection, DGTConfigurationBaseWeb, DGTConnectionState, DGTLDFilterService, DGTLDFilter, DGTExchange } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -15,6 +15,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
     private logger: DGTLoggerService,
+    private filters: DGTLDFilterService
   ) {
     super();
   }
@@ -43,19 +44,16 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter: Partial<DGTConnection<any>>): Observable<DGTConnection<any>[]> {
+  public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
     this.logger.debug(DGTConnectionRemoteService.name, 'Starting to query', { filter });
-
-    if (!filter) {
-      throw new DGTErrorArgument('Argument filter should be set.', filter);
-    }
 
     return of({ filter })
       .pipe(
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-        switchMap(data => this.http.get<DGTConnection<any>[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-        map(response => _.filter<DGTConnection<any>>(response.data, filter)),
+        switchMap(data => this.http.get<DGTConnection<any>[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+          .pipe(map(response => ({ ...data, response })))),
+        switchMap(data => data.filter ? this.filters.run<DGTConnection<any>>(data.filter, data.response.data) : of(data.response.data)),
       );
   }
 

@@ -29,7 +29,7 @@ export class DGTLDService {
 
         return of({ filter, transformer })
             .pipe(
-                switchMap(data => this.exchanges.query({})
+                switchMap(data => this.exchanges.query()
                     .pipe(map(exchanges => ({ ...data, exchanges })))),
                 tap(data => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
                 mergeMap(data => zip(...data.exchanges.map(exchange => this.queryForExchange(exchange, data.transformer)))

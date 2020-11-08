@@ -1,5 +1,5 @@
 import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DGTHolder, DGTHolderService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTHolder, DGTHolderService, DGTConfigurationBaseWeb, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -9,7 +9,7 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTHolderRemoteService extends DGTHolderService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>) {
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
         super();
     }
 
@@ -29,19 +29,16 @@ export class DGTHolderRemoteService extends DGTHolderService {
             );
     }
 
-    public query(filter: Partial<DGTHolder>): Observable<DGTHolder[]> {
+    public query(filter?: DGTLDFilter): Observable<DGTHolder[]> {
         this.logger.debug(DGTHolderRemoteService.name, 'Starting to query', { filter });
-
-        if (!filter) {
-            throw new DGTErrorArgument('Argument filter should be set.', filter);
-        }
 
         return of({ filter })
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTHolder[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => _.filter<DGTHolder>(response.data, filter)),
+                switchMap(data => this.http.get<DGTHolder[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => ({ ...data, response })))),
+                switchMap(data => data.filter ? this.filters.run<DGTHolder>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
 

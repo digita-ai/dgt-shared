@@ -9,6 +9,7 @@ import { DGTDataGroup } from '../models/data-group.model';
 import { DGTCategory } from '../../categories/models/dgt-category.model';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTHolder } from '../../holder/models/dgt-holder.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 @DGTInjectable()
 /**
@@ -24,7 +25,7 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
   ) { }
 
   public abstract get(id: string): Observable<DGTDataValue>;
-  public abstract query(filter: Partial<DGTDataValue>): Observable<DGTDataValue[]>;
+  public abstract query(filter?: DGTLDFilter): Observable<DGTDataValue[]>;
   public abstract save(resource: DGTDataValue): Observable<DGTDataValue>;
   public abstract delete(resource: DGTDataValue): Observable<DGTDataValue>;
   public abstract getForHolder(holder: DGTHolder): Observable<DGTDataValue[]>;

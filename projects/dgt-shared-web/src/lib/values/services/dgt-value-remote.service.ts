@@ -1,4 +1,4 @@
-import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTConfigurationBaseWeb, DGTDataValueTransformerService } from '@digita-ai/dgt-shared-data';
+import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTConfigurationBaseWeb, DGTDataValueTransformerService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from "@digita-ai/dgt-shared-utils";
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -36,7 +36,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
                 map(values => _.head(values)),
             );
     }
-    query(filter: Partial<DGTDataValue>): Observable<DGTDataValue[]> {
+    query(filter?: DGTLDFilter): Observable<DGTDataValue[]> {
         throw new Error('Method not implemented.');
     }
     save(resource: DGTDataValue): Observable<DGTDataValue> {

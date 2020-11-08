@@ -18,7 +18,7 @@ export class DGTLDFilterRunnerSparqlService implements DGTLDFilterRunnerService<
 
     constructor(private logger: DGTLoggerService, private triples: DGTLDTripleFactoryService, private sparql: DGTSparqlCommunicaService) { }
 
-    run(filter: DGTLDFilterSparql, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    run<R extends DGTLDResource>(filter: DGTLDFilterSparql, resources: R[]): Observable<R[]> {
         this.logger.debug(DGTLDFilterRunnerSparqlService.name, 'Starting to run filter', { filter, resources });
 
         if (!filter) {

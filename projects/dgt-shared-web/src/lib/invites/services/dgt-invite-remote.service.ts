@@ -1,4 +1,4 @@
-import { DGTInvite, DGTInviteService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTInvite, DGTInviteService, DGTConfigurationBaseWeb, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
@@ -9,7 +9,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
   constructor(
     private http: DGTHttpService,
     private logger: DGTLoggerService,
-    private config: DGTConfigurationService<DGTConfigurationBaseWeb>
+    private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService
   ) {
     super();
   }
@@ -30,7 +30,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
       }),
     );
   }
-  query(filter: Partial<DGTInvite>): Observable<DGTInvite[]> {
+  query(filter?: DGTLDFilter): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
   }
   save(resource: DGTInvite): Observable<DGTInvite> {

@@ -17,6 +17,19 @@ export class DGTCacheInMemoryService extends DGTCacheService {
         super();
     }
 
+    public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
+        this.logger.debug(DGTCacheInMemoryService.name, 'Starting to get', { cache: this.cache, transformer, uri });
+
+        return of({ uri, transformer })
+            .pipe(
+                map(data => ({ ...data, resources: this.cache.filter(resource => resource.uri === data.uri) })),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
+                switchMap(data => transformer.toDomain(data.resources)
+                    .pipe(map(resources => _.head(resources)))),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Found resource', data)),
+            )
+    }
+
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
     }
@@ -26,7 +39,10 @@ export class DGTCacheInMemoryService extends DGTCacheService {
 
         return of({ resources, transformer })
             .pipe(
-                tap(data => this.cache = data.resources),
+                switchMap(data => transformer.toTriples(data.resources)
+                    .pipe(map(transformed => ({ ...data, transformed })))),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
+                tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
                 map(data => data.resources)
             )
     }
