@@ -5,7 +5,6 @@
 export * from './lib/dgt-shared-data.module';
 export { DGTActivityType } from './lib/metadata/models/dgt-activity-type.model';
 export { DGTActivityVisibility } from './lib/metadata/models/dgt-activity-visibility.model';
-export { DGTActivity } from './lib/metadata/models/dgt-activity.model';
 export { DGTConsent } from './lib/consents/models/dgt-consent.model';
 export { DGTConsentService } from './lib/consents/services/dgt-consent.service';
 export { DGTConsentTransformerService } from './lib/consents/services/dgt-consent-transformer.service';
@@ -45,7 +44,6 @@ export { DGTFunctionResultState } from './lib/logic/models/dgt-function-result-s
 export { DGTFile } from './lib/file/models/dgt-file.model';
 export { DGTFileService } from './lib/file/services/dgt-file.service';
 export { DGTFileType } from './lib/file/models/dgt-file-type.model';
-export { DGTEntity } from './lib/metadata/models/dgt-entity.model';
 export { DGTExchange } from './lib/exchanges/models/dgt-exchange.model';
 export { DGTMapFieldWorkflowAction } from './lib/workflow/actions/dgt-map-field.workflow-action';
 export { DGTConnection } from './lib/connection/models/dgt-connection.model';

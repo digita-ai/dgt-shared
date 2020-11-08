@@ -62,7 +62,6 @@ export class DGTLDTripleFactoryService {
         const object = quad && quad.object ? this.convertOneObject(uri, quad) : null;
 
         return {
-            id: uuid(),
             predicate: quad.predicate.value,
             subject,
             object,

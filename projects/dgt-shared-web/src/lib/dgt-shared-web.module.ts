@@ -22,7 +22,6 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
-import { DGTActivitiesComponent } from './lineage/components/dgt-activities/dgt-activities.component';
 import { DGTFormValidationComponent } from './form/components/dgt-form-validation/dgt-form-validation.component';
 import { DGTFormControlComponent } from './form/components/dgt-form-control/dgt-form-control.component';
 import { DGTFormDateComponent } from './form/components/dgt-form-date/dgt-form-date.component';
@@ -36,7 +35,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DGTChipComponent } from './interface/components/dgt-chip/dgt-chip.component';
 import { DGTLoadingPageComponent } from './interface/components/dgt-loading-page/dgt-loading-page.component';
-import { DGTStandardPageComponent } from './interface/components/dgt-standard-page/dgt-standard-page.component';
 import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-supported.guard';
 import { DGTNotificationsComponent } from './interface/components/dgt-notifications/dgt-notifications.component';
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
@@ -105,10 +103,8 @@ export const declarations = [
   DGTFormComponent,
   DGTFormFileComponent,
   DGTFormLabelComponent,
-  DGTActivitiesComponent,
   DGTChipComponent,
   DGTLoadingPageComponent,
-  DGTStandardPageComponent,
   DGTDialogComponent,
   DGTDialogActionComponent,
   DGTDialogContentComponent,
