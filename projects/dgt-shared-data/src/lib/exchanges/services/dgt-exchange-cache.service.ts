@@ -2,45 +2,45 @@ import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { DGTHolderService } from './dgt-holder-abstract.service';
-import { DGTHolder } from '../models/dgt-holder.model';
-import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
+import { DGTExchangeService } from './dgt-exchange.service';
+import { DGTExchange } from '../models/dgt-exchange.model';
+import { DGTExchangeTransformerService } from './dgt-exchange-transformer.service';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { v4 } from 'uuid';
 
 @DGTInjectable()
-export class DGTHolderCacheService extends DGTHolderService {
+export class DGTExchangeCacheService extends DGTExchangeService {
 
-    constructor(private logger: DGTLoggerService, private cache: DGTCacheService, private transformer: DGTHolderTransformerService) {
+    constructor(private logger: DGTLoggerService, private cache: DGTCacheService, private transformer: DGTExchangeTransformerService) {
         super();
     }
 
-    public get(uri: string): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderCacheService.name, 'Starting to get holder', { uri });
+    public get(uri: string): Observable<DGTExchange> {
+        this.logger.debug(DGTExchangeCacheService.name, 'Starting to get exchange', { uri });
 
         if (!uri) {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return this.cache.get<DGTHolder>(this.transformer, uri);
+        return this.cache.get<DGTExchange>(this.transformer, uri);
     }
 
-    public query(filter?: DGTLDFilter): Observable<DGTHolder[]> {
-        this.logger.debug(DGTHolderCacheService.name, 'Starting to query holders', filter);
+    public query(filter?: DGTLDFilter): Observable<DGTExchange[]> {
+        this.logger.debug(DGTExchangeCacheService.name, 'Starting to query exchanges', filter);
 
         return this.cache.query(this.transformer, filter);
     }
 
-    public save(resource: DGTHolder): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderCacheService.name, 'Starting to save resource', { resource });
+    public save(resource: DGTExchange): Observable<DGTExchange> {
+        this.logger.debug(DGTExchangeCacheService.name, 'Starting to save resource', { resource });
 
         if (!resource) {
             throw new DGTErrorArgument('Argument connection should be set.', resource);
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/holders#${v4()}`; //TODO set according to strategy
+            resource.uri = `http://someuri/exchanges#${v4()}`; //TODO set according to strategy
         }
 
         return of({ resource })
@@ -50,8 +50,8 @@ export class DGTHolderCacheService extends DGTHolderService {
             );
     }
 
-    public delete(resource: DGTHolder): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderCacheService.name, 'Starting to delete resource', { resource });
+    public delete(resource: DGTExchange): Observable<DGTExchange> {
+        this.logger.debug(DGTExchangeCacheService.name, 'Starting to delete resource', { resource });
 
         if (!resource) {
             throw new DGTErrorArgument('Argument resource should be set.', resource);

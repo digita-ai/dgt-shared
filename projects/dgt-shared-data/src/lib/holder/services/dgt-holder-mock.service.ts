@@ -6,6 +6,7 @@ import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { switchMap } from 'rxjs/operators';
+import { v4 } from 'uuid';
 
 @DGTInjectable()
 export class DGTHolderMockService extends DGTHolderService {
@@ -36,6 +37,8 @@ export class DGTHolderMockService extends DGTHolderService {
         }
 
         if (!resource.uri) {
+            resource.uri = `http://someuri/holders#${v4()}`; //TODO set according to strategy
+
             this.resources = [...this.resources, resource];
         } else {
             this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];

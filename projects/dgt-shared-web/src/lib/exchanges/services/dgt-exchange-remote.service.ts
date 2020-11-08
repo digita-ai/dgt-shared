@@ -22,7 +22,7 @@ export class DGTExchangeRemoteService extends DGTExchangeService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTExchange>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),

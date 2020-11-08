@@ -6,6 +6,7 @@ import { DGTExchangeService } from './dgt-exchange.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { switchMap } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { v4 } from 'uuid';
 
 @DGTInjectable()
 export class DGTExchangeMockService extends DGTExchangeService {
@@ -36,6 +37,8 @@ export class DGTExchangeMockService extends DGTExchangeService {
         }
 
         if (!resource.uri) {
+            resource.uri = `http://someuri/exchanges#${v4()}`; //TODO set according to strategy
+            
             this.resources = [...this.resources, resource];
         } else {
             this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];

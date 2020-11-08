@@ -29,7 +29,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain([response.data])),
@@ -54,7 +54,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
 
         return of({ holder })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.uri}/resources` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holder.uri)}/resources` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),

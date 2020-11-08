@@ -1,11 +1,10 @@
 import { Observable, of } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTQueryService } from '../../metadata/services/dgt-query.service';
 import { DGTCacheService } from './dgt-cache.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
@@ -13,7 +12,7 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 export class DGTCacheInMemoryService extends DGTCacheService {
     public cache: DGTLDResource[] = [];
 
-    constructor(private logger: DGTLoggerService, private filterService: DGTLDFilterService, private queries: DGTQueryService) {
+    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
         super();
     }
 
@@ -43,6 +42,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                     .pipe(map(transformed => ({ ...data, transformed })))),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
                 tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', {cache: this.cache})),
                 map(data => data.resources)
             )
     }
@@ -52,7 +52,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
 
         return of({ resources: this.cache, transformer, filter })
             .pipe(
-                switchMap(data => !data.filter ? of(data.resources) : this.filterService.run(data.filter, data.resources)),
+                switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
                 switchMap(data => transformer.toDomain(data))
             );
     }
