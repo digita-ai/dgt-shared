@@ -25,11 +25,11 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      * @returns Observable of resources
      */
     public toDomain(resources: DGTLDResource[]): Observable<DGTHolder[]> {
-        this.paramChecker.checkParametersNotNull({ resources: resources });
+        this.paramChecker.checkParametersNotNull({ resources });
 
         return forkJoin(resources.map(resource => this.toDomainOne(resource)))
             .pipe(
-                map(resources => _.flatten(resources))
+                map(resourcesRes => _.flatten(resourcesRes))
             );
     }
 
@@ -40,7 +40,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      * @returns Observable of resources
      */
     private toDomainOne(resource: DGTLDResource): Observable<DGTHolder[]> {
-        this.paramChecker.checkParametersNotNull({ resource: resource });
+        this.paramChecker.checkParametersNotNull({ resource });
 
         let res: DGTHolder[] = null;
 
@@ -54,7 +54,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
             }
         }
 
-        this.logger.debug(DGTHolderTransformerService.name, 'Transformed values to resources', { resource: resource, res });
+        this.logger.debug(DGTHolderTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -67,8 +67,8 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      * @returns Observable of linked data resources.
      */
     public toTriples(resources: DGTHolder[]): Observable<DGTLDResource[]> {
-        this.paramChecker.checkParametersNotNull({ resources: resources });
-        this.logger.debug(DGTHolderTransformerService.name, 'Starting to transform to linked data', { resources: resources });
+        this.paramChecker.checkParametersNotNull({ resources });
+        this.logger.debug(DGTHolderTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
             const documentSubject = {
@@ -81,7 +81,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
                 termType: DGTLDTermType.REFERENCE
             };
 
-            let triples = [
+            const triples = [
                 {
                     predicate: 'http://digita.ai/voc/holders#holder',
                     subject: documentSubject,
@@ -110,35 +110,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      * @returns The transformed resource.
      */
     private transformOne(resourceSubjectValue: DGTLDTriple, resource: DGTLDResource): DGTHolder {
-        this.paramChecker.checkParametersNotNull({ resourceSubjectValue, resource: resource });
-
-        // const uri = resource.uri ? resource.uri : resourceSubjectValue.subject.value;
-
-        // const description = resource.triples.find(value =>
-        //     value.subject.value === resourceSubjectValue.object.value &&
-        //     value.predicate === 'http://digita.ai/voc/resources#description'
-        // );
-
-        // const stakeholder = resource.triples.find(value =>
-        //     value.subject.value === resourceSubjectValue.object.value &&
-        //     value.predicate === 'http://digita.ai/voc/resources#stakeholder'
-        // );
-        // const icon = resource.triples.find(value =>
-        //     value.subject.value === resourceSubjectValue.object.value &&
-        //     value.predicate === 'http://digita.ai/voc/resources#icon'
-        // );
-        // const stakeholderUri = resource.triples.find(value =>
-        //     value.subject.value === resourceSubjectValue.object.value &&
-        //     value.predicate === 'http://digita.ai/voc/resources#uri'
-        // );
-
-        // const resourceTriples = resource.triples.filter(value =>
-        //     value.subject.value === resourceSubjectValue.object.value
-        // );
-        // const date = resource.triples.find(value =>
-        //     value.subject.value === resourceSubjectValue.object.value &&
-        //     value.predicate === 'http://digita.ai/voc/resources#createdAt'
-        // );
+        this.paramChecker.checkParametersNotNull({ resourceSubjectValue, resource });
 
         return {
             uri: resource.uri,

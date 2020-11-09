@@ -19,6 +19,13 @@ import { DGTDataValueTransformerService } from './data-value/services/data-trans
 import { DGTCacheInMemoryService } from './cache/services/dgt-cache-in-memory.service';
 import { DGTCacheSolidService } from './cache/services/dgt-cache-solid.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
+import { DGTCategoryTransformerService } from './categories/services/dgt-category-transformer.service';
+import { DGTConnectionTransformerService } from './connection/services/dgt-connection-transformer.service';
+import { DGTExchangeTransformerService } from './exchanges/services/dgt-exchange-transformer.service';
+import { DGTHolderTransformerService } from './holder/services/dgt-holder-transformer.service';
+import { DGTInviteTransformerService } from './invite/services/dgt-invite-transformer.service';
+import { DGTPurposeTransformerService } from './purpose/services/dgt-purpose-transformer.service';
+import { DGTSourceTransformerService } from './source/services/dgt-source-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -44,6 +51,13 @@ export const providers = [
   DGTEventTransformerService,
   DGTConnectorService,
   DGTSparqlQueryService,
+  DGTCategoryTransformerService,
+  DGTConnectionTransformerService,
+  DGTExchangeTransformerService,
+  DGTHolderTransformerService,
+  DGTInviteTransformerService,
+  DGTPurposeTransformerService,
+  DGTSourceTransformerService,
 ];
 
 @NgModule({
