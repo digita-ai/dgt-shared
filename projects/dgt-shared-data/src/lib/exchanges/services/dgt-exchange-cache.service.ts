@@ -40,7 +40,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/exchanges#${v4()}`; //TODO set according to strategy
+            resource.uri = `http://someuri/exchanges#${v4()}`; // TODO set according to strategy
         }
 
         return of({ resource })
