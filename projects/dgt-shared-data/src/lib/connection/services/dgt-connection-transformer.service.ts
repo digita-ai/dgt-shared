@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -8,6 +8,9 @@ import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
+import { DGTConnectionSolidConfiguration } from '../models/dgt-connection-solid-configuration.model';
+import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
+import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
@@ -81,7 +84,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 termType: DGTLDTermType.REFERENCE
             };
 
-            const newTriples: DGTLDTriple[] = [
+            let newTriples: DGTLDTriple[] = [
                 {
                     predicate: 'http://digita.ai/voc/connections#source',
                     subject: resourceSubject,
@@ -125,6 +128,123 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 }
             ];
 
+            // this IF method is not the way to go, it will work for now tho
+            if (resource.configuration.webId) {
+                // solid connection
+                // local copy of config to have autofill
+                const config: DGTConnectionSolidConfiguration = resource.configuration;
+                newTriples = newTriples.concat([
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#webid',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.webId
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.accessToken
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#expiresin',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.expiresIn
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#idtoken',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.idToken
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#state',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.state
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#privatekey',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.privateKey
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#loginuri',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.loginUri
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#accountid',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.accountId
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/connectionsolidconfig#protocol',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: config.protocol
+                        },
+                    },
+                ]);
+
+            } else if (resource.configuration.personId) {
+                // MSSQL connection
+                newTriples.push({
+                    predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.configuration.personId
+                    },
+                });
+
+            } else if (resource.configuration.email) {
+                // Gravatar connection
+                newTriples.push({
+                    predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.configuration.email
+                    },
+                });
+            } else {
+                // NOT A KNOWN CONNECTION TYPE
+                throw new DGTErrorConfig('Error converting to triples: the connection configuration is not know', { resource });
+            }
+
             return {
                 ...resource,
                 exchange: resource.exchange,
@@ -164,7 +284,8 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/connections#state'
         );
-        const config = null;
+
+        const config = this.configToDomain(triple, resource);
 
         return {
             uri: resource.uri,
@@ -173,7 +294,96 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             exchange: exchange ? exchange.object.value : null,
             holder: holder ? holder.object.value : null,
             source: source ? source.object.value : null,
-            configuration: config ? config : null,
+            configuration: config,
         };
+    }
+
+    // isolated this logic for readablility
+    private configToDomain(triple: DGTLDTriple, resource: DGTLDResource) {
+
+        let config = null;
+
+        // Determine connection type, this is temporary and not very reusable
+        const webId = resource.triples.find(value =>
+            value.subject.value === triple.object.value &&
+            value.predicate === 'http://digita.ai/voc/connectionsolidconfig#webid'
+        );
+
+        if (webId) {
+            // solid connection
+            const accessToken = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accesstoken'
+            );
+            const expiresIn = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#expiresin'
+            );
+            const idToken = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#idtoken'
+            );
+            const configstate = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#state'
+            );
+            const privateKey = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#privatekey'
+            );
+            const loginUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#loginuri'
+            );
+            const accountId = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accountid'
+            );
+            const protocol = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#protocol'
+            );
+
+            config = {
+                webId: webId ? webId.object.value : null,
+                accessToken: accessToken ? accessToken.object.value : null,
+                expiresIn: expiresIn ? expiresIn.object.value : null,
+                idToken: idToken ? idToken.object.value : null,
+                state: configstate ? configstate.object.value : null,
+                privateKey: privateKey ? privateKey.object.value : null,
+                loginUri: loginUri ? loginUri.object.value : null,
+                accountId: accountId ? accountId.object.value : null,
+                protocol: protocol ? protocol.object.value : null,
+            } as DGTConnectionSolidConfiguration;
+        } else {
+            const personId = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/connectionmssqlconfig#personid'
+            );
+
+            if (personId) {
+                // MSSQL connection
+                config = {
+                    personId: personId ? personId.object.value : null,
+                } as DGTConnectionMSSQLConfiguration;
+            } else {
+                const email = resource.triples.find(value =>
+                    value.subject.value === triple.object.value &&
+                    value.predicate === 'http://digita.ai/voc/connectiongravatarconfig#email'
+                );
+
+                if (email) {
+                    // gravatar connection
+                    config = {
+                        email: email ? email.object.value : null,
+                    } as DGTConnectionGravatarConfiguration;
+                } else {
+                    // NOT A KNOWN CONNECTION
+                    throw new DGTErrorConfig('The connection configuration was not recognized', {triple, resource});
+                }
+            }
+        }
+
+        return config;
     }
 }
