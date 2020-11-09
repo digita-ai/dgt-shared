@@ -1,5 +1,5 @@
 import { DGTLDResource } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationBase, DGTConfigurationService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { v4 } from 'uuid';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
@@ -13,7 +13,7 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
 
     constructor(
         private resourceType: string,
-        private config: DGTConfigurationService<DGTConfigurationService>,
+        private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) {}
 
     /**
@@ -24,7 +24,7 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
             throw new DGTErrorArgument('Argument resource should be set', resource);
         }
 
-        return of(`${this.config.get(conf => conf.)}holder#${v4()}`);
+        return of(`${this.config.get(conf => conf.cache.uri)}${this.resourceType}#${v4()}`);
     }
 
 }
