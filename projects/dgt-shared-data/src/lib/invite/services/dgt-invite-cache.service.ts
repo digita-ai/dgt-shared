@@ -6,15 +6,15 @@ import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
+import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {
 
-    // TODO replace null with transformers
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
+        private transformer: DGTInviteTransformerService,
     ) {
         super();
     }
@@ -26,13 +26,13 @@ export class DGTInviteCacheService extends DGTInviteService {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return this.cache.get<DGTInvite>(null, uri);
+        return this.cache.get<DGTInvite>(this.transformer, uri);
     }
 
     public query(filter?: DGTLDFilter): Observable<DGTInvite[]> {
         this.logger.debug(DGTInviteCacheService.name, 'Starting to query invites', filter);
 
-        return this.cache.query(null, filter);
+        return this.cache.query(this.transformer, filter);
     }
 
     public save(resource: DGTInvite): Observable<DGTInvite> {
@@ -48,7 +48,7 @@ export class DGTInviteCacheService extends DGTInviteService {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.save(null, [resource])
+                switchMap(data => this.cache.save(this.transformer, [resource])
                     .pipe(map(resources => _.head(resources)))),
             );
     }
@@ -62,7 +62,7 @@ export class DGTInviteCacheService extends DGTInviteService {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.delete(null, [data.resource])
+                switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
                 map(data => _.head(data.resources))
             );

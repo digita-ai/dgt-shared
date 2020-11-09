@@ -6,15 +6,15 @@ import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
+import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
 
-    // TODO replace null with transformers
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
+        private transformer: DGTConnectionTransformerService,
     ) {
         super();
     }
@@ -26,13 +26,13 @@ export class DGTConnectionCacheService extends DGTConnectionService {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return this.cache.get<DGTConnection<any>>(null, uri);
+        return this.cache.get<DGTConnection<any>>(this.transformer, uri);
     }
 
     public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
         this.logger.debug(DGTConnectionCacheService.name, 'Starting to query connections', filter);
 
-        return this.cache.query(null, filter);
+        return this.cache.query(this.transformer, filter);
     }
 
     public save(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
@@ -48,7 +48,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.save(null, [resource])
+                switchMap(data => this.cache.save(this.transformer, [resource])
                     .pipe(map(resources => _.head(resources)))),
             );
     }
@@ -61,7 +61,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.delete(null, [data.resource])
+                switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
                 map(data => _.head(data.resources))
             );

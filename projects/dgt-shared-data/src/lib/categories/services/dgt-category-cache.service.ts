@@ -5,16 +5,16 @@ import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTCategory } from '../models/dgt-category.model';
+import { DGTCategoryTransformerService } from './dgt-category-transformer.service';
 import { DGTCategoryService } from './dgt-category.service';
 
 @DGTInjectable()
 export class DGTCategoryCacheService extends DGTCategoryService  {
 
-    // TODO replace null with this.transformer
-
     constructor(
         private cache: DGTCacheService,
         private logger: DGTLoggerService,
+        private transformer: DGTCategoryTransformerService,
     ) {
         super();
     }
@@ -25,18 +25,18 @@ export class DGTCategoryCacheService extends DGTCategoryService  {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return this.cache.get<DGTCategory>(null, uri);
+        return this.cache.get<DGTCategory>(this.transformer, uri);
     }
     public query(filter?: DGTLDFilter): Observable<DGTCategory[]> {
         this.logger.debug(DGTCategoryCacheService.name, 'Starting to query categories', filter);
 
-        return this.cache.query(null, filter);
+        return this.cache.query(this.transformer, filter);
     }
     public save(resource: DGTCategory): Observable<DGTCategory> {
         this.logger.debug(DGTCategoryCacheService.name, 'Starting to save resource', { resource });
 
         if (!resource) {
-            throw new DGTErrorArgument('Argument connection should be set.', resource);
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
         if (!resource.uri) {
@@ -45,7 +45,7 @@ export class DGTCategoryCacheService extends DGTCategoryService  {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.save(null, [resource])
+                switchMap(data => this.cache.save(this.transformer, [resource])
                     .pipe(map(resources => _.head(resources)))),
             );
     }
@@ -58,7 +58,7 @@ export class DGTCategoryCacheService extends DGTCategoryService  {
 
         return of({ resource })
             .pipe(
-                switchMap(data => this.cache.delete(null, [data.resource])
+                switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
                 map(data => _.head(data.resources))
             );
