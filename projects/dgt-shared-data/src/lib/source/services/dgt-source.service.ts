@@ -8,9 +8,7 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 @DGTInjectable()
 export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
 
-  constructor(
-    protected logger: DGTLoggerService,
-  ) { }
+  constructor() {}
 
   public abstract get(id: string): Observable<DGTSource<any>>;
   public abstract query(filter?: DGTLDFilter): Observable<DGTSource<any>[]>;
