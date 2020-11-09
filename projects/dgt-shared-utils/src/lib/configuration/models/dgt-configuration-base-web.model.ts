@@ -1,4 +1,4 @@
-import { DGTConfigurationBase } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBase } from './dgt-configuration-base.model';
 
 /** The configuration of the client */
 export interface DGTConfigurationBaseWeb extends DGTConfigurationBase {

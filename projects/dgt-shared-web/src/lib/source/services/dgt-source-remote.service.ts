@@ -1,5 +1,5 @@
-import { DGTSource, DGTSourceService, DGTConfigurationBaseWeb, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from "@digita-ai/dgt-shared-utils";
+import { DGTSource, DGTSourceService, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
