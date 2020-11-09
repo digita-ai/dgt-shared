@@ -123,3 +123,5 @@ export { DGTPurposeTransformerService } from './lib/purpose/services/dgt-purpose
 export { DGTSourceTransformerService } from './lib/source/services/dgt-source-transformer.service';
 export { DGTConnectionGravatarConfiguration } from './lib/connection/models/dgt-connection-gravatar-configuration.model';
 export { DGTConnectionMSSQLConfiguration } from './lib/connection/models/dgt-connection-mssql-configuration.model';
+export { DGTSourceGravatarConfiguration } from './lib/source/models/dgt-source-gravatar-configuration.model';
+export { DGTSourceMSSQLConfiguration } from './lib/source/models/dgt-source-mssql-configuration.model';

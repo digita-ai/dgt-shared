@@ -128,122 +128,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 }
             ];
 
-            // this IF method is not the way to go, it will work for now tho
-            if (resource.configuration.webId) {
-                // solid connection
-                // local copy of config to have autofill
-                const config: DGTConnectionSolidConfiguration = resource.configuration;
-                newTriples = newTriples.concat([
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#webid',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.webId
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.accessToken
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#expiresin',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.expiresIn
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#idtoken',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.idToken
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#state',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.state
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#privatekey',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.privateKey
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#loginuri',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.loginUri
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#accountid',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.accountId
-                        },
-                    },
-                    {
-                        predicate: 'http://digita.ai/voc/connectionsolidconfig#protocol',
-                        subject: resourceSubject,
-                        object: {
-                            termType: DGTLDTermType.REFERENCE,
-                            dataType: DGTLDDataType.STRING,
-                            value: config.protocol
-                        },
-                    },
-                ]);
-
-            } else if (resource.configuration.personId) {
-                // MSSQL connection
-                newTriples.push({
-                    predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
-                    subject: resourceSubject,
-                    object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: resource.configuration.personId
-                    },
-                });
-
-            } else if (resource.configuration.email) {
-                // Gravatar connection
-                newTriples.push({
-                    predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
-                    subject: resourceSubject,
-                    object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: resource.configuration.email
-                    },
-                });
-            } else {
-                // NOT A KNOWN CONNECTION TYPE
-                throw new DGTErrorConfig('Error converting to triples: the connection configuration is not know', { resource });
-            }
+            newTriples = newTriples.concat( this.configToTriples(resource, resourceSubject) );
 
             return {
                 ...resource,
@@ -299,6 +184,128 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     }
 
     // isolated this logic for readablility
+    private configToTriples(resource: DGTConnection<any>, resourceSubject): DGTLDTriple[] {
+        let res = [];
+        // this IF method is not the way to go, it will work for now tho
+        if (resource.configuration.webId) {
+            // solid connection
+            // local copy of config to have autofill
+            const config: DGTConnectionSolidConfiguration = resource.configuration;
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#webid',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.webId
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.accessToken
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#expiresin',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.expiresIn
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#idtoken',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.idToken
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#state',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.state
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#privatekey',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.privateKey
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#loginuri',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.loginUri
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#accountid',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.accountId
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/connectionsolidconfig#protocol',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.protocol
+                    },
+                },
+            ];
+
+        } else if (resource.configuration.personId) {
+            // MSSQL connection
+            res = [{
+                predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
+                subject: resourceSubject,
+                object: {
+                    termType: DGTLDTermType.REFERENCE,
+                    dataType: DGTLDDataType.STRING,
+                    value: resource.configuration.personId
+                },
+            }];
+
+        } else if (resource.configuration.email) {
+            // Gravatar connection
+            res = [{
+                predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
+                subject: resourceSubject,
+                object: {
+                    termType: DGTLDTermType.REFERENCE,
+                    dataType: DGTLDDataType.STRING,
+                    value: resource.configuration.email
+                },
+            }];
+        } else {
+            // NOT A KNOWN CONNECTION TYPE
+            res = [];
+            throw new DGTErrorConfig('Error converting to triples: the connection configuration is not know', { resource });
+        }
+
+        return res;
+    }
     private configToDomain(triple: DGTLDTriple, resource: DGTLDResource) {
 
         let config = null;
@@ -379,7 +386,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     } as DGTConnectionGravatarConfiguration;
                 } else {
                     // NOT A KNOWN CONNECTION
-                    throw new DGTErrorConfig('The connection configuration was not recognized', {triple, resource});
+                    throw new DGTErrorConfig('The connection configuration was not recognized', { triple, resource });
                 }
             }
         }
