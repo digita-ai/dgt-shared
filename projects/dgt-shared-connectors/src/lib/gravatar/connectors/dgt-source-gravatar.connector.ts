@@ -1,6 +1,5 @@
 import { Observable, of } from 'rxjs';
-import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService, DGTConnectionGravatarConfiguration } from '@digita-ai/dgt-shared-data';
-import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
+import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService, DGTConnectionGravatarConfiguration, DGTSourceGravatarConfiguration } from '@digita-ai/dgt-shared-data';
 import { DGTHttpResponse, DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';

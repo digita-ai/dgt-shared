@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -8,6 +8,10 @@ import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTSource } from '../models/dgt-source.model';
+import { DGTSourceType } from '../models/dgt-source-type.model';
+import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
+import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
+import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
@@ -81,7 +85,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 termType: DGTLDTermType.REFERENCE
             };
 
-            const newTriples: DGTLDTriple[] = [
+            let newTriples: DGTLDTriple[] = [
                 {
                     predicate: 'http://digita.ai/voc/sources#icon',
                     subject: resourceSubject,
@@ -128,6 +132,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 });
             }
 
+            newTriples = newTriples.concat( this.configToTriples(resource, resourceSubject) );
+
             return {
                 ...resource,
                 exchange: resource.exchange,
@@ -167,7 +173,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/sources#state'
         );
-        const configuration = null;
+        const configuration = this.configToDomain( triple, resource, type.object.value );
 
         return {
             uri: resource.uri,
@@ -179,5 +185,493 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             state: state ? state.object.value : null,
             configuration: configuration ? configuration : null,
         };
+    }
+
+    private configToTriples(resource: DGTSource<any>, resourceSubject): DGTLDTriple[] {
+        let res = [];
+
+        if (resource.type === DGTSourceType.SOLID) {
+            const config: DGTSourceSolidConfiguration = resource.configuration;
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#issuer',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.issuer,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#authorizationendpoint',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.authorization_endpoint,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpoint',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.token_endpoint,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#userinfoendpoint',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.userinfo_endpoint,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#jwksuri',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.jwks_uri,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#registrationendpoint',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.registration_endpoint,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#claimsparametersupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.claims_parameter_supported,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#requestparametersupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.request_parameter_supported,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#requesturiparametersupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.request_uri_parameter_supported,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#requirerequesturiregistration',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.require_request_uri_registration,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#checksessioniframe',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.check_session_iframe,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#endsessionendpoint',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.end_session_endpoint,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#callbackuri',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.callbackUri,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clientid',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_id,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clientsecret',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_secret,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#applicationtype',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.application_type,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clientname',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_name,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#logouri',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.logo_uri,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clienturi',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_uri,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensignedresponsealg',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.id_token_signed_response_alg,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethod',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.token_endpoint_auth_method,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#defaultmaxage',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.default_max_age,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#frontchannellogoutsessionrequired',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.frontchannel_logout_session_required,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#registrationaccesstoken',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.registration_access_token,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#registrationclienturi',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.registration_client_uri,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clientidissuedat',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_id_issued_at,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#clientsecretexpiresat',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.client_secret_expires_at,
+                    },
+                },
+            ];
+            config.response_types_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.response_modes_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.grant_types_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.subject_types_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.id_token_signing_alg_values_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.token_endpoint_auth_methods_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.token_endpoint_auth_signing_alg_values_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.display_values_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.claim_types_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.claims_supported.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#claimssupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.redirect_uris.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#redirecturis',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.response_types.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypes',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.grant_types.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypes',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+            config.post_logout_redirect_uris.forEach( str => {
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#postlogoutredirecturis',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: str,
+                    },
+                });
+            });
+        } else if (resource.type === DGTSourceType.MSSQL) {
+            const config: DGTSourceMSSQLConfiguration = resource.configuration;
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#user',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.user,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#server',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.server,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#password',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.password,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#database',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.database,
+                    },
+                },
+            ];
+        } else if (resource.type === DGTSourceType.GRAVATAR) {
+            const config: DGTSourceGravatarConfiguration = resource.configuration;
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/sourcegravatarconfig#usernamefield',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.usernameField,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcegravatarconfig#thumbnailfield',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.thumbnailField,
+                    },
+                },
+            ];
+        } else {
+            throw new DGTErrorConfig('SourceType was not recognised', {resource});
+        }
+
+        return res;
+    }
+    private configToDomain(triple: DGTLDTriple, resource: DGTLDResource, type: DGTSourceType): any {
+        let res = null;
+
+        if (type === DGTSourceType.SOLID) {
+
+        } else if (type === DGTSourceType.MSSQL) {
+
+        } else if (type === DGTSourceType.GRAVATAR) {
+
+        } else {
+            throw new DGTErrorConfig('SourceType was not recognised', {resource});
+        }
+
+        return res;
     }
 }
