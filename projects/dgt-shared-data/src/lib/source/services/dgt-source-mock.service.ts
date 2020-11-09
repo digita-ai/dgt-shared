@@ -11,10 +11,10 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 export class DGTSourceMockService extends DGTSourceService {
 
   constructor(
-    protected logger: DGTLoggerService,
+    private logger: DGTLoggerService,
     private filters: DGTLDFilterService
   ) {
-    super(logger);
+    super();
   }
 
   public resources: Array<DGTSource<any>> = [];
@@ -29,7 +29,7 @@ export class DGTSourceMockService extends DGTSourceService {
     return of({ filter, resources: this.resources })
       .pipe(
         switchMap(data => data.filter ? this.filters.run<DGTSource<any>>(data.filter, data.resources) : of(data.resources)),
-      )
+      );
   }
 
   public save(resource: DGTSource<any>): Observable<DGTSource<any>> {

@@ -52,8 +52,7 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
     try {
       return new URL(uri).origin;
     } catch (err) {
-      this.logger.debug(DGTSourceService.name, 'URL is not valid', uri);
-      return null;
+      throw new DGTErrorArgument('URL is not valid', uri);
     }
   }
 }

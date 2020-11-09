@@ -10,8 +10,11 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 @DGTInjectable()
 export class DGTSourceStateService extends DGTSourceService {
 
-  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, logger: DGTLoggerService,) {
-    super(logger);
+  constructor(
+    private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
+    private logger: DGTLoggerService
+  ) {
+    super();
   }
 
   public save(resource: DGTSource<any>): Observable<DGTSource<any>> {

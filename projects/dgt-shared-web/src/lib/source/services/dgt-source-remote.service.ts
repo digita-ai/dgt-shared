@@ -9,8 +9,8 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTSourceRemoteService extends DGTSourceService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
-        super(logger);
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
+        super();
     }
 
     get(uri: string): Observable<DGTSource<any>> {
