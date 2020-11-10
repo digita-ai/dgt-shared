@@ -11,15 +11,14 @@ import { DGTUriFactoryService } from './dgt-uri-factory.service';
 export class DGTUriFactoryCacheService implements DGTUriFactoryService {
 
     constructor(
-        private resourceType: string,
         private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) {}
 
     /**
      * Generates a URI for a resource
      */
-    generate(): Observable<string> {
-        return of(`${this.config.get(conf => conf.cache.uri)}${this.resourceType}#${v4()}`);
+    generate(resourceType: string): Observable<string> {
+        return of(`${this.config.get(conf => conf.cache.uri)}${resourceType}#${v4()}`);
     }
 
 }

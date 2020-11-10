@@ -1,5 +1,5 @@
-import { DGTLDResource, DGTLDTriple } from '@digita-ai/dgt-shared-data/public-api';
 import { Observable, of } from 'rxjs';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
 
 /**
