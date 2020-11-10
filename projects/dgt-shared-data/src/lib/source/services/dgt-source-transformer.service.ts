@@ -712,6 +712,37 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 },
             ];
+            for (const entry of Array.from(config.mapping.entries())) {
+                const key = entry[0];
+                const value = entry[1];
+                const subject = {
+                    value: '#' + uuid(),
+                    termType: DGTLDTermType.REFERENCE
+                };
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#mapping',
+                    subject: resourceSubject,
+                    object: subject,
+                });
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#mappingkey',
+                    subject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: key,
+                    },
+                });
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#mappingvalue',
+                    subject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value,
+                    },
+                });
+            }
         } else if (resource.type === DGTSourceType.GRAVATAR) {
             const config: DGTSourceGravatarConfiguration = resource.configuration;
             res = [
@@ -1001,7 +1032,47 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 keys,
             } as DGTSourceSolidConfiguration;
         } else if (type === DGTSourceType.MSSQL) {
+            const user = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#user'
+            );
+            const password = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#password'
+            );
+            const server = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#server'
+            );
+            const database = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#database'
+            );
+            const resmap = new Map<string, string>();
+            resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mapping'
+            ).forEach( mapping => {
+                const key = resource.triples.find(val =>
+                    val.subject.value === mapping.object.value &&
+                    val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingkey'
+                );
+                const value = resource.triples.find(val =>
+                    val.subject.value === mapping.object.value &&
+                    val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingvalue'
+                );
+                if ( key && value ) {
+                    resmap.set(key.object.value, value.object.value);
+                }
+            });
 
+            res = {
+                user: user ? user.object.value : null,
+                password: password ? password.object.value : null,
+                server: server ? server.object.value : null,
+                database: database ? database.object.value : null,
+                mapping: resmap,
+            };
         } else if (type === DGTSourceType.GRAVATAR) {
             const usernameField = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
