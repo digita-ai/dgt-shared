@@ -4,5 +4,5 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 @DGTInjectable()
 export abstract class DGTUriFactoryService {
 
-    public abstract generate(resource: DGTLDResource, prefix: string): string;
+    public abstract generate(resource: DGTLDResource): string;
 }
