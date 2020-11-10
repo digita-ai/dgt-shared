@@ -46,7 +46,7 @@ export class DGTPurposeCacheService extends DGTPurposeService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate('purpose');
+            resource.uri = this.uri.generate(null, 'purpose');
         }
 
         return of({ resource })

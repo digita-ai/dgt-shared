@@ -46,7 +46,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate('exchange');
+            resource.uri = this.uri.generate(null, 'exchange');
         }
 
         return of({ resource })

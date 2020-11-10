@@ -46,7 +46,7 @@ export class DGTInviteCacheService extends DGTInviteService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate('invite');
+            resource.uri = this.uri.generate(null, 'invite');
         }
 
         return of({ resource })
