@@ -117,7 +117,6 @@ export { DGTHolderMockService } from './lib/holder/services/dgt-holder-mock.serv
 export { DGTConnectionMockService } from './lib/connection/services/dgt-connection-mock.service';
 export { DGTExchangeCacheService } from './lib/exchanges/services/dgt-exchange-cache.service';
 export { DGTExchangeTransformerService } from './lib/exchanges/services/dgt-exchange-transformer.service';
-export { DGTCategoryTransformerService } from './lib/categories/services/dgt-category-transformer.service';
 export { DGTConnectionTransformerService } from './lib/connection/services/dgt-connection-transformer.service';
 export { DGTInviteTransformerService } from './lib/invite/services/dgt-invite-transformer.service';
 export { DGTPurposeTransformerService } from './lib/purpose/services/dgt-purpose-transformer.service';

@@ -19,7 +19,6 @@ import { DGTDataValueTransformerService } from './data-value/services/data-trans
 import { DGTCacheInMemoryService } from './cache/services/dgt-cache-in-memory.service';
 import { DGTCacheSolidService } from './cache/services/dgt-cache-solid.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
-import { DGTCategoryTransformerService } from './categories/services/dgt-category-transformer.service';
 import { DGTConnectionTransformerService } from './connection/services/dgt-connection-transformer.service';
 import { DGTExchangeTransformerService } from './exchanges/services/dgt-exchange-transformer.service';
 import { DGTHolderTransformerService } from './holder/services/dgt-holder-transformer.service';
@@ -40,7 +39,6 @@ export const providers = [
   DGTLDFilterRunnerBGPService,
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
-  //DGTMockDataService,
   DGTCacheInMemoryService,
   DGTCacheSolidService,
   DGTWorkflowService,
@@ -51,7 +49,6 @@ export const providers = [
   DGTEventTransformerService,
   DGTConnectorService,
   DGTSparqlQueryService,
-  DGTCategoryTransformerService,
   DGTConnectionTransformerService,
   DGTExchangeTransformerService,
   DGTHolderTransformerService,
