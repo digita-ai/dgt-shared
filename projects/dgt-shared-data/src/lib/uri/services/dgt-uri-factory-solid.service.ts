@@ -12,7 +12,7 @@ export class DGTUriFactorySolidService implements DGTUriFactoryService {
      * Generates a URI for a resource
      * @param resource The DGTLDResource to generate a uri for
      */
-    public generate(resource: DGTLDResource): string {
+    public generate(resource: DGTLDResource, prefix: string): string {
         // not sure if this is correct in all cases
         return resource.triples[0].subject.value;
     }
