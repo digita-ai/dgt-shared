@@ -46,7 +46,7 @@ export class DGTSourceCacheService extends DGTSourceService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate('source');
+            resource.uri = this.uri.generate(null, 'source');
         }
 
         return of({ resource })

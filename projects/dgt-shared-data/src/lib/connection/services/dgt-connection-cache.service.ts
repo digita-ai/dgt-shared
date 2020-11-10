@@ -46,7 +46,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate('connection');
+            resource.uri = this.uri.generate(null, 'connection');
         }
 
         return of({ resource })
