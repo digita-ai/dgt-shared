@@ -1,5 +1,5 @@
 import { DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -16,8 +16,6 @@ import * as _ from 'lodash';
  */
 @DGTInjectable()
 export class DGTCacheSolidService extends DGTCacheService {
-
-    public databaseUrl = 'http://192.168.0.224:9999/blazegraph/namespace/kb/sparql';
 
     constructor(
         private http: DGTHttpService,
@@ -36,24 +34,23 @@ export class DGTCacheSolidService extends DGTCacheService {
     public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to get', { transformer, uri });
 
-
-
         const headers = {
             Accept: 'text/turtle',
         };
-
-        const id = uri.split('#')[1];
 
         return of({uri, headers}).pipe(
             switchMap(data => this.http.get<string>(data.uri, data.headers)
                 .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
-            switchMap(data => transformer.toDomain([{ triples: data.triples, uri: data.uri, exchange: null }])
-                .pipe(map(resources => ({...data, resources }))),
-            ),
+            switchMap(data => transformer.toDomain([{
+                triples: data.triples,
+                uri: data.uri,
+                exchange: null
+            }]).pipe(map(resources => ({...data, resources })))),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
-            map(data => _.head(data.resources)),
+            // TODO check if line below does what we want it to do
+            map(data => data.resources.find(resource => resource.uri === data.uri)),
         );
     }
 
@@ -69,9 +66,9 @@ export class DGTCacheSolidService extends DGTCacheService {
         //      we need some way of determining which type T is:
         //      - add a resourceType attribute to DGTLDResource? eg DGTLDResourceType.HOLDER = 'holder'
         //      - or use instanceof and refactor DGTHolder etc to abstract classes? (not interfaces)
-        //      - or pass prefix to this function?
+        //      - or pass prefix to this function? <- this is the easier implementation, limit querying to single SDM file
         //      - or query all known SDM folders and use filters? <- i believe this is what this function is supposed to do?
-        //                                                              get exists for a single uri i guess
+        //                                                              get exists for a single uri
 
         const uri = ''; // TBD see note at top
         const headers = {
@@ -102,15 +99,28 @@ export class DGTCacheSolidService extends DGTCacheService {
      * @param resources Resources to delete
      */
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
-        throw new Error('Method not implemented.');
+
+        return of({resources}).pipe(
+            switchMap(data => forkJoin(data.resources.map(resource => this.http.delete<string>(resource.uri)
+                    .pipe(map(() => resource))
+                )).pipe(map(res => ({ ...data, deleted: res }))) // TODO filter resources for which http status code was not 200 OK? throw errors?
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', {deleted: data.deleted, data})),
+            map(data => data.deleted),
+        );
+
     }
 
     /**
      * Saves one or more resource(s) to the cache
+     * Depending on the DGTLDResource's uri:
+     *  when set -> updates an existing DGTLDResource from the cache
+     *  else -> adds a new DGTLDResource to the cache
      * @param transformer The transformer for this type of DGTLDResource
      * @param resources Resources to save
      */
     public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
-        throw new Error('Method not implemented.');
+        // TODO implement save
+        throw new DGTErrorNotImplemented();
     }
 }
