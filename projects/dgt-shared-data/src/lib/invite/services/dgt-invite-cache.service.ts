@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
@@ -15,6 +16,7 @@ export class DGTInviteCacheService extends DGTInviteService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTInviteTransformerService,
+        private uri: DGTUriFactoryCacheService,
     ) {
         super();
     }
@@ -43,7 +45,7 @@ export class DGTInviteCacheService extends DGTInviteService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/exchanges#${v4()}`; // TODO set according to strategy
+            resource.uri = this.uri.generate('invite');
         }
 
         return of({ resource })

@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
@@ -15,6 +16,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTConnectionTransformerService,
+        private uri: DGTUriFactoryCacheService,
     ) {
         super();
     }
@@ -43,7 +45,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/connections#${v4()}`; // TODO set according to strategy
+            resource.uri = this.uri.generate('connection');
         }
 
         return of({ resource })

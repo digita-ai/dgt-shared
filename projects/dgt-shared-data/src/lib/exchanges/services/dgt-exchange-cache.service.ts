@@ -8,6 +8,7 @@ import { DGTExchangeTransformerService } from './dgt-exchange-transformer.servic
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { v4 } from 'uuid';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 
 @DGTInjectable()
 export class DGTExchangeCacheService extends DGTExchangeService {
@@ -15,7 +16,8 @@ export class DGTExchangeCacheService extends DGTExchangeService {
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
-        private transformer: DGTExchangeTransformerService
+        private transformer: DGTExchangeTransformerService,
+        private uri: DGTUriFactoryCacheService,
     ) {
         super();
     }
@@ -44,7 +46,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/exchanges#${v4()}`; // TODO set according to strategy
+            resource.uri = this.uri.generate('exchange');
         }
 
         return of({ resource })

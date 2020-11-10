@@ -8,6 +8,7 @@ import { v4 } from 'uuid';
 import { DGTSource } from '../models/dgt-source.model';
 import { DGTSourceTransformerService } from './dgt-source-transformer.service';
 import { DGTSourceService } from './dgt-source.service';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 
 @DGTInjectable()
 export class DGTSourceCacheService extends DGTSourceService {
@@ -16,6 +17,7 @@ export class DGTSourceCacheService extends DGTSourceService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTSourceTransformerService,
+        private uri: DGTUriFactoryCacheService,
     ) {
         super();
     }
@@ -44,7 +46,7 @@ export class DGTSourceCacheService extends DGTSourceService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/source<any>s#${v4()}`; // TODO set according to strategy
+            resource.uri = this.uri.generate('source');
         }
 
         return of({ resource })
