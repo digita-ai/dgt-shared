@@ -1,5 +1,4 @@
 import { DGTConfigurationBaseApi, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
-import { Observable, of } from 'rxjs';
 import { v4 } from 'uuid';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
 
@@ -17,8 +16,8 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
     /**
      * Generates a URI for a resource
      */
-    generate(resourceType: string): Observable<string> {
-        return of(`${this.config.get(conf => conf.cache.uri)}${resourceType}#${v4()}`);
+    generate(resourceType: string): string {
+        return `${this.config.get(conf => conf.cache.uri)}${resourceType}#${v4()}`;
     }
 
 }

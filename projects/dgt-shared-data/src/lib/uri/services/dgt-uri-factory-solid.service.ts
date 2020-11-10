@@ -1,4 +1,3 @@
-import { Observable, of } from 'rxjs';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
 
@@ -13,9 +12,9 @@ export class DGTUriFactorySolidService implements DGTUriFactoryService {
      * Generates a URI for a resource
      * @param resource The DGTLDResource to generate a uri for
      */
-    public generate(resource: DGTLDResource): Observable<string> {
+    public generate(resource: DGTLDResource): string {
         // not sure if this is correct in all cases
-        return of(resource.triples[0].subject.value);
+        return resource.triples[0].subject.value;
     }
 
 }

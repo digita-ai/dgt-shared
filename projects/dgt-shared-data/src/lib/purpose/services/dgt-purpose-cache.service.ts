@@ -5,6 +5,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 import { DGTPurpose } from '../models/dgt-purpose.model';
 import { DGTPurposeTransformerService } from './dgt-purpose-transformer.service';
 import { DGTPurposeService } from './dgt-purpose.service';
@@ -15,7 +16,8 @@ export class DGTPurposeCacheService extends DGTPurposeService {
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
-        private transformer: DGTPurposeTransformerService
+        private transformer: DGTPurposeTransformerService,
+        private uri: DGTUriFactoryCacheService,
     ) {
         super();
     }
@@ -44,7 +46,7 @@ export class DGTPurposeCacheService extends DGTPurposeService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/exchanges#${v4()}`; // TODO set according to strategy
+            resource.uri = this.uri.generate('purpose');
         }
 
         return of({ resource })

@@ -7,12 +7,17 @@ import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { v4 } from 'uuid';
+import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
 
 @DGTInjectable()
 export class DGTHolderCacheService extends DGTHolderService {
 
-    constructor(private logger: DGTLoggerService, private cache: DGTCacheService, private transformer: DGTHolderTransformerService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private cache: DGTCacheService,
+        private transformer: DGTHolderTransformerService,
+        private uri: DGTUriFactoryCacheService,
+    ) {
         super();
     }
 
@@ -40,7 +45,7 @@ export class DGTHolderCacheService extends DGTHolderService {
         }
 
         if (!resource.uri) {
-            resource.uri = `http://someuri/holders#${v4()}`; //TODO set according to strategy
+            resource.uri = this.uri.generate('holder');
         }
 
         return of({ resource })
