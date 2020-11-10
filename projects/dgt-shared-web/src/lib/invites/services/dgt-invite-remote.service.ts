@@ -1,7 +1,7 @@
-import { DGTInvite, DGTInviteService, DGTConfigurationBaseWeb, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTInvite, DGTInviteService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
+import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
 import { map, tap } from 'rxjs/operators';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
   constructor(
     private http: DGTHttpService,
     private logger: DGTLoggerService,
-    private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService
+    private config: DGTConfigurationService<DGTConfigurationBaseWeb>
   ) {
     super();
   }

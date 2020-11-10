@@ -81,7 +81,7 @@ export { DGTDataValueTransformerService } from './lib/data-value/services/data-t
 export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-interface-host.directive';
 export { DGTDataValueService } from './lib/data-value/services/data-value.service';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
-export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model'
+export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model';
 export { DGTEvent } from './lib/events/models/dgt-event.model';
 export { DGTEventService } from './lib/events/services/dgt-event.service';
 export { DGTEventSolidService } from './lib/events/services/dgt-event-solid.service';
@@ -94,7 +94,6 @@ export { DGTSparqlDataset } from './lib/sparql/models/dgt-sparql-dataset.model';
 export { DGTSparqlDatasetType } from './lib/sparql/models/dgt-sparql-dataset-type.model';
 export { DGTSparqlDatasetMemory } from './lib/sparql/models/dgt-sparql-dataset-memory.model';
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
-export { DGTConfigurationBaseWeb } from './lib/configuration/models/dgt-configuration-base-web.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
 export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
 export { DGTCacheType } from './lib/cache/models/DGTCacheType.model';
@@ -105,7 +104,6 @@ export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-
 export { DGTLDFilterConnection } from './lib/linked-data/models/dgt-ld-filter-connection.model';
 export { DGTInviteService } from './lib/invite/services/dgt-invite-abstract.service';
 export { DGTHolderTransformerService } from './lib/holder/services/dgt-holder-transformer.service';
-export { DGTHolderCacheService } from './lib/holder/services/dgt-holder-cache.service';
 export { DGTLDFilterPartial } from './lib/linked-data/models/dgt-ld-filter-partial.model';
 export { DGTLDFilterRunnerPartialService } from './lib/linked-data/services/dgt-ld-filter-runner-partial.service';
 export { DGTSourceMockService } from './lib/source/services/dgt-source-mock.service';
@@ -115,7 +113,6 @@ export { DGTInviteMockService } from './lib/invite/services/dgt-invite-mock.serv
 export { DGTExchangeMockService } from './lib/exchanges/services/dgt-exchange-mock.service';
 export { DGTHolderMockService } from './lib/holder/services/dgt-holder-mock.service';
 export { DGTConnectionMockService } from './lib/connection/services/dgt-connection-mock.service';
-export { DGTExchangeCacheService } from './lib/exchanges/services/dgt-exchange-cache.service';
 export { DGTExchangeTransformerService } from './lib/exchanges/services/dgt-exchange-transformer.service';
 export { DGTConnectionTransformerService } from './lib/connection/services/dgt-connection-transformer.service';
 export { DGTInviteTransformerService } from './lib/invite/services/dgt-invite-transformer.service';
@@ -125,3 +122,12 @@ export { DGTConnectionGravatarConfiguration } from './lib/connection/models/dgt-
 export { DGTConnectionMSSQLConfiguration } from './lib/connection/models/dgt-connection-mssql-configuration.model';
 export { DGTSourceGravatarConfiguration } from './lib/source/models/dgt-source-gravatar-configuration.model';
 export { DGTSourceMSSQLConfiguration } from './lib/source/models/dgt-source-mssql-configuration.model';
+export { DGTUriFactoryService } from './lib/uri/services/dgt-uri-factory.service';
+export { DGTUriFactoryCacheService } from './lib/uri/services/dgt-uri-factory-cache.service';
+export { DGTUriFactorySolidService } from './lib/uri/services/dgt-uri-factory-solid.service';
+export { DGTConnectionCacheService } from './lib/connection/services/dgt-connection-cache.service';
+export { DGTInviteCacheService } from './lib/invite/services/dgt-invite-cache.service';
+export { DGTPurposeCacheService } from './lib/purpose/services/dgt-purpose-cache.service';
+export { DGTSourceCacheService } from './lib/source/services/dgt-source-cache.service';
+export { DGTExchangeCacheService } from './lib/exchanges/services/dgt-exchange-cache.service';
+export { DGTHolderCacheService } from './lib/holder/services/dgt-holder-cache.service';

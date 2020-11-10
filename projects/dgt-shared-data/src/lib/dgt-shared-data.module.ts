@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
 import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
 import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
-import { DGTCacheService } from './cache/services/dgt-cache.service';
 import { DGTLDFilterRunnerBGPService } from './linked-data/services/dgt-ld-filter-runner-bgp.service';
 import { DGTLDFilterService } from './linked-data/services/dgt-ld-filter.service';
 import { DGTLDFilterRunnerSparqlService } from './linked-data/services/dgt-ld-filter-runner-sparql.service';
@@ -15,7 +14,6 @@ import { DGTProfileTransformerService } from './profile/services/dgt-profile-tra
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTConnectorService } from './connector/services/dgt-connector.service';
 import { DGTDataValueTransformerService } from './data-value/services/data-transformer-value.service';
-
 import { DGTCacheInMemoryService } from './cache/services/dgt-cache-in-memory.service';
 import { DGTCacheSolidService } from './cache/services/dgt-cache-solid.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
@@ -25,6 +23,8 @@ import { DGTHolderTransformerService } from './holder/services/dgt-holder-transf
 import { DGTInviteTransformerService } from './invite/services/dgt-invite-transformer.service';
 import { DGTPurposeTransformerService } from './purpose/services/dgt-purpose-transformer.service';
 import { DGTSourceTransformerService } from './source/services/dgt-source-transformer.service';
+import { DGTUriFactoryCacheService } from './uri/services/dgt-uri-factory-cache.service';
+import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -39,6 +39,7 @@ export const providers = [
   DGTLDFilterRunnerBGPService,
   DGTLDFilterRunnerSparqlService,
   DGTQueryService,
+  // DGTMockDataService,
   DGTCacheInMemoryService,
   DGTCacheSolidService,
   DGTWorkflowService,
@@ -55,6 +56,8 @@ export const providers = [
   DGTInviteTransformerService,
   DGTPurposeTransformerService,
   DGTSourceTransformerService,
+  DGTUriFactoryCacheService,
+  DGTUriFactorySolidService,
 ];
 
 @NgModule({

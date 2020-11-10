@@ -4,5 +4,5 @@ export interface DGTConfigurationBase {
     baseURI: string;
     logger: {
         minimumLevel: DGTLoggerLevel
-    }
+    };
 }
