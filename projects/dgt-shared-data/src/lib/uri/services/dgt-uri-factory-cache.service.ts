@@ -1,5 +1,4 @@
-import { DGTLDResource } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { v4 } from 'uuid';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
@@ -19,11 +18,7 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
     /**
      * Generates a URI for a resource
      */
-    generate(resource: DGTLDResource): Observable<string> {
-        if (!resource) {
-            throw new DGTErrorArgument('Argument resource should be set', resource);
-        }
-
+    generate(): Observable<string> {
         return of(`${this.config.get(conf => conf.cache.uri)}${this.resourceType}#${v4()}`);
     }
 
