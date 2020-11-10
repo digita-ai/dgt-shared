@@ -1,120 +1,116 @@
 import { DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTCacheService } from './dgt-cache.service';
-import { DGTSparqlQueryService } from '../../sparql/services/dgt-sparql-query.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDFilterService, DGTLDTripleFactoryService } from '@digita-ai/dgt-shared-data/public-api';
+import * as _ from 'lodash';
 
+
+/**
+ * The DGTCacheSolidService is used to communicate with a Solid based cache
+ * It features basic CRUD operations
+ * Implementation based on https://github.com/solid/community-server documentation
+ */
 @DGTInjectable()
 export class DGTCacheSolidService extends DGTCacheService {
 
     public databaseUrl = 'http://192.168.0.224:9999/blazegraph/namespace/kb/sparql';
 
-    constructor(private http: DGTHttpService, private sparqlService: DGTSparqlQueryService, private logger: DGTLoggerService,) {
+    constructor(
+        private http: DGTHttpService,
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private triples: DGTLDTripleFactoryService,
+    ) {
         super();
     }
 
+    /**
+     * Retrieves a single DGTLDResource from a Solid server
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param uri The uri to get from
+     */
     public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to get', { transformer, uri });
 
-        throw new DGTErrorNotImplemented();
+
+
+        const headers = {
+            Accept: 'text/turtle',
+        };
+
+        const id = uri.split('#')[1];
+
+        return of({uri, headers}).pipe(
+            switchMap(data => this.http.get<string>(data.uri, data.headers)
+                .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
+            switchMap(data => transformer.toDomain([{ triples: data.triples, uri: data.uri, exchange: null }])
+                .pipe(map(resources => ({...data, resources }))),
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
+            map(data => _.head(data.resources)),
+        );
     }
 
+    /**
+     * Retrieves all? DGTLDResources from the cache
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param filter The filter to run on the retrieved list of DGTLDResources
+     */
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
 
-        let responseJson: any;
+        // TODO determine which file(s) should be queried
+        //      holders are stored at https://domain.of.our.cache/holder
+        //      we need some way of determining which type T is:
+        //      - add a resourceType attribute to DGTLDResource? eg DGTLDResourceType.HOLDER = 'holder'
+        //      - or use instanceof and refactor DGTHolder etc to abstract classes? (not interfaces)
+        //      - or pass prefix to this function?
+        //      - or query all known SDM folders and use filters? <- i believe this is what this function is supposed to do?
+        //                                                              get exists for a single uri i guess
+
+        const uri = ''; // TBD see note at top
         const headers = {
-            'Content-Type': 'application/sparql-query',
-            'Accept': 'application/sparql-results+json'
+            Accept: 'text/turtle',
         };
-        // Select everything
-        const body = 'SELECT $s $p $o WHERE { $s $p $o }';
-        return this.http.post<string>(this.databaseUrl, body, headers)
-            .pipe(
-                map(response => {
-                    if (response) {
-                        responseJson = response.data;
-                        console.log(responseJson);
-                    }
-                    return responseJson;
-                }
-                ));
+
+        return of({uri, headers}).pipe(
+            switchMap(data => this.http.get<string>(data.uri, data.headers)
+                .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
+            switchMap(data => transformer.toDomain([{ triples: data.triples, uri: data.uri, exchange: null }])
+                .pipe(map(resources => ({...data, resources }))),
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
+            switchMap(data => this.filters.run<T>(filter, data.resources)
+                .pipe(map(resources => ({...data, resources})))
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', {data, filter})),
+            map(data => data.resources),
+        );
+
     }
 
-    public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, objects: T[]): Observable<T[]> {
+    /**
+     * Deletes one or more resource(s) from the cache
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param resources Resources to delete
+     */
+    public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
     }
 
-    public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, objects: T[]): Observable<T[]> {
+    /**
+     * Saves one or more resource(s) to the cache
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param resources Resources to save
+     */
+    public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
-
-        // toBeSaved is a domain object that has to be transformed to triples
-        // then a correct sparql query can be formed with the transformer and triples
-        // TODO Do we need the connection here : 
-        // return transformer.toTriples(toBeSaved, connection).pipe(
-        //     map(data => {
-        //         const result = this.sparqlService.generateSparqlUpdate(data, 'insert', null);
-        //         // This generates correct update query. We can update the triples in the blazegraph database with these.
-        //         // example
-        //         /*
-        //         *INSERT DATA {
-        //             <undefined#62680300-2b95-4f9e-b84b-73fa45e09328> <http://digita.ai/voc/events#description> "description"^^<http://www.w3.org/2001/XMLSchema#string>;
-        //             <http://digita.ai/voc/events#stakeholder> "stakeholder"^^<http://www.w3.org/2001/XMLSchema#string>;
-        //             <http://digita.ai/voc/events#createdAt> ""^^<http://www.w3.org/2001/XMLSchema#dateTime>;
-        //             <http://digita.ai/voc/events#icon> "het icoontje"^^<http://www.w3.org/2001/XMLSchema#string>;
-        //             <http://digita.ai/voc/events#uri> "http://something"^^<http://www.w3.org/2001/XMLSchema#string>.
-        //             <#> <http://digita.ai/voc/events#event> <undefined#62680300-2b95-4f9e-b84b-73fa45e09328>.
-        //         }
-        //         */
-
-        //         this.logger.debug(DGTCacheBlazeGraphService.name,
-        //             'generating sparql',
-        //             result);
-        //         return null;
-        //     }
-        //     ));
     }
-
-    // public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
-    //     throw new Error('Method not implemented.');
-    // }
-
-    // public storeForExchange(exchange: DGTExchange, values: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    //     this.logger.debug(DGTCacheService.name, 'Storing values for exchange to cache', { exchange, values });
-    //     return of({ values, exchange })
-    //         .pipe(
-    //             // switchMap(data => this.remove({ conditions: [{ field: 'exchange', operator: '==', value: data.exchange.id }] })
-    //             //     .pipe(map(removal => data))),
-    //             tap(data => this.logger.debug(DGTCacheService.name, 'Removed old values, ready to store new ones', data)),
-    //             map(data => data.values),
-    //         );
-    // }
-
-    // private convertToTriples(triples: DGTLDTriple[]): Triple[] {
-    //     return triples.map((triple: DGTLDTriple) => {
-    //         let object: Term = `${triple.object.value}` as Term;
-
-    //         if (triple.object.termType === DGTLDTermType.LITERAL) {
-    //             object = `\"${triple.object.value}\"^^${triple.object.dataType}` as Term;
-    //         }
-
-    //         return {
-    //             subject: triple.subject.value as Term,
-    //             predicate: triple.predicate as Term,
-    //             object,
-    //         };
-    //     });
-    // }
-
-    // private encode(data): string {
-    //     const pairs = [];
-
-    //     Object.keys(data).forEach((key) => {
-    //         pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-    //     });
-
-    //     return pairs.join('&');
-    // }
 }
