@@ -7,6 +7,7 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
+import { v4 } from 'uuid';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {

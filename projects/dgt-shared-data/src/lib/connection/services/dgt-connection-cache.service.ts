@@ -7,6 +7,7 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
+import { v4 } from 'uuid';
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
