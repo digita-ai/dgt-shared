@@ -125,3 +125,6 @@ export { DGTConnectionGravatarConfiguration } from './lib/connection/models/dgt-
 export { DGTConnectionMSSQLConfiguration } from './lib/connection/models/dgt-connection-mssql-configuration.model';
 export { DGTSourceGravatarConfiguration } from './lib/source/models/dgt-source-gravatar-configuration.model';
 export { DGTSourceMSSQLConfiguration } from './lib/source/models/dgt-source-mssql-configuration.model';
+export { DGTUriFactoryService } from './lib/uri/services/dgt-uri-factory.service';
+export { DGTUriFactoryCacheService } from './lib/uri/services/dgt-uri-factory-cache.service';
+export { DGTUriFactorySolidService } from './lib/uri/services/dgt-uri-factory-solid.service';
