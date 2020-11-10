@@ -5,5 +5,5 @@ import { Observable } from 'rxjs';
 @DGTInjectable()
 export abstract class DGTUriFactoryService {
 
-    public abstract generate(resource: DGTLDResource | DGTLDTriple): Observable<string>;
+    public abstract generate(resource: DGTLDResource): Observable<string>;
 }
