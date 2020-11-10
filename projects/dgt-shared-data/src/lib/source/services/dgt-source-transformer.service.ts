@@ -12,6 +12,7 @@ import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
+import uuid from 'uuid';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
@@ -591,6 +592,86 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
+            config.keys.forEach( keys => {
+                const id = uuid();
+                const subject = {
+                    value: '#' + id,
+                    termType: DGTLDTermType.REFERENCE
+                };
+                res.push({
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#keys',
+                    subject: resourceSubject,
+                    object: subject,
+                });
+                const tempTriples = [
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#kid',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.kid,
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#kty',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.kty
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#alg',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.alg,
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#n',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.n
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#e',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.e
+                        },
+                    },
+                    {
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#ext',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keys.ext
+                        },
+                    },
+                ];
+                res = res.concat( tempTriples );
+                keys.key_ops.forEach(keyop => {
+                    res.push({
+                        predicate: 'http://digita.ai/voc/sourcesolidconfig#keyop',
+                        subject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: keyop
+                        },
+                    });
+                });
+            });
         } else if (resource.type === DGTSourceType.MSSQL) {
             const config: DGTSourceMSSQLConfiguration = resource.configuration;
             res = [
@@ -663,11 +744,277 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         let res = null;
 
         if (type === DGTSourceType.SOLID) {
+            const issuer = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#issuer'
+            );
+            const authorizationEndpoint = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#athorizationEndpoint'
+            );
+            const tokenEndpoint = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpoint'
+            );
+            const userinfoEndpoint = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#userinfoendpoint'
+            );
+            const jwksUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#jwksuri'
+            );
+            const registrationEndpoint = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationendpoint'
+            );
+            const claimsParameterSupported = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimsparametersuppoerted'
+            );
+            const requestParameterSupported = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requestparametersupported'
+            );
+            const requestUriParameterSupported = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requesturiparametersupported'
+            );
+            const requireRequestUriRegistration = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requirerequesturiregistration'
+            );
+            const checkSessionIframe = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#checksessioniframe'
+            );
+            const endSessionEndpoint = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#endsessionendpoint'
+            );
+            const callbackUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#callbackuri'
+            );
+            const clientId = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientid'
+            );
+            const clientsecret = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientsecret'
+            );
+            const applicationType = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#applicationtype'
+            );
+            const clientName = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientname'
+            );
+            const logoUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#logouri'
+            );
+            const clientUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clienturi'
+            );
+            const idTokenSignedResponseAlg = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#idtokensignedresponsealg'
+            );
+            const tokenEndpointAuthMethod = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethod'
+            );
+            const defaultMaxAge = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#defaultmaxage'
+            );
+            const frontchannelLogoutSessionRequired = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#frontchannellogoutsessionrequired'
+            );
+            const registrationAccessToken = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationaccesstoken'
+            );
+            const registrationClientUri = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationclienturi'
+            );
+            const clientIdIssuedAt = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientidissuedat'
+            );
+            const clientSecretExpiresAt = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientsecretexpiresat'
+            );
 
+            const responseTypesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported'
+            ).map( t => t.object.value);
+            const responseModesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported'
+            ).map( t => t.object.value);
+            const grantTypesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypessupported'
+            ).map( t => t.object.value);
+            const subjectTypesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported'
+            ).map( t => t.object.value);
+            const idTokenSigningAlgValuesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported'
+            ).map( t => t.object.value);
+            const tokenEndpointAuthMethodsSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported'
+            ).map( t => t.object.value);
+            const tokenEndpointAuthSigningAlgValuesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported'
+            ).map( t => t.object.value);
+            const displayValuesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported'
+            ).map( t => t.object.value);
+            const claimTypesSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported'
+            ).map( t => t.object.value);
+            const claimsSupported = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimssupported'
+            ).map( t => t.object.value);
+            const redirectUris = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#redirecturis'
+            ).map( t => t.object.value);
+            const responseTypes = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypes'
+            ).map( t => t.object.value);
+            const grantTypes = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypes'
+            ).map( t => t.object.value);
+            const postLogoutRedirectUris = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#postlogoutredirecturis'
+            ).map( t => t.object.value);
+
+            const keys = resource.triples.filter(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#keys'
+            ).map( key => {
+                const kid = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#kid'
+                );
+                const kty = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#kty'
+                );
+                const alg = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#alg'
+                );
+                const n = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#n'
+                );
+                const e = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#e'
+                );
+                const ext = resource.triples.find(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#ext'
+                );
+                const keyOps = resource.triples.filter(value =>
+                    value.subject.value === key.object.value &&
+                    value.predicate === 'http://digita.ai/voc/sourcesolidconfig#keyops'
+                ).map( t => t.object.value );
+
+                return {
+                    kid: kid ? kid.object.value : null,
+                    kty: kty ? kty.object.value : null,
+                    alg: alg ? alg.object.value : null,
+                    n: n ? n.object.value : null,
+                    e: e ? e.object.value : null,
+                    ext: ext ? ext.object.value : null,
+                    key_ops: keyOps,
+                };
+            });
+
+            res = {
+                issuer: issuer ? issuer.object.value : null,
+                authorization_endpoint: authorizationEndpoint ? authorizationEndpoint.object.value : null,
+                token_endpoint: tokenEndpoint ? tokenEndpoint.object.value : null,
+                userinfo_endpoint: userinfoEndpoint ? userinfoEndpoint.object.value : null,
+                jwks_uri: jwksUri ? jwksUri.object.value : null,
+                registration_endpoint: registrationEndpoint ? registrationEndpoint.object.value : null,
+                claims_parameter_supported: claimsParameterSupported ? claimsParameterSupported.object.value : null,
+                request_parameter_supported: requestParameterSupported ? requestParameterSupported.object.value : null,
+                request_uri_parameter_supported: requestUriParameterSupported ? requestUriParameterSupported.object.value : null,
+                require_request_uri_registration: requireRequestUriRegistration ? requireRequestUriRegistration.object.value : null,
+                check_session_iframe: checkSessionIframe ? checkSessionIframe.object.value : null,
+                end_session_endpoint: endSessionEndpoint ? endSessionEndpoint.object.value : null,
+                callbackUri: callbackUri ? callbackUri.object.value : null,
+                client_id: clientId ? clientId.object.value : null,
+                client_secret: clientsecret ? clientsecret.object.value : null,
+                application_type: applicationType ? applicationType.object.value : null,
+                client_name: clientName ? clientName.object.value : null,
+                logo_uri: logoUri ? logoUri.object.value : null,
+                client_uri: clientUri ? clientUri.object.value : null,
+                id_token_signed_response_alg: idTokenSignedResponseAlg ? idTokenSignedResponseAlg.object.value : null,
+                token_endpoint_auth_method: tokenEndpointAuthMethod ? tokenEndpointAuthMethod.object.value : null,
+                default_max_age: defaultMaxAge ? defaultMaxAge.object.value : null,
+                frontchannel_logout_session_required: frontchannelLogoutSessionRequired ? frontchannelLogoutSessionRequired.object.value : null,
+                registration_access_token: registrationAccessToken ? registrationAccessToken.object.value : null,
+                registration_client_uri: registrationClientUri ? registrationClientUri.object.value : null,
+                client_id_issued_at: clientIdIssuedAt ? clientIdIssuedAt.object.value : null,
+                client_secret_expires_at: clientSecretExpiresAt ? clientSecretExpiresAt.object.value : null,
+
+                response_types_supported: responseTypesSupported,
+                response_modes_supported: responseModesSupported,
+                grant_types_supported: grantTypesSupported,
+                subject_types_supported: subjectTypesSupported,
+                id_token_signing_alg_values_supported: idTokenSigningAlgValuesSupported,
+                token_endpoint_auth_methods_supported: tokenEndpointAuthMethodsSupported,
+                token_endpoint_auth_signing_alg_values_supported: tokenEndpointAuthSigningAlgValuesSupported,
+                display_values_supported: displayValuesSupported,
+                claim_types_supported: claimTypesSupported,
+                claims_supported: claimsSupported,
+                redirect_uris: redirectUris,
+                response_types: responseTypes,
+                grant_types: grantTypes,
+                post_logout_redirect_uris: postLogoutRedirectUris,
+
+                keys,
+            } as DGTSourceSolidConfiguration;
         } else if (type === DGTSourceType.MSSQL) {
 
         } else if (type === DGTSourceType.GRAVATAR) {
-
+            const usernameField = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcegravatarconfig#usernamefield'
+            );
+            const thumbnailField = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcegravatarconfig#thumbnailfield'
+            );
+            res = {
+                usernameField: usernameField ? usernameField.object.value : null,
+                thumbnailField: thumbnailField ? thumbnailField.object.value : null,
+            } as DGTSourceGravatarConfiguration;
         } else {
             throw new DGTErrorConfig('SourceType was not recognised', {resource});
         }
