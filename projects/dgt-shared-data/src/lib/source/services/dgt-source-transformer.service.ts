@@ -437,6 +437,15 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value: config.client_secret_expires_at,
                     },
                 },
+                {
+                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.token_endpoint_auth_methods_supported,
+                    },
+                }
             ];
             config.response_types_supported?.forEach(str => {
                 res.push({
@@ -485,17 +494,6 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             config.id_token_signing_alg_values_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported',
-                    subject: resourceSubject,
-                    object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: str,
-                    },
-                });
-            });
-            config.token_endpoint_auth_methods_supported?.forEach(str => {
-                res.push({
-                    predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
                     subject: resourceSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,

@@ -61,7 +61,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         ),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add resource', data)),
         switchMap(data => this.connections.get(data.exchange.connection)
-          .pipe(map(connection => ({ ...data, connection })))),
+          .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
         switchMap(data => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ ...data, source })))),
         switchMap(data => forkJoin(Object.keys(data.groupedEntities).map(uri => this.generateToken(uri, data.connection, data.source)
@@ -99,7 +99,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return of({ exchange, uri })
       .pipe(
         switchMap(data => this.connections.get(data.exchange.connection)
-          .pipe(map(connection => ({ ...data, connection, uri: data.uri ? data.uri : connection.configuration.webId })))),
+          .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection, uri: data.uri ? data.uri : connection.configuration.webId })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved connetion', data)),
         switchMap(data => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ ...data, source })))),
@@ -151,7 +151,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       switchMap(data => this.exchanges.get(_.head(domainEntities).exchange)
         .pipe(map(exchange => ({ ...data, exchange })))),
       switchMap(data => this.connections.get(data.exchange.connection)
-        .pipe(map(connection => ({ ...data, connection })))),
+        .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
       switchMap(data => this.sources.get(data.exchange.source)
         .pipe(map(source => ({ ...data, source })))),
       tap((data) =>
@@ -254,7 +254,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       switchMap(updates => this.exchanges.get(_.head(domainEntities).original.exchange)
         .pipe(map(exchange => ({ updates, exchange })))),
       switchMap(data => this.connections.get(data.exchange.connection)
-        .pipe(map(connection => ({ ...data, connection })))),
+        .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
       switchMap(data => this.sources.get(data.exchange.source)
         .pipe(map(source => ({ ...data, source })))),
       switchMap((data) =>
@@ -306,30 +306,23 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
   public prepare(source: DGTSourceSolid): Observable<DGTSourceSolid> {
 
-    if (!source) {
+    if (!source || source.type !== DGTSourceType.SOLID) {
       throw new DGTErrorArgument('Argument source should be set.', source);
     }
 
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to prepare source for connection', { source });
 
-    let res: Observable<DGTSourceSolid> = null;
-
-    if (source && source.type === DGTSourceType.SOLID) {
-      res = of({ source })
-        .pipe(
-          switchMap(data => this.discover(data.source)
-            .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
-          switchMap(data => this.jwks(data.source)
-            .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
-          switchMap(data => this.register(data.source)
-            .pipe(map(configuration => ({ ...source, configuration })))),
-          map(src => ({ ...src, state: DGTSourceState.PREPARED })),
-        );
-    }
-
-    this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source for connection', { source });
-
-    return res;
+    return of({ source })
+      .pipe(
+        switchMap(data => this.discover(data.source)
+          .pipe(map(configuration => ({ ...data, source: { ...data.source, configuration: { ...data.source.configuration, ...configuration } } })))),
+        switchMap(data => this.jwks(data.source)
+          .pipe(map(configuration => ({ ...data, source: { ...data.source, configuration: { ...data.source.configuration, ...configuration } } })))),
+        switchMap(data => this.register(data.source)
+          .pipe(map(configuration => ({ ...data, source: { ...data.source, state: DGTSourceState.PREPARED, configuration: { ...data.source.configuration, ...configuration } } })))),
+        tap(source => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared source for connection', { source })),
+        map(data => data.source)
+      );
   }
 
   public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
@@ -340,10 +333,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
     this.logger.debug(DGTSourceSolidConnector.name, 'Starting to connect to Solid', { connection, source });
 
-    let res: Observable<DGTConnection<any>> = null;
+    let res: Observable<DGTConnectionSolid> = null;
 
     if (source && source.type === DGTSourceType.SOLID) {
-      res = of({ connection, source }).pipe(
+      res = of({ connection: connection as DGTConnectionSolid, source }).pipe(
         tap((data) =>
           this.logger.debug(
             DGTSourceSolidConnector.name,
@@ -359,7 +352,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                 ...connection,
                 configuration: { ...data.connection.configuration, loginUri },
                 state: DGTConnectionState.CONNECTING,
-              },
+              } as DGTConnectionSolid,
             }))
           )
         ),
@@ -453,7 +446,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           { response }
         )
       ),
-      map((response) => ({ ...response.data, ...source.configuration }))
+      map((response) => ({ ...source.configuration, ...response.data }))
     );
   }
 
@@ -474,7 +467,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           { response }
         )
       ),
-      map((response) => ({ keys: response.data.keys, ...source.configuration }))
+      map((response) => ({ ...source.configuration, keys: response.data.keys }))
     );
   }
 
@@ -507,7 +500,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           { response, source }
         )
       ),
-      map((response) => ({ ...response.data, ...source.configuration }))
+      map((response) => ({ ...source.configuration, ...response.data }))
     );
   }
 
