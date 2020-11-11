@@ -105,11 +105,6 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                         value: resource.description
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/exchanges#exchange',
-                    subject: documentSubject,
-                    object: resourceSubject,
-                }
             ];
 
             // add predicates array

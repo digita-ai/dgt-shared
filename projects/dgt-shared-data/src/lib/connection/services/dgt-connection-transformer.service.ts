@@ -370,7 +370,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             // solid connection
             const webId = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
-                value.predicate === 'http://digita.ai/voc/connections#webid'
+                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#webid'
             );
             const accessToken = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&

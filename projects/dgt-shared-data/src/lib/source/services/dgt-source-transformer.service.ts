@@ -119,11 +119,6 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value: resource.type
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/exchanges#exchange',
-                    subject: documentSubject,
-                    object: resourceSubject,
-                }
             ];
 
             if (resource.state) {

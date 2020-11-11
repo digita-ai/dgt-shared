@@ -114,11 +114,6 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                         value: resource.purpose
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/exchanges#exchange',
-                    subject: documentSubject,
-                    object: resourceSubject,
-                }
             ];
 
             if (resource.connection) {
