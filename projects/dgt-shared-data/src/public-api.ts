@@ -131,3 +131,4 @@ export { DGTPurposeCacheService } from './lib/purpose/services/dgt-purpose-cache
 export { DGTSourceCacheService } from './lib/source/services/dgt-source-cache.service';
 export { DGTExchangeCacheService } from './lib/exchanges/services/dgt-exchange-cache.service';
 export { DGTHolderCacheService } from './lib/holder/services/dgt-holder-cache.service';
+export { DGTConnectionType } from './lib/connection/models/dgt-connection-type.model';

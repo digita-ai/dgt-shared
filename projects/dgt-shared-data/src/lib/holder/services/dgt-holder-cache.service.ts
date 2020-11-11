@@ -7,7 +7,7 @@ import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTHolderCacheService extends DGTHolderService {
@@ -16,7 +16,7 @@ export class DGTHolderCacheService extends DGTHolderService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTHolderTransformerService,
-        private uri: DGTUriFactoryCacheService,
+        private uri: DGTUriFactoryService,
     ) {
         super();
     }

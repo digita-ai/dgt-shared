@@ -4,11 +4,10 @@ import * as _ from 'lodash';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { v4 } from 'uuid';
 import { DGTSource } from '../models/dgt-source.model';
 import { DGTSourceTransformerService } from './dgt-source-transformer.service';
 import { DGTSourceService } from './dgt-source.service';
-import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTSourceCacheService extends DGTSourceService {
@@ -17,7 +16,7 @@ export class DGTSourceCacheService extends DGTSourceService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTSourceTransformerService,
-        private uri: DGTUriFactoryCacheService,
+        private uri: DGTUriFactoryService,
     ) {
         super();
     }

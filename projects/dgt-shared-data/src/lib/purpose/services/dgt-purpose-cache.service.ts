@@ -2,10 +2,9 @@ import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dg
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { v4 } from 'uuid';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTPurpose } from '../models/dgt-purpose.model';
 import { DGTPurposeTransformerService } from './dgt-purpose-transformer.service';
 import { DGTPurposeService } from './dgt-purpose.service';
@@ -17,7 +16,7 @@ export class DGTPurposeCacheService extends DGTPurposeService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTPurposeTransformerService,
-        private uri: DGTUriFactoryCacheService,
+        private uri: DGTUriFactoryService,
     ) {
         super();
     }

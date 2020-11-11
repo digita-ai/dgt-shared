@@ -4,11 +4,10 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTUriFactoryCacheService } from '../../uri/services/dgt-uri-factory-cache.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
-import { v4 } from 'uuid';
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
@@ -17,7 +16,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private transformer: DGTConnectionTransformerService,
-        private uri: DGTUriFactoryCacheService,
+        private uri: DGTUriFactoryService,
     ) {
         super();
     }

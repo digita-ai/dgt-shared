@@ -72,18 +72,13 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
       throw new DGTErrorArgument('Argument sourceId should be set.', sourceId);
     }
 
-    return this.http.post<any>(
-      `${this.config.get(c => c.server.uri)}invite/${inviteId}/link/${sourceId}`, {}
-    ).pipe(
-      map(res => {
-        if (res.status === 201) {
-          return res.data;
-        } else {
-          this.logger.debug(DGTConnectionRemoteService.name, 'Response status is ', res.status);
-          return null;
-        }
-      }),
-    );
+    return of({ sourceId, inviteId })
+      .pipe(
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/link/${data.sourceId}` })),
+        switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+        switchMap(data => this.http.post<any>(data.uri, '', { Authorization: `Bearer ${data.accessToken}` })),
+        map(res => res.data)
+      );
   }
 
   public sendTokensForInvite(inviteId: string, fragment: string): Observable<DGTConnection<any>> {
@@ -109,11 +104,12 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
 
     const headers = { 'Content-Type': 'application/json' };
 
-    return this.http.post<DGTConnection<any>>(
-      `${this.config.get(c => c.server.uri)}invite/${inviteId}/connection`, body, headers
-    ).pipe(
-      map(response => response.data),
-      tap(connection => this.logger.debug(DGTConnectionRemoteService.name, 'Sent tokens', connection))
-    );
+    return of({ inviteId, body, headers })
+      .pipe(
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/connection` })),
+        switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+        switchMap(data => this.http.post<DGTConnection<any>>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
+        map(res => res.data)
+      );
   }
 }

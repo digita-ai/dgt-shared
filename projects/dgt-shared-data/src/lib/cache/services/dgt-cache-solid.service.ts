@@ -5,8 +5,9 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTCacheService } from './dgt-cache.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
-import { DGTLDFilterService, DGTLDTripleFactoryService } from '@digita-ai/dgt-shared-data/public-api';
 import * as _ from 'lodash';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 
 
 /**

@@ -1,4 +1,4 @@
-import { DGTConfigurationBaseApi, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { v4 } from 'uuid';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
@@ -8,6 +8,7 @@ import { DGTUriFactoryService } from './dgt-uri-factory.service';
  * e.g. https://domain.of.our.cache/holder#1234-5678-9012-3456
  * pass resourceType to constructor ('holder', 'connection', 'exchange', ...)
  */
+@DGTInjectable()
 export class DGTUriFactoryCacheService implements DGTUriFactoryService {
 
     constructor(

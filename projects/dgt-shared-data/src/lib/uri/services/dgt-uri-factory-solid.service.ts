@@ -1,3 +1,4 @@
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
 
@@ -6,6 +7,7 @@ import { DGTUriFactoryService } from './dgt-uri-factory.service';
  * e.g. https://sanderclaes.inrupt.net/foo/bar
  * Pass resourceType to constructor ('holder', 'connection', 'exchange', ...)
  */
+@DGTInjectable()
 export class DGTUriFactorySolidService implements DGTUriFactoryService {
 
     /**

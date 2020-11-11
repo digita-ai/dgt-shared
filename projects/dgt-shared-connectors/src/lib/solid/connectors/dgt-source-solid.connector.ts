@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService } from '@digita-ai/dgt-shared-data';
+import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -26,6 +26,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private transformer: DGTSourceSolidTrustedAppTransformerService,
     private triples: DGTLDTripleFactoryService,
     private connections: DGTConnectionService,
+    private purposes: DGTPurposeService,
     private sources: DGTSourceService,
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
@@ -65,16 +66,17 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           .pipe(map(source => ({ ...data, source })))),
         switchMap(data => forkJoin(Object.keys(data.groupedEntities).map(uri => this.generateToken(uri, data.connection, data.source)
           .pipe(
-            switchMap(token => this.http.patch(
+            map(token => (token ? {
+              'Content-Type': 'application/sparql-update',
+              Authorization: 'Bearer ' + token,
+            } : { 'Content-Type': 'application/sparql-update', })),
+            switchMap(headers => this.http.patch(
               uri,
               this.sparql.generateSparqlUpdate(
                 data.groupedEntities[uri],
                 'insert'
               ),
-              {
-                'Content-Type': 'application/sparql-update',
-                Authorization: 'Bearer ' + token,
-              }
+              headers
             )
             )
           ))
@@ -103,12 +105,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           .pipe(map(source => ({ ...data, source })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved source', data)),
         switchMap(data => this.generateToken(data.uri, data.connection, data.source)
-          .pipe(map(token => ({ ...data, token })))),
+          .pipe(map(token => ({
+            ...data, token, headers: token ? {
+              'Content-Type': 'application/sparql-update',
+              Authorization: 'Bearer ' + token,
+            } : { 'Content-Type': 'application/sparql-update', },
+          })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated token', data)),
-        switchMap(data => this.http.get<string>(data.uri, {
-          Authorization: 'Bearer ' + data.token,
-          Accept: 'text/turtle'
-        }, true)
+        switchMap(data => this.http.get<string>(data.uri, data.headers, true)
           .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
         switchMap(data => transformer.toDomain([{
@@ -161,17 +165,18 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           Object.keys(data.groupedEntities).map((uri) => {
             return this.generateToken(uri, data.connection, data.source).pipe(
-              switchMap((token) =>
+              map(token => (token ? {
+                'Content-Type': 'application/sparql-update',
+                Authorization: 'Bearer ' + token,
+              } : { 'Content-Type': 'application/sparql-update', })),
+              switchMap((headers) =>
                 this.http.patch(
                   uri,
                   this.sparql.generateSparqlUpdate(
                     data.groupedEntities[uri],
                     'delete'
                   ),
-                  {
-                    'Content-Type': 'application/sparql-update',
-                    Authorization: 'Bearer ' + token,
-                  }
+                  headers
                 )
               )
             );
@@ -260,15 +265,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               data.connection,
               data.source
             ).pipe(
-              switchMap((token) => {
+              map(token => (token ? {
+                'Content-Type': 'application/sparql-update',
+                Authorization: 'Bearer ' + token,
+              } : { 'Content-Type': 'application/sparql-update', })),
+              switchMap((headers) => {
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
                     update.delta.updated.uri,
                     this.sparql.generateSparqlUpdate([update.delta.updated], 'insert'),
-                    {
-                      'Content-Type': 'application/sparql-update',
-                      Authorization: 'Bearer ' + token,
-                    }
+                    headers
                   );
                 }
 
@@ -286,10 +292,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                     'insertdelete',
                     [update.delta.original]
                   ),
-                  {
-                    'Content-Type': 'application/sparql-update',
-                    Authorization: 'Bearer ' + token,
-                  }
+                  headers
                 );
               })
             )
@@ -639,19 +642,17 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     return pairs.join('&');
   }
 
-  public checkAccessRights(connection: DGTConnectionSolid, purpose: DGTPurpose, exchange: DGTExchange): Observable<boolean> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { connection, purpose });
+  public checkAccessRights(exchange: DGTExchange): Observable<boolean> {
+    this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { exchange });
 
-    if (!connection) {
-      throw new DGTErrorArgument('Argument connection should be set.', connection);
-    }
-
-    if (!purpose) {
-      throw new DGTErrorArgument('Argument purpose should be set.', purpose);
-    }
-
-    return of({ connection, purpose }).pipe(
-      switchMap(data => this.query<DGTSourceSolidTrustedApp>(connection.configuration.webId, exchange, this.transformer).pipe(
+    return of(exchange).pipe(
+      switchMap(data => this.connections.get(exchange.connection).pipe(
+        map(connection => ({ ...data, connection }))
+      )),
+      switchMap(data => this.purposes.get(exchange.purpose).pipe(
+        map(purpose => ({ ...data, purpose }))
+      )),
+      switchMap(data => this.query<DGTSourceSolidTrustedApp>(data.connection.configuration.webId, exchange, this.transformer).pipe(
         map(trustedApps => ({ ...data, trustedApps }))
       )),
       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Retrieved trusted apps', data.trustedApps)),
@@ -758,11 +759,11 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     connection: DGTConnectionSolid,
     source: DGTSourceSolid
   ): Observable<string> {
-    return DGTSourceSolidToken.issueFor(
+    return source.state === DGTSourceState.PREPARED ? DGTSourceSolidToken.issueFor(
       uri,
       connection.configuration.privateKey,
       source.configuration.client_id,
       connection.configuration.idToken
-    );
+    ) : of(null);
   }
 }
