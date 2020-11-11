@@ -88,6 +88,11 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
             let newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/connections#connection',
+                    subject: documentSubject,
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/connections#source',
                     subject: resourceSubject,
                     object: {
@@ -189,7 +194,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
         return {
             uri: resource.uri,
-            triples: [triple],
+            triples: [...resource.triples],
             state: state ? state.object.value : null,
             exchange: exchange ? exchange.object.value : null,
             holder: holder ? holder.object.value : null,

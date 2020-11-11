@@ -88,6 +88,11 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
             let newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/sources#source',
+                    subject: documentSubject,
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/sources#icon',
                     subject: resourceSubject,
                     object: {
@@ -133,7 +138,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 });
             }
 
-            newTriples = newTriples.concat( this.configToTriples(resource, resourceSubject) );
+            newTriples.push(...this.configToTriples(resource, resourceSubject));
 
             return {
                 ...resource,
@@ -174,11 +179,11 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/sources#state'
         );
-        const configuration = this.configToDomain( triple, resource, type.object.value );
+        const configuration = this.configToDomain(triple, resource, type.object.value);
 
         return {
             uri: resource.uri,
-            triples: [triple],
+            triples: [...resource.triples],
             exchange: resource.exchange,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
@@ -438,7 +443,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 },
             ];
-            config.response_types_supported.forEach( str => {
+            config.response_types_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported',
                     subject: resourceSubject,
@@ -449,7 +454,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.response_modes_supported.forEach( str => {
+            config.response_modes_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported',
                     subject: resourceSubject,
@@ -460,7 +465,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.grant_types_supported.forEach( str => {
+            config.grant_types_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypessupported',
                     subject: resourceSubject,
@@ -471,7 +476,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.subject_types_supported.forEach( str => {
+            config.subject_types_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported',
                     subject: resourceSubject,
@@ -482,7 +487,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.id_token_signing_alg_values_supported.forEach( str => {
+            config.id_token_signing_alg_values_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported',
                     subject: resourceSubject,
@@ -493,7 +498,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.token_endpoint_auth_methods_supported.forEach( str => {
+            config.token_endpoint_auth_methods_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
                     subject: resourceSubject,
@@ -504,7 +509,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.token_endpoint_auth_signing_alg_values_supported.forEach( str => {
+            config.token_endpoint_auth_signing_alg_values_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported',
                     subject: resourceSubject,
@@ -515,7 +520,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.display_values_supported.forEach( str => {
+            config.display_values_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported',
                     subject: resourceSubject,
@@ -526,7 +531,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.claim_types_supported.forEach( str => {
+            config.claim_types_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported',
                     subject: resourceSubject,
@@ -537,7 +542,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.claims_supported.forEach( str => {
+            config.claims_supported?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#claimssupported',
                     subject: resourceSubject,
@@ -548,7 +553,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.redirect_uris.forEach( str => {
+            config.redirect_uris?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#redirecturis',
                     subject: resourceSubject,
@@ -559,7 +564,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.response_types.forEach( str => {
+            config.response_types?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypes',
                     subject: resourceSubject,
@@ -570,7 +575,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.grant_types.forEach( str => {
+            config.grant_types?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypes',
                     subject: resourceSubject,
@@ -581,7 +586,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.post_logout_redirect_uris.forEach( str => {
+            config.post_logout_redirect_uris?.forEach(str => {
                 res.push({
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#postlogoutredirecturis',
                     subject: resourceSubject,
@@ -592,7 +597,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 });
             });
-            config.keys.forEach( keys => {
+            config.keys?.forEach(keys => {
                 const id = uuid();
                 const subject = {
                     value: '#' + id,
@@ -659,8 +664,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         },
                     },
                 ];
-                res = res.concat( tempTriples );
-                keys.key_ops.forEach(keyop => {
+                res = res.concat(tempTriples);
+                keys.key_ops?.forEach(keyop => {
                     res.push({
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#keyop',
                         subject,
@@ -766,7 +771,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 },
             ];
         } else {
-            throw new DGTErrorConfig('SourceType was not recognised', {resource});
+            throw new DGTErrorConfig('SourceType was not recognised', { resource });
         }
 
         return res;
@@ -887,64 +892,64 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             const responseTypesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const responseModesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const grantTypesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const subjectTypesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const idTokenSigningAlgValuesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const tokenEndpointAuthMethodsSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const tokenEndpointAuthSigningAlgValuesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const displayValuesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const claimTypesSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const claimsSupported = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimssupported'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const redirectUris = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#redirecturis'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const responseTypes = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypes'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const grantTypes = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypes'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
             const postLogoutRedirectUris = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#postlogoutredirecturis'
-            ).map( t => t.object.value);
+            ).map(t => t.object.value);
 
             const keys = resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#keys'
-            ).map( key => {
+            ).map(key => {
                 const kid = resource.triples.find(value =>
                     value.subject.value === key.object.value &&
                     value.predicate === 'http://digita.ai/voc/sourcesolidconfig#kid'
@@ -972,7 +977,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 const keyOps = resource.triples.filter(value =>
                     value.subject.value === key.object.value &&
                     value.predicate === 'http://digita.ai/voc/sourcesolidconfig#keyops'
-                ).map( t => t.object.value );
+                ).map(t => t.object.value);
 
                 return {
                     kid: kid ? kid.object.value : null,
@@ -1052,7 +1057,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mapping'
-            ).forEach( mapping => {
+            )?.forEach(mapping => {
                 const key = resource.triples.find(val =>
                     val.subject.value === mapping.object.value &&
                     val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingkey'
@@ -1061,7 +1066,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     val.subject.value === mapping.object.value &&
                     val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingvalue'
                 );
-                if ( key && value ) {
+                if (key && value) {
                     resmap.set(key.object.value, value.object.value);
                 }
             });
@@ -1087,7 +1092,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 thumbnailField: thumbnailField ? thumbnailField.object.value : null,
             } as DGTSourceGravatarConfiguration;
         } else {
-            throw new DGTErrorConfig('SourceType was not recognised', {resource});
+            throw new DGTErrorConfig('SourceType was not recognised', { resource });
         }
 
         return res;

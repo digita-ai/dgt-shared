@@ -83,6 +83,11 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
             const newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/invites#invite',
+                    subject: documentSubject,
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/invites#holder',
                     subject: resourceSubject,
                     object: {
@@ -95,7 +100,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     predicate: 'http://digita.ai/voc/invites#state',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.state
                     },
@@ -170,7 +175,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
         return {
             uri: resource.uri,
-            triples: [triple],
+            triples: [...resource.triples],
             exchange: resource.exchange,
             holder: holder ? holder.object.value : null,
             state: state ? state.object.value : null,

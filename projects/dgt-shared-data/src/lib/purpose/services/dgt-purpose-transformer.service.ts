@@ -83,6 +83,11 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
             const newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/purposes#purpose',
+                    subject: documentSubject,
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/purposes#icon',
                     subject: resourceSubject,
                     object: {
@@ -95,7 +100,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                     predicate: 'http://digita.ai/voc/purposes#description',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.description
                     },
@@ -126,7 +131,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                     predicate: 'http://digita.ai/voc/purposes#label',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.label
                     },
@@ -138,7 +143,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                         predicate: 'http://digita.ai/voc/purposes#aclneeded',
                         subject: resourceSubject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: acl
                         },
@@ -192,7 +197,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
         return {
             uri: resource.uri,
-            triples: [triple],
+            triples: [...resource.triples],
             exchange: resource.exchange,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
