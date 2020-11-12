@@ -45,7 +45,7 @@ export class DGTHolderCacheService extends DGTHolderService {
         }
 
         if (!resource.uri) {
-            resource.uri = this.uri.generate(null, 'holder');
+            resource.uri = this.uri.generate(resource, 'holder');
         }
 
         return of({ resource })

@@ -1,6 +1,6 @@
 import { Observable, of, from } from 'rxjs';
 import { ConnectionPool, IResult } from 'mssql';
-import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType, DGTConnectionService, DGTSourceService, DGTExchangeService, DGTConnectionMSSQLConfiguration, DGTSourceMSSQLConfiguration } from '@digita-ai/dgt-shared-data';
+import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType, DGTConnectionService, DGTSourceService, DGTExchangeService, DGTConnectionMSSQLConfiguration, DGTSourceMSSQLConfiguration, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
 import { switchMap, map, tap, catchError } from 'rxjs/operators';
 import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
@@ -13,7 +13,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
      */
     private pools: DGTMap<string, ConnectionPool>;
 
-    constructor(private logger: DGTLoggerService, private connections: DGTConnectionService, private sources: DGTSourceService, private exchanges: DGTExchangeService) {
+    constructor(private logger: DGTLoggerService, private connections: DGTConnectionService, private sources: DGTSourceService, private exchanges: DGTExchangeService, private uris: DGTUriFactoryService) {
         super();
         this.pools = new DGTMap();
     }
@@ -35,6 +35,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(data => from(data.pool.request().query(data.query))
                     .pipe(map(result => ({ ...data, result })))),
                 map(data => this.convertResult(data.holderUri, data.result, data.exchange, data.source.configuration.mapping)),
+                map(resource => ({ ...resource, uri: this.uris.generate(resource, 'data') })),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
                 catchError((error) => {
                     this.logger.error(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL', error);

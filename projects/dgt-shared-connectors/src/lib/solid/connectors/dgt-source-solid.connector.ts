@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService } from '@digita-ai/dgt-shared-data';
+import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -30,6 +30,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private sources: DGTSourceService,
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
+    private uris: DGTUriFactoryService,
   ) {
     super();
   }
@@ -115,13 +116,17 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => this.http.get<string>(data.uri, data.headers, true)
           .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Request completed', data)),
-        switchMap(data => transformer.toDomain([{
-          triples: data.triples,
-          uri: data.uri,
-          exchange: data.exchange.uri
-        }])),
-        // tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
-      );
+        map(data => ({
+          ...data, resource: {
+            triples: data.triples,
+            uri: data.uri,
+            exchange: data.exchange.uri
+          }
+        })),
+        map(data => ({ ...data, resource: { ...data.resource, uri: this.uris.generate(data.resource, 'data') } })),
+        switchMap(data => transformer.toDomain([data.resource])),
+        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
+      ) as Observable<T[]>;
   }
 
   delete<T extends DGTLDResource>(domainEntities: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {

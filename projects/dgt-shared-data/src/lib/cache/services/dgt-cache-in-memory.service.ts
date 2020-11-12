@@ -42,7 +42,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                     .pipe(map(transformed => ({ ...data, transformed })))),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
                 tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
-                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', {cache: this.cache})),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
                 map(data => data.resources)
             )
     }
@@ -53,7 +53,8 @@ export class DGTCacheInMemoryService extends DGTCacheService {
         return of({ resources: this.cache, transformer, filter })
             .pipe(
                 switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
-                switchMap(data => transformer.toDomain(data))
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
+                switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([]))
             );
     }
 

@@ -13,13 +13,19 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
 
     constructor(
         private config: DGTConfigurationService<DGTConfigurationBaseApi>,
-    ) {}
+    ) { }
 
     /**
      * Generates a URI for a resource
      */
     generate(resource: DGTLDResource, prefix: string): string {
-        return `${this.config.get(conf => conf.cache.uri)}${prefix}#${v4()}`;
+        let uri = `${this.config.get(conf => conf.cache.uri)}${prefix}#${v4()}`;
+
+        if (resource && resource.exchange) {
+            uri = `${this.config.get(conf => conf.cache.uri)}${prefix}/${encodeURIComponent(resource.exchange)}`;
+        }
+
+        return uri;
     }
 
 }
