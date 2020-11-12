@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig, DGTMap } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -445,7 +445,10 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         dataType: DGTLDDataType.STRING,
                         value: config.token_endpoint_auth_methods_supported,
                     },
-                }
+                },
+
+
+
             ];
             config.response_types_supported?.forEach(str => {
                 res.push({
@@ -709,10 +712,46 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value: config.database,
                     },
                 },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-select',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.commands.select,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-insert',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.commands.insert,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-delete',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.commands.delete,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-update',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: config.commands.update,
+                    },
+                },
             ];
-            for (const entry of Array.from(config.mapping.entries())) {
-                const key = entry[0];
-                const value = entry[1];
+            config.mapping.toArray().forEach(entry => {
+                const key = entry.key;
+                const value = entry.value;
                 const subject = {
                     value: '#' + uuid(),
                     termType: DGTLDTermType.REFERENCE
@@ -740,7 +779,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value,
                     },
                 });
-            }
+            })
         } else if (resource.type === DGTSourceType.GRAVATAR) {
             const config: DGTSourceGravatarConfiguration = resource.configuration;
             res = [
@@ -1046,11 +1085,28 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#database'
             );
-            const resmap = new Map<string, string>();
+            const selectCommand = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-select'
+            );
+            const insertCommand = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-insert'
+            );
+            const updateCommand = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-update'
+            );
+            const deleteCommand = resource.triples.find(value =>
+                value.subject.value === triple.object.value &&
+                value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-delete'
+            );
+            const mappingMap = new DGTMap<string, string>();
             resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mapping'
             )?.forEach(mapping => {
+
                 const key = resource.triples.find(val =>
                     val.subject.value === mapping.object.value &&
                     val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingkey'
@@ -1059,8 +1115,11 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     val.subject.value === mapping.object.value &&
                     val.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mappingvalue'
                 );
+
+                this.logger.debug(DGTSourceTransformerService.name, 'Converting mapping', { mapping, key, value, resmap: mappingMap });
+
                 if (key && value) {
-                    resmap.set(key.object.value, value.object.value);
+                    mappingMap.set(key.object.value, value.object.value);
                 }
             });
 
@@ -1069,7 +1128,13 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 password: password ? password.object.value : null,
                 server: server ? server.object.value : null,
                 database: database ? database.object.value : null,
-                mapping: resmap,
+                mapping: mappingMap,
+                commands: {
+                    select: selectCommand ? selectCommand.object.value : null,
+                    insert: insertCommand ? insertCommand.object.value : null,
+                    delete: deleteCommand ? deleteCommand.object.value : null,
+                    update: updateCommand ? updateCommand.object.value : null,
+                }
             };
         } else if (type === DGTSourceType.GRAVATAR) {
             const usernameField = resource.triples.find(value =>

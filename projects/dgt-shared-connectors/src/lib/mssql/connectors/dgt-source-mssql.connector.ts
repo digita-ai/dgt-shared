@@ -28,31 +28,30 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(data => this.connections.get(exchange.connection)
                     .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => this.sources.get(exchange.source)
-                    .pipe(map(source => ({ ...data, source })))),
+                    .pipe(map((source: DGTSource<DGTSourceMSSQLConfiguration>) => ({ ...data, source })))),
                 switchMap(data => this.getPool(data.source)
-                    .pipe(map(pool => ({ ...data, pool })))),
+                    .pipe(map(pool => ({ ...data, pool, query: this.renderSelectQuery(data.source.configuration.commands.select, { id: data.connection.configuration.personId }) })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', data)),
-                switchMap(data => from(data.pool.request().query(
-                    data.source.configuration.commands.select(data.connection.configuration.personId)
-                ))
+                switchMap(data => from(data.pool.request().query(data.query))
                     .pipe(map(result => ({ ...data, result })))),
                 map(data => this.convertResult(data.holderUri, data.result, data.exchange, data.source.configuration.mapping)),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
-                catchError(() => {
-                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL');
+                catchError((error) => {
+                    this.logger.error(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL', error);
                     throw new DGTErrorArgument('Error while querying MSSQL', null);
                 }),
             );
     }
 
     private convertResult(uri: string, sqlResult: IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, string>): DGTLDResource {
-        this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { sqlResult, exchange });
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting results', { mapping, sqlResult, exchange });
         const triples: DGTLDTriple[] = [];
 
         if (exchange && mapping && sqlResult && sqlResult.recordset) {
             sqlResult.recordset.forEach((record) => {
                 if (record) {
                     mapping.forEach((field, key) => {
+                        this.logger.debug(DGTSourceMSSQLConnector.name, 'Converting for mapping', { field, key, record });
                         const value = record[key];
 
                         if (value) {
@@ -94,7 +93,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(data => this.connections.get(data.exchange.connection)
                     .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => this.sources.get(data.exchange.source)
-                    .pipe(map(source => ({ ...data, source })))),
+                    .pipe(map((source: DGTSource<DGTSourceMSSQLConfiguration>) => ({ ...data, source })))),
                 switchMap(data => this.getPool(data.source)
                     .pipe(map(pool => ({ ...data, pool })))),
                 tap(pool => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { pool })),
@@ -108,9 +107,11 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                     });
                     // remove last comma
                     columns = columns.replace(/,\s*$/, '');
-                    const query = data.source.configuration.commands.update(
-                        data.connection.configuration.personId, columns
-                    );
+
+                    const query = this.renderSelectQuery(data.source.configuration.commands.update, { id: data.connection.configuration.personId, columns })
+                    // const query = data.source.configuration.commands.update(
+                    //     data.connection.configuration.personId, columns
+                    // );
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
                     return from(data.pool.request().query(query))
                         .pipe(map(result => ({ result, pool: data.pool })));
@@ -135,14 +136,13 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(data => this.connections.get(data.exchange.connection)
                     .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => this.sources.get(data.exchange.source)
-                    .pipe(map(source => ({ ...data, source })))),
+                    .pipe(map((source: DGTSource<DGTSourceMSSQLConfiguration>) => ({ ...data, source })))),
                 switchMap(data => this.getPool(data.source)
                     .pipe(map(pool => ({ ...data, pool })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', data)),
                 switchMap(data => {
-                    const query = data.source.configuration.commands.delete(
-                        data.connection.configuration.personId
-                    );
+                    const query = this.renderSelectQuery(data.source.configuration.commands.delete, { id: data.connection.configuration.personId });
+
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
                     return from(data.pool.request().query(query))
                         .pipe(map(result => ({ result, pool: data.pool })));
@@ -166,7 +166,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(data => this.connections.get(data.exchange.connection)
                     .pipe(map(connection => ({ ...data, connection })))),
                 switchMap(data => this.sources.get(data.exchange.source)
-                    .pipe(map(source => ({ ...data, source })))),
+                    .pipe(map((source: DGTSource<DGTSourceMSSQLConfiguration>) => ({ ...data, source })))),
                 switchMap(data => this.getPool(data.source)
                     .pipe(map(pool => ({ ...data, pool })))),
                 tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Connected to pool', { data })),
@@ -179,10 +179,12 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                         const temp = resources.find(e => e.triples[0].predicate === value);
                         values += temp ? `'${temp.triples[0].object.value}',` : 'NULL, ';
                     });
-                    const query = data.source.configuration.commands.insert(
-                        data.connection.configuration.personId,
-                        cols.slice(0, -2), values.slice(0, -2)
-                    );
+                    const query = this.renderSelectQuery(data.source.configuration.commands.insert, { id: data.connection.configuration.personId, columns: cols.slice(0, -2), values: values.slice(0, -2) });
+
+                    // data.source.configuration.commands.insert(
+                    //     data.connection.configuration.personId,
+                    //     cols.slice(0, -2), values.slice(0, -2)
+                    // );
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Executeing query', query);
                     return from(data.pool.request().query(query))
                         .pipe(map(result => ({ result, pool: data.pool })));
@@ -194,6 +196,24 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                     throw new DGTErrorArgument('Error while adding MSSQL', null);
                 }),
             );
+    }
+
+    private renderSelectQuery(template: string, templateVars: any): string {
+        // const templateVars = {
+        //     id
+        // };
+
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Starting to render query', { template, templateVars });
+
+        const fillTemplate = function (template, templateVars) {
+            return new Function("return `" + template + "`;").call(templateVars);
+        }
+
+        const query = fillTemplate(template, templateVars);
+
+        this.logger.debug(DGTSourceMSSQLConnector.name, 'Rendered query', { template, templateVars, query });
+
+        return query;
     }
 
     private extractConfig(source: DGTSource<any>) {
