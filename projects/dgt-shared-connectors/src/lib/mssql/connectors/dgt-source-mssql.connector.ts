@@ -231,7 +231,9 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
     }
 
     private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
-        if (!this.pools || !this.pools.get(source.uri)) {
+        let pool: ConnectionPool = this.pools.get(source.uri);
+
+        if (!this.pools || !pool || !pool.connected) {
             try {
                 const config = this.extractConfig(source);
                 this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
@@ -249,6 +251,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 throw new DGTErrorArgument(err, err);
             }
         }
-        return of(this.pools.get(source.uri));
+
+        return of(pool);
     }
 }
