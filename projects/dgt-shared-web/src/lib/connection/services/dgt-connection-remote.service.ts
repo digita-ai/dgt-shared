@@ -20,11 +20,11 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
     super();
   }
 
-  public save(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(uri: string): Observable<DGTConnection<any>> {
+  public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
     this.logger.debug(DGTConnectionRemoteService.name, 'Starting to get', { uri });
 
     if (!uri) {
@@ -35,29 +35,29 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
       .pipe(
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${data.uri}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-        switchMap(data => this.http.get<DGTConnection<any>>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+        switchMap(data => this.http.get<T>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),
       );
   }
 
-  public delete(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
+  public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
     this.logger.debug(DGTConnectionRemoteService.name, 'Starting to query', { filter });
 
     return of({ filter })
       .pipe(
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-        switchMap(data => this.http.get<DGTConnection<any>[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+        switchMap(data => this.http.get<T[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
           .pipe(map(response => ({ ...data, response })))),
-        switchMap(data => data.filter ? this.filters.run<DGTConnection<any>>(data.filter, data.response.data) : of(data.response.data)),
+        switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.response.data) : of(data.response.data)),
       );
   }
 
-  public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
+  public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }
 
@@ -81,7 +81,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
       );
   }
 
-  public sendTokensForInvite(inviteId: string, fragment: string): Observable<DGTConnection<any>> {
+  public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragment: string): Observable<T> {
     this.logger.debug(DGTConnectionRemoteService.name, 'Sending tokens to the backend and verifying rights', { inviteId, fragvalue: fragment });
 
     if (!inviteId) {
@@ -108,7 +108,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
       .pipe(
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/connection` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-        switchMap(data => this.http.post<DGTConnection<any>>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
+        switchMap(data => this.http.post<T>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
         map(res => res.data)
       );
   }

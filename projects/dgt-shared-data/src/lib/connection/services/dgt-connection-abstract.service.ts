@@ -6,11 +6,11 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 @DGTInjectable()
 export abstract class DGTConnectionService implements DGTLDResourceService<DGTConnection<any>> {
-    public abstract save(resource: DGTConnection<any>): Observable<DGTConnection<any>>;
-    public abstract delete(resource: DGTConnection<any>): Observable<DGTConnection<any>>;
-    public abstract get(id: string): Observable<DGTConnection<any>>;
-    public abstract query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]>;
-    public abstract getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]>;
+    public abstract save<T extends DGTConnection<any>>(resource: T): Observable<T>;
+    public abstract delete<T extends DGTConnection<any>>(resource: T): Observable<T>;
+    public abstract get<T extends DGTConnection<any>>(id: string): Observable<T>;
+    public abstract query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]>;
+    public abstract getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]>;
     public abstract getConnectionForInvite(inviteId: string, sourceId: string): Observable<any>;
-    public abstract sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>>;
+    public abstract sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T>;
 }

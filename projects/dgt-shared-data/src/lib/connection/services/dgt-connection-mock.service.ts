@@ -19,7 +19,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
     super();
   }
 
-  public create(connection: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public create<T extends DGTConnection<any>>(connection: T): Observable<T> {
     if (!connection) {
       throw new DGTErrorArgument('Argument connection should be set.', connection);
     }
@@ -37,13 +37,13 @@ export class DGTConnectionMockService extends DGTConnectionService {
     return of(connection);
   }
 
-  public get(uri: string): Observable<DGTConnection<any>> {
+  public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
     this.logger.debug(DGTConnectionMockService.name, 'Starting to get connection', { uri });
 
     return of(this.resources.find(e => e.uri === uri));
   }
 
-  public query(filter?: DGTLDFilter): Observable<Array<DGTConnection<any>>> {
+  public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
     this.logger.debug(DGTConnectionMockService.name, 'Starting to query connections', filter);
 
     return of({ filter, resources: this.resources })
@@ -52,7 +52,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
       )
   }
 
-  public save(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
     this.logger.debug(DGTConnectionMockService.name, 'Starting to save resource', { resource });
 
     if (!resource) {
@@ -68,7 +68,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
     return of(resource);
   }
 
-  public delete(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
     this.logger.debug(DGTConnectionMockService.name, 'Starting to delete resource', { resource });
 
     if (!resource) {
@@ -80,7 +80,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
     return of(resource);
   }
 
-  public getConnectionsWithWebId(webId: string): Observable<DGTConnectionSolid[]> {
+  public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
     if (!webId) {
       throw new DGTErrorArgument('Argument webId should be set.', webId);
     }
@@ -92,7 +92,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
     throw new DGTErrorNotImplemented();
   }
 
-  public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
+  public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 }

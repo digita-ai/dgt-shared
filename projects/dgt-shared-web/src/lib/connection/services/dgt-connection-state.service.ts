@@ -14,11 +14,11 @@ export class DGTConnectionStateService extends DGTConnectionService {
     super();
   }
 
-  public save(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(uri: string): Observable<DGTConnection<any>> {
+  public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
     this.logger.debug(DGTConnectionStateService.name, 'Starting to get', { uri });
 
     if (!uri) {
@@ -28,27 +28,27 @@ export class DGTConnectionStateService extends DGTConnectionService {
     return of({ uri })
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
-          .pipe(map(connections => ({ ...data, connections })))),
+          .pipe(map((connections: T[]) => ({ ...data, connections })))),
         map(data => data.connections ? data.connections.find(c => c.uri === data.uri) : null),
       );
   }
 
-  public delete(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
+  public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
     this.logger.debug(DGTConnectionStateService.name, 'Starting to query', { filter });
 
     return of({ filter })
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
-          .pipe(map(connections => ({ ...data, connections })))),
-        switchMap(data => data.filter ? this.filters.run<DGTConnection<any>>(data.filter, data.connections) : of(data.connections)),
+          .pipe(map((connections: T[]) => ({ ...data, connections })))),
+        switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.connections) : of(data.connections)),
       )
   }
 
-  public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
+  public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }
 
@@ -56,7 +56,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
     throw new DGTErrorNotImplemented();
   }
 
-  public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
+  public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 }

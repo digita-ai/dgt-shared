@@ -29,10 +29,10 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of resources
      */
-    public toDomain(resources: DGTLDResource[]): Observable<DGTConnection<any>[]> {
+    public toDomain<T extends DGTConnection<any>>(resources: DGTLDResource[]): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ resources });
 
-        return forkJoin(resources.map(resource => this.toDomainOne(resource)))
+        return forkJoin(resources.map(resource => this.toDomainOne<T>(resource)))
             .pipe(
                 map(resourcesRes => _.flatten(resourcesRes))
             );
@@ -44,10 +44,10 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of resources
      */
-    private toDomainOne(resource: DGTLDResource): Observable<DGTConnection<any>[]> {
+    private toDomainOne<T extends DGTConnection<any>>(resource: DGTLDResource): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ resource });
 
-        let res: DGTConnection<any>[] = null;
+        let res: T[] = null;
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
@@ -71,7 +71,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns Observable of linked data resources.
      */
-    public toTriples(resources: DGTConnection<any>[]): Observable<DGTLDResource[]> {
+    public toTriples<T extends DGTConnection<any>>(resources: T[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ resources });
         this.logger.debug(DGTConnectionTransformerService.name, 'Starting to transform to linked data', { resources });
 
@@ -166,7 +166,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns The transformed resource.
      */
-    private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTConnection<any> {
+    private transformOne<T extends DGTConnection<any>>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
         const exchange = resource.triples.find(value =>
@@ -201,11 +201,11 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             source: source ? source.object.value : null,
             type: type ? type.object.value : null,
             configuration: config,
-        };
+        } as T;
     }
 
     // isolated this logic for readablility
-    private configToTriples(resource: DGTConnection<any>, resourceSubject): DGTLDTriple[] {
+    private configToTriples<T extends DGTConnection<any>>(resource: T, resourceSubject): DGTLDTriple[] {
         let res = [];
 
         if (resource.type === DGTConnectionType.SOLID) {
@@ -295,7 +295,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     },
                 },
             ];
-            Object.keys(config.requestHistory).forEach( key => {
+            Object.keys(config.requestHistory).forEach(key => {
                 const id = uuid();
                 const subject = {
                     value: '#' + id,
@@ -423,7 +423,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     requestHistoryObj[requestHistorykey.object.value] =
                         requestHistoryvalue.object.value;
                 } else {
-                    this.logger.debug(DGTConnectionTransformerService.name, 'Problem reading in requestHistory', {req});
+                    this.logger.debug(DGTConnectionTransformerService.name, 'Problem reading in requestHistory', { req });
                 }
             });
 
