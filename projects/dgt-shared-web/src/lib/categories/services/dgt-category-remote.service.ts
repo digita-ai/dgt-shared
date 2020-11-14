@@ -22,7 +22,7 @@ export class DGTCategoryRemoteService extends DGTCategoryService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTCategory>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),

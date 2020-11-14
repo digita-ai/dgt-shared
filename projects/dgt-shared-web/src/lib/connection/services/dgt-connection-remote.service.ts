@@ -33,7 +33,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
 
     return of({ uri })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${data.uri}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${encodeURIComponent(data.uri)}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.get<T>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),
@@ -74,7 +74,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
 
     return of({ sourceId, inviteId })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/link/${data.sourceId}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/link/${encodeURIComponent(data.sourceId)}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.post<any>(data.uri, '', { Authorization: `Bearer ${data.accessToken}` })),
         map(res => res.data)
@@ -106,7 +106,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
 
     return of({ inviteId, body, headers })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/connection` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/connection` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.post<T>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
         map(res => res.data)
