@@ -131,4 +131,9 @@ export { DGTPurposeCacheService } from './lib/purpose/services/dgt-purpose-cache
 export { DGTSourceCacheService } from './lib/source/services/dgt-source-cache.service';
 export { DGTExchangeCacheService } from './lib/exchanges/services/dgt-exchange-cache.service';
 export { DGTHolderCacheService } from './lib/holder/services/dgt-holder-cache.service';
-export { DGTConnectionType } from './lib/connection/models/dgt-connection-type.model';
+export { DGTConnectionType } from './lib/connection/models/dgt-connection-type.model';
+export { DGTLDRepresentationSparqlInsertFactory } from './lib/linked-data/services/dgt-ld-representation-sparql-insert-factory';
+export { DGTLDRepresentationSparqlDeleteFactory } from './lib/linked-data/services/dgt-ld-representation-sparql-delete-factory';
+export { DGTLDRepresentationFactory } from './lib/linked-data/services/dgt-ld-representation-factory';
+export { DGTLDRepresentationN3QuadFactory } from './lib/linked-data/services/dgt-ld-representation-n3-quad-factory';
+export { DGTLDRepresentationTurtleFactory } from './lib/linked-data/services/dgt-ld-representation-turtle-factory';

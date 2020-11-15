@@ -2,7 +2,6 @@ import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dg
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDNode } from '../models/dgt-ld-node.model';
-import { v4 as uuid } from 'uuid';
 import { Quad, Parser } from 'n3';
 
 @DGTInjectable()

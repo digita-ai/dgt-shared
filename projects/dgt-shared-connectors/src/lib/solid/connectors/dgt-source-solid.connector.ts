@@ -1,22 +1,17 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
+import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService, DGTLDRepresentationSparqlInsertFactory, DGTLDRepresentationSparqlDeleteFactory } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
-import { v4 as uuid } from 'uuid';
 import base64url from 'base64url';
 import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { Quad, Parser } from 'n3';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 
 @DGTInjectable()
 export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
-
-
-  private parser: Parser<Quad> = new Parser();
 
   constructor(
     private logger: DGTLoggerService,
@@ -31,6 +26,8 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
     private uris: DGTUriFactoryService,
+    private toSparqlInsert: DGTLDRepresentationSparqlInsertFactory,
+    private toSparqlDelete: DGTLDRepresentationSparqlDeleteFactory,
   ) {
     super();
   }
@@ -50,14 +47,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       .pipe(
         switchMap(data => this.exchanges.get(_.head(resources).exchange)
           .pipe(map(exchange => ({ ...data, exchange })))),
-        switchMap(data => data.transformer.toTriples(resources)
+        switchMap(data => of(resources)
           .pipe(
             tap(triples => {
               if (!triples) {
                 throw new DGTErrorArgument(DGTSourceSolidConnector.name, 'No triples created by transformer');
               }
             }),
-            map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'triples[0].subject.value'), domainEntities: resources, }))
+            map(entities => ({ ...data, entities, groupedEntities: _.groupBy(entities, 'uri'), domainEntities: resources, }))
           )
         ),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Prepared to add resource', data)),
@@ -67,19 +64,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
           .pipe(map(source => ({ ...data, source })))),
         switchMap(data => forkJoin(Object.keys(data.groupedEntities).map(uri => this.generateToken(uri, data.connection, data.source)
           .pipe(
-            map(token => (token ? {
-              'Content-Type': 'application/sparql-update',
-              Authorization: 'Bearer ' + token,
-            } : { 'Content-Type': 'application/sparql-update', })),
-            switchMap(headers => this.http.patch(
+            map(token => ({
+              headers: token ? { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token, } : { 'Content-Type': 'application/sparql-update', },
+            })),
+            switchMap(d => this.toSparqlInsert.serialize(data.groupedEntities[uri], data.transformer)
+              .pipe(map(serialized => ({ ...d, serialized })))),
+            switchMap(d => this.http.patch(
               uri,
-              this.sparql.generateSparqlUpdate(
-                data.groupedEntities[uri],
-                'insert'
-              ),
-              headers
-            )
-            )
+              d.serialized,
+              d.headers,
+            )),
           ))
         ).pipe(map((response) => data.entities as T[]))
         )
@@ -147,7 +141,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       { domainEntities }
     );
 
-    return transformer.toTriples(domainEntities).pipe(
+    return of(domainEntities).pipe(
       map((entities) => ({
         entities,
         groupedEntities: _.groupBy(entities, 'uri'),
@@ -170,18 +164,16 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         forkJoin(
           Object.keys(data.groupedEntities).map((uri) => {
             return this.generateToken(uri, data.connection, data.source).pipe(
-              map(token => (token ? {
-                'Content-Type': 'application/sparql-update',
-                Authorization: 'Bearer ' + token,
-              } : { 'Content-Type': 'application/sparql-update', })),
-              switchMap((headers) =>
+              map(token => ({
+                headers: token ? { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token, } : { 'Content-Type': 'application/sparql-update', },
+              })),
+              switchMap(d => this.toSparqlDelete.serialize(data.groupedEntities[uri], transformer)
+                .pipe(map(serialized => ({ ...d, serialized })))),
+              switchMap(d =>
                 this.http.patch(
                   uri,
-                  this.sparql.generateSparqlUpdate(
-                    data.groupedEntities[uri],
-                    'delete'
-                  ),
-                  headers
+                  d.serialized,
+                  d.headers,
                 )
               )
             );
@@ -270,16 +262,17 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
               data.connection,
               data.source
             ).pipe(
-              map(token => (token ? {
-                'Content-Type': 'application/sparql-update',
-                Authorization: 'Bearer ' + token,
-              } : { 'Content-Type': 'application/sparql-update', })),
-              switchMap((headers) => {
+              map(token => ({
+                headers: token ? { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token, } : { 'Content-Type': 'application/sparql-update', }
+              })),
+              switchMap(d => this.toSparqlInsert.serialize([update.delta.updated], transformer)
+                .pipe(map(serialized => ({ ...d, serialized })))),
+              switchMap(d => {
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
                     update.delta.updated.uri,
-                    this.sparql.generateSparqlUpdate([update.delta.updated], 'insert'),
-                    headers
+                    d.serialized,
+                    d.headers,
                   );
                 }
 
@@ -297,7 +290,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                     'insertdelete',
                     [update.delta.original]
                   ),
-                  headers
+                  d.headers
                 );
               })
             )
