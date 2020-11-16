@@ -25,6 +25,10 @@ import { DGTPurposeTransformerService } from './purpose/services/dgt-purpose-tra
 import { DGTSourceTransformerService } from './source/services/dgt-source-transformer.service';
 import { DGTUriFactoryCacheService } from './uri/services/dgt-uri-factory-cache.service';
 import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.service';
+import { DGTSecurityCredentialMockService } from './credential/services/dgt-security-credential-mock.service';
+import { DGTSecurityCredentialTransformerService } from './credential/services/dgt-security-credential-transformer.service';
+import { DGTSecurityPolicyMockService } from './policy/services/dgt-security-policy-mock.service';
+import { DGTSecurityPolicyTransformerService } from './policy/services/dgt-security-policy-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -58,6 +62,10 @@ export const providers = [
   DGTSourceTransformerService,
   DGTUriFactoryCacheService,
   DGTUriFactorySolidService,
+  DGTSecurityCredentialMockService,
+  DGTSecurityCredentialTransformerService,
+  DGTSecurityPolicyMockService,
+  DGTSecurityPolicyTransformerService,
 ];
 
 @NgModule({
