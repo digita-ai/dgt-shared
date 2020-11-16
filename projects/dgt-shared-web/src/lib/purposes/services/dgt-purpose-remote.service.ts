@@ -23,7 +23,7 @@ export class DGTPurposeRemoteService extends DGTPurposeService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTPurpose>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),

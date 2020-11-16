@@ -25,7 +25,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
 
     return of({ uri })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.uri}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.uri)}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),
@@ -50,7 +50,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
 
     return of({ inviteId })
     .pipe(
-      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/verify` })),
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/verify` })),
       switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
       switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
       tap(invite => this.logger.debug(DGTInviteRemoteService.name, 'Verified invite', invite)),
