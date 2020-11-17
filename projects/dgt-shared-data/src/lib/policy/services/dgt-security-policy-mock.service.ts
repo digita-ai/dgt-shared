@@ -4,15 +4,18 @@ import * as _ from 'lodash';
 import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { DGTSecurityPolicy } from '../models/dgt-security-policy.model';
 import { DGTSecurityPolicyService } from './dgt-security-policy.service';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @Injectable()
 export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
     private resources: DGTSecurityPolicy[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
+    constructor(
+        private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,
+    ) {
         super();
     }
 
@@ -29,20 +32,26 @@ export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
             );
     }
 
-    public save(resource: DGTSecurityPolicy): Observable<DGTSecurityPolicy> {
-        this.logger.debug(DGTSecurityPolicyMockService.name, 'Starting to save resource', { resource });
+    public save<T extends DGTSecurityPolicy>(resources: T[]): Observable<T[]> {
+        this.logger.debug(DGTSecurityPolicyMockService.name, 'Starting to save resources', { resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument connection should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument policy should be set.', resources);
         }
 
-        if (!resource.uri) {
-            this.resources = [...this.resources, resource];
-        } else {
-            this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
-        }
+        return of({ resources })
+            .pipe(
+                map(data => data.resources.map(resource => {
+                    if (!resource.uri) {
+                        resource.uri = this.uri.generate(resource, 'policy');
+                    }
 
-        return of(resource);
+                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+
+                    return resource;
+                })
+                )
+            );
     }
 
     public delete(resource: DGTSecurityPolicy): Observable<DGTSecurityPolicy> {

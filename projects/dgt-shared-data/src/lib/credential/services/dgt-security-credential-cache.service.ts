@@ -37,21 +37,25 @@ export class DGTSecurityCredentialCacheService extends DGTSecurityCredentialServ
         return this.cache.query<T>(this.transformer, filter);
     }
 
-    public save(resource: DGTSecurityCredential): Observable<DGTSecurityCredential> {
-        this.logger.debug(DGTSecurityCredentialCacheService.name, 'Starting to save credential', { resource });
+    public save<T extends DGTSecurityCredential>(resources: T[]): Observable<T[]> {
+        this.logger.debug(DGTSecurityCredentialCacheService.name, 'Starting to save resource', { resource: resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument credential should be set.', resources);
         }
 
-        if (!resource.uri) {
-            resource.uri = this.uri.generate(resource, 'exchange');
-        }
+        return of({
+            resources: resources.map(resource => {
+                if (!resource.uri) {
+                    resource.uri = this.uri.generate(resource, 'credential');
+                }
 
-        return of({ resource })
+                return resource;
+            })
+        })
             .pipe(
-                switchMap(data => this.cache.save(this.transformer, [resource])
-                    .pipe(map(resources => _.head(resources)))),
+                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
+                    .pipe(map(resources => resources))),
             );
     }
 
