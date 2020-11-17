@@ -42,7 +42,13 @@ export class DGTHolderRemoteService extends DGTHolderService {
             );
     }
 
-    public save(resource: DGTHolder): Observable<DGTHolder> {
+    public saveMultiple(resources: DGTHolder[]): Observable<DGTHolder[]> {
+        this.logger.debug(DGTHolderRemoteService.name, 'Starting to save resource', { resources });
+
+        throw new DGTErrorNotImplemented();
+    }
+
+    public save(resources: DGTHolder[]): Observable<DGTHolder[]> {
         throw new DGTErrorNotImplemented();
     }
 

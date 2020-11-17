@@ -1,6 +1,6 @@
-import { DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { concat, forkJoin, Observable, of, zip } from 'rxjs';
+import { concatMap, last, map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTCacheService } from './dgt-cache.service';
@@ -8,6 +8,8 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import * as _ from 'lodash';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
+import { DGTLDRepresentationTurtleFactory } from '../../linked-data/services/dgt-ld-representation-turtle-factory';
+import { DGTLDRepresentationSparqlInsertFactory } from '../../linked-data/services/dgt-ld-representation-sparql-insert-factory';
 
 
 /**
@@ -23,6 +25,8 @@ export class DGTCacheSolidService extends DGTCacheService {
         private logger: DGTLoggerService,
         private filters: DGTLDFilterService,
         private triples: DGTLDTripleFactoryService,
+        private toTurtle: DGTLDRepresentationTurtleFactory,
+        private toSparqlInsert: DGTLDRepresentationSparqlInsertFactory,
     ) {
         super();
     }
@@ -35,23 +39,25 @@ export class DGTCacheSolidService extends DGTCacheService {
     public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to get', { transformer, uri });
 
-        const headers = {
-            Accept: 'text/turtle',
-        };
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
 
-        return of({uri, headers}).pipe(
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
+        }
+
+        return of({ uri, transformer, headers: { Accept: 'text/turtle', } }).pipe(
             switchMap(data => this.http.get<string>(data.uri, data.headers)
-                .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
+                .pipe(map(response => ({ ...data, response })))
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
-            switchMap(data => transformer.toDomain([{
-                triples: data.triples,
-                uri: data.uri,
-                exchange: null
-            }]).pipe(map(resources => ({...data, resources })))),
+            switchMap(data => this.toTurtle.deserialize<T>(data.response.data, data.transformer)
+                .pipe(map(resources => ({ ...data, resources })))),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
+            map(data => _.head(data.resources)),
             // TODO check if line below does what we want it to do
-            map(data => data.resources.find(resource => resource.uri === data.uri)),
+            // map(data => data.resources.find(resource => resource.uri === data.uri)),
         );
     }
 
@@ -76,19 +82,19 @@ export class DGTCacheSolidService extends DGTCacheService {
             Accept: 'text/turtle',
         };
 
-        return of({uri, headers}).pipe(
+        return of({ uri, headers }).pipe(
             switchMap(data => this.http.get<string>(data.uri, data.headers)
                 .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
             switchMap(data => transformer.toDomain([{ triples: data.triples, uri: data.uri, exchange: null }])
-                .pipe(map(resources => ({...data, resources }))),
+                .pipe(map(resources => ({ ...data, resources }))),
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
             switchMap(data => this.filters.run<T>(filter, data.resources)
-                .pipe(map(resources => ({...data, resources})))
+                .pipe(map(resources => ({ ...data, resources })))
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', {data, filter})),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', { data, filter })),
             map(data => data.resources),
         );
 
@@ -101,12 +107,12 @@ export class DGTCacheSolidService extends DGTCacheService {
      */
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
 
-        return of({resources}).pipe(
+        return of({ resources }).pipe(
             switchMap(data => forkJoin(data.resources.map(resource => this.http.delete<string>(resource.uri)
-                    .pipe(map(() => resource))
-                )).pipe(map(res => ({ ...data, deleted: res }))) // TODO filter resources for which http status code was not 200 OK? throw errors?
+                .pipe(map(() => resource))
+            )).pipe(map(res => ({ ...data, deleted: res }))) // TODO filter resources for which http status code was not 200 OK? throw errors?
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', {deleted: data.deleted, data})),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', { deleted: data.deleted, data })),
             map(data => data.deleted),
         );
 
@@ -121,7 +127,91 @@ export class DGTCacheSolidService extends DGTCacheService {
      * @param resources Resources to save
      */
     public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
-        // TODO implement save
-        throw new DGTErrorNotImplemented();
+        this.logger.debug(DGTCacheSolidService.name, 'Starting to save', { transformer, resources });
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        return of({ transformer, resources })
+            .pipe(
+                // concatMap(data => data.resources.map(resource => this.saveOne<T>(data.transformer, resource))),
+                switchMap(data => concat(...data.resources.map(resource => this.saveOne<T>(data.transformer, resource)))),
+                // switchMap(data => data),
+                    // .pipe(map(savedResources => ({ ...data, savedResources })))),
+                tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resource', data)),
+                last(),
+                tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resources', data)),
+                map(data => resources)
+            )
+    }
+
+    private saveOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<T> {
+        this.logger.debug(DGTCacheSolidService.name, 'Starting to save one', { transformer, resource });
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        return of({ transformer, resource, headers: { 'Content-Type': 'text/turtle', }, uri: resource.uri.split('#')[0] })
+            .pipe(
+                switchMap(data => this.http.head(data.uri)
+                    .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
+                tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),
+                switchMap(data => (data.exists ? this.appendOne(data.transformer, data.resource) : this.createOne(data.transformer, data.resource))
+                    .pipe(map(response => ({ ...data, response })))),
+                tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resource', data)),
+                map(data => data.resource)
+            );
+    }
+
+    private createOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
+        this.logger.debug(DGTCacheSolidService.name, 'Starting to create one', { transformer, resource });
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        return of({ transformer, resource, headers: { 'Content-Type': 'text/turtle', }, uri: resource.uri.split('#')[0] })
+            .pipe(
+                switchMap(data => this.toTurtle.serialize([data.resource], data.transformer)
+                    .pipe(map(body => ({ ...data, body })))),
+                switchMap(data => this.http.put(data.uri, data.body, data.headers)
+                    .pipe(map(response => ({ ...data, response })))),
+                map(data => data.response)
+            );
+    }
+
+    private appendOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
+        this.logger.debug(DGTCacheSolidService.name, 'Starting to append one', { transformer, resource });
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        return of({ transformer, resource, headers: { 'Content-Type': 'application/sparql-update', }, uri: resource.uri.split('#')[0] })
+            .pipe(
+                switchMap(data => this.toSparqlInsert.serialize([data.resource], data.transformer)
+                    .pipe(map(body => ({ ...data, body })))),
+                switchMap(data => this.http.patch(data.uri, data.body, data.headers)
+                    .pipe(map(response => ({ ...data, response })))),
+                map(data => data.response)
+            );
     }
 }

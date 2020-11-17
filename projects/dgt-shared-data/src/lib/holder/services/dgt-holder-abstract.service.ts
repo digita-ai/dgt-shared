@@ -8,6 +8,6 @@ import { DGTHolder } from '../models/dgt-holder.model';
 export abstract class DGTHolderService implements DGTLDResourceService<DGTHolder> {
   public abstract get(id: string): Observable<DGTHolder>;
   public abstract query(filter?: DGTLDFilter): Observable<DGTHolder[]>;
-  public abstract save(resource: DGTHolder): Observable<DGTHolder>;
+  public abstract save(resources: DGTHolder[]): Observable<DGTHolder[]>;
   public abstract delete(resource: DGTHolder): Observable<DGTHolder>;
 }

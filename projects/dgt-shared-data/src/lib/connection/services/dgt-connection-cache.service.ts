@@ -37,21 +37,25 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         return this.cache.query<T>(this.transformer, filter);
     }
 
-    public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
-        this.logger.debug(DGTConnectionCacheService.name, 'Starting to save resource', { resource });
+    public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
+        this.logger.debug(DGTConnectionCacheService.name, 'Starting to save resource', { resource: resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        if (!resource.uri) {
-            resource.uri = this.uri.generate(resource, 'connection');
-        }
+        return of({
+            resources: resources.map(resource => {
+                if (!resource.uri) {
+                    resource.uri = this.uri.generate(resource, 'connection');
+                }
 
-        return of({ resource })
+                return resource
+            })
+        })
             .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, [resource])
-                    .pipe(map(resources => _.head(resources)))),
+                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
+                    .pipe(map(resources => resources))),
             );
     }
     public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {

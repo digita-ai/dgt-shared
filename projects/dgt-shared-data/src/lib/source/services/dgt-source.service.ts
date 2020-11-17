@@ -12,7 +12,7 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
 
   public abstract get(id: string): Observable<DGTSource<any>>;
   public abstract query(filter?: DGTLDFilter): Observable<DGTSource<any>[]>;
-  public abstract save(resource: DGTSource<any>): Observable<DGTSource<any>>;
+  public abstract save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]>;
   public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
 
   /**

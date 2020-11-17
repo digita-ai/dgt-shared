@@ -145,3 +145,8 @@ export { DGTSecurityPolicyAdmin } from './lib/policy/models/dgt-security-policy-
 export { DGTSecurityPolicyAllowPurpose } from './lib/policy/models/dgt-security-policy-allow-purpose.model';
 export { DGTSecurityPolicyType } from './lib/policy/models/dgt-security-policy-type.model';
 export { DGTSecurityPolicy } from './lib/policy/models/dgt-security-policy.model';
+export { DGTLDRepresentationSparqlInsertFactory } from './lib/linked-data/services/dgt-ld-representation-sparql-insert-factory';
+export { DGTLDRepresentationSparqlDeleteFactory } from './lib/linked-data/services/dgt-ld-representation-sparql-delete-factory';
+export { DGTLDRepresentationFactory } from './lib/linked-data/services/dgt-ld-representation-factory';
+export { DGTLDRepresentationN3QuadFactory } from './lib/linked-data/services/dgt-ld-representation-n3-quad-factory';
+export { DGTLDRepresentationTurtleFactory } from './lib/linked-data/services/dgt-ld-representation-turtle-factory';

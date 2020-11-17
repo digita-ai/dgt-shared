@@ -37,21 +37,25 @@ export class DGTHolderCacheService extends DGTHolderService {
         return this.cache.query(this.transformer, filter);
     }
 
-    public save(resource: DGTHolder): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderCacheService.name, 'Starting to save resource', { resource });
+    public save(resources: DGTHolder[]): Observable<DGTHolder[]> {
+        this.logger.debug(DGTHolderCacheService.name, 'Starting to save resource', { resource: resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument connection should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        if (!resource.uri) {
-            resource.uri = this.uri.generate(resource, 'holder');
-        }
+        return of({
+            resources: resources.map(resource => {
+                if (!resource.uri) {
+                    resource.uri = this.uri.generate(resource, 'holder');
+                }
 
-        return of({ resource })
+                return resource
+            })
+        })
             .pipe(
-                switchMap(data => this.cache.save(this.transformer, [resource])
-                    .pipe(map(resources => _.head(resources)))),
+                switchMap(data => this.cache.save(this.transformer, data.resources)
+                    .pipe(map(resources => resources))),
             );
     }
 

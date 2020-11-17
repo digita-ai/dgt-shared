@@ -46,7 +46,8 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/purposes#purpose'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/purposes#purpose'
             );
 
             if (resourceSubjectValues) {
@@ -71,10 +72,6 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         this.logger.debug(DGTPurposeTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
 
             const resourceSubject = {
                 value: resource.uri,
@@ -83,15 +80,15 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/purposes#purpose',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/purposes#purpose', termType: DGTLDTermType.REFERENCE },
                 },
                 {
                     predicate: 'http://digita.ai/voc/purposes#icon',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.icon
                     },

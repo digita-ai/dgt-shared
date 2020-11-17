@@ -40,7 +40,7 @@ export class DGTExchangeRemoteService extends DGTExchangeService {
                 switchMap(data => data.filter ? this.filters.run<DGTExchange>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTExchange): Observable<DGTExchange> {
+    save(resources: DGTExchange[]): Observable<DGTExchange[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTExchange): Observable<DGTExchange> {

@@ -34,7 +34,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
   query(filter?: DGTLDFilter): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
   }
-  save(resource: DGTInvite): Observable<DGTInvite> {
+  save(resources: DGTInvite[]): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
   }
   delete(resource: DGTInvite): Observable<DGTInvite> {

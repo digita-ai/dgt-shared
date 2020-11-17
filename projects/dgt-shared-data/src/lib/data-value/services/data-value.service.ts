@@ -26,7 +26,7 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
 
   public abstract get(id: string): Observable<DGTDataValue>;
   public abstract query(filter?: DGTLDFilter): Observable<DGTDataValue[]>;
-  public abstract save(resource: DGTDataValue): Observable<DGTDataValue>;
+  public abstract save(resources: DGTDataValue[]): Observable<DGTDataValue[]>;
   public abstract delete(resource: DGTDataValue): Observable<DGTDataValue>;
   public abstract getForHolder(holder: DGTHolder): Observable<DGTDataValue[]>;
 

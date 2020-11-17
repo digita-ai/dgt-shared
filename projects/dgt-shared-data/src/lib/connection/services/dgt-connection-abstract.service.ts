@@ -6,7 +6,7 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 @DGTInjectable()
 export abstract class DGTConnectionService implements DGTLDResourceService<DGTConnection<any>> {
-    public abstract save<T extends DGTConnection<any>>(resource: T): Observable<T>;
+    public abstract save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]>;
     public abstract delete<T extends DGTConnection<any>>(resource: T): Observable<T>;
     public abstract get<T extends DGTConnection<any>>(id: string): Observable<T>;
     public abstract query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]>;

@@ -39,7 +39,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
     query(filter?: DGTLDFilter): Observable<DGTDataValue[]> {
         throw new Error('Method not implemented.');
     }
-    save(resource: DGTDataValue): Observable<DGTDataValue> {
+    save(resources: DGTDataValue[]): Observable<DGTDataValue[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTDataValue): Observable<DGTDataValue> {

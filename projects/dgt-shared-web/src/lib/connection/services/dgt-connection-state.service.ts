@@ -14,7 +14,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
     super();
   }
 
-  public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
+  public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }
 

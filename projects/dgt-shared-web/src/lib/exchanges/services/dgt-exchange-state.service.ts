@@ -14,7 +14,7 @@ export class DGTExchangeStateService extends DGTExchangeService {
     super();
   }
 
-  public save(resource: DGTExchange): Observable<DGTExchange> {
+  public save(resources: DGTExchange[]): Observable<DGTExchange[]> {
     throw new DGTErrorNotImplemented();
   }
 

@@ -6,6 +6,7 @@ import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTInviteMockService extends DGTInviteService {
@@ -13,7 +14,7 @@ export class DGTInviteMockService extends DGTInviteService {
   public resources: DGTInvite[] = [];
 
   constructor(
-    private logger: DGTLoggerService, private filters: DGTLDFilterService
+    private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,
   ) {
     super();
   }
@@ -31,20 +32,26 @@ export class DGTInviteMockService extends DGTInviteService {
       )
   }
 
-  public save(resource: DGTInvite): Observable<DGTInvite> {
-    this.logger.debug(DGTInviteMockService.name, 'Starting to save resource', { resource });
+  public save(resources: DGTInvite[]): Observable<DGTInvite[]> {
+    this.logger.debug(DGTInviteMockService.name, 'Starting to save resources', { resources });
 
-    if (!resource) {
-      throw new DGTErrorArgument('Argument connection should be set.', resource);
-    }
+        if (!resources) {
+            throw new DGTErrorArgument('Argument connection should be set.', resources);
+        }
 
-    if (!resource.uri) {
-      this.resources = [...this.resources, resource];
-    } else {
-      this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
-    }
+        return of({ resources })
+            .pipe(
+                map(data => data.resources.map(resource => {
+                    if (!resource.uri) {
+                        resource.uri = this.uri.generate(resource, 'invite');
+                    }
+                    
+                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
-    return of(resource);
+                    return resource;
+                })
+                )
+            );
   }
 
   public delete(resource: DGTInvite): Observable<DGTInvite> {

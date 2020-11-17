@@ -6,15 +6,15 @@ import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { switchMap } from 'rxjs/operators';
-import { DGTConnectionSolid } from '../models/dgt-connection-solid.model';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTConnectionMockService extends DGTConnectionService {
   public resources = [];
 
   constructor(
-    private logger: DGTLoggerService, private filters: DGTLDFilterService
+    private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,
   ) {
     super();
   }
@@ -52,20 +52,26 @@ export class DGTConnectionMockService extends DGTConnectionService {
       )
   }
 
-  public save<T extends DGTConnection<any>>(resource: T): Observable<T> {
-    this.logger.debug(DGTConnectionMockService.name, 'Starting to save resource', { resource });
+  public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
+    this.logger.debug(DGTConnectionMockService.name, 'Starting to save resources', { resources });
 
-    if (!resource) {
-      throw new DGTErrorArgument('Argument connection should be set.', resource);
+    if (!resources) {
+      throw new DGTErrorArgument('Argument connection should be set.', resources);
     }
 
-    if (!resource.uri) {
-      this.resources = [...this.resources, resource];
-    } else {
-      this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
-    }
+    return of({ resources })
+      .pipe(
+        map(data => data.resources.map(resource => {
+          if (!resource.uri) {
+            resource.uri = this.uri.generate(resource, 'connection');
+          }
 
-    return of(resource);
+          this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+
+          return resource;
+        })
+        )
+      );
   }
 
   public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {

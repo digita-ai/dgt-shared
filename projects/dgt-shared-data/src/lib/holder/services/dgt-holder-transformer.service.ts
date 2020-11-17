@@ -46,7 +46,8 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/holders#holder'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/holders#holder'
             );
 
             if (resourceSubjectValues) {
@@ -71,11 +72,6 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
         this.logger.debug(DGTHolderTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
-
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE
@@ -83,9 +79,9 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
             const triples = [
                 {
-                    predicate: 'http://digita.ai/voc/holders#holder',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/holders#holder', termType: DGTLDTermType.REFERENCE },
                 }
             ];
 

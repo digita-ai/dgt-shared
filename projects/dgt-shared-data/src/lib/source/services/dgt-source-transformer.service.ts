@@ -51,7 +51,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/sources#source'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/sources#source'
             );
 
             if (resourceSubjectValues) {
@@ -76,10 +77,6 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         this.logger.debug(DGTSourceTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
 
             const resourceSubject = {
                 value: resource.uri,
@@ -88,15 +85,15 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/sources#source',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/sources#source', termType: DGTLDTermType.REFERENCE },
                 },
                 {
                     predicate: 'http://digita.ai/voc/sources#icon',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.icon
                     },
@@ -105,7 +102,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sources#description',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.description
                     },
@@ -114,7 +111,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sources#type',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.type
                     },
@@ -126,7 +123,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sources#state',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.state
                     },
@@ -134,6 +131,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             }
 
             newTriples.push(...this.configToTriples(resource, resourceSubject));
+
+            newTriples = newTriples.filter(triple => triple.object.value !== null && triple.object.value !== undefined);
 
             return {
                 ...resource,
@@ -252,7 +251,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#claimsparametersupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.claims_parameter_supported,
                     },
@@ -261,7 +260,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#requestparametersupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.request_parameter_supported,
                     },
@@ -270,7 +269,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#requesturiparametersupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.request_uri_parameter_supported,
                     },
@@ -279,7 +278,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#requirerequesturiregistration',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.require_request_uri_registration,
                     },
@@ -288,7 +287,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#checksessioniframe',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.check_session_iframe,
                     },
@@ -315,7 +314,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#clientid',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.client_id,
                     },
@@ -324,7 +323,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#clientsecret',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.client_secret,
                     },
@@ -333,7 +332,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#applicationtype',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.application_type,
                     },
@@ -342,7 +341,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#clientname',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.client_name,
                     },
@@ -369,7 +368,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensignedresponsealg',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.id_token_signed_response_alg,
                     },
@@ -378,7 +377,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethod',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.token_endpoint_auth_method,
                     },
@@ -387,7 +386,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#defaultmaxage',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.default_max_age,
                     },
@@ -396,7 +395,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#frontchannellogoutsessionrequired',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.frontchannel_logout_session_required,
                     },
@@ -405,7 +404,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#registrationaccesstoken',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.registration_access_token,
                     },
@@ -423,7 +422,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#clientidissuedat',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.client_id_issued_at,
                     },
@@ -432,7 +431,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#clientsecretexpiresat',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.client_secret_expires_at,
                     },
@@ -441,7 +440,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.token_endpoint_auth_methods_supported,
                     },
@@ -455,7 +454,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -466,7 +465,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -477,7 +476,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -488,7 +487,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -499,7 +498,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -510,7 +509,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -521,7 +520,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -532,7 +531,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -543,7 +542,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#claimssupported',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -565,7 +564,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#responsetypes',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -576,7 +575,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcesolidconfig#granttypes',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: str,
                     },
@@ -609,7 +608,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#kid',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.kid,
                         },
@@ -618,7 +617,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#kty',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.kty
                         },
@@ -627,7 +626,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#alg',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.alg,
                         },
@@ -636,7 +635,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#n',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.n
                         },
@@ -645,7 +644,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#e',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.e
                         },
@@ -654,7 +653,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#ext',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keys.ext
                         },
@@ -666,7 +665,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         predicate: 'http://digita.ai/voc/sourcesolidconfig#keyop',
                         subject,
                         object: {
-                            termType: DGTLDTermType.REFERENCE,
+                            termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
                             value: keyop
                         },
@@ -680,7 +679,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#user',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.user,
                     },
@@ -689,7 +688,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#server',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.server,
                     },
@@ -698,7 +697,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#password',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.password,
                     },
@@ -707,7 +706,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#database',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.database,
                     },
@@ -716,7 +715,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-select',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.commands.select,
                     },
@@ -725,7 +724,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-insert',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.commands.insert,
                     },
@@ -734,7 +733,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-delete',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.commands.delete,
                     },
@@ -743,7 +742,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#command-update',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.commands.update,
                     },
@@ -753,7 +752,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 const key = entry.key;
                 const value = entry.value;
                 const subject = {
-                    value: '#' + uuid(),
+                    value: resource.uri.split('#')[0] + '#' + uuid(),
                     termType: DGTLDTermType.REFERENCE
                 };
                 res.push({
@@ -765,7 +764,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#mappingkey',
                     subject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: key,
                     },
@@ -774,7 +773,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcemssqlconfig#mappingvalue',
                     subject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value,
                     },
@@ -787,7 +786,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcegravatarconfig#usernamefield',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.usernameField,
                     },
@@ -796,7 +795,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     predicate: 'http://digita.ai/voc/sourcegravatarconfig#thumbnailfield',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.thumbnailField,
                     },

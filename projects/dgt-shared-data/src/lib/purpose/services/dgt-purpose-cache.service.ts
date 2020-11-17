@@ -37,21 +37,24 @@ export class DGTPurposeCacheService extends DGTPurposeService {
         return this.cache.query(this.transformer, filter);
     }
 
-    public save(resource: DGTPurpose): Observable<DGTPurpose> {
-        this.logger.debug(DGTPurposeCacheService.name, 'Starting to save resource', { resource });
+    public save(resources: DGTPurpose[]): Observable<DGTPurpose[]> {
+        this.logger.debug(DGTPurposeCacheService.name, 'Starting to save resource', { resource: resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        if (!resource.uri) {
-            resource.uri = this.uri.generate(resource, 'purpose');
-        }
+        return of({
+            resources: resources.map(resource => {
+                if (!resource.uri) {
+                    resource.uri = this.uri.generate(resource, 'purpose');
+                }
 
-        return of({ resource })
+                return resource
+            })
+        })
             .pipe(
-                switchMap(data => this.cache.save(this.transformer, [resource])
-                    .pipe(map(resources => _.head(resources)))),
+                switchMap(data => this.cache.save(this.transformer, data.resources)),
             );
     }
 
