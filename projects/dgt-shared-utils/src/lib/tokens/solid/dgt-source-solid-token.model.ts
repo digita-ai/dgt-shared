@@ -64,4 +64,17 @@ export class DGTSourceSolidToken extends JWT {
         return new JWT({ header, payload, key: key.cryptoKey }, { filter: false });
         // return new DGTSourceSolidToken({ header, payload, key: key.cryptoKey }, { filter: false }); // cannot invoke without new on jwt
     }
+
+    static isExpired(accessToken: string): boolean {
+        const base64Url = accessToken.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const json = JSON.parse(jsonPayload);
+        if (json.exp) {
+            const unixNow = Math.round((new Date()).getTime() / 1000);
+            return json.exp < unixNow;
+        } else { return false; }
+    }
 }
