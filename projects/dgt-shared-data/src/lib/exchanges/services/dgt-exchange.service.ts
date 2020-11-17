@@ -8,6 +8,6 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 export abstract class DGTExchangeService implements DGTLDResourceService<DGTExchange> {
     public abstract get(id: string): Observable<DGTExchange>;
     public abstract query(filter?: DGTLDFilter): Observable<DGTExchange[]>;
-    public abstract save(exchange: DGTExchange): Observable<DGTExchange>;
+    public abstract save(exchanges: DGTExchange[]): Observable<DGTExchange[]>;
     public abstract delete(exchange: DGTExchange): Observable<DGTExchange>;
 }

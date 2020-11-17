@@ -17,7 +17,7 @@ export class DGTSourceStateService extends DGTSourceService {
     super();
   }
 
-  public save(resource: DGTSource<any>): Observable<DGTSource<any>> {
+  public save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]> {
     throw new DGTErrorNotImplemented();
   }
 

@@ -39,7 +39,8 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
         let object = null;
 
         if (triple.object.termType === DGTLDTermType.LITERAL) {
-            object = DataFactory.literal(triple.object.value, triple.object.dataType);
+            // object = DataFactory.literal(triple.object.value, triple.object.dataType);
+            object = DataFactory.literal(triple.object.value, DataFactory.namedNode(triple.object.dataType));
         } else {
             object = DataFactory.namedNode(triple.object.value);
         }

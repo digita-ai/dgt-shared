@@ -46,7 +46,8 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/invites#invite'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/invites#invite'
             );
 
             if (resourceSubjectValues) {
@@ -71,10 +72,6 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
         this.logger.debug(DGTInviteTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
 
             const resourceSubject = {
                 value: resource.uri,
@@ -83,9 +80,9 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/invites#invite',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/invites#invite', termType: DGTLDTermType.REFERENCE },
                 },
                 {
                     predicate: 'http://digita.ai/voc/invites#holder',

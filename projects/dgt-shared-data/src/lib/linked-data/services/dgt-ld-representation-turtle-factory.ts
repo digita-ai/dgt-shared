@@ -3,7 +3,7 @@ import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
 import { DGTLDRepresentationN3QuadFactory } from './dgt-ld-representation-n3-quad-factory';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { last, map, switchMap, tap } from 'rxjs/operators';
 import { Writer } from 'n3';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
@@ -24,11 +24,26 @@ export class DGTLDRepresentationTurtleFactory extends DGTLDRepresentationFactory
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
         }
 
-        return of({ resources, writer: new Writer(), transformer })
+        return of({ resources, writer: new Writer({ format: 'text/turtle' }), transformer })
             .pipe(
                 switchMap(data => this.toN3Quads.serialize(data.resources, data.transformer)
                     .pipe(map(quads => ({ ...data, quads })))),
-                map(data => data.writer.quadsToString(data.quads)),
+                switchMap(data => new Observable<string>(subscriber => {
+                    data.writer.addQuads(data.quads);
+
+                    data.writer.end((error, result) => {
+                        this.logger.debug(DGTLDRepresentationTurtleFactory.name, 'Finished serialization', { error, result });
+
+                        if (error) {
+                            subscriber.error(error);
+                        }
+
+                        subscriber.next(result);
+                        subscriber.complete();
+                    })
+                })),
+                last(),
+                // map(data => data.writer.quadsToString(data.quads)),
             )
     }
 

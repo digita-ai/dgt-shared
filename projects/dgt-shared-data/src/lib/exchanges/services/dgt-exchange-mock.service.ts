@@ -4,15 +4,15 @@ import * as _ from 'lodash';
 import { DGTExchange } from '../models/dgt-exchange.model';
 import { DGTExchangeService } from './dgt-exchange.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { v4 } from 'uuid';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTExchangeMockService extends DGTExchangeService {
     public resources: DGTExchange[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
+    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,) {
         super();
     }
 
@@ -29,22 +29,26 @@ export class DGTExchangeMockService extends DGTExchangeService {
             )
     }
 
-    public save(resource: DGTExchange): Observable<DGTExchange> {
-        this.logger.debug(DGTExchangeMockService.name, 'Starting to save resource', { resource });
+    public save(resources: DGTExchange[]): Observable<DGTExchange[]> {
+        this.logger.debug(DGTExchangeMockService.name, 'Starting to save resources', { resources });
 
-        if (!resource) {
-            throw new DGTErrorArgument('Argument connection should be set.', resource);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        if (!resource.uri) {
-            resource.uri = `http://someuri/exchanges#${v4()}`; //TODO set according to strategy
-            
-            this.resources = [...this.resources, resource];
-        } else {
-            this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
-        }
+        return of({ resources })
+            .pipe(
+                map(data => data.resources.map(resource => {
+                    if (!resource.uri) {
+                        resource.uri = this.uri.generate(resource, 'exchange');
+                    }
 
-        return of(resource);
+                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+
+                    return resource;
+                })
+                )
+            );
     }
 
     public delete(resource: DGTExchange): Observable<DGTExchange> {

@@ -41,7 +41,7 @@ export class DGTPurposeRemoteService extends DGTPurposeService {
                 switchMap(data => data.filter ? this.filters.run<DGTPurpose>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTPurpose): Observable<DGTPurpose> {
+    save(resources: DGTPurpose[]): Observable<DGTPurpose[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTPurpose): Observable<DGTPurpose> {

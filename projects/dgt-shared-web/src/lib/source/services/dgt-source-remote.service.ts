@@ -40,7 +40,7 @@ export class DGTSourceRemoteService extends DGTSourceService {
                 switchMap(data => data.filter ? this.filters.run<DGTSource<any>>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTSource<any>): Observable<DGTSource<any>> {
+    save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]> {
         throw new DGTErrorNotImplemented();
     }
     delete(resource: DGTSource<any>): Observable<DGTSource<any>> {

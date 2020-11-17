@@ -46,7 +46,8 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/exchanges#exchange'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/exchanges#exchange'
             );
 
             if (resourceSubjectValues) {
@@ -71,10 +72,6 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         this.logger.debug(DGTExchangeTransformerService.name, 'Starting to transform to linked data', { resources: resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
 
             const resourceSubject = {
                 value: resource.uri,
@@ -119,9 +116,9 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
                     },
                 },
                 {
-                    predicate: 'http://digita.ai/voc/exchanges#exchange',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/exchanges#exchange', termType: DGTLDTermType.REFERENCE },
                 }
             ];
 

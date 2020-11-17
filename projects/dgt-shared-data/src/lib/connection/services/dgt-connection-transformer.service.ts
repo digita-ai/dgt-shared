@@ -51,7 +51,8 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/connections#connection'
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/connections#connection'
             );
 
             if (resourceSubjectValues) {
@@ -76,10 +77,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
         this.logger.debug(DGTConnectionTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
 
             const resourceSubject = {
                 value: resource.uri,
@@ -88,9 +85,9 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/connections#connection',
-                    subject: documentSubject,
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: { value: 'http://digita.ai/voc/connections#connection', termType: DGTLDTermType.REFERENCE },
                 },
                 {
                     predicate: 'http://digita.ai/voc/connections#source',
@@ -99,15 +96,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
                         value: resource.source
-                    },
-                },
-                {
-                    predicate: 'http://digita.ai/voc/connections#exchange',
-                    subject: resourceSubject,
-                    object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: resource.exchange
                     },
                 },
                 {
@@ -123,7 +111,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connections#state',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.state
                     },
@@ -132,19 +120,16 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connections#type',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.type
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/connections#connection',
-                    subject: documentSubject,
-                    object: resourceSubject,
-                }
             ];
 
             newTriples = newTriples.concat(this.configToTriples(resource, resourceSubject));
+
+            newTriples = newTriples.filter(triple => triple.object.value !== null && triple.object.value !== undefined);
 
             return {
                 ...resource,
@@ -169,10 +154,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     private transformOne<T extends DGTConnection<any>>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const exchange = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
-            value.predicate === 'http://digita.ai/voc/connections#exchange'
-        );
         const holder = resource.triples.find(value =>
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/connections#holder'
@@ -196,7 +177,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             uri: resource.uri,
             triples: [...resource.triples],
             state: state ? state.object.value : null,
-            exchange: exchange ? exchange.object.value : null,
+            exchange: resource.exchange,
             holder: holder ? holder.object.value : null,
             source: source ? source.object.value : null,
             type: type ? type.object.value : null,
@@ -226,7 +207,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.accessToken
                     },
@@ -235,7 +216,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#expiresin',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.expiresIn
                     },
@@ -244,7 +225,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#idtoken',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.idToken
                     },
@@ -253,7 +234,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#state',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.state
                     },
@@ -262,7 +243,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#privatekey',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.privateKey
                     },
@@ -289,7 +270,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#protocol',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.protocol
                     },
@@ -298,7 +279,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             Object.keys(config.requestHistory).forEach(key => {
                 const id = uuid();
                 const subject = {
-                    value: '#' + id,
+                    value: resource.uri.split('#')[0] + '#' + id,
                     termType: DGTLDTermType.REFERENCE
                 };
                 res.push({
@@ -310,7 +291,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#mapkey',
                     subject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: key
                     },
@@ -319,7 +300,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     predicate: 'http://digita.ai/voc/connectionsolidconfig#mapvalue',
                     subject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: config.requestHistory[key],
                     },
@@ -332,7 +313,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
                 subject: resourceSubject,
                 object: {
-                    termType: DGTLDTermType.REFERENCE,
+                    termType: DGTLDTermType.LITERAL,
                     dataType: DGTLDDataType.STRING,
                     value: resource.configuration.personId
                 },
@@ -344,7 +325,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
                 subject: resourceSubject,
                 object: {
-                    termType: DGTLDTermType.REFERENCE,
+                    termType: DGTLDTermType.LITERAL,
                     dataType: DGTLDDataType.STRING,
                     value: resource.configuration.email
                 },

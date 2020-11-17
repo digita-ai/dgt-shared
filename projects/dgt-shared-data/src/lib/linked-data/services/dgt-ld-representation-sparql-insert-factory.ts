@@ -1,9 +1,9 @@
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { Generator, Update, Triple, Term } from 'sparqljs';
+import { Generator, Update, Triple, Term, UpdateOperation } from 'sparqljs';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
@@ -18,7 +18,7 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
     }
 
     public serialize<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<string> {
-        this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Starting to generate SparQL for delete', { resources, transformer });
+        this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Starting to generate SparQL for insert', { resources, transformer });
 
         if (!resources) {
             throw new DGTErrorArgument('Argument resources should be set.', resources);
@@ -30,7 +30,41 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
 
         return of({ resources, transformer })
             .pipe(
-                switchMap(data => data.transformer.toTriples(data.resources)
+                switchMap(data => forkJoin(data.resources.map(resource => this.serializeOne(resource, data.transformer)))
+                    .pipe(map(updates => ({ ...data, updates })))),
+                map(data => {
+
+                    let query: Update = {
+                        type: 'update',
+                        prefixes: {},
+                        updates: data.updates,
+                    };
+
+                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query object.', { query, });
+
+                    const body = this.generator.stringify(query);
+
+                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query string.', { body, query, });
+
+                    return body;
+                })
+            )
+    }
+
+    private serializeOne<R extends DGTLDResource>(resource: R, transformer: DGTLDTransformer<R>): Observable<UpdateOperation> {
+        this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Starting to generate SparQL for one insert', { resource, transformer });
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        return of({ resource, transformer })
+            .pipe(
+                switchMap(data => data.transformer.toTriples([data.resource])
                     .pipe(map(transformed => ({ ...data, transformed, triples: _.flatten(transformed.map(resource => resource.triples)) })))),
                 map(data => {
                     const parsedTriples: Triple[] = data.triples.map((triple: DGTLDTriple) => {
@@ -49,25 +83,11 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
 
                     this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Parsed triples.', { insertTriples: parsedTriples, });
 
-                    let query: Update = {
-                        type: 'update',
-                        prefixes: {},
-                        updates: [
-                            {
-                                updateType: 'insert',
-                                insert: [{ type: 'bgp', triples: parsedTriples }],
-                            },
-                        ],
+                    return {
+                        updateType: 'insert',
+                        insert: [{ type: 'bgp', triples: parsedTriples, }],
                     };
-
-                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query object.', { query, insertTriples: parsedTriples, });
-
-                    const body = this.generator.stringify(query);
-
-                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query string.', { body, query, });
-
-                    return body;
-                })
+                }),
             )
     }
 
