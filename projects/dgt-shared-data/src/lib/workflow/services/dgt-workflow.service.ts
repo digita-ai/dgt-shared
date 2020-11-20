@@ -49,7 +49,7 @@ export class DGTWorkflowService {
         mergeMap(data => data.workflow.destination ? this.exchanges.query({ source: data.workflow.destination, holder: exchange.holder, purpose: exchange.purpose }).pipe(
           tap( exchangesRes => {
             if ( !exchangesRes[0]) {
-              this.logger.debug(DGTWorkflowService.name, 'No exchange found for this upstreamsync', data);
+              this.logger.debug(DGTWorkflowService.name, 'No exchange found for this upstreamsync', { exchange, exchangesRes });
               throw new DGTErrorArgument('No exchange found for this upstreamsync', null);
             }
           }),

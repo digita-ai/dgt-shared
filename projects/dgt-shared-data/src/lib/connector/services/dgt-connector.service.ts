@@ -114,6 +114,9 @@ export class DGTConnectorService {
         return connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
           tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.length}`, data)),
           map(existingValues => ({ existingValues, domainEntity: preparedDomainEntity })),
+          catchError(error => {
+            throw new DGTErrorArgument('Error querying mssql', {error});
+          }),
         );
       }),
       tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.existingValues.length}`, data)),
@@ -138,6 +141,10 @@ export class DGTConnectorService {
             }),
           );
         }
+      }),
+      catchError( error => {
+        this.logger.debug(DGTConnectorService.name, 'Error in upstreamsync, no syncing done', { error , resource});
+        return of(resource);
       }),
     );
   }
@@ -180,7 +187,7 @@ export class DGTConnectorService {
       }
     }
 
-    domainEntity.triples[0].subject.value = domainEntity.uri;
+    domainEntity.triples[0].subject.value = domainEntity.uri + '#';
 
     return of(domainEntity).pipe(
       switchMap(entity => {
@@ -211,8 +218,14 @@ export class DGTConnectorService {
         ) : of({ ...data, profile: null, typeRegistrations: null})),
         switchMap(data => data.connector.query<T>(null, exchange, transformer)
           .pipe(map(resources => ({ ...data, resources })))),
-        switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0 ? forkJoin(data.profile.typeRegistrations.map(typeRegistration => data.connector.query<T>(typeRegistration.instance, exchange, transformer))) : of([[]]))
-          .pipe(map( (resourcesOfResources: T[]) => ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] })))),
+        switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0
+          ? forkJoin(data.typeRegistrations.map(typeRegistration => data.connector.query<T>(typeRegistration.instance, exchange, transformer)))
+          : of([[]])).pipe(
+            map( (resourcesOfResources: T[]) =>
+              ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] })
+            )
+          )
+        ),
         // map(resources => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
         tap(data => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
         map(data => data.resources),

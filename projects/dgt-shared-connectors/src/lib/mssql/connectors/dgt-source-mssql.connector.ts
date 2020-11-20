@@ -43,7 +43,7 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
                 switchMap(resource => transformer ? transformer.toDomain([resource]) : of([resource])),
                 catchError(error => {
                     this.logger.debug(DGTSourceMSSQLConnector.name, 'Error while querying MSSQL', error);
-                    throw new DGTErrorArgument('Error while querying MSSQL', null);
+                    return of([]);
                 }),
             ) as Observable<T[]>;
 

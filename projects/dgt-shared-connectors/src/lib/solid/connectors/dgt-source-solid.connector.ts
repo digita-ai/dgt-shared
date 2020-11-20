@@ -36,11 +36,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       throw new DGTErrorArgument('Argument exchange should be set.', exchange);
     }
 
-    if (!transformer) {
-      throw new DGTErrorArgument('transformer should be set.', transformer);
-    }
-
-    this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data service', { documentUri });
+    this.logger.debug(DGTSourceSolidConnector.name, 'Starting to query linked data servicee', { documentUri });
 
     return of({ exchange, documentUri, transformer }).pipe(
       switchMap(data => this.connections.get(data.exchange.connection)
@@ -180,10 +176,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       );
     }
 
-    if (!transformer) {
-      throw new DGTErrorArgument('transformer should be set.', transformer);
-    }
-
     this.logger.debug(
       DGTSparqlQueryService.name,
       'Starting to update entity',
@@ -191,14 +183,14 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     );
     return forkJoin(
       domainEntities.map((update) =>
-        transformer.toTriples([update.original]).pipe(
+        transformer ? transformer.toTriples([update.original]).pipe(
           map((uTransfored) => ({ ...update, original: uTransfored[0] })),
           switchMap((u) =>
             transformer
               .toTriples([u.updated])
               .pipe(map((uTransfored) => ({ ...u, updated: uTransfored[0] })))
           )
-        )
+        ) : of(update)
       )
     ).pipe(
       tap((data) =>
@@ -273,11 +265,12 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
 
                 return this.http.patch(
                   update.delta.updated.uri,
+                  // 'https://webhook.site/692a1b12-1512-4f36-a95a-ea410daeb4e2',
                   this.sparql.generateSparqlUpdate(
                     [update.delta.updated],
                     'insertdelete',
                     [update.delta.original]
-                  ),
+                  ).split('\n').join(' '),
                   {
                     'Content-Type': 'application/sparql-update',
                     Authorization: 'Bearer ' + token,
