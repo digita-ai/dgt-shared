@@ -10,6 +10,7 @@ export interface DGTConfigurationBaseApi extends DGTConfigurationBase {
         type: DGTCacheType;
         uri: string,
         prefix: string
+        sparqlEndpoint: string
     };
     jwt: {
         expiration: string;

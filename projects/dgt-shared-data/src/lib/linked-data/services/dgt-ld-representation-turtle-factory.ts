@@ -1,17 +1,20 @@
 import { Observable, of } from 'rxjs';
 import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
-import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
 import { DGTLDRepresentationN3QuadFactory } from './dgt-ld-representation-n3-quad-factory';
-import { last, map, switchMap, tap } from 'rxjs/operators';
-import { Writer } from 'n3';
+import { last, map, switchMap } from 'rxjs/operators';
+import { Parser, Quad, Writer } from 'n3';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 
 @DGTInjectable()
 export class DGTLDRepresentationTurtleFactory extends DGTLDRepresentationFactory<string> {
 
-    constructor(private logger: DGTLoggerService, private toN3Quads: DGTLDRepresentationN3QuadFactory) {
+    constructor(
+        private logger: DGTLoggerService,
+        private toN3Quads: DGTLDRepresentationN3QuadFactory,
+    ) {
         super();
     }
 
@@ -48,6 +51,20 @@ export class DGTLDRepresentationTurtleFactory extends DGTLDRepresentationFactory
     }
 
     public deserialize<R extends DGTLDResource>(serialized: string, transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+        if (!serialized) {
+            throw new DGTErrorArgument('Argument resources should be set.', serialized);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        this.logger.debug(DGTLDRepresentationTurtleFactory.name, 'Parsing string to Quads', serialized);
+
+        const parsed: Quad[] = new Parser().parse(serialized);
+
+        this.logger.debug(DGTLDRepresentationTurtleFactory.name, 'Parsed string to Quads', parsed);
+
+        return this.toN3Quads.deserialize(parsed, transformer);
     }
 }

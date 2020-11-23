@@ -1,18 +1,23 @@
 import { Observable, of } from 'rxjs';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
-import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import _ from 'lodash';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { Quad, DataFactory } from 'n3';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { map, switchMap } from 'rxjs/operators';
+import { DGTLDNode } from '../models/dgt-ld-node.model';
+import { DGTLDTripleFactoryService } from './dgt-ld-triple-factory.service';
 
 @DGTInjectable()
 export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory<Quad[]> {
 
-    constructor(private logger: DGTLoggerService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private triples: DGTLDTripleFactoryService,
+    ) {
         super();
     }
 
@@ -48,7 +53,29 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
         return DataFactory.quad(subject, predicate, object);
     }
 
-    public deserialize<R extends DGTLDResource>(serialized: Quad[], transformer: DGTLDTransformer<R>): Observable<R[]> {
-        throw new DGTErrorNotImplemented();
+    /**
+     * Deserializes Quad objects to a typeof DGTLDResource
+     * @param quads Quad object to deserialize
+     * @param transformer transformer used to convert from Quad objects to R
+     */
+    public deserialize<R extends DGTLDResource>(quads: Quad[], transformer: DGTLDTransformer<R>): Observable<R[]> {
+
+        if (!quads) {
+            throw new DGTErrorArgument('Argument quads should be set.', quads);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        const resource: DGTLDResource = {
+            uri: null,
+            exchange: null,
+            triples: this.triples.createFromQuads(quads, quads[0].subject.value),
+        };
+
+        this.logger.debug(DGTLDRepresentationN3QuadFactory.name, 'Converted Quads to DGTLDResource', resource);
+
+        return transformer.toDomain([resource]);
     }
 }

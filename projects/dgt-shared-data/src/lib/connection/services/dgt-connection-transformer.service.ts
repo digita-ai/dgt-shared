@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig, DGTConfigurationService, DGTConfigurationBaseApi } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -13,6 +13,7 @@ import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gra
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 import { DGTConnectionType } from '../models/dgt-connection-type.model';
 import uuid from 'uuid';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
@@ -21,6 +22,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     constructor(
         private logger: DGTLoggerService,
         private paramChecker: DGTParameterCheckerService,
+        private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) { }
 
     /**
@@ -51,9 +53,11 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/connections#connection'
+                value.predicate === 'http://digita.ai/voc/connections#connection' &&
+                value.subject.value.endsWith('connection#')
             );
+
+            console.log('found resource subjects', resourceSubjectValues);
 
             if (resourceSubjectValues) {
                 res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
@@ -81,13 +85,13 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE
-            };
+            } as DGTLDNode;
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/connections#connection', termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/connections#connection',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
                 },
                 {
                     predicate: 'http://digita.ai/voc/connections#source',
@@ -154,28 +158,27 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     private transformOne<T extends DGTConnection<any>>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const holder = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const holder = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/connections#holder'
         );
-        const source = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const source = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/connections#source'
         );
-        const state = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const state = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/connections#state'
         );
-        const type = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const type = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/connections#type'
         );
 
         const config = this.configToDomain(triple, resource);
 
         return {
-            uri: resource.uri,
-            triples: [...resource.triples],
+            uri: triple.object.value,
+            triples: [], // TODO fill in this list with resourceTriples, triple and the config's triples
             state: state ? state.object.value : null,
             exchange: resource.exchange,
             holder: holder ? holder.object.value : null,
@@ -186,7 +189,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     }
 
     // isolated this logic for readablility
-    private configToTriples<T extends DGTConnection<any>>(resource: T, resourceSubject): DGTLDTriple[] {
+    private configToTriples<T extends DGTConnection<any>>(resource: T, resourceSubject: DGTLDNode): DGTLDTriple[] {
         let res = [];
 
         if (resource.type === DGTConnectionType.SOLID) {
@@ -346,6 +349,8 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/connections#type'
         );
+
+        console.log('eeeeeeeee', type, triple);
 
         if (type && type.object.value === DGTConnectionType.SOLID) {
             // solid connection

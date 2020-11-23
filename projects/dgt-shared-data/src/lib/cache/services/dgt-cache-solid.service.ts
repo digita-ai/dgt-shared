@@ -1,6 +1,6 @@
-import { DGTErrorArgument, DGTErrorNotImplemented, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { concat, forkJoin, Observable, of, zip } from 'rxjs';
-import { concatMap, last, map, switchMap, tap } from 'rxjs/operators';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { concat, forkJoin, merge, Observable, of } from 'rxjs';
+import { last, map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTCacheService } from './dgt-cache.service';
@@ -10,6 +10,7 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 import { DGTLDRepresentationTurtleFactory } from '../../linked-data/services/dgt-ld-representation-turtle-factory';
 import { DGTLDRepresentationSparqlInsertFactory } from '../../linked-data/services/dgt-ld-representation-sparql-insert-factory';
+import { HttpParams } from '@angular/common/http';
 
 
 /**
@@ -27,6 +28,7 @@ export class DGTCacheSolidService extends DGTCacheService {
         private triples: DGTLDTripleFactoryService,
         private toTurtle: DGTLDRepresentationTurtleFactory,
         private toSparqlInsert: DGTLDRepresentationSparqlInsertFactory,
+        private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) {
         super();
     }
@@ -54,50 +56,44 @@ export class DGTCacheSolidService extends DGTCacheService {
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
             switchMap(data => this.toTurtle.deserialize<T>(data.response.data, data.transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
-            map(data => _.head(data.resources)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', data)),
+            // map(data => _.head(data.resources)),
             // TODO check if line below does what we want it to do
-            // map(data => data.resources.find(resource => resource.uri === data.uri)),
+            map(data => data.resources.find(resource => resource.uri === data.uri)),
         );
     }
 
     /**
-     * Retrieves all? DGTLDResources from the cache
+     * Retrieves all DGTLDResources from the cache
      * @param transformer The transformer for this type of DGTLDResource
      * @param filter The filter to run on the retrieved list of DGTLDResources
      */
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
 
-        // TODO determine which file(s) should be queried
-        //      holders are stored at https://domain.of.our.cache/holder
-        //      we need some way of determining which type T is:
-        //      - add a resourceType attribute to DGTLDResource? eg DGTLDResourceType.HOLDER = 'holder'
-        //      - or use instanceof and refactor DGTHolder etc to abstract classes? (not interfaces)
-        //      - or pass prefix to this function? <- this is the easier implementation, limit querying to single SDM file
-        //      - or query all known SDM folders and use filters? <- i believe this is what this function is supposed to do?
-        //                                                              get exists for a single uri
-
-        const uri = ''; // TBD see note at top
         const headers = {
-            Accept: 'text/turtle',
+            Accept: 'text/plain',
+            'Content-Type': 'application/x-www-form-urlencoded',
         };
+        // query to retrieve all SDM data from cache
+        const query = encodeURIComponent(`describe ?a ?b ?c where {?a ?b ?c FILTER regex(?a, "localhost:3001/sparql/.+")}`);
+        const queryString = `?query=${query}`;
 
-        return of({ uri, headers }).pipe(
-            switchMap(data => this.http.get<string>(data.uri, data.headers)
-                .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))
+        const uri = this.config.get(config => config.cache.sparqlEndpoint) + queryString;
+
+        return of({ uri, headers, transformer }).pipe(
+            switchMap(data => this.http.post<string>(data.uri, {}, data.headers)
+                .pipe(map(response => ({ ...data, response })))
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
-            switchMap(data => transformer.toDomain([{ triples: data.triples, uri: data.uri, exchange: null }])
-                .pipe(map(resources => ({ ...data, resources }))),
-            ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed triples to resources', data)),
-            switchMap(data => this.filters.run<T>(filter, data.resources)
-                .pipe(map(resources => ({ ...data, resources })))
+            switchMap(data => this.toTurtle.deserialize<T>(data.response.data, data.transformer)
+                .pipe(map(resources => ({ ...data, resources })))),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', data)),
+            switchMap(data => (filter ? this.filters.run<T>(filter, data.resources) : of(data.resources))
+                .pipe(map(filtered => ({ ...data, filtered })))
             ),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', { data, filter })),
-            map(data => data.resources),
+            map(data => data.filtered),
         );
-
     }
 
     /**
@@ -140,14 +136,14 @@ export class DGTCacheSolidService extends DGTCacheService {
         return of({ transformer, resources })
             .pipe(
                 // concatMap(data => data.resources.map(resource => this.saveOne<T>(data.transformer, resource))),
-                switchMap(data => concat(...data.resources.map(resource => this.saveOne<T>(data.transformer, resource)))),
+                switchMap(data => forkJoin(...data.resources.map(resource => this.saveOne<T>(data.transformer, resource)))),
                 // switchMap(data => data),
                     // .pipe(map(savedResources => ({ ...data, savedResources })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resource', data)),
-                last(),
+                // last(),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resources', data)),
-                map(data => resources)
-            )
+                map(() => resources)
+            );
     }
 
     private saveOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<T> {
@@ -161,9 +157,9 @@ export class DGTCacheSolidService extends DGTCacheService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ transformer, resource, headers: { 'Content-Type': 'text/turtle', }, uri: resource.uri.split('#')[0] })
+        return of({ transformer, resource, headers: { Accept: 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
-                switchMap(data => this.http.head(data.uri)
+                switchMap(data => this.http.head(data.uri, data.headers)
                     .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),
                 switchMap(data => (data.exists ? this.appendOne(data.transformer, data.resource) : this.createOne(data.transformer, data.resource))
