@@ -57,8 +57,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 value.subject.value.endsWith('connection#')
             );
 
-            console.log('found resource subjects', resourceSubjectValues);
-
             if (resourceSubjectValues) {
                 res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
             }
@@ -349,8 +347,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/connections#type'
         );
-
-        console.log('eeeeeeeee', type, triple);
 
         if (type && type.object.value === DGTConnectionType.SOLID) {
             // solid connection
