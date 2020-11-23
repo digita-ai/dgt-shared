@@ -1,11 +1,10 @@
 import { Observable, of } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTQueryService } from '../../metadata/services/dgt-query.service';
 import { DGTCacheService } from './dgt-cache.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
@@ -13,8 +12,21 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 export class DGTCacheInMemoryService extends DGTCacheService {
     public cache: DGTLDResource[] = [];
 
-    constructor(private logger: DGTLoggerService, private filterService: DGTLDFilterService, private queries: DGTQueryService) {
+    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
         super();
+    }
+
+    public get<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, uri: string): Observable<T> {
+        this.logger.debug(DGTCacheInMemoryService.name, 'Starting to get', { cache: this.cache, transformer, uri });
+
+        return of({ uri, transformer })
+            .pipe(
+                map(data => ({ ...data, resources: this.cache.filter(resource => resource.uri === data.uri) })),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
+                switchMap(data => transformer.toDomain(data.resources)
+                    .pipe(map(resources => _.head(resources)))),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Found resource', data)),
+            )
     }
 
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
@@ -26,7 +38,11 @@ export class DGTCacheInMemoryService extends DGTCacheService {
 
         return of({ resources, transformer })
             .pipe(
-                tap(data => this.cache = data.resources),
+                switchMap(data => transformer.toTriples(data.resources)
+                    .pipe(map(transformed => ({ ...data, transformed })))),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
+                tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
                 map(data => data.resources)
             )
     }
@@ -36,8 +52,9 @@ export class DGTCacheInMemoryService extends DGTCacheService {
 
         return of({ resources: this.cache, transformer, filter })
             .pipe(
-                switchMap(data => !data.filter ? of(data.resources) : this.filterService.run(data.filter, data.resources)),
-                switchMap(data => transformer.toDomain(data))
+                switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
+                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
+                switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([]))
             );
     }
 

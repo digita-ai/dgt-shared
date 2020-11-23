@@ -15,7 +15,7 @@ export class DGTLDFilterRunnerConnectionService implements DGTLDFilterRunnerServ
 
   constructor(private exchanges: DGTExchangeService, private paramChecker: DGTParameterCheckerService) { }
 
-  run(filter: DGTLDFilterConnection, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+  run<R extends DGTLDResource>(filter: DGTLDFilterConnection, resources: R[]): Observable<R[]> {
     if (!filter) {
       throw new DGTErrorArgument('Argument filter should be set.', filter);
   }
@@ -26,15 +26,15 @@ export class DGTLDFilterRunnerConnectionService implements DGTLDFilterRunnerServ
   
   return of({filter, resources})
   .pipe(
-      switchMap(data => forkJoin(resources.map(triple => this.runOne(filter, triple).pipe(map(result => result ? triple : null))))),
+      switchMap(data => forkJoin(resources.map(triple => this.runOne<R>(filter, triple).pipe(map(result => result ? triple : null))))),
       map(triples => triples.filter(triple => triple !== null)),
   )
 }
 
-private runOne(filter: DGTLDFilterConnection, resource: DGTLDResource): Observable<boolean> {
+private runOne<R extends DGTLDResource>(filter: DGTLDFilterConnection, resource: R): Observable<boolean> {
   this.paramChecker.checkParametersNotNull({ filter, resource });
   return this.exchanges.get(resource.exchange).pipe(
-      map(exchange => exchange && exchange.connection ? filter.connections.find(connection => connection.id === exchange.connection) : null),
+      map(exchange => exchange && exchange.connection ? filter.connections.find(connection => connection.uri === exchange.connection) : null),
       map(holder => holder !== null && holder !== undefined ? true : false)
   );
 }

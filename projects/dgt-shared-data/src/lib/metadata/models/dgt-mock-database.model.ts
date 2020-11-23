@@ -1,8 +1,8 @@
 import { DGTMap } from '@digita-ai/dgt-shared-utils';
-import { DGTEntity } from './dgt-entity.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
-export class DGTMockDatabase extends DGTMap<string, DGTEntity[]>  {
-    constructor(map: DGTMap<string, DGTEntity[]> | Array<{ key: string, value: DGTEntity[] }> = null) {
+export class DGTMockDatabase extends DGTMap<string, DGTLDResource[]>  {
+    constructor(map: DGTMap<string, DGTLDResource[]> | Array<{ key: string, value: DGTLDResource[] }> = null) {
         super(map);
     }
 }

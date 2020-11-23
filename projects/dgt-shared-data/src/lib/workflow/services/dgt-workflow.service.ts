@@ -8,6 +8,8 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterPartial } from '@digita-ai/dgt-shared-data/lib/linked-data/models/dgt-ld-filter-partial.model';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -46,7 +48,14 @@ export class DGTWorkflowService {
           .pipe(map(triples => ({ ...data, triples })))),
         switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.triples)))
           .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
-        mergeMap(data => data.workflow.destination ? this.exchanges.query({ source: data.workflow.destination, holder: exchange.holder, purpose: exchange.purpose }).pipe(
+        mergeMap(data => data.workflow.destination ? this.exchanges.query({
+          type: DGTLDFilterType.PARTIAL,
+          partial: {
+            source: data.workflow.destination,
+            holder: exchange.holder,
+            purpose: exchange.purpose,
+          }
+        } as DGTLDFilterPartial).pipe(
           tap( exchangesRes => {
             if ( !exchangesRes[0]) {
               this.logger.debug(DGTWorkflowService.name, 'No exchange found for this upstreamsync', { exchange, exchangesRes });
@@ -54,7 +63,7 @@ export class DGTWorkflowService {
             }
           }),
           // tslint:disable-next-line:max-line-length
-          map(exchangesRes => ({ ...data, exchange: exchangesRes[0], updatedTriples: data.updatedTriples.map( tr => ({ ...tr, exchange: exchangesRes[0].id }) )})),
+          map(exchangesRes => ({ ...data, exchange: exchangesRes[0], updatedTriples: data.updatedTriples.map( tr => ({ ...tr, exchange: exchangesRes[0].uri }) )})),
           // tslint:disable-next-line:max-line-length
           switchMap( data2 => this.connectors.save(data2.exchange, data2.updatedTriples).pipe( map( () => data) )),
           catchError( error => of(data)),

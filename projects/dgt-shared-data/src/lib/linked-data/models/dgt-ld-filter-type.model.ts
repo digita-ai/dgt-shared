@@ -4,5 +4,6 @@ export enum DGTLDFilterType {
     HOLDER,
     EXCHANGE,
     CONNECTION,
-    COMBINATION
+    COMBINATION,
+    PARTIAL,
 }

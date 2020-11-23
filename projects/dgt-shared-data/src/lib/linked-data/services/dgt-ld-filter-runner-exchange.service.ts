@@ -12,7 +12,7 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
 
   constructor(private paramChecker: DGTParameterCheckerService) { }
 
-  run(filter: DGTLDFilterExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+  run<R extends DGTLDResource>(filter: DGTLDFilterExchange, resources: R[]): Observable<R[]> {
     this.paramChecker.checkParametersNotNull({ filter, resources });
     return of(resources.filter(triple => this.runOne(filter, triple)));
   }
@@ -20,7 +20,7 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
   private runOne(filter: DGTLDFilterExchange, resource: DGTLDResource): boolean {
     this.paramChecker.checkParametersNotNull({ filter, resource });
     const match = filter.exchanges.find(
-      exchange => exchange.id === resource.exchange
+      exchange => exchange.uri === resource.exchange
     );
     return match ? true : false;
   }

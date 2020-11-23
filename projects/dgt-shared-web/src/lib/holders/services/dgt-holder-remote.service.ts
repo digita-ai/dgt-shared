@@ -1,5 +1,5 @@
-import { DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DGTHolder, DGTHolderService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTHolder, DGTHolderService, DGTLDFilterService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -9,43 +9,46 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTHolderRemoteService extends DGTHolderService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>) {
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
         super();
     }
 
-    public get(id: string): Observable<DGTHolder> {
-        this.logger.debug(DGTHolderRemoteService.name, 'Starting to get', { id });
+    public get(uri: string): Observable<DGTHolder> {
+        this.logger.debug(DGTHolderRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTHolder>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
             );
     }
 
-    public query(filter: Partial<DGTHolder>): Observable<DGTHolder[]> {
+    public query(filter?: DGTLDFilter): Observable<DGTHolder[]> {
         this.logger.debug(DGTHolderRemoteService.name, 'Starting to query', { filter });
-
-        if (!filter) {
-            throw new DGTErrorArgument('Argument filter should be set.', filter);
-        }
 
         return of({ filter })
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTHolder[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => _.filter<DGTHolder>(response.data, filter)),
+                switchMap(data => this.http.get<DGTHolder[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => ({ ...data, response })))),
+                switchMap(data => data.filter ? this.filters.run<DGTHolder>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
 
-    public save(resource: DGTHolder): Observable<DGTHolder> {
+    public saveMultiple(resources: DGTHolder[]): Observable<DGTHolder[]> {
+        this.logger.debug(DGTHolderRemoteService.name, 'Starting to save resource', { resources });
+
+        throw new DGTErrorNotImplemented();
+    }
+
+    public save(resources: DGTHolder[]): Observable<DGTHolder[]> {
         throw new DGTErrorNotImplemented();
     }
 

@@ -1,4 +1,4 @@
-import { DGTConnectionService, DGTConnection } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionService, DGTConnection, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -10,57 +10,53 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 @DGTInjectable()
 export class DGTConnectionStateService extends DGTConnectionService {
 
-  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService,) {
+  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService, private filters: DGTLDFilterService) {
     super();
   }
 
-  public save(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }
 
-  public get(id: string): Observable<DGTConnection<any>> {
-    this.logger.debug(DGTConnectionStateService.name, 'Starting to get', { id });
+  public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
+    this.logger.debug(DGTConnectionStateService.name, 'Starting to get', { uri });
 
-    if (!id) {
-      throw new DGTErrorArgument('Argument id should be set.', id);
+    if (!uri) {
+      throw new DGTErrorArgument('Argument uri should be set.', uri);
     }
 
-    return of({ id })
+    return of({ uri })
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
-          .pipe(map(connections => ({ ...data, connections })))),
-        map(data => data.connections ? data.connections.find(c => c.id === data.id) : null),
+          .pipe(map((connections: T[]) => ({ ...data, connections })))),
+        map(data => data.connections ? data.connections.find(c => c.uri === data.uri) : null),
       );
   }
 
-  public delete(resource: DGTConnection<any>): Observable<DGTConnection<any>> {
+  public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter: Partial<DGTConnection<any>>): Observable<DGTConnection<any>[]> {
+  public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
     this.logger.debug(DGTConnectionStateService.name, 'Starting to query', { filter });
-
-    if (!filter) {
-      throw new DGTErrorArgument('Argument filter should be set.', filter);
-    }
 
     return of({ filter })
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
-          .pipe(map(connections => ({ ...data, connections })))),
-        map(data => _.filter(data.connections, data.filter))
+          .pipe(map((connections: T[]) => ({ ...data, connections })))),
+        switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.connections) : of(data.connections)),
       )
   }
 
-  public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
+  public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
     throw new DGTErrorNotImplemented();
   }
 
   public getConnectionForInvite(inviteId: string, sourceId: string): Observable<any> {
     throw new DGTErrorNotImplemented();
   }
-  
-  public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
+
+  public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
 }

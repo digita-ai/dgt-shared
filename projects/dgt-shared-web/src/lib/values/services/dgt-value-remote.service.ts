@@ -1,5 +1,5 @@
-import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTConfigurationBaseWeb, DGTDataValueTransformerService } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from "@digita-ai/dgt-shared-utils";
+import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTDataValueTransformerService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
@@ -20,26 +20,26 @@ export class DGTValueRemoteService extends DGTDataValueService {
         super(logger, paramChecker, filters);
     }
 
-    get(id: string): Observable<DGTDataValue> {
-        this.logger.debug(DGTValueRemoteService.name, 'Starting to get', { id });
+    get(uri: string): Observable<DGTDataValue> {
+        this.logger.debug(DGTValueRemoteService.name, 'Starting to get', { uri });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain([response.data])),
                 map(values => _.head(values)),
             );
     }
-    query(filter: Partial<DGTDataValue>): Observable<DGTDataValue[]> {
+    query(filter?: DGTLDFilter): Observable<DGTDataValue[]> {
         throw new Error('Method not implemented.');
     }
-    save(resource: DGTDataValue): Observable<DGTDataValue> {
+    save(resources: DGTDataValue[]): Observable<DGTDataValue[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTDataValue): Observable<DGTDataValue> {
@@ -54,7 +54,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
 
         return of({ holder })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${data.holder.id}/resources` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holder.uri)}/resources` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTDataValue[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),

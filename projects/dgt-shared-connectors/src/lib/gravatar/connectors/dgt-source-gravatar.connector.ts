@@ -1,17 +1,13 @@
 import { Observable, of } from 'rxjs';
-import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService } from '@digita-ai/dgt-shared-data';
-import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
+import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService, DGTConnectionGravatarConfiguration, DGTSourceGravatarConfiguration, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
 import { DGTHttpResponse, DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
-
-
 
 @DGTInjectable()
 export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
-    constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService,) {
+    constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService, private uris: DGTUriFactoryService) {
         super();
     }
 
@@ -39,6 +35,7 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
                 tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
                 map(data => this.convertResponse(data.holderUri, data.response, exchange, data.source, data.connection)),
                 tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
+                map(resource => ({ ...resource, uri: this.uris.generate(resource, 'data') })),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
             );
 
@@ -89,7 +86,7 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
         return {
             triples,
             uri: holderUri,
-            exchange: exchange.id,
+            exchange: exchange.uri,
         };
     }
 

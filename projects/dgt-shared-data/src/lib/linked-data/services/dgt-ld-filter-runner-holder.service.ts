@@ -17,7 +17,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
         private paramChecker: DGTParameterCheckerService,
     ) { }
 
-    public run(filter: DGTLDFilterHolder, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    public run<R extends DGTLDResource>(filter: DGTLDFilterHolder, resources: R[]): Observable<R[]> {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
         }
@@ -36,7 +36,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
     private runOne(filter: DGTLDFilterHolder, resource: DGTLDResource): Observable<boolean> {
         this.paramChecker.checkParametersNotNull({ filter, resource });
         return this.exchanges.get(resource.exchange).pipe(
-            map(exchange => exchange && exchange.holder ? filter.holders.find(holder => holder.id === exchange.holder) : null),
+            map(exchange => exchange && exchange.holder ? filter.holders.find(holder => holder.uri === exchange.holder) : null),
             map(holder => holder !== null && holder !== undefined ? true : false)
         );
     }

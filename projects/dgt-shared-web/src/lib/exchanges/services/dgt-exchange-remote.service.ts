@@ -1,5 +1,5 @@
-import { DGTExchange, DGTExchangeService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from "@digita-ai/dgt-shared-utils";
+import { DGTExchange, DGTExchangeService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -9,41 +9,38 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTExchangeRemoteService extends DGTExchangeService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>) {
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
         super();
     }
-    
-    get(id: string): Observable<DGTExchange> {
-        this.logger.debug(DGTExchangeRemoteService.name, 'Starting to get', { id });
 
-        if (!id) {
-            throw new DGTErrorArgument('Argument id should be set.', id);
+    get(uri: string): Observable<DGTExchange> {
+        this.logger.debug(DGTExchangeRemoteService.name, 'Starting to get', { uri });
+
+        if (!uri) {
+            throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ id })
+        return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${data.id}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTExchange>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
             );
     }
-    query(filter: Partial<DGTExchange>): Observable<DGTExchange[]> {
+    query(filter?: DGTLDFilter): Observable<DGTExchange[]> {
         this.logger.debug(DGTExchangeRemoteService.name, 'Starting to query', { filter });
-
-        if (!filter) {
-            throw new DGTErrorArgument('Argument filter should be set.', filter);
-        }
 
         return of({ filter })
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTExchange[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => _.filter<DGTExchange>(response.data, filter)),
+                switchMap(data => this.http.get<DGTExchange[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => ({ ...data, response })))),
+                switchMap(data => data.filter ? this.filters.run<DGTExchange>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTExchange): Observable<DGTExchange> {
+    save(resources: DGTExchange[]): Observable<DGTExchange[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTExchange): Observable<DGTExchange> {
