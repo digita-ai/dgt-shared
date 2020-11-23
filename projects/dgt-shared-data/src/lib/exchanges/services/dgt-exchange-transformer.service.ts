@@ -47,7 +47,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/exchanges#exchange' &&
-                value.object.value.endsWith('exchange#')
+                value.subject.value.endsWith('exchange#')
             );
 
             if (resourceSubjectValues) {
@@ -55,7 +55,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
             }
         }
 
-        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed values to resources', { resource: resource, res });
+        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }

@@ -84,14 +84,14 @@ export class DGTCacheSolidService extends DGTCacheService {
             switchMap(data => this.http.post<string>(data.uri, {}, data.headers)
                 .pipe(map(response => ({ ...data, response })))
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response)),
             switchMap(data => this.toTurtle.deserialize<T>(data.response.data, data.transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', data)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', {resources: data.resources, transformer})),
             switchMap(data => (filter ? this.filters.run<T>(filter, data.resources) : of(data.resources))
                 .pipe(map(filtered => ({ ...data, filtered })))
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', { data, filter })),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', { filtered: data.filtered, filter })),
             map(data => data.filtered),
         );
     }
