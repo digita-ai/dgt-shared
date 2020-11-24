@@ -42,9 +42,8 @@ export class DGTButtonComponent implements OnInit {
       this.logger.debug(DGTButtonComponent.name, 'Button clicked, launching confirm dialog');
 
       const dialogRef = this.dialog.open(DGTButtonConfirmComponent, {
-        width: '600px',
-        height: '400px',
-        disableClose: true
+        width: '450px',
+        height: '300px',
       });
 
       dialogRef.afterClosed().subscribe(result => {
