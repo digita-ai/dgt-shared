@@ -40,7 +40,7 @@ export class DGTCategoryRemoteService extends DGTCategoryService {
                 switchMap(data => data.filter ? this.filters.run<DGTCategory>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resources: DGTCategory[]): Observable<DGTCategory[]> {
+    save<T extends DGTCategory>(resources: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTCategory): Observable<DGTCategory> {

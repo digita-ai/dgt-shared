@@ -29,6 +29,8 @@ import { DGTSecurityCredentialMockService } from './credential/services/dgt-secu
 import { DGTSecurityCredentialTransformerService } from './credential/services/dgt-security-credential-transformer.service';
 import { DGTSecurityPolicyMockService } from './policy/services/dgt-security-policy-mock.service';
 import { DGTSecurityPolicyTransformerService } from './policy/services/dgt-security-policy-transformer.service';
+import { DGTCategoryCacheService } from './categories/services/dgt-category-cache.service';
+import { DGTCategoryTransformerService } from './categories/services/dgt-category-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -66,6 +68,8 @@ export const providers = [
   DGTSecurityCredentialTransformerService,
   DGTSecurityPolicyMockService,
   DGTSecurityPolicyTransformerService,
+  DGTCategoryCacheService,
+  DGTCategoryTransformerService,
 ];
 
 @NgModule({

@@ -8,7 +8,7 @@ import { DGTCategory } from '../models/dgt-category.model';
 export abstract class DGTCategoryService implements DGTLDResourceService<DGTCategory> {
     public abstract get(id: string): Observable<DGTCategory>;
     public abstract query(filter?: DGTLDFilter): Observable<DGTCategory[]>;
-    public abstract save(resources: DGTCategory[]): Observable<DGTCategory[]>;
+    public abstract save<T extends DGTCategory>(resources: T[]): Observable<T[]>;
     public abstract delete(resource: DGTCategory): Observable<DGTCategory>;
 
 }

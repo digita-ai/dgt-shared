@@ -29,7 +29,7 @@ export class DGTCategoryMockService extends DGTCategoryService {
         )
     }
 
-    public save(resources: DGTCategory[]): Observable<DGTCategory[]> {
+    public save<T extends DGTCategory>(resources: T[]): Observable<T[]> {
         this.logger.debug(DGTCategoryMockService.name, 'Starting to save resources', { resources });
 
         if (!resources) {
