@@ -25,9 +25,7 @@
     "moment": "^2.23.0",
     "redux-beacon": "^2.0.3",
     "solid-auth-client": "^2.4.1",
-    "@types/node": "~11.9.5",
-    "jsonwebtoken": "^8.2.0",
-    "passport-strategy": "^1.0.0"
+    "@types/node": "~11.9.5"
   },
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
   "main": "src/public-api.ts",

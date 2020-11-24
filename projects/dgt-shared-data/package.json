@@ -11,7 +11,9 @@
     "n3": "^1.4.0",
     "@comunica/actor-init-sparql": "^1.16.2",
     "@comunica/actor-init-sparql-rdfjs": "^1.16.2",
-    "@comunica/bus-sparql-serialize": "^1.16.0"
+    "@comunica/bus-sparql-serialize": "^1.16.0",
+    "jsonwebtoken": "^8.2.0",
+    "passport-strategy": "^1.0.0"
   },
   "devDependencies": {
     "@digita-ai/dgt-shared-test": "0.1.2",
