@@ -1,11 +1,12 @@
-import { DGTMap } from '@digita/dgt-shared-utils';
-import { DGTLDField } from '@digita/dgt-shared-data';
+import { DGTMap } from '@digita-ai/dgt-shared-utils';
 
 export interface DGTSourceMSSQLConfiguration {
     user: string;
     password: string;
     server: string;
     database: string;
-    command: (identifier: string) => string;
-    mapping: DGTMap<string, DGTLDField>;
+    commands: {
+        [key: string]: Function,
+    };
+    mapping: DGTMap<string, string>;
 }

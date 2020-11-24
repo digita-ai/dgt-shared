@@ -1,27 +1,31 @@
 {
-  "name": "@digita/dgt-shared-venture",
-  "version": "0.0.16",
+  "name": "@digita-ai/dgt-shared-venture",
+  "version": "0.1.2",
   "peerDependencies": {
     "@angular/cdk": "7.3.7",
     "@angular/common": "^7.2.7",
     "@angular/core": "^7.2.7",
     "@angular/http": "^7.2.7",
     "@angular/material": "7.3.7",
-    "@digita/dgt-shared-data": "latest",
-    "@digita/dgt-shared-utils": "latest",
-    "@digita/dgt-shared-web": "latest",
+    "@digita-ai/dgt-shared-data": "0.1.2",
+    "@digita-ai/dgt-shared-utils": "0.1.2",
+    "@digita-ai/dgt-shared-web": "0.1.2",
     "@ngrx/store": "^7.3.0",
     "@ngx-translate/core": "11.0.1",
     "@ngx-translate/http-loader": "4.0.0",
     "angularfire2": "5.1.1",
-    "firebase": "5.8.4"
-  },
-  "devDependencies": {
-    
+    "firebase": "5.8.4",
     "@types/node": "~11.9.5"
   },
+  "devDependencies": {},
   "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
   "main": "src/public-api.ts",
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-venture"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

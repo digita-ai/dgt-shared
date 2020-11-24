@@ -1,91 +1,69 @@
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { switchMap, map } from 'rxjs/operators';
-import { DGTDataService } from '../../metadata/services/dgt-data.service';
-import { DGTSource } from '../../source/models/dgt-source.model';
-import { DGTSourceService } from '../../source/services/dgt-source.service';
+import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { Injectable } from '@angular/core';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTProvider } from '../../provider/models/dgt-provider.model';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
-@Injectable()
+@DGTInjectable()
 export class DGTWorkflowService {
 
-    private workflows: DGTWorkflow[];
+  private workflows: DGTWorkflow[] = [];
 
-    constructor(private logger: DGTLoggerService, private data: DGTDataService, private sources: DGTSourceService) { }
+  constructor(
+    private logger: DGTLoggerService,
+    private filters: DGTLDFilterService,
+    private connectors: DGTConnectorService,
+    private paramChecker: DGTParameterCheckerService,
+  ) { }
 
-    public execute(exchange: DGTExchange, provider: DGTProvider<any>)
-        : Observable<DGTLDValue[]> {
-        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange });
+  public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
+    this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
 
-        return of({ exchange })
-            .pipe(
-                switchMap((data) => this.data.getEntity<DGTJustification>('justification', exchange.justification)
-                    .pipe(map(justification => ({ justification, ...data })))),
-                switchMap((data) => this.data.getEntity<DGTSource<any>>('source', exchange.source)
-                    .pipe(map(source => ({ source, ...data })))),
-                switchMap((data) => this.sources.get(exchange, provider, data.source, data.justification)
-                    .pipe(map(valuesPerSource => ({ valuesPerSource, ...data })))),
-                map(data => {
-                    const values: DGTLDValue[] = _.flatten(data.valuesPerSource);
+    this.paramChecker.checkParametersNotNull({ exchange, resources });
 
-                    this.logger.debug(DGTWorkflowService.name, 'Retrieved values from sources, running workflows',
-                        { exchange, values });
+    return of({ exchange, resources, workflows: this.workflows.filter(workflow => workflow.source === exchange.source) })
+      .pipe(
+        switchMap(data => (data.workflows.length === 0 ? of([data.resources]) : forkJoin(data.workflows.map(workflow => this.executeForWorkflow(workflow, data.exchange, data.resources))))
+          .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
+        map(data => data.resources),
+      );
+  }
 
-                    values.map((value) => {
-                        if (value) {
-                            const workflows = this.get(exchange.source, value.field);
+  private executeForWorkflow(workflow: DGTWorkflow, exchange: DGTExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
 
-                            if (workflows) {
-                                workflows.forEach((workflow) => {
-                                    if (workflow && workflow.actions) {
-                                        workflow.actions.forEach((action) => {
-                                            if (action) {
-                                                value = action.execute(value);
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        }
-                    });
+    this.paramChecker.checkParametersNotNull({ workflow, resources });
 
-                    return values;
-                }),
-            );
+    return of({ workflow, resources, exchange })
+      .pipe(
+        switchMap(data => this.filters.run(workflow.filter, data.resources)
+          .pipe(map(triples => ({ ...data, triples })))),
+        switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.triples)))
+          .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
+        switchMap(data =>
+          data.workflow.destination ?
+            this.connectors.save(data.exchange, data.updatedTriples, data.workflow.destination).pipe(
+              map(newTriple => ({ ...data, newTriple }))
+            ) : of(data)
+        ),
+        map(data => data.triples),
+      );
+  }
+
+  public register(workflow: DGTWorkflow) {
+    this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
+
+    this.paramChecker.checkParametersNotNull({ workflow });
+
+    if (!this.workflows) {
+      this.workflows = [];
     }
 
-
-    public get(source: string, field: DGTLDField): DGTWorkflow[] {
-        this.logger.debug(DGTWorkflowService.name, 'Getting workflow for field', { field });
-
-        let res: DGTWorkflow[] = null;
-
-        if (field && this.workflows && this.workflows.length > 0) {
-            res = this.workflows.filter(workflow =>
-                workflow
-                && workflow.source === source
-                && workflow.fields
-                && workflow.fields.filter((f) => f.namespace === field.namespace && f.name === field.name).length > 0);
-        }
-
-        return res;
-    }
-
-    public register(workflow: DGTWorkflow) {
-        this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
-
-        if (!this.workflows) {
-            this.workflows = [];
-        }
-
-        this.workflows.push(workflow);
-    }
+    this.workflows.push(workflow);
+  }
 
 }

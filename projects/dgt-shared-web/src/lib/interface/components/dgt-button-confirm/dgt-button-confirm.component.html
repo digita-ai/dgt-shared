@@ -1,11 +1,11 @@
 <div class="dashboard-information" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="10px">
     <div fxFlex="56px" class="dashboard-information-icon">
-        <img src="assets/images/avatar/avatar.png" />
+        <img src="assets/images/logo-black.png" />
     </div>
     <div fxFlex class="dashboard-information-description">
         <p>{{'common.components.dgt-button-confirm.description' | translate}}</p>
     </div>
-    <div class="dashboard-help-actions">
+    <div class="dashboard-help-actions" fxLayout="row" fxLayoutAlign="center" fxLayoutGap="20px">
         <button color="primary" mat-raised-button (click)="close(true)" class="block">
             <i class="fas fa-check"></i>
             {{'common.components.dgt-button-confirm.confirm' | translate}}

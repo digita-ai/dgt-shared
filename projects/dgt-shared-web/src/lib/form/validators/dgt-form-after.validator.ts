@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+
 import { ValidatorFn, AbstractControl } from '@angular/forms';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import moment from 'moment';
 
-@Injectable()
+@DGTInjectable()
 export class DGTFormAfterValidator {
   public validate(afterDate: Date): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {

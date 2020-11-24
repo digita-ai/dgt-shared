@@ -8,16 +8,7 @@ import * as _ from 'lodash';
   styleUrls: ['./dgt-section.component.scss']
 })
 export class DGTSectionComponent {
-  @Input() public enableTitle = true;
-  public get showContent(): boolean {
-    let res = false;
 
-    if (_.includes([DGTSectionState.NORMAL, DGTSectionState.BLUE, DGTSectionState.WARNING], this.state)) {
-      res = true;
-    }
-
-    return res;
-  }
   public get showSummary(): boolean {
     let res = false;
 
@@ -30,7 +21,8 @@ export class DGTSectionComponent {
   public get showTitle(): boolean {
     let res = false;
 
-    if (_.includes([DGTSectionState.NORMAL, DGTSectionState.BLUE, DGTSectionState.COLLAPSED, DGTSectionState.SUCCESS, DGTSectionState.LOCKED, DGTSectionState.LOADING, DGTSectionState.WARNING], this.state) && this.enableTitle) {
+    if (_.includes([DGTSectionState.NORMAL, DGTSectionState.BLUE, DGTSectionState.COLLAPSED,
+    DGTSectionState.SUCCESS, DGTSectionState.LOCKED, DGTSectionState.LOADING, DGTSectionState.WARNING], this.state) && this.enableTitle) {
       res = true;
     }
 
@@ -54,6 +46,13 @@ export class DGTSectionComponent {
 
     return res;
   }
+  @Input() public enableTitle = true;
+  @Input() public showSubtitle = false;
+  @Input() public showIcon = false;
+  @Input() public showContent = false;
+  @Input() public showAvatar = false;
+  @Input() public showImage = false;
+  @Input() public showActions = false;
   @Input() public state: DGTSectionState = DGTSectionState.NORMAL;
   @Output() public reset: EventEmitter<void> = new EventEmitter<void>();
 

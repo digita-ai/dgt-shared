@@ -24,6 +24,7 @@ export interface DGTSourceSolidConfiguration {
     end_session_endpoint: string;
 
     // Client registration
+    callbackUri: string;
     client_id: string;
     client_secret: string;
     redirect_uris: string[];

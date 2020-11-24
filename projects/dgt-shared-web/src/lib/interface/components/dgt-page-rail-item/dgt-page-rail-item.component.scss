@@ -1,0 +1,30 @@
+@import 'styles';
+
+:host {
+    display: block;
+    width: 50px;
+    height: 50px;
+    background-color: $color-foreground-inverse;
+    color: $color-primary-dark;
+    border-radius: 50%;
+    text-align: center;
+    margin-bottom: $measure-gutter-xlarge;
+
+    .split-page-rail-item {
+        height: 100%;
+        display: flex;
+    }
+}
+
+:host(.selected) {
+    padding: 5px;
+    height: 40px;
+    width: 40px;
+
+    .split-page-rail-item {
+        border: 2px solid $color-primary-dark;
+        border-radius: 50%;
+        height: 36px;
+        width: 36px;
+    }
+}

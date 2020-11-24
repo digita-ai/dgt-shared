@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+
 import { ValidatorFn, AbstractControl } from '@angular/forms';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import AwesomePhonenumber from 'awesome-phonenumber';
 
-@Injectable()
+@DGTInjectable()
 export class DGTPhoneValidator {
   public validate(defaultCountry: string): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } => {

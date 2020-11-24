@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DGTColor } from '../../models/dgt-color.model';
 import { MatDialog } from '@angular/material';
 import { DGTButtonConfirmComponent } from '../dgt-button-confirm/dgt-button-confirm.component';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-button',
@@ -15,14 +15,15 @@ export class DGTButtonComponent implements OnInit {
   @Input() public confirm = false;
   @Input() public disabled = false;
   @Input() public loading = false;
-
+  @Input() public showContent = true;
+  @Input() public loadingEnabled = true;
   @Output() public called: EventEmitter<any> = new EventEmitter<any>();
 
   public get colorBase(): string {
     let res = 'basic';
 
     if (this.color) {
-      res = this.color
+      res = this.color;
     }
 
     return res;
@@ -35,13 +36,14 @@ export class DGTButtonComponent implements OnInit {
 
   public onClick() {
 
+    this.loading = true && this.loadingEnabled;
+
     if (this.confirm) {
       this.logger.debug(DGTButtonComponent.name, 'Button clicked, launching confirm dialog');
 
       const dialogRef = this.dialog.open(DGTButtonConfirmComponent, {
-        width: '600px',
-        height: '400px',
-        disableClose: true
+        width: '450px',
+        height: '300px',
       });
 
       dialogRef.afterClosed().subscribe(result => {

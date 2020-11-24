@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { User } from 'firebase';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
-import { DGTAbstractAction, DGTAction } from '@digita/dgt-shared-web';
+import { DGTAbstractAction, DGTAction } from '@digita-ai/dgt-shared-web';
 
 export const ActionTypes = {
   SET_USER: '[App] Set user',

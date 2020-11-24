@@ -1,9 +1,8 @@
-import { DGTTestRunnerService } from '@digita/dgt-shared-test';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTWorkflowService } from './dgt-workflow.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
 
 /* tslint:disable:no-unused-variable */
 
@@ -16,19 +15,15 @@ describe('DGTWorkflowService', () => {
     }));
 
     it('should register and get a workflow', async(() => {
-        const field: DGTLDField = {
-            namespace: 'digita.ai/',
-            name: 'test'
-        };
+        const predicate = 'digita.ai/test'
 
         const workflow: DGTWorkflow = {
-            trigger: {
-                fields: [field]
-            },
-            actions: []
+            predicates: [predicate],
+            actions: [],
+            source: null //TODO
         };
         testService.service.register(workflow);
 
-        expect(testService.service.get(field)).toEqual([workflow]);
+        expect(testService.service.get(predicate)).toEqual([workflow]);
     }));
 });

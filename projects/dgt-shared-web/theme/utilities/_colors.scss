@@ -1,7 +1,17 @@
+// $color-background-normal: #eee;
+
+// $color-foreground-normal: #595959;
+// $color-foreground-light: #898989;
+// $color-foreground-inverse: #fff;
+
+// $color-grey-light: #fff;
+// $color-grey-normal: #eee;
+// $color-grey-dark: #ddd;
+
 $color-background-normal: #eee;
 
-$color-foreground-normal: #595959;
-$color-foreground-light: #898989;
+$color-foreground-normal: #001028;
+$color-foreground-light: #001028;
 $color-foreground-inverse: #fff;
 
 $color-grey-light: #fff;
@@ -41,14 +51,18 @@ $color-grey-palette: (
   )
 );
 
-$color-blue-light: #3AA5E3;
-$color-blue-normal: #3494CC;
-$color-blue-dark: #2E81B2;
+// $color-primary-light: #3AA5E3;
+// $color-primary-normal: #3494CC;
+// $color-primary-dark: #2E81B2;
 
-$color-blue-palette: (
-    50: $color-blue-light,
-  100: $color-blue-normal,
-  200: $color-blue-dark,
+$color-primary-light: #518DF5;
+$color-primary-normal: #3E6BB5;
+$color-primary-dark: #2B4C7F;
+
+$color-primary-palette: (
+    50: $color-primary-light,
+  100: $color-primary-normal,
+  200: $color-primary-dark,
   300: #7faedd,
   400: #7faedd,
   500: #7faedd,
@@ -78,14 +92,18 @@ $color-blue-palette: (
   )
 );
 
-$color-orange-light: #F9C678;
-$color-orange-normal: #FFAD2F;
-$color-orange-dark: #F0A32C;
+// $color-accent-light: #F9C678;
+// $color-accent-normal: #FFAD2F;
+// $color-accent-dark: #F0A32C;
 
-$color-orange-palette: (
-    50: $color-orange-light,
-  100: $color-orange-normal,
-  200: $color-orange-dark,
+$color-accent-light: #8FBE00;
+$color-accent-normal: #8FBE00;
+$color-accent-dark: #8FBE00;
+
+$color-accent-palette: (
+    50: $color-accent-light,
+  100: $color-accent-normal,
+  200: $color-accent-dark,
   300: #7faedd,
   400: #7faedd,
   500: #7faedd,

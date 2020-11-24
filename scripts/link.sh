@@ -1,17 +1,13 @@
 #bin/bash
 cd ../projects/dgt-shared-test;
-npm link;
-cd ../dgt-shared-utils/
-npm link;
-npm link ../dgt-shared-test;
-cd ../dgt-shared-data/;
-npm link;
-npm link ../dgt-shared-test;
-cd ../dgt-shared-connectors/;
-npm link;
-npm link ../dgt-shared-test;
-cd ../dgt-shared-web/;
-npm link;
-npm link ../dgt-shared-test;
+yarn link;
+cd ../dgt-shared-utils
+yarn link;
+cd ../dgt-shared-data;
+yarn link;
+cd ../dgt-shared-connectors;
+yarn link;
+cd ../dgt-shared-web;
+yarn link;
 cd ../../scripts;
-./build.sh;
+# ./build.sh;

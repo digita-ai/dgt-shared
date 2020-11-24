@@ -1,43 +1,62 @@
 import { DGTSource } from '../models/dgt-source.model';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { DGTLoggerService, DGTMap } from '@digita/dgt-shared-utils';
-import { DGTJustification } from '../../justification/models/dgt-justification.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
-import { DGTExchange } from '../../subject/models/dgt-subject-exchange.model';
-import { Injectable } from '@angular/core';
-import { DGTSourceConnector } from '../models/dgt-source-connector.model';
-import { DGTSourceType } from '../models/dgt-source-type.model';
-import { DGTProvider } from '../../provider/models/dgt-provider.model';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 
-@Injectable()
-export class DGTSourceService {
+@DGTInjectable()
+export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {
 
-    private connectors: DGTMap<DGTSourceType, DGTSourceConnector<any, any>>;
+  constructor(
+    protected logger: DGTLoggerService,
+  ) { }
 
-    constructor(private logger: DGTLoggerService) { }
+  public abstract get(id: string): Observable<DGTSource<any>>;
+  public abstract query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]>;
+  public abstract save(resource: DGTSource<any>): Observable<DGTSource<any>>;
+  public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
 
-    public get(exchange: DGTExchange, provider: DGTProvider<any>, source: DGTSource<any>, justification: DGTJustification)
-        : Observable<DGTLDValue[]> {
-        this.logger.debug(DGTSourceService.name, 'Getting source', source);
+  public abstract linkSource(inviteId: string, sourceId: string): Observable<{ state: string; loginUri: string; }>;
 
-        let connector: DGTSourceConnector<any, any> = null;
+  /**
+   * Returns a list of sources matching query
+   * @param query string to match
+   * @param sources sources to filter
+   */
+  public filterSources(query: string, sources: DGTSource<any>[]): DGTSource<any>[] {
+    return sources.filter((source: DGTSource<any>) => {
+      const issuer: string = source.configuration.issuer.toLowerCase();
+      const desc: string = source.description.toLowerCase();
+      return issuer.includes(query)
+        || desc.includes(query)
+        || query.includes(issuer.split('//')[1]);
+      // "https://dirk.solid.community/profile/card#me"
+      // should not show an external source because solid.community is known
+    });
+  }
 
-        if (this.connectors) {
-            connector = this.connectors.get(source.type);
-        }
+  /**
+   * Checks if a given uri has a solid server running
+   * @param query uri to check
+   */
+  public isExternalSource(query: string): Observable<{ success: boolean, uri: string }> {
+    const uri = this.parseUri(query);
+    throw new DGTErrorArgument('not implemented', 'isExternalSource');
+  }
 
-        return connector.query(justification, exchange, provider, source)
-            .pipe(
-                map((response) => response.data),
-            );
+  /**
+   * Parses a uri
+   */
+  public parseUri(uri: string): string {
+    // Add http prefix if necessary
+    if (!/^https?:\/\//.test(uri)) {
+      uri = 'https://'.concat(uri);
     }
-
-    public register(sourceType: DGTSourceType, connector: DGTSourceConnector<any, any>) {
-        if (!this.connectors) {
-            this.connectors = new DGTMap<DGTSourceType, DGTSourceConnector<any, any>>();
-        }
-
-        this.connectors.set(sourceType, connector);
+    try {
+      return new URL(uri).origin;
+    } catch (err) {
+      this.logger.debug(DGTSourceService.name, 'URL is not valid', uri);
+      return null;
     }
+  }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-button-confirm',

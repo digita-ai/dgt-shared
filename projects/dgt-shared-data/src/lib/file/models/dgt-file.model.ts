@@ -1,16 +1,16 @@
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 // tslint:disable:no-bitwise
 // tslint:disable:triple-equals
 
 export class DGTFile {
-    private static logger: DGTLoggerService = new DGTLoggerService();
-    private logger: DGTLoggerService = new DGTLoggerService();
+    // private static logger: DGTLoggerService = new DGTLoggerService();
+    // private logger: DGTLoggerService = new DGTLoggerService();
 
     public static fromBase64(type: string, base64: string): DGTFile {
         let res: DGTFile = null;
 
-        this.logger.debug(DGTFile.name, 'Creating image from base 64.');
+        // this.logger.debug(DGTFile.name, 'Creating image from base 64.');
 
         if (type && base64) {
             const binary = atob(base64);
@@ -32,10 +32,10 @@ export class DGTFile {
     public static fromBuffer(type: string, bufferArray: Array<Buffer>): DGTFile {
         let res: DGTFile = null;
 
-        this.logger.debug(DGTFile.name, 'Start creating image from buffer.');
+        // this.logger.debug(DGTFile.name, 'Start creating image from buffer.');
 
         if (type && bufferArray && bufferArray[0]) {
-            this.logger.debug(DGTFile.name, 'Type and buffer array found.');
+            // this.logger.debug(DGTFile.name, 'Type and buffer array found.');
 
             const buffer = Buffer.concat(bufferArray);
             const arrayBuffer: ArrayBuffer = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
@@ -47,7 +47,7 @@ export class DGTFile {
             res = new DGTFile(type, arrayBuffer);
         }
 
-        this.logger.debug(DGTFile.name, 'Finished creating image from buffer.');
+        // this.logger.debug(DGTFile.name, 'Finished creating image from buffer.');
 
         return res;
     }
@@ -55,7 +55,7 @@ export class DGTFile {
     public static fromBlob(type: string, blob: Blob): DGTFile {
         let res: DGTFile = null;
 
-        this.logger.debug(DGTFile.name, 'Starting creating image from blob.');
+        // this.logger.debug(DGTFile.name, 'Starting creating image from blob.');
 
         if (type && blob) {
             // let arrayBuffer;
@@ -71,7 +71,7 @@ export class DGTFile {
             }
         }
 
-        this.logger.debug(DGTFile.name, 'Finished creating image from blob.');
+        // this.logger.debug(DGTFile.name, 'Finished creating image from blob.');
 
         return res;
     }
@@ -79,7 +79,7 @@ export class DGTFile {
     public static fromArrayBuffer(type: string, arrayBuffer: ArrayBuffer) {
         let res: DGTFile = null;
 
-        this.logger.debug(DGTFile.name, 'Creating image from array buffer.');
+        // this.logger.debug(DGTFile.name, 'Creating image from array buffer.');
 
         if (type && arrayBuffer) {
             res = new DGTFile(type, arrayBuffer);
@@ -112,7 +112,7 @@ export class DGTFile {
             }
         }
 
-        this.logger.debug(DGTFile.name, 'Parsed file as base 64.');
+        // this.logger.debug(DGTFile.name, 'Parsed file as base 64.');
 
         return res;
     }
@@ -124,7 +124,7 @@ export class DGTFile {
             res = new Blob([this.data]);
         }
 
-        this.logger.debug(DGTFile.name, 'Parsed file as blob.');
+        // this.logger.debug(DGTFile.name, 'Parsed file as blob.');
 
         return res;
     }
@@ -136,7 +136,7 @@ export class DGTFile {
             res = `data:${this.type};base64,${this.asBase64}`;
         }
 
-        this.logger.debug(DGTFile.name, 'Parsed file as data url.');
+        // this.logger.debug(DGTFile.name, 'Parsed file as data url.');
 
         return res;
     }
@@ -150,7 +150,7 @@ export class DGTFile {
         const byteRemainder = byteLength % 3;
         const mainLength = byteLength - byteRemainder;
 
-        this.logger.debug(DGTFile.name, 'Calculating basic variabled.');
+        // this.logger.debug(DGTFile.name, 'Calculating basic variabled.');
 
         let a;
         let b;

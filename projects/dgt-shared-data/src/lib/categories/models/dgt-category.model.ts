@@ -1,8 +1,10 @@
-import { DGTEntity } from '../../metadata/models/dgt-entity.model';
-import { DGTCategoryField } from './dgt-category-field.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
-export interface DGTCategory extends DGTEntity {
+export interface DGTCategory extends DGTLDResource {
     icon: string;
+    title: string;
     description: string;
-    fields: DGTCategoryField[];
+    filter: DGTLDFilter;
+    groupId: string;
 }

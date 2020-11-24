@@ -1,6 +1,6 @@
 {
-  "name": "@digita/dgt-shared-utils",
-  "version": "0.0.16",
+  "name": "@digita-ai/dgt-shared-utils",
+  "version": "0.1.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,15 +12,22 @@
     "publish": "npm publish"
   },
   "peerDependencies": {
-    "@angular/http": "^7.2.7",
     "@angular/common": "^7.2.7",
-    "@angular/core": "^7.2.7"
-  },
-  "devDependencies": {
-    "@digita/dgt-shared-test": "latest",
+    "@angular/core": "^7.2.7",
+    "@angular/http": "^7.2.7",
     "@types/node": "~11.9.5"
   },
-  "description": "This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.0.",
+  "devDependencies": {
+    "@digita-ai/dgt-shared-test": "0.1.2",
+    "@types/jasmine": "~2.8.8"
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com" },
+  "repository" : {
+    "type" : "git",
+    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "directory": "projects/dgt-shared-utils"
+  },
+  "description": "This library shared utilities.",
   "main": "src/public-api.ts",
   "author": "Wouter Janssens",
   "license": "ISC"

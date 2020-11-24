@@ -1,5 +1,8 @@
 {
   "compileOnSave": false,
+  "angularCompilerOptions": {
+    "disableTypeScriptVersionCheck": true,
+  },
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -11,52 +14,57 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
-    "target": "es5",
+    "skipLibCheck": true,
+    "esModuleInterop": true, 
+    "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
+    ],
+    "types": [
+      "node",
     ],
     "lib": [
       "es2018",
       "dom"
     ],
     "paths": {
-      "@digita/dgt-shared-utils": [
+      "@digita-ai/dgt-shared-utils": [
         "dist/dgt-shared-utils"
       ],
-      "@digita/dgt-shared-utils/*": [
+      "@digita-ai/dgt-shared-utils/*": [
         "dist/dgt-shared-utils/*"
       ],
-      "@digita/dgt-shared-web": [
+      "@digita-ai/dgt-shared-web": [
         "dist/dgt-shared-web"
       ],
-      "@digita/dgt-shared-web/*": [
+      "@digita-ai/dgt-shared-web/*": [
         "dist/dgt-shared-web/*"
       ],
-      "@digita/dgt-shared-data": [
+      "@digita-ai/dgt-shared-data": [
         "dist/dgt-shared-data"
       ],
-      "@digita/dgt-shared-data/*": [
+      "@digita-ai/dgt-shared-data/*": [
         "dist/dgt-shared-data/*"
       ],
-      "@digita/dgt-shared-venture": [
+      "@digita-ai/dgt-shared-venture": [
         "dist/dgt-shared-venture"
       ],
-      "@digita/dgt-shared-venture/*": [
+      "@digita-ai/dgt-shared-venture/*": [
         "dist/dgt-shared-venture/*"
       ],
       "@angular/*": [
         "node_modules/@angular/*"
       ],
-      "@digita/dgt-shared-connectors": [
+      "@digita-ai/dgt-shared-connectors": [
         "dist/dgt-shared-connectors"
       ],
-      "@digita/dgt-shared-connectors/*": [
+      "@digita-ai/dgt-shared-connectors/*": [
         "dist/dgt-shared-connectors/*"
       ],
-      "@digita/dgt-shared-test": [
+      "@digita-ai/dgt-shared-test": [
         "dist/dgt-shared-test"
       ],
-      "@digita/dgt-shared-test/*": [
+      "@digita-ai/dgt-shared-test/*": [
         "dist/dgt-shared-test/*"
       ]
     }

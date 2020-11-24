@@ -1,0 +1,10 @@
+@import "../../../../../theme/utilities/measures";
+
+:host {
+    width: 100%;
+    padding: $measure-gutter-xlarge 0 $measure-gutter-xlarge 0;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+}

@@ -1,5 +1,5 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { DGTTestConfiguration } from '@digita/dgt-shared-test';
+import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
 import { declarations, imports, providers } from './lib/dgt-shared-utils.module';
 
 export const configuration: DGTTestConfiguration = {
@@ -10,7 +10,7 @@ export const configuration: DGTTestConfiguration = {
             ...imports,
         ],
         providers: [
-            ...providers
+            ...providers,
         ],
     }
 };

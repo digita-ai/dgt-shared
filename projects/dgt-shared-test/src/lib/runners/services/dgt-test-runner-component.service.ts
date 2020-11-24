@@ -11,9 +11,9 @@ export class DGTTestRunnerComponent<T> extends DGTTestRunner {
         super(configuration);
     }
 
-    public setup(componentType: Type<T>) {
+    public setup(componentType: Type<T>, detectChanges: boolean = true) {
         beforeAll(() => {
-            jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
         });
 
         beforeEach(async(() => {
@@ -24,7 +24,10 @@ export class DGTTestRunnerComponent<T> extends DGTTestRunner {
         beforeEach(() => {
             this.fixture = TestBed.createComponent<T>(componentType);
             this.component = this.fixture.componentInstance;
-            this.fixture.detectChanges();
+
+            if (detectChanges) {
+                this.fixture.detectChanges();
+            }
         });
     }
 }

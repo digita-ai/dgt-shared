@@ -1,20 +1,37 @@
 import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 export class DGTRemovePrefixWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;
 
-    constructor(private prefix: string, private logger: DGTLoggerService) { }
+    constructor(private predicate: string, private prefix: string, private logger: DGTLoggerService) { }
 
-    public execute(value: DGTLDValue): DGTLDValue {
-        this.logger.debug(DGTRemovePrefixWorkflowAction.name, 'Executing remove prefix action', { prefix: this.prefix, value });
+    public execute(resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+        this.logger.debug(DGTRemovePrefixWorkflowAction.name, 'Executing remove prefix action', { predicate: this.predicate, prefix: this.prefix, resources });
 
-        if (value && value.value && typeof value.value === 'string') {
-            value.value = value.value.replace(this.prefix, '');
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
 
-        return value;
+        const res = resources.map(resource => {
+            const updatedResource = { ...resource };
+
+            updatedResource.triples = updatedResource.triples.map(triple => {
+                const updatedTriple = { ...triple };
+
+                if (updatedTriple && updatedTriple.predicate === this.predicate, updatedTriple.object && updatedTriple.object.value.startsWith(this.prefix)) {
+                    updatedTriple.object.value = updatedTriple.object.value.replace(this.prefix, '');
+                }
+
+                return updatedTriple;
+            });
+
+            return updatedResource;
+        });
+
+        return of(res);
     }
 }

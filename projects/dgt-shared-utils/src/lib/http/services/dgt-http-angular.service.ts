@@ -1,13 +1,14 @@
 
 import { map, catchError, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTHttpResponse } from '../models/dgt-http-response.model';
 import { DGTHttpService } from './dgt-http.service';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 
-@Injectable()
+@DGTInjectable()
 export class DGTHttpAngularService extends DGTHttpService {
 
   constructor(public http: HttpClient, public logger: DGTLoggerService) {
@@ -17,19 +18,19 @@ export class DGTHttpAngularService extends DGTHttpService {
   public get<T>(uri: string, headers?: { [key: string]: string }, isText: boolean = false): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Getting from URI', { uri });
 
-    let request = this.http.get(uri, { headers });
+    let request = this.http.get(uri, { headers, observe: 'response' });
 
     if (isText) {
-      request = this.http.get(uri, { headers, responseType: 'text' });
+      request = this.http.get(uri, { headers, responseType: 'text', observe: 'response' });
     }
 
     return request
       .pipe(
         tap(data => this.logger.debug(DGTHttpAngularService.name, 'Received response', { data })),
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -38,12 +39,12 @@ export class DGTHttpAngularService extends DGTHttpService {
   public post<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Posting to URI', { uri, body });
 
-    return this.http.post(uri, body, { headers })
+    return this.http.post(uri, body, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -52,12 +53,70 @@ export class DGTHttpAngularService extends DGTHttpService {
   public put<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
     this.logger.debug(DGTHttpAngularService.name, 'Putting to URI', { uri, body });
 
-    return this.http.put(uri, body, { headers })
+    return this.http.put(uri, body, { headers, observe: 'response' })
       .pipe(
-        map(data => data as T),
-        map(data => ({
-          data,
-          success: true
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public delete<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Deleting to URI', { uri, headers });
+
+    return this.http.delete(uri, { headers, observe: 'response' })
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public patch<T>(uri: string, body: any, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Patching to URI', { uri, body });
+
+    return this.http.patch(uri, body, { headers, observe: 'response' })
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public head<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Sending HEAD request', {uri});
+
+    return this.http.head(uri, {headers, observe: 'response'})
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status,
+          headers: response.headers
+        })),
+        catchError(error => of(this.handleError<T>(error))),
+      );
+  }
+
+  public options<T>(uri: string, headers?: { [key: string]: string }): Observable<DGTHttpResponse<T>> {
+    this.logger.debug(DGTHttpAngularService.name, 'Sending OPTIONS request', {uri});
+
+    return this.http.options(uri, {headers, observe: 'response'})
+      .pipe(
+        map(response => ({
+          data: response.body as T,
+          success: true,
+          status: response.status,
+          headers: response.headers
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -77,7 +136,8 @@ export class DGTHttpAngularService extends DGTHttpService {
     // return an observable with a user-facing error message
     return {
       data: null,
-      success: false
+      success: false,
+      status: error.status
     };
   }
 }

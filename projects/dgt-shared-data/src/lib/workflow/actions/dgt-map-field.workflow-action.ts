@@ -1,21 +1,37 @@
 import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
-import { DGTLDValue } from '../../linked-data/models/dgt-ld-value.model';
 import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTLDField } from '../../linked-data/models/dgt-ld-field.model';
+import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 export class DGTMapFieldWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;
 
-    constructor(private newField: DGTLDField, private logger: DGTLoggerService) { }
+    constructor(private oldPredicate: string, private newPredicate: string, private logger: DGTLoggerService) { }
 
-    public execute(value: DGTLDValue): DGTLDValue {
-        this.logger.debug(DGTMapFieldWorkflowAction.name, 'Executing map field action', { newField: this.newField, value });
+    public execute(resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+        this.logger.debug(DGTMapFieldWorkflowAction.name, 'Executing map field action', { oldPredicate: this.oldPredicate, newPredicate: this.newPredicate, resources });
 
-        if (value && value.field && this.newField) {
-            value.field = this.newField;
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
 
-        return value;
+        const res = resources.map(resource => {
+            const updatedResource = { ...resource };
+
+            updatedResource.triples = updatedResource.triples.map(triple => {
+                const updatedTriple = { ...triple };
+
+                if (updatedTriple && updatedTriple.predicate === this.oldPredicate && this.newPredicate) {
+                    updatedTriple.predicate = this.newPredicate;
+                }
+
+                return updatedTriple;
+            });
+
+            return updatedResource;
+        });
+
+        return of(res);
     }
 }

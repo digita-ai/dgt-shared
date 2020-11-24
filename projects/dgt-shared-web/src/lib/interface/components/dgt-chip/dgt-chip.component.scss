@@ -7,17 +7,17 @@
     text-align: center;
     min-width: 130px;
     &.primary {
-        color: $color-blue-dark;
-        border-color: $color-blue-dark;
+        color: $color-primary-dark;
+        border-color: $color-primary-dark;
         .chip-icon {
-            background-color: $color-blue-dark;
+            background-color: $color-primary-dark;
         }
     }
     &.accent {
-        color: $color-orange-dark;
-        border-color: $color-orange-dark;
+        color: $color-accent-dark;
+        border-color: $color-accent-dark;
         .chip-icon {
-            background-color: $color-orange-dark;
+            background-color: $color-accent-dark;
         }
     }
     &.success {

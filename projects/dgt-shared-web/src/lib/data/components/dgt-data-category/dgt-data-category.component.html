@@ -1,0 +1,34 @@
+<dgt-section [showContent]="true" [showIcon]="true" [showActions]="false" [showSubtitle]="true"
+  *ngIf="category && values">
+  <dgt-section-icon>
+    <i [class]="category.icon"></i>
+  </dgt-section-icon>
+
+  <dgt-section-title>
+    {{ 'common.data.categories.' + category.title + '-title' | translate}}
+  </dgt-section-title>
+
+  <dgt-section-subtitle>
+    {{ 'common.data.categories.' + category.title + '-description' | translate}}
+  </dgt-section-subtitle>
+
+  <dgt-section-content>
+    <div dgtDataInterfaceHost (valueUpdated)="onValueUpdated($event)" (submit)="updateValues(valuesToUpdate)">
+    </div>
+    <dgt-button (called)="updateValues(valuesToUpdate)" type="submit" color="accent" *ngIf="valuesToUpdate.size > 0">
+      Save Changes
+    </dgt-button>
+  </dgt-section-content>
+
+  <dgt-section-action id="info-section-action">
+    <button id="info" (click)="clickedInfo(category)">
+      <i class="fas fa-info-circle"></i>
+    </button>
+  </dgt-section-action>
+
+  <!-- <dgt-section-action>
+    <button id="dots">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+  </dgt-section-action>  -->
+</dgt-section>

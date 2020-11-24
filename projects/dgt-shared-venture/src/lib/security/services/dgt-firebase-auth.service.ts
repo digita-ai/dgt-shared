@@ -1,19 +1,19 @@
 
 import { from as observableFrom, Observable, forkJoin, combineLatest } from 'rxjs';
 import { map, tap, catchError, switchMap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 import * as _ from 'lodash';
 import { SetUser, SetProfile } from '../../state/models/dgt-actions.model';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
-import { DGTLoggerService } from '@digita/dgt-shared-utils';
-import { DGTBaseRootState, DGTAuthService, DGTStoreService, DGTUser } from '@digita/dgt-shared-web';
-import { LoadEntity } from '@digita/dgt-shared-web';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTBaseRootState, DGTAuthService, DGTStoreService, DGTUser } from '@digita-ai/dgt-shared-web';
+import { LoadEntity } from '@digita-ai/dgt-shared-web';
 import { DGTFirebaseBaseAppState } from '../../state/models/dgt-firebase-base-app-state.model';
-import { DGTDataService } from '@digita/dgt-shared-data';
+import { DGTDataService } from '@digita-ai/dgt-shared-data';
 
-@Injectable()
+@DGTInjectable()
 export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAppState>> extends DGTAuthService {
 
   protected user: User;

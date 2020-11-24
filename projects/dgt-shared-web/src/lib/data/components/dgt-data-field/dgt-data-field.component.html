@@ -1,0 +1,11 @@
+<dgt-form [formGroup]="formGroup" *ngIf="value">
+  <dgt-form-element [controlName]="'desc'">
+    <dgt-form-control>
+      <mat-form-field appearance="outline">
+        <mat-label>{{'common.data.terms.' + value.predicate | translate}}</mat-label>
+        <input matInput (keyup)="onValueUpdated(value, formGroup.get('desc').value, $event)" type="text" class="desc"
+          formControlName="desc">
+      </mat-form-field>
+    </dgt-form-control>
+  </dgt-form-element>
+</dgt-form>
