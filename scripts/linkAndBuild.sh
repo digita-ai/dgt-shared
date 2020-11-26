@@ -2,7 +2,7 @@
 
 set -euxo pipefail;
 
-ng build dgt-shared-test &&
+./node_modules/.bin/ng build dgt-shared-test &&
 
 cd dist/dgt-shared-test &&
 yarn link &&
@@ -12,7 +12,7 @@ cd projects/dgt-shared-utils &&
 yarn link @digita-ai/dgt-shared-test &&
 cd ../.. &&
 
-ng build dgt-shared-utils &&
+./node_modules/.bin/ng build dgt-shared-utils &&
 cd dist/dgt-shared-utils &&
 yarn link &&
 cd ../.. &&
@@ -22,7 +22,7 @@ yarn link @digita-ai/dgt-shared-test &&
 yarn link @digita-ai/dgt-shared-utils &&
 cd ../.. &&
 
-ng build dgt-shared-data &&
+./node_modules/.bin/ng build dgt-shared-data &&
 cd dist/dgt-shared-data &&
 yarn link &&
 cd ../.. &&
@@ -33,7 +33,7 @@ yarn link @digita-ai/dgt-shared-utils &&
 yarn link @digita-ai/dgt-shared-data &&
 cd ../.. &&
 
-ng build dgt-shared-web &&
+./node_modules/.bin/ng build dgt-shared-web &&
 
 cd projects/dgt-shared-connectors &&
 yarn link @digita-ai/dgt-shared-test &&
@@ -41,7 +41,7 @@ yarn link @digita-ai/dgt-shared-utils &&
 yarn link @digita-ai/dgt-shared-data &&
 cd ../.. &&
 
-ng build dgt-shared-connectors &&
+./node_modules/.bin/ng build dgt-shared-connectors &&
 
 cd dist/dgt-shared-web &&
 yarn link &&
@@ -51,5 +51,3 @@ cd ../.. &&
 
 yarn link @digita-ai/dgt-shared-utils &&
 yarn link @digita-ai/dgt-shared-data;
-
-
