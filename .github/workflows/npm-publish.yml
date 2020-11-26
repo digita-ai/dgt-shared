@@ -11,15 +11,15 @@ on:
     # types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 10
-      - run: yarn install
-      - run: yarn run build
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 10
+  #     - run: yarn install
+  #     - run: yarn run build
       # - run: npm test
 
   publish-gpr:
@@ -33,6 +33,18 @@ jobs:
           registry-url: https://npm.pkg.github.com/
       - run: yarn install
       - run: yarn run build
+      - run: npm publish dist/dgt-shared-test
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - run: npm publish dist/dgt-shared-utils
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm publish dist/dgt-shared-data
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm publish dist/dgt-shared-web
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - run: npm publish dist/dgt-shared-connectors
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
