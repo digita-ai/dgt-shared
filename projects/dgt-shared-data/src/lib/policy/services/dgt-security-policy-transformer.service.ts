@@ -9,6 +9,7 @@ import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTSecurityPolicy } from '../models/dgt-security-policy.model';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to policies, and the other way around. */
 @DGTInjectable()
@@ -47,7 +48,8 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
 
         if (resource && resource.triples) {
             const policiesubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/policies#policy'
+                value.predicate === 'http://digita.ai/voc/policies#policy' &&
+                value.subject.value.endsWith('policy#')
             );
 
             if (policiesubjectValues) {
@@ -71,47 +73,43 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
         this.paramChecker.checkParametersNotNull({ policies });
         this.logger.debug(DGTSecurityPolicyTransformerService.name, 'Starting to transform to linked data', { policies });
 
-        const transformedPolicies = policies.map<DGTSecurityPolicy>(policy => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
+        const transformedPolicies = policies.map<DGTSecurityPolicy>(resource => {
 
-            const policiesubject = {
-                value: policy.uri,
+            const resourceSubject = {
+                value: resource.uri,
                 termType: DGTLDTermType.REFERENCE
-            };
+            } as DGTLDNode;
 
             const newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/policies#policy',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/policies#holder',
-                    subject: policiesubject,
+                    subject: resourceSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: policy.holder
+                        value: resource.holder
                     },
                 },
                 {
                     predicate: 'http://digita.ai/voc/policies#type',
-                    subject: policiesubject,
+                    subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: policy.type
+                        value: resource.type
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/policies#policy',
-                    subject: documentSubject,
-                    object: policiesubject,
-                }
             ];
 
             return {
-                ...policy,
-                exchange: policy.exchange,
-                uri: policy.uri,
+                ...resource,
+                exchange: resource.exchange,
+                uri: resource.uri,
                 triples: newTriples
             };
         });
@@ -131,22 +129,23 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
     private transformOne<T extends DGTSecurityPolicy>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ triple, entity: resource });
 
-        const type = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const type = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/policies#type'
         );
 
-        const holder = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const holder = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/policies#holder'
         );
 
         return {
-            uri: resource.uri,
+            uri: triple.object.value,
             holder: holder ? holder.object.value : null,
             type: type ? type.object.value : null,
-            triples: [...resource.triples],
-            exchange: resource.exchange,
+            triples: [...resourceTriples, triple],
+            exchange: null,
         } as T;
     }
 }

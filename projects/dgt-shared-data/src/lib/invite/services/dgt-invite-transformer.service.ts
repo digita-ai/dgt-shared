@@ -46,8 +46,8 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/invites#invite'
+                value.predicate === 'http://digita.ai/voc/invites#invite' &&
+                value.object.value.endsWith('invite#')
             );
 
             if (resourceSubjectValues) {
@@ -80,9 +80,9 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/invites#invite', termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/invites#invite',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
                 },
                 {
                     predicate: 'http://digita.ai/voc/invites#holder',
@@ -148,27 +148,26 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTInvite {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const holder = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const holder = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/invites#holder'
         );
-        const state = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const state = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/invites#state'
         );
-        const purpose = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const purpose = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/invites#purpose'
         );
-        const connection = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const connection = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/invites#connection'
         );
 
         return {
-            uri: resource.uri,
-            triples: [...resource.triples],
-            exchange: resource.exchange,
+            uri: triple.object.value,
+            triples: [...resourceTriples, triple],
+            exchange: null,
             holder: holder ? holder.object.value : null,
             state: state ? state.object.value : null,
             purpose: purpose ? purpose.object.value : null,

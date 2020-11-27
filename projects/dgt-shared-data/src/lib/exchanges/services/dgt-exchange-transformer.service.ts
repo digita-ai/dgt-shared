@@ -25,11 +25,11 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
      * @returns Observable of resources
      */
     public toDomain(resources: DGTLDResource[]): Observable<DGTExchange[]> {
-        this.paramChecker.checkParametersNotNull({ resources: resources });
+        this.paramChecker.checkParametersNotNull({ resources });
 
         return forkJoin(resources.map(resource => this.toDomainOne(resource)))
             .pipe(
-                map(resources => _.flatten(resources))
+                map(res => _.flatten(res))
             );
     }
 
@@ -40,14 +40,14 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
      * @returns Observable of resources
      */
     private toDomainOne(resource: DGTLDResource): Observable<DGTExchange[]> {
-        this.paramChecker.checkParametersNotNull({ resource: resource });
+        this.paramChecker.checkParametersNotNull({ resource });
 
         let res: DGTExchange[] = null;
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/exchanges#exchange'
+                value.predicate === 'http://digita.ai/voc/exchanges#exchange' &&
+                value.subject.value.endsWith('exchange#')
             );
 
             if (resourceSubjectValues) {
@@ -55,7 +55,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
             }
         }
 
-        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed values to resources', { resource: resource, res });
+        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -68,8 +68,8 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
      * @returns Observable of linked data resources.
      */
     public toTriples(resources: DGTExchange[]): Observable<DGTLDResource[]> {
-        this.paramChecker.checkParametersNotNull({ resources: resources });
-        this.logger.debug(DGTExchangeTransformerService.name, 'Starting to transform to linked data', { resources: resources });
+        this.paramChecker.checkParametersNotNull({ resources });
+        this.logger.debug(DGTExchangeTransformerService.name, 'Starting to transform to linked data', { resources });
 
         const transformedResources = resources.map<DGTLDResource>(resource => {
 
@@ -79,6 +79,11 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
             };
 
             const newTriples: DGTLDTriple[] = [
+                {
+                    predicate: 'http://digita.ai/voc/exchanges#exchange',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
+                },
                 {
                     predicate: 'http://digita.ai/voc/exchanges#purpose',
                     subject: resourceSubject,
@@ -115,11 +120,6 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
                         value: resource.connection
                     },
                 },
-                {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/exchanges#exchange', termType: DGTLDTermType.REFERENCE },
-                }
             ];
 
             return {
@@ -143,29 +143,28 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
      * @returns The transformed resource.
      */
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTExchange {
-        this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource: resource });
+        this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const purpose = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const purpose = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/exchanges#purpose'
         );
-        const holder = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const holder = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/exchanges#holder'
         );
-        const source = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const source = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/exchanges#source'
         );
-        const connection = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const connection = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/exchanges#connection'
         );
 
         return {
-            uri: resource.uri,
-            triples: [...resource.triples],
-            exchange: resource.exchange,
+            uri: triple.object.value,
+            triples: [...resourceTriples, triple],
+            exchange: null,
             purpose: purpose ? purpose.object.value : null,
             holder: holder ? holder.object.value : null,
             source: source ? source.object.value : null,

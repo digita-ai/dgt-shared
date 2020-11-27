@@ -150,3 +150,6 @@ export { DGTLDRepresentationSparqlDeleteFactory } from './lib/linked-data/servic
 export { DGTLDRepresentationFactory } from './lib/linked-data/services/dgt-ld-representation-factory';
 export { DGTLDRepresentationN3QuadFactory } from './lib/linked-data/services/dgt-ld-representation-n3-quad-factory';
 export { DGTLDRepresentationTurtleFactory } from './lib/linked-data/services/dgt-ld-representation-turtle-factory';
+export { DGTCategoryCacheService } from './lib/categories/services/dgt-category-cache.service';
+export { DGTCategoryTransformerService } from './lib/categories/services/dgt-category-transformer.service';
+

@@ -46,8 +46,8 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/holders#holder'
+                value.predicate === 'http://digita.ai/voc/holders#holder' &&
+                value.subject.value.endsWith('holder#')
             );
 
             if (resourceSubjectValues) {
@@ -79,9 +79,9 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
             const triples = [
                 {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/holders#holder', termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/holders#holder',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
                 }
             ];
 
@@ -105,12 +105,12 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns The transformed resource.
      */
-    private transformOne(resourceSubjectValue: DGTLDTriple, resource: DGTLDResource): DGTHolder {
-        this.paramChecker.checkParametersNotNull({ resourceSubjectValue, resource });
+    private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTHolder {
+        this.paramChecker.checkParametersNotNull({ triple, resource });
 
         return {
-            uri: resource.uri,
-            triples: [resourceSubjectValue],
+            uri: triple.object.value,
+            triples: [ triple ],
             exchange: resource.exchange,
         };
     }

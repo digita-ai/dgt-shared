@@ -46,8 +46,8 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/purposes#purpose'
+                value.predicate === 'http://digita.ai/voc/purposes#purpose' &&
+                value.object.value.endsWith('purpose#')
             );
 
             if (resourceSubjectValues) {
@@ -80,9 +80,9 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/purposes#purpose', termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/purposes#purpose',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
                 },
                 {
                     predicate: 'http://digita.ai/voc/purposes#icon',
@@ -166,31 +166,29 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTPurpose {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const icon = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const icon = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/purposes#icon'
         );
-        const description = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const description = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/purposes#description'
         );
-        const label = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const label = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/purposes#label'
         );
-        const predicates = resource.triples.filter(value =>
-            value.subject.value === triple.object.value &&
+        const predicates = resourceTriples.filter(value =>
             value.predicate === 'http://digita.ai/voc/purposes#predicate'
         );
-        const aclNeeded = resource.triples.filter(value =>
-            value.subject.value === triple.object.value &&
+        const aclNeeded = resourceTriples.filter(value =>
             value.predicate === 'http://digita.ai/voc/purposes#aclneeded'
         );
 
         return {
-            uri: resource.uri,
-            triples: [...resource.triples],
-            exchange: resource.exchange,
+            uri: triple.object.value,
+            triples: [ triple, ],
+            exchange: null,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
             label: label ? label.object.value : null,

@@ -13,6 +13,7 @@ import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-co
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
 import uuid from 'uuid';
+import { DGTLDNode } from '@digita-ai/dgt-shared-data/public-api';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
@@ -50,13 +51,13 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         let res: DGTSource<any>[] = null;
 
         if (resource && resource.triples) {
-            const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/sources#source'
+            const resourceSubjects = resource.triples.filter(value =>
+                value.predicate === 'http://digita.ai/voc/sources#source' &&
+                value.subject.value.endsWith('source#')
             );
 
-            if (resourceSubjectValues) {
-                res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
+            if (resourceSubjects) {
+                res = resourceSubjects.map(triple => this.transformOne(triple, resource));
             }
         }
 
@@ -85,9 +86,9 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-                    subject: resourceSubject,
-                    object: { value: 'http://digita.ai/voc/sources#source', termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/sources#source',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
                 },
                 {
                     predicate: 'http://digita.ai/voc/sources#icon',
@@ -150,35 +151,35 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
     /**
      * Creates a single resource from linked data.
      * @param triple The resource of the the resource's subject.
-     * @param resource\ The resource to be transformed to an resource.
+     * @param resource The resource to be transformed to an resource.
      * @throws DGTErrorArgument when arguments are incorrect.
      * @returns The transformed resource.
      */
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTSource<any> {
-        this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
+        this.paramChecker.checkParametersNotNull({ triple, resource });
 
-        const icon = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value
+        );
+
+        const icon = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/sources#icon'
         );
-        const description = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const description = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/sources#description'
         );
-        const type = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const type = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/sources#type'
         );
-        const state = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const state = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/sources#state'
         );
         const configuration = this.configToDomain(triple, resource, type.object.value);
 
         return {
-            uri: resource.uri,
-            triples: [...resource.triples],
-            exchange: resource.exchange,
+            uri: triple.object.value,
+            triples: [], // todo add resourceTriples, triple and config triples
+            exchange: null,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
             type: type ? type.object.value : null,
@@ -187,7 +188,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         };
     }
 
-    private configToTriples(resource: DGTSource<any>, resourceSubject): DGTLDTriple[] {
+    private configToTriples(resource: DGTSource<any>, resourceSubject: DGTLDNode): DGTLDTriple[] {
         let res = [];
 
         if (resource.type === DGTSourceType.SOLID) {

@@ -5,7 +5,7 @@ import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTHolderService } from './dgt-holder-abstract.service';
 import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
-import { map, switchMap } from 'rxjs/operators';
+import { concatMap, map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
@@ -50,12 +50,12 @@ export class DGTHolderCacheService extends DGTHolderService {
                     resource.uri = this.uri.generate(resource, 'holder');
                 }
 
-                return resource
+                return resource;
             })
         })
             .pipe(
-                switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(resources => resources))),
+                concatMap(data => this.cache.save(this.transformer, data.resources)
+                    .pipe(map(res => res))),
             );
     }
 

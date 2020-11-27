@@ -47,7 +47,8 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
 
         if (resource && resource.triples) {
             const credentialSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/security#credential'
+                value.predicate === 'http://digita.ai/voc/security#credential' &&
+                value.subject.value.endsWith('credential#')
             );
 
             if (credentialSubjectValues) {
@@ -71,53 +72,49 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
         this.paramChecker.checkParametersNotNull({ credentials });
         this.logger.debug(DGTSecurityCredentialTransformerService.name, 'Starting to transform to linked data', { credentials });
 
-        const transformedcredentials = credentials.map<DGTSecurityCredential>(credential => {
-            const documentSubject = {
-                value: '#',
-                termType: DGTLDTermType.REFERENCE
-            };
+        const transformedCredentials = credentials.map<DGTSecurityCredential>(resource => {
 
-            const credentialSubject = {
-                value: credential.uri,
+            const resourceSubject = {
+                value: resource.uri,
                 termType: DGTLDTermType.REFERENCE
             };
 
             const newTriples: DGTLDTriple[] = [
                 {
+                    predicate: 'http://digita.ai/voc/security#credential',
+                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    object: resourceSubject,
+                },
+                {
                     predicate: 'http://digita.ai/voc/credentials#holder',
-                    subject: credentialSubject,
+                    subject: resourceSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: credential.holder
+                        value: resource.holder
                     },
                 },
                 {
                     predicate: 'http://digita.ai/voc/credentials#clientSecret',
-                    subject: credentialSubject,
+                    subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: credential.clientSecret
+                        value: resource.clientSecret
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/credentials#credential',
-                    subject: documentSubject,
-                    object: credentialSubject,
-                }
             ];
 
             return {
-                ...credential,
-                uri: credential.uri,
-                triples: newTriples
+                ...resource,
+                uri: resource.uri,
+                triples: newTriples,
             };
         });
 
-        this.logger.debug(DGTSecurityCredentialTransformerService.name, 'Transformed credentials to linked data', transformedcredentials);
+        this.logger.debug(DGTSecurityCredentialTransformerService.name, 'Transformed credentials to linked data', transformedCredentials);
 
-        return of(transformedcredentials as T[]);
+        return of(transformedCredentials as T[]);
     }
 
     /**
@@ -130,21 +127,23 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
     private transformOne<T extends DGTSecurityCredential>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ triple, entity: resource });
 
-        const holder = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const resourceTriples = resource.triples.filter(value =>
+            value.subject.value === triple.object.value);
+
+        const holder = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/credentials#holder'
         );
 
-        const clientSecret = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+        const clientSecret = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/credentials#clientSecret'
         );
 
         return {
-            uri: resource.uri,
+            uri: triple.object.value,
+            triples: [...resourceTriples, triple],
+            exchange: null,
             holder: holder ? holder.object.value : null,
             clientSecret: clientSecret ? clientSecret.object.value : null,
-            triples: [...resource.triples],
         } as T;
     }
 }
