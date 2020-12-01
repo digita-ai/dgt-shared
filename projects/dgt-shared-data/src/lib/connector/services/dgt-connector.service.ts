@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { DGTSourceType } from '../../source/models/dgt-source-type.model';
 import { Observable, forkJoin, of } from 'rxjs';
 import { map, mergeMap, tap, catchError, switchMap } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
@@ -15,7 +14,7 @@ import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.mo
 @DGTInjectable()
 export class DGTConnectorService {
 
-  private connectors: DGTMap<DGTSourceType, DGTConnector<any, any>>;
+  private connectors: DGTMap<string, DGTConnector<any, any>>;
 
   constructor(
     private logger: DGTLoggerService,
@@ -25,17 +24,17 @@ export class DGTConnectorService {
     private purposes: DGTPurposeService,
   ) { }
 
-  public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
+  public register(sourceType: string, connector: DGTConnector<any, any>) {
     this.paramChecker.checkParametersNotNull({ sourceType, connector });
 
     if (!this.connectors) {
-      this.connectors = new DGTMap<DGTSourceType, DGTConnector<any, any>>();
+      this.connectors = new DGTMap<string, DGTConnector<any, any>>();
     }
 
     this.connectors.set(sourceType, connector);
   }
 
-  public get(sourceType: DGTSourceType) {
+  public get(sourceType: string) {
     if (!sourceType) {
       throw new DGTErrorArgument('Argument sourceType should be set.', sourceType);
     }
