@@ -37,8 +37,7 @@ export class DGTProfileSolidService extends DGTProfileService {
       .pipe(
         switchMap(data => this.connections.get(exchange.connection)
           .pipe(map(connection => ({ ...data, connection })))),
-        switchMap(data => this.connector.query<DGTProfile>
-          (data.connection.configuration.webId, data.exchange, this.transformer)
+        switchMap(data => this.connector.query<DGTProfile>(data.connection.configuration.webId, data.exchange, this.transformer)
           .pipe(map(profiles => ({ ...data, profile: profiles[0] })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
         switchMap(data => this.typeRegistrations.all(data.profile)
@@ -63,6 +62,6 @@ export class DGTProfileSolidService extends DGTProfileService {
         switchMap(data => this.connector.update([{ original: data.originalProfile, updated: data.updatedProfile }], this.transformer)
           .pipe(map(updates => updates[0]))
         ),
-      )
+      );
   }
 }

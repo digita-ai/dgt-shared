@@ -1,7 +1,7 @@
 import { DGTConnectionService, DGTConnection, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
@@ -30,6 +30,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
         map(data => data.connections ? data.connections.find(c => c.uri === data.uri) : null),
+        take(1),
       );
   }
 
@@ -45,7 +46,8 @@ export class DGTConnectionStateService extends DGTConnectionService {
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
         switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.connections) : of(data.connections)),
-      )
+        take(1),
+      );
   }
 
   public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {

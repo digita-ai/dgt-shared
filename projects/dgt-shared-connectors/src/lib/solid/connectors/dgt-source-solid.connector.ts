@@ -102,9 +102,9 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
         switchMap(data => this.generateToken(data.uri, data.connection, data.source)
           .pipe(map(token => ({
             ...data, token, headers: token ? {
-              'Content-Type': 'application/sparql-update',
+              'Accept': 'text/turtle',
               Authorization: 'Bearer ' + token,
-            } : { 'Content-Type': 'application/sparql-update', },
+            } : { 'Accept': 'text/turtle', },
           })))),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated token', data)),
         switchMap(data => this.http.get<string>(data.uri, data.headers, true)
