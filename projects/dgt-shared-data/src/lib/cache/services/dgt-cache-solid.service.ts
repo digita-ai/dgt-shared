@@ -1,17 +1,16 @@
-import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { concat, forkJoin, merge, Observable, of } from 'rxjs';
-import { last, map, switchMap, tap } from 'rxjs/operators';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { concat, forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTCacheService } from './dgt-cache.service';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import * as _ from 'lodash';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTLDTripleFactoryService } from '../../linked-data/services/dgt-ld-triple-factory.service';
 import { DGTLDRepresentationTurtleFactory } from '../../linked-data/services/dgt-ld-representation-turtle-factory';
 import { DGTLDRepresentationSparqlInsertFactory } from '../../linked-data/services/dgt-ld-representation-sparql-insert-factory';
-import { HttpParams } from '@angular/common/http';
-
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { Quad } from 'n3';
+import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
 
 /**
  * The DGTCacheSolidService is used to communicate with a Solid based cache
@@ -24,11 +23,10 @@ export class DGTCacheSolidService extends DGTCacheService {
     constructor(
         private http: DGTHttpService,
         private logger: DGTLoggerService,
-        private filters: DGTLDFilterService,
-        private triples: DGTLDTripleFactoryService,
         private toTurtle: DGTLDRepresentationTurtleFactory,
         private toSparqlInsert: DGTLDRepresentationSparqlInsertFactory,
         private config: DGTConfigurationService<DGTConfigurationBaseApi>,
+        private filters: DGTLDFilterService,
     ) {
         super();
     }
@@ -71,28 +69,23 @@ export class DGTCacheSolidService extends DGTCacheService {
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
 
         const headers = {
-            Accept: 'text/plain',
+            Accept: 'application/sparql-results+json',
             'Content-Type': 'application/x-www-form-urlencoded',
         };
-        // query to retrieve all SDM data from cache
-        const query = encodeURIComponent(`describe ?a ?b ?c where {?a ?b ?c FILTER regex(?a, "localhost:3001/sparql/.+")}`);
-        const queryString = `?query=${query}`;
 
-        const uri = this.config.get(config => config.cache.sparqlEndpoint) + queryString;
-
-        return of({ uri, headers, transformer }).pipe(
-            switchMap(data => this.http.post<string>(data.uri, {}, data.headers)
+        return of({ headers }).pipe(
+            switchMap(data => (filter ? this.filters.getQuery(filter) : of('select ?s ?p ?o where { ?s ?p ?o filter regex(?s, "localhost:3001")}'))
+                .pipe(map(query => ({ ...data, uri: this.config.get(config => config.cache.sparqlEndpoint) + `?query=${encodeURIComponent(query)}` })))
+            ),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created query from filter', { query: data.uri, filter })),
+            switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {}, data.headers)
                 .pipe(map(response => ({ ...data, response })))
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response)),
-            switchMap(data => this.toTurtle.deserialize<T>(data.response.data, data.transformer)
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response.data.results)),
+            switchMap(data => this.toTurtle.deserializeResultSet<T>(data.response.data, transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', {resources: data.resources, transformer})),
-            switchMap(data => (filter ? this.filters.run<T>(filter, data.resources) : of(data.resources))
-                .pipe(map(filtered => ({ ...data, filtered })))
-            ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Ran filter on resources', { filtered: data.filtered, filter })),
-            map(data => data.filtered),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', { resources: data.resources, transformer })),
+            map(data => data.resources),
         );
     }
 
@@ -138,7 +131,7 @@ export class DGTCacheSolidService extends DGTCacheService {
                 // concatMap(data => data.resources.map(resource => this.saveOne<T>(data.transformer, resource))),
                 switchMap(data => concat(...data.resources.map(resource => this.saveOne<T>(data.transformer, resource)))),
                 // switchMap(data => data),
-                    // .pipe(map(savedResources => ({ ...data, savedResources })))),
+                // .pipe(map(savedResources => ({ ...data, savedResources })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resource', data)),
                 // last(),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resources', data)),

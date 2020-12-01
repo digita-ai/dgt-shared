@@ -4,7 +4,6 @@ import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
 import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterRunnerBGPService } from './linked-data/services/dgt-ld-filter-runner-bgp.service';
 import { DGTLDFilterService } from './linked-data/services/dgt-ld-filter.service';
-import { DGTLDFilterRunnerSparqlService } from './linked-data/services/dgt-ld-filter-runner-sparql.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
 import { DGTLDService } from './linked-data/services/dgt-ld.service';
@@ -43,7 +42,6 @@ export const providers = [
   DGTLDService,
   DGTLDFilterService,
   DGTLDFilterRunnerBGPService,
-  DGTLDFilterRunnerSparqlService,
   DGTQueryService,
   // DGTMockDataService,
   DGTCacheInMemoryService,

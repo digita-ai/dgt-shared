@@ -8,9 +8,11 @@ import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { map, switchMap } from 'rxjs/operators';
-import { DGTLDNode } from '../models/dgt-ld-node.model';
 import { DGTLDTripleFactoryService } from './dgt-ld-triple-factory.service';
 
+/**
+ * Service that converts DGTLDResources to Quads and vice-versa
+ */
 @DGTInjectable()
 export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory<Quad[]> {
 
@@ -21,6 +23,11 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
         super();
     }
 
+    /**
+     * Serializes a list of DGTLDResources to Quads
+     * @param resources DGTLDResources to serialize
+     * @param transformer The transformer to use
+     */
     public serialize<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<Quad[]> {
         if (!resources) {
             throw new DGTErrorArgument('Argument resources should be set.', resources);
@@ -38,6 +45,10 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
             );
     }
 
+    /**
+     * Serializes one triple to a Quad
+     * @param triple The DGTLDTriple to serialize
+     */
     public serializeOne(triple: DGTLDTriple): Quad {
         const subject = DataFactory.namedNode(triple.subject.value);
         const predicate = DataFactory.namedNode(triple.predicate);
