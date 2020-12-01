@@ -10,7 +10,7 @@ import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gra
 
 
 @DGTInjectable()
-export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
+export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
     constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService,) {
         super();
     }
@@ -20,7 +20,7 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
     }
 
     public query<T extends DGTLDResource>(holderUri: string, exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
-        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting query', { exchange, holderUri });
+        this.logger.debug(DGTConnectorGravatar.name, 'Starting query', { exchange, holderUri });
 
         if (!exchange) {
             throw new DGTErrorArgument('Argument exchange should be set.', exchange);
@@ -36,9 +36,9 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
                     .pipe(map(source => ({ ...data, source })))),
                 switchMap(data => this.http.get<DGTSourceGravatarResponse>(data.uri)
                     .pipe(map(response => ({ ...data, response })))),
-                tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Received response from Gravatar', { data })),
+                tap(data => this.logger.debug(DGTConnectorGravatar.name, 'Received response from Gravatar', { data })),
                 map(data => this.convertResponse(data.holderUri, data.response, exchange, data.source, data.connection)),
-                tap(data => this.logger.debug(DGTSourceGravatarConnector.name, 'Converted response from Gravatar', { data })),
+                tap(data => this.logger.debug(DGTConnectorGravatar.name, 'Converted response from Gravatar', { data })),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
             );
 
@@ -48,15 +48,15 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
     private convertResponse(holderUri: string, httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResource {
         const triples: DGTLDTriple[] = [];
 
-        this.logger.debug(DGTSourceGravatarConnector.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
+        this.logger.debug(DGTConnectorGravatar.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
 
         if (exchange && source && httpResponse && httpResponse.success && httpResponse.data && httpResponse.data.entry && httpResponse.data.entry[0]) {
             const entry = httpResponse.data.entry[0];
 
-            this.logger.debug(DGTSourceGravatarConnector.name, 'Found entry', { entry });
+            this.logger.debug(DGTConnectorGravatar.name, 'Found entry', { entry });
 
             if (entry.preferredUsername) {
-                this.logger.debug(DGTSourceGravatarConnector.name, 'Found username', { entry });
+                this.logger.debug(DGTConnectorGravatar.name, 'Found username', { entry });
                 triples.push({
                     subject: {
                         value: exchange.holder,
@@ -71,7 +71,7 @@ export class DGTSourceGravatarConnector extends DGTConnector<DGTSourceGravatarCo
             }
 
             if (entry.thumbnailUrl) {
-                this.logger.debug(DGTSourceGravatarConnector.name, 'Found thumbnail', { entry });
+                this.logger.debug(DGTConnectorGravatar.name, 'Found thumbnail', { entry });
                 triples.push({
                     subject: {
                         value: exchange.holder,
