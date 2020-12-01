@@ -93,8 +93,6 @@ export { DGTStateEffectsBaseWebService } from './lib/state/services/dgt-state-ef
 export * from './lib/profile/models/dgt-profile-actions.model';
 export * from './lib/events/models/dgt-events-actions.model';
 export { DGTDateToLabelService } from './lib/date/services/dgt-date-to-label.service';
-export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
-export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
 export { DGTSourceRemoteService } from './lib/source/services/dgt-source-remote.service';
 export { DGTPurposeRemoteService } from './lib/purposes/services/dgt-purpose-remote.service';
 export { DGTCategoryRemoteService } from './lib/categories/services/dgt-category-remote.service';

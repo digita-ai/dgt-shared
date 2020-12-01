@@ -104,3 +104,5 @@ export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.se
 export { DGTLDResourceTransformerService } from './lib/linked-data/services/dgt-ld-resource-transformer.service';
 export { DGTLDFilterConnection } from './lib/linked-data/models/dgt-ld-filter-connection.model';
 export { DGTInviteService } from './lib/invite/services/dgt-invite-abstract.service';
+export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
+export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
