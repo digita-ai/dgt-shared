@@ -163,7 +163,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
 
         return {
             uri: triple.object.value,
-            triples: [...resourceTriples, triple],
+            triples: null,
             exchange: null,
             purpose: purpose ? purpose.object.value : null,
             holder: holder ? holder.object.value : null,

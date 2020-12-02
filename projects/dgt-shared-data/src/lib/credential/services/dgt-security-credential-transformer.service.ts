@@ -140,7 +140,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
 
         return {
             uri: triple.object.value,
-            triples: [...resourceTriples, triple],
+            triples: null,
             exchange: null,
             holder: holder ? holder.object.value : null,
             clientSecret: clientSecret ? clientSecret.object.value : null,

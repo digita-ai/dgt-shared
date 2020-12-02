@@ -187,7 +187,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
         return {
             uri: triple.object.value,
-            triples: [ triple, ],
+            triples: null,
             exchange: null,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
