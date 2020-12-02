@@ -1,4 +1,4 @@
-import { DGTSourceService, DGTSource } from '@digita-ai/dgt-shared-data';
+import { DGTSourceService, DGTSource, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of, Observable } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -10,11 +10,14 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 @DGTInjectable()
 export class DGTSourceStateService extends DGTSourceService {
 
-  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, logger: DGTLoggerService,) {
-    super(logger);
+  constructor(
+    private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
+    private logger: DGTLoggerService
+  ) {
+    super();
   }
 
-  public save(resource: DGTSource<any>): Observable<DGTSource<any>> {
+  public save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]> {
     throw new DGTErrorNotImplemented();
   }
 
@@ -38,7 +41,7 @@ export class DGTSourceStateService extends DGTSourceService {
     throw new DGTErrorNotImplemented();
   }
 
-  public query(filter: Partial<DGTSource<any>>): Observable<DGTSource<any>[]> {
+  public query(filter?: DGTLDFilter): Observable<DGTSource<any>[]> {
     throw new DGTErrorNotImplemented();
   }
 

@@ -10,6 +10,8 @@ import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTConnector } from '../models/dgt-connector.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -48,11 +50,15 @@ export class DGTConnectorService {
     return this.sources.get(destination).pipe(
       map(source => ({ source })),
       // get connection
-      mergeMap(data => this.connections.query({ holder: exchange.holder, source: data.source.uri }).pipe(
-        tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
-        map(connection => connection.length > 0 ? connection : [null]),
-        map(connection => ({ ...data, connection: connection[0] })),
-      )),
+      mergeMap(data => this.connections.query({
+        type: DGTLDFilterType.PARTIAL,
+        partial: { holder: exchange.holder, source: data.source.uri }
+      } as DGTLDFilterPartial)
+        .pipe(
+          tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+          map(connection => connection.length > 0 ? connection : [null]),
+          map(connection => ({ ...data, connection: connection[0] })),
+        )),
       // check if connection is set
       map(data => {
         if (data.connection !== null) {
@@ -134,7 +140,7 @@ export class DGTConnectorService {
           .pipe(map(source => ({ source, ...data, connector: this.get(source.type) })))),
         switchMap(data => data.connector.query<T>(null, exchange, transformer)
           .pipe(map(resources => ({ ...data, resources })))),
-          // map(resources => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
+        // map(resources => triples.filter(triple => purpose.predicates.includes(triple.predicate))),
         tap(data => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
         map(data => data.resources),
         // catchError(() => of([])),

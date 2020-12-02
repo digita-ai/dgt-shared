@@ -1,7 +1,7 @@
-import { DGTInvite, DGTInviteService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTInvite, DGTInviteService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
+import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
@@ -25,16 +25,16 @@ export class DGTInviteRemoteService extends DGTInviteService {
 
     return of({ uri })
       .pipe(
-        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.uri}` })),
+        map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.uri)}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
         map(response => response.data),
       );
   }
-  query(filter: Partial<DGTInvite>): Observable<DGTInvite[]> {
+  query(filter?: DGTLDFilter): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
   }
-  save(resource: DGTInvite): Observable<DGTInvite> {
+  save(resources: DGTInvite[]): Observable<DGTInvite[]> {
     throw new Error('Method not implemented.');
   }
   delete(resource: DGTInvite): Observable<DGTInvite> {
@@ -50,7 +50,7 @@ export class DGTInviteRemoteService extends DGTInviteService {
 
     return of({ inviteId })
     .pipe(
-      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${data.inviteId}/verify` })),
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/verify` })),
       switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
       switchMap(data => this.http.get<DGTInvite>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
       tap(invite => this.logger.debug(DGTInviteRemoteService.name, 'Verified invite', invite)),

@@ -1,5 +1,5 @@
-import { DGTConfigurationBaseWeb, DGTPurpose, DGTPurposeService } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTLDFilter, DGTLDFilterService, DGTPurpose, DGTPurposeService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import * as _ from 'lodash';
 import { DGTExchangeRemoteService } from '../../exchanges/services/dgt-exchange-remote.service';
@@ -10,10 +10,10 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTPurposeRemoteService extends DGTPurposeService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>) {
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
         super();
     }
-    
+
     get(uri: string): Observable<DGTPurpose> {
         this.logger.debug(DGTPurposeRemoteService.name, 'Starting to get', { uri });
 
@@ -23,28 +23,25 @@ export class DGTPurposeRemoteService extends DGTPurposeService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTPurpose>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
             );
     }
-    query(filter: Partial<DGTPurpose>): Observable<DGTPurpose[]> {
+    query(filter?: DGTLDFilter): Observable<DGTPurpose[]> {
         this.logger.debug(DGTExchangeRemoteService.name, 'Starting to query', { filter });
-
-        if (!filter) {
-            throw new DGTErrorArgument('Argument filter should be set.', filter);
-        }
 
         return of({ filter })
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTPurpose[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => _.filter<DGTPurpose>(response.data, filter)),
+                switchMap(data => this.http.get<DGTPurpose[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => ({ ...data, response })))),
+                switchMap(data => data.filter ? this.filters.run<DGTPurpose>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTPurpose): Observable<DGTPurpose> {
+    save(resources: DGTPurpose[]): Observable<DGTPurpose[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTPurpose): Observable<DGTPurpose> {

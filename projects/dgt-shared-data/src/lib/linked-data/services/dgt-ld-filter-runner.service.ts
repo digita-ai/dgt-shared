@@ -5,5 +5,5 @@ import { DGTLDResource } from '../models/dgt-ld-resource.model';
 
 export interface DGTLDFilterRunnerService<T extends DGTLDFilter> {
     type: DGTLDFilterType;
-    run(filter: T, resources: DGTLDResource[]): Observable<DGTLDResource[]>;
+    run<R extends DGTLDResource>(filter: T, resources: R[]): Observable<R[]>;
 }

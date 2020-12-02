@@ -1,7 +1,7 @@
 
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTLoggerService, DGTParameterCheckerService, DGTConfigurationService, DGTErrorNotImplemented, DGTInjectable, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
 import { DGTLDTypeRegistrationTransformerService } from './dgt-ld-type-registration-transformer.service';
 import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service';
 import * as _ from 'lodash';
@@ -10,8 +10,6 @@ import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
-import { DGTConfigurationBaseWeb } from '../../configuration/models/dgt-configuration-base-web.model';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 
 /** Service for managing typeRegistrations in Solid. */

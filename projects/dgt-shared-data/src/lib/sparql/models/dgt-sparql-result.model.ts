@@ -1,8 +1,10 @@
 export interface DGTSparqlResult {
+
     head: {
         vars: string[],
-        links: string[],
-    },
+        link: string[],
+    };
+
     results: {
         bindings: {
             [key: string]: {
@@ -10,5 +12,6 @@ export interface DGTSparqlResult {
                 value: string,
             }
         }[],
-    }
+    };
+
 }

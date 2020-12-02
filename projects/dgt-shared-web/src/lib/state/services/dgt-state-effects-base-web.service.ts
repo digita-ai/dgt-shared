@@ -2,8 +2,8 @@ import { mergeMap, map, catchError, tap, switchMap, first } from 'rxjs/operators
 import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import { from, of } from 'rxjs';
 import { Router } from '@angular/router';
-import { DGTErrorService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable, DGTConnectivityService } from '@digita-ai/dgt-shared-utils';
-import { DGTProfileService, DGTLDTypeRegistrationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
+import { DGTErrorService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable, DGTConnectivityService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
+import { DGTProfileService, DGTLDTypeRegistrationService } from '@digita-ai/dgt-shared-data';
 import * as _ from 'lodash';
 import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
 import { DGTEventsRegister } from '../../events/models/dgt-events-actions.model';
