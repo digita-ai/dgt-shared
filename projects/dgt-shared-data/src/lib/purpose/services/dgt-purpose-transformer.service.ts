@@ -47,7 +47,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/purposes#purpose' &&
-                value.object.value.endsWith('purpose#')
+                value.subject.value.endsWith('purpose#')
             );
 
             if (resourceSubjectValues) {
