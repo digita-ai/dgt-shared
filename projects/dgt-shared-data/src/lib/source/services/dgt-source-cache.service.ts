@@ -50,12 +50,12 @@ export class DGTSourceCacheService extends DGTSourceService {
                     resource.uri = this.uri.generate(resource, 'source');
                 }
 
-                return resource
+                return resource;
             })
         })
             .pipe(
                 switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(resources => resources))),
+                    .pipe(map(res => res))),
             );
     }
 

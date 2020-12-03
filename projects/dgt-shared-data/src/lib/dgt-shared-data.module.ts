@@ -30,6 +30,8 @@ import { DGTSecurityPolicyMockService } from './policy/services/dgt-security-pol
 import { DGTSecurityPolicyTransformerService } from './policy/services/dgt-security-policy-transformer.service';
 import { DGTCategoryCacheService } from './categories/services/dgt-category-cache.service';
 import { DGTCategoryTransformerService } from './categories/services/dgt-category-transformer.service';
+import { DGTLDRepresentationSparqlInsertFactory } from './linked-data/services/dgt-ld-representation-sparql-insert-factory';
+import { DGTLDRepresentationSparqlDeleteFactory } from './linked-data/services/dgt-ld-representation-sparql-delete-factory';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -68,6 +70,8 @@ export const providers = [
   DGTSecurityPolicyTransformerService,
   DGTCategoryCacheService,
   DGTCategoryTransformerService,
+  DGTLDRepresentationSparqlInsertFactory,
+  DGTLDRepresentationSparqlDeleteFactory,
 ];
 
 @NgModule({

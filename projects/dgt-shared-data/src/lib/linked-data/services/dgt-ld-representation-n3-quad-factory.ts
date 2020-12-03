@@ -79,14 +79,19 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
         }
 
-        const resource: DGTLDResource = {
-            uri: null,
-            exchange: null,
-            triples: this.triples.createFromQuads(quads, quads[0].subject.value),
-        };
+        const resources: DGTLDResource[] = [];
 
-        this.logger.debug(DGTLDRepresentationN3QuadFactory.name, 'Converted Quads to DGTLDResource', resource);
+        if (quads.length > 0) {
+            resources.push({
+                uri: null,
+                exchange: null,
+                triples: this.triples.createFromQuads(quads, quads[0].subject.value),
+            } as DGTLDResource);
+        }
 
-        return transformer.toDomain([resource]);
+
+        this.logger.debug(DGTLDRepresentationN3QuadFactory.name, 'Converted Quads to DGTLDResource', resources);
+
+        return resources.length > 0 ? transformer.toDomain(resources) : of([]);
     }
 }
