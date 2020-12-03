@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import * as url from 'url';
 
-@Injectable()
+@DGTInjectable()
 export class DGTSecurityPassportStrategySolidJWTExtractorService {
 
     // Note: express http converts all headers

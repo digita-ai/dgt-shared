@@ -178,7 +178,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
         return {
             uri: triple.object.value,
-            triples: [], // todo add resourceTriples, triple and config triples
+            triples: null,
             exchange: null,
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,

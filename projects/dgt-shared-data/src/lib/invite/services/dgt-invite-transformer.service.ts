@@ -166,7 +166,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
         return {
             uri: triple.object.value,
-            triples: [...resourceTriples, triple],
+            triples: null,
             exchange: null,
             holder: holder ? holder.object.value : null,
             state: state ? state.object.value : null,

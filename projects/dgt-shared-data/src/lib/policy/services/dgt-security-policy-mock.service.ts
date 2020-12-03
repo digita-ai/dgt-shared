@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import * as _ from 'lodash';
-import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTSecurityPolicy } from '../models/dgt-security-policy.model';
 import { DGTSecurityPolicyService } from './dgt-security-policy.service';
 import { map, switchMap } from 'rxjs/operators';
@@ -9,7 +8,7 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
     private resources: DGTSecurityPolicy[] = [];
 

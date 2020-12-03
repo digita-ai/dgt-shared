@@ -176,7 +176,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
         return {
             uri: triple.object.value,
-            triples: [], // TODO fill in this list with resourceTriples, triple and the config's triples
+            triples: null,
             state: state ? state.object.value : null,
             exchange: resource.exchange,
             holder: holder ? holder.object.value : null,

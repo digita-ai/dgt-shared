@@ -110,7 +110,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
         return {
             uri: triple.object.value,
-            triples: [ triple ],
+            triples: null,
             exchange: resource.exchange,
         };
     }
