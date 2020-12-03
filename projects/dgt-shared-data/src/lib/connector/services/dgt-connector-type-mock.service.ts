@@ -23,10 +23,10 @@ export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
     public query<T extends DGTConnectorType>(filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTConnectorTypeMockService.name, 'Starting to query categories', filter);
 
-        return of({ filter, resources: this.resources })
+        return of({ filter, resources: this.resources as T[] })
             .pipe(
-                switchMap(data => data.filter ? this.filters.run<DGTConnectorType>(data.filter, data.resources) : of(data.resources)),
-            )
+                switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.resources) : of(data.resources)),
+            );
     }
 
     public save<T extends DGTConnectorType>(resources: T[]): Observable<T[]> {

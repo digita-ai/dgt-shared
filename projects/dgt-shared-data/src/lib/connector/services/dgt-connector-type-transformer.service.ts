@@ -10,7 +10,6 @@ import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTConnectorType } from '../models/dgt-connector-type.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
-import { DGTLDFilter, DGTLDFilterBGP } from '@digita-ai/dgt-shared-data/public-api';
 
 /** Transforms linked data to connectortypes, and the other way around. */
 @DGTInjectable()
@@ -49,8 +48,8 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
         if (resource && resource.triples) {
             const connectortypesubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/connectortypes#Connectortype' &&
-                value.subject.value.endsWith('Connectortype#')
+                value.predicate === 'http://digita.ai/voc/connectortypes#connectortype' &&
+                value.subject.value.endsWith('connectortype#')
             );
 
             if (connectortypesubjectValues) {
@@ -83,7 +82,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/connectortypes#Connectortype',
+                    predicate: 'http://digita.ai/voc/connectortypes#connectortype',
                     subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
                     object: resourceSubject,
                 },

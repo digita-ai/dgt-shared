@@ -16,4 +16,5 @@ export interface DGTConfigurationBaseApi extends DGTConfigurationBase {
         expiration: string;
         secret: string;
     };
+    connectorTypeSolid: string;
 }
