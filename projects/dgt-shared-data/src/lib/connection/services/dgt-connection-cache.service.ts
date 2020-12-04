@@ -50,12 +50,12 @@ export class DGTConnectionCacheService extends DGTConnectionService {
                     resource.uri = this.uri.generate(resource, 'connection');
                 }
 
-                return resource
+                return resource;
             })
         })
             .pipe(
                 switchMap(data => this.cache.save<T>(this.transformer, data.resources)
-                    .pipe(map(resources => resources))),
+                    .pipe(map(res => res))),
             );
     }
     public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {

@@ -47,7 +47,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/invites#invite' &&
-                value.object.value.endsWith('invite#')
+                value.subject.value.endsWith('invite#')
             );
 
             if (resourceSubjectValues) {

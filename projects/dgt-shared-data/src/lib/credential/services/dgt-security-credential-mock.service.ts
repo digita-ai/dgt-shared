@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { DGTSecurityCredential } from '../models/dgt-security-credential.model';
 import { DGTSecurityCredentialService } from './dgt-security-credential.service';
 import * as _ from 'lodash';
-import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
-@Injectable()
+@DGTInjectable()
 export class DGTSecurityCredentialMockService extends DGTSecurityCredentialService {
     private resources: DGTSecurityCredential[] = [];
 

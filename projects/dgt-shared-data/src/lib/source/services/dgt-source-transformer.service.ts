@@ -85,8 +85,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/sources#source',
                     subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
+                    predicate: 'http://digita.ai/voc/sources#source',
                     object: resourceSubject,
                 },
                 {
@@ -593,9 +593,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 });
             });
             config.keys?.forEach(keys => {
-                const id = uuid();
                 const subject = {
-                    value: '#' + id,
+                    value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE
                 };
                 res.push({
@@ -749,10 +748,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 },
             ];
             config.mapping.toArray().forEach(entry => {
-                const key = entry.key;
-                const value = entry.value;
                 const subject = {
-                    value: resource.uri.split('#')[0] + '#' + uuid(),
+                    value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE
                 };
                 res.push({
@@ -766,7 +763,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: key,
+                        value: entry.key,
                     },
                 });
                 res.push({
@@ -775,7 +772,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value,
+                        value: entry.value,
                     },
                 });
             })
@@ -817,7 +814,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             );
             const authorizationEndpoint = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
-                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#athorizationEndpoint'
+                value.predicate === 'http://digita.ai/voc/sourcesolidconfig#authorizationendpoint'
             );
             const tokenEndpoint = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&

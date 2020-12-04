@@ -128,13 +128,8 @@ export class DGTCacheSolidService extends DGTCacheService {
 
         return of({ transformer, resources })
             .pipe(
-                // concatMap(data => data.resources.map(resource => this.saveOne<T>(data.transformer, resource))),
                 switchMap(data => concat(...data.resources.map(resource => this.saveOne<T>(data.transformer, resource)))),
-                // switchMap(data => data),
-                // .pipe(map(savedResources => ({ ...data, savedResources })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resource', data)),
-                // last(),
-                tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created or appended resources', data)),
                 map(() => resources)
             );
     }

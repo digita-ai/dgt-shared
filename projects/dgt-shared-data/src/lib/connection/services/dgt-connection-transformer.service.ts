@@ -278,9 +278,8 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 },
             ];
             Object.keys(config.requestHistory).forEach(key => {
-                const id = uuid();
                 const subject = {
-                    value: resource.uri.split('#')[0] + '#' + id,
+                    value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE
                 };
                 res.push({

@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService, DGTLDRepresentationSparqlInsertFactory, DGTLDRepresentationSparqlDeleteFactory } from '@digita-ai/dgt-shared-data';
+import { DGTPurpose, DGTConnector, DGTExchange, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDTriple, DGTLDResource, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService, DGTLDRepresentationSparqlInsertFactory, DGTLDRepresentationSparqlDeleteFactory, DGTConnection, DGTSource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
@@ -318,7 +318,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
           .pipe(map(configuration => ({ ...data, source: { ...data.source, configuration: { ...data.source.configuration, ...configuration } } })))),
         switchMap(data => this.register(data.source)
           .pipe(map(configuration => ({ ...data, source: { ...data.source, state: DGTSourceState.PREPARED, configuration: { ...data.source.configuration, ...configuration } } })))),
-        tap(source => this.logger.debug(DGTConnectorSolid.name, 'Prepared source for connection', { source })),
+        tap(src => this.logger.debug(DGTConnectorSolid.name, 'Prepared source for connection', { src })),
         map(data => data.source)
       );
   }
@@ -329,18 +329,9 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
       throw new DGTErrorArgument('Argument source should be set.', source);
     }
 
-    this.logger.debug(DGTConnectorSolid.name, 'Starting to connect to Solid', { connection, source });
+    this.logger.debug(DGTConnectorSolid.name, 'Starting to connect to Solid', { connection, source: source.configuration });
 
-    let res: Observable<DGTConnectionSolid> = null;
-
-    res = of({ connection: connection as DGTConnectionSolid, source }).pipe(
-      tap((data) =>
-        this.logger.debug(
-          DGTConnectorSolid.name,
-          'Updated source configuration',
-          { data }
-        )
-      ),
+    return of({ connection, source }).pipe(
       switchMap((data) =>
         this.generateUri(data.source, data.connection).pipe(
           map((loginUri) => ({
@@ -355,8 +346,6 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
       ),
       map((data) => data.connection)
     );
-
-    return res;
   }
 
   /**
@@ -501,13 +490,13 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
   }
 
   public generateUri(
-    source: DGTSourceSolid,
-    connection: DGTConnectionSolid
+    source: DGTSource<DGTSourceSolidConfiguration>,
+    connection: DGTConnection<DGTConnectionSolidConfiguration>
   ): Observable<string> {
     this.logger.debug(
       DGTConnectorSolid.name,
       'Starting to generate login uri',
-      { source, connection }
+      { source: source.configuration, connection }
     );
     // define basic elements of the request
     const issuer = source.configuration.issuer;
