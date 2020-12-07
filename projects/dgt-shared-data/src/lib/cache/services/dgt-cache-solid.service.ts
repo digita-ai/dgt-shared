@@ -96,8 +96,41 @@ export class DGTCacheSolidService extends DGTCacheService {
      */
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
 
-        return of({ resources }).pipe(
-            switchMap(data => forkJoin(data.resources.map(resource => this.http.delete<string>(resource.uri)
+        if (resources.length > 1) {
+            throw new DGTErrorArgument('Deleting of more than one resource not supported yet', resources);
+        }
+
+        const headers = {
+            Accept: 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        };
+
+        // TODO this query doesnt delete for instance an mssql source's mapping
+
+        const query = (resource: T) => (`
+        DELETE {
+            GRAPH <${resource.uri.split('#')[0]}> {
+                ?s ?p  ?o.
+            }
+        }
+        WHERE {
+            GRAPH <${resource.uri.split('#')[0]}> {
+                ?s ?p ?o {
+                    select distinct ?s ?p ?o
+                    where {
+                        { ?s ?p ?o filter regex(?s, '${resource.uri}') }
+                        UNION
+                        { ?s ?p ?o filter regex(?o, '${resource.uri}') }
+                    }
+                }
+            }
+        }
+        `);
+
+        const uri = this.config.get(config => config.cache.sparqlEndpoint);
+
+        return of({ resources, headers, uri }).pipe(
+            switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
                 .pipe(map(() => resource))
             )).pipe(map(res => ({ ...data, deleted: res }))) // TODO filter resources for which http status code was not 200 OK? throw errors?
             ),
