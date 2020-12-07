@@ -16,12 +16,12 @@ export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
         super();
     }
 
-    public get(categoryUri: string): Observable<DGTConnectorType> {
-        return of(this.resources.find(e => e.uri === categoryUri));
+    public get(connectortypeUri: string): Observable<DGTConnectorType> {
+        return of(this.resources.find(e => e.uri === connectortypeUri));
     }
 
     public query<T extends DGTConnectorType>(filter?: DGTLDFilter): Observable<T[]> {
-        this.logger.debug(DGTConnectorTypeMockService.name, 'Starting to query categories', filter);
+        this.logger.debug(DGTConnectorTypeMockService.name, 'Starting to query connectortypes', filter);
 
         return of({ filter, resources: this.resources as T[] })
             .pipe(
@@ -40,7 +40,7 @@ export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
             .pipe(
                 map(data => data.resources.map(resource => {
                     if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'category');
+                        resource.uri = this.uri.generate(resource, 'connectortype');
                     }
 
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
