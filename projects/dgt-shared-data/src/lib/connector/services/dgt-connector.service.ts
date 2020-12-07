@@ -133,7 +133,6 @@ export class DGTConnectorService {
       switchMap(data => {
         if (data.existingValue) {
           data.domainEntity.triples[0].subject.value = data.existingValue.triples[0].subject.value;
-          console.log('==========', {data, dom: data.domainEntity.triples[0].subject, ex: data.existingValue.triples[0].subject});
           const updatedResource = { original: data.existingValue, updated: data.domainEntity };
           this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updatedResource });
           return connector.update<T>([updatedResource], transformer).pipe(
