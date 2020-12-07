@@ -16,6 +16,7 @@ import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
 
 @DGTInjectable()
 export class DGTConnectorService {
@@ -31,6 +32,7 @@ export class DGTConnectorService {
     private profiles: DGTProfileService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
     private typeregistrationService: DGTLDTypeRegistrationService,
+    private resourceTransformer: DGTLDResourceTransformerService,
   ) { }
 
   public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
@@ -90,7 +92,7 @@ export class DGTConnectorService {
           this.logger.debug(DGTConnectorService.name, 'triples can not be an empty list');
           throw new DGTErrorArgument('triples can not be an empty list', resources);
         }
-        return forkJoin(resources.map(resource => this.upstreamSync(
+        return forkJoin(resources.filter(r => r.triples && r.triples.length > 0).map(resource => this.upstreamSync(
           data.connector, resource, data.connection, null, exchange, data.profile)
         )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
       }),
@@ -117,18 +119,22 @@ export class DGTConnectorService {
       tap( prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', {prepared, s: prepared.triples[0].subject})),
       switchMap(preparedDomainEntity => {
         // find possible existing values to determine add or update
-        return connector.query(preparedDomainEntity.uri, exchange, transformer).pipe(
-          tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.length}`, data)),
-          map(existingValues => ({ existingValues, domainEntity: preparedDomainEntity })),
+        return connector.query(preparedDomainEntity.triples[0].subject.value, exchange, transformer).pipe(
+          map(existingValues => existingValues[0]),
+          map(existingValue => ({ ...existingValue, triples: [existingValue.triples.find(t => t.predicate === preparedDomainEntity.triples[0].predicate)]})),
+          map(existingValue => ({ existingValue: existingValue.triples[0] ? existingValue : null, domainEntity: preparedDomainEntity })),
           catchError(error => {
-            throw new DGTErrorArgument('Error querying mssql', {error});
+            this.logger.debug(DGTConnectorService.name, 'Error occured in upstreamsync', {error, resource});
+            throw new DGTErrorArgument('Error querying', {error});
           }),
         );
       }),
-      tap( data => this.logger.debug(DGTConnectorService.name, `Existing values: ${data.existingValues.length}`, data)),
+      tap( data => this.logger.debug(DGTConnectorService.name, `Existing value: ${data.existingValue}`, { data })),
       switchMap(data => {
-        if (data.existingValues[0]) {
-          const updatedResource = { original: data.existingValues[0], updated: data.domainEntity };
+        if (data.existingValue) {
+          data.domainEntity.triples[0].subject.value = data.existingValue.triples[0].subject.value;
+          console.log('==========', {data, dom: data.domainEntity.triples[0].subject, ex: data.existingValue.triples[0].subject});
+          const updatedResource = { original: data.existingValue, updated: data.domainEntity };
           this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updatedResource });
           return connector.update<T>([updatedResource], transformer).pipe(
             map(resources => resources[0]),
@@ -141,8 +147,8 @@ export class DGTConnectorService {
           this.logger.debug(DGTConnectorService.name, 'adding value', { connector, resource });
           return connector.add<T>([resource], transformer).pipe(
             map(resources => resources[0]),
-            catchError(() => {
-              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, resource });
+            catchError((error) => {
+              this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, resource, error });
               return of(resource);
             }),
           );
@@ -233,7 +239,6 @@ export class DGTConnectorService {
           )
         ),
         map(data => {
-          console.log('================', data);
           const newRes = data.resources.map((resource: T) => {
             return {
               ...resource,

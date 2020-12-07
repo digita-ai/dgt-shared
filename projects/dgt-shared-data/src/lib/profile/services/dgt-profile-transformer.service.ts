@@ -120,7 +120,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
     private transformOne(resource: DGTLDResource): DGTProfile {
         this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { resource });
         this.paramChecker.checkParametersNotNull({ entity: resource });
-
         const uri = resource.uri;
         const accountUri = uri.split('/profile/card#me')[0];
         const profileUri = `${accountUri}/profile`;

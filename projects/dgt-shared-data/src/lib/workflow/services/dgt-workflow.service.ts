@@ -62,9 +62,7 @@ export class DGTWorkflowService {
               throw new DGTErrorArgument('No exchange found for this upstreamsync', null);
             }
           }),
-          // tslint:disable-next-line:max-line-length
           map(exchangesRes => ({ ...data, exchange: exchangesRes[0], updatedTriples: data.updatedTriples.map( tr => ({ ...tr, exchange: exchangesRes[0].uri }) )})),
-          // tslint:disable-next-line:max-line-length
           switchMap( data2 => this.connectors.save(data2.exchange, data2.updatedTriples).pipe( map( () => data) )),
           catchError( error => of(data)),
         ) : of(data)),

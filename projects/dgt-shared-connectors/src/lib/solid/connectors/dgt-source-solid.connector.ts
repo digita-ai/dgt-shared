@@ -68,10 +68,10 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
             triples: data.triples,
             uri: data.uri,
             exchange: data.exchange.uri
-          }
+          } as DGTLDResource,
         })),
         map(data => ({ ...data, resource: { ...data.resource, uri: this.uris.generate(data.resource, 'data') } })),
-        switchMap(data => transformer ? transformer.toDomain([data.resource]) : of(data.resource)),
+        switchMap(data => transformer ? transformer.toDomain([data.resource]) : of([data.resource])),
         tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Transformed resources', { data })),
         catchError((error) => {
           this.logger.debug(DGTSourceSolidConnector.name, 'Error querying solid connector', { uri, exchange, error });
@@ -179,6 +179,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       )
     );
   }
+
   update<R extends DGTLDResource>(domainEntities: { original: R; updated: R; }[], transformer: DGTLDTransformer<R>): Observable<R[]> {
     if (!domainEntities) {
       throw new DGTErrorArgument(
