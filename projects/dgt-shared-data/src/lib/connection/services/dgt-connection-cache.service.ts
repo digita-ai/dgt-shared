@@ -21,23 +21,23 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         super();
     }
 
-    public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
+    public get(uri: string): Observable<DGTConnection<any>> {
         this.logger.debug(DGTConnectionCacheService.name, 'Starting to get connection', { uri });
 
         if (!uri) {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return this.cache.get<T>(this.transformer, uri);
+        return this.cache.get(this.transformer, uri);
     }
 
-    public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
+    public query(filter?: DGTLDFilter): Observable<DGTConnection<any>[]> {
         this.logger.debug(DGTConnectionCacheService.name, 'Starting to query connections', filter);
 
-        return this.cache.query<T>(this.transformer, filter);
+        return this.cache.query(this.transformer, filter);
     }
 
-    public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
+    public save(resources: DGTConnection<any>[]): Observable<DGTConnection<any>[]> {
         this.logger.debug(DGTConnectionCacheService.name, 'Starting to save resource', { resource: resources });
 
         if (!resources) {
@@ -54,7 +54,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
             })
         })
             .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
+                switchMap(data => this.cache.save(this.transformer, data.resources)
                     .pipe(map(res => res))),
             );
     }
@@ -72,15 +72,15 @@ export class DGTConnectionCacheService extends DGTConnectionService {
                 map(data => _.head(data.resources))
             );
     }
-    public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
-        return this.query<T>().pipe(
+    public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
+        return this.query().pipe(
             map(connections => connections.filter(connection => connection.configuration.webId === webId))
         );
     }
-    public getConnectionForInvite<T extends DGTConnection<any>>(inviteId: string, sourceId: string): Observable<any> {
+    public getConnectionForInvite(inviteId: string, sourceId: string): Observable<DGTConnection<any>> {
         throw new DGTErrorNotImplemented();
     }
-    public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
+    public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
         throw new DGTErrorNotImplemented();
     }
 }
