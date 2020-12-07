@@ -1,4 +1,5 @@
 export interface DGTSourceSolidConfiguration {
+
     // IDP Discovery
     issuer: string;
     authorization_endpoint: string;

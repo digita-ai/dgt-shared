@@ -1,22 +1,18 @@
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { DGTPurpose, DGTConnection, DGTConnector, DGTExchange, DGTSource, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDNode, DGTLDTriple, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTConfigurationService, DGTConfigurationBase, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
+import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTInjectable, DGTSourceSolidToken } from '@digita-ai/dgt-shared-utils';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { JWT } from '@solid/jose';
-import { v4 as uuid } from 'uuid';
 import base64url from 'base64url';
 import * as _ from 'lodash';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { Quad, Parser } from 'n3';
 import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
 import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
+import { DGTOIDCService } from '../../oidc/services/dgt-oidc.service';
 
 @DGTInjectable()
 export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
-
-
-  private parser: Parser<Quad> = new Parser();
 
   constructor(
     private logger: DGTLoggerService,
@@ -30,6 +26,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     private sources: DGTSourceService,
     private sparql: DGTSparqlQueryService,
     private exchanges: DGTExchangeService,
+    private oidc: DGTOIDCService,
   ) {
     super();
   }
@@ -317,8 +314,8 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     if (source && source.type === DGTSourceType.SOLID) {
       res = of({ source })
         .pipe(
-          switchMap(data => this.discover(data.source)
-            .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
+          switchMap(data => this.oidc.discover(source)
+            .pipe(map(configuration => ({ ...data, source: { ...source, configuration: { ...data.source.configuration, ...configuration } } })))),
           switchMap(data => this.jwks(data.source)
             .pipe(map(configuration => ({ ...data, source: { ...source, configuration } })))),
           switchMap(data => this.register(data.source)
@@ -434,29 +431,6 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     );
   }
 
-
-
-  private discover(
-    source: DGTSourceSolid
-  ): Observable<DGTSourceSolidConfiguration> {
-    this.logger.debug(DGTSourceSolidConnector.name, 'Discovering source', {
-      source,
-    });
-
-    const url = `${source.configuration.issuer}/.well-known/openid-configuration`;
-
-    return this.http.get<DGTSourceSolidConfiguration>(url).pipe(
-      tap((response) =>
-        this.logger.debug(
-          DGTSourceSolidConnector.name,
-          'Received discover response',
-          { response }
-        )
-      ),
-      map((response) => ({ ...response.data, ...source.configuration }))
-    );
-  }
-
   private jwks(
     source: DGTSourceSolid
   ): Observable<DGTSourceSolidConfiguration> {
@@ -495,6 +469,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
       grant_types: ['authorization_code'],
       default_max_age: 7200,
       post_logout_redirect_uris: [`${this.origin.get()}connect/logout`],
+      request_object_signing_alg: 'none',
       redirect_uris: [encodedCallbackUri]
     };
     const body = JSON.stringify(Object.assign({}, params, {}));
@@ -511,109 +486,109 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
     );
   }
 
-  public generateUri(
-    source: DGTSourceSolid,
-    connection: DGTConnectionSolid
-  ): Observable<string> {
-    this.logger.debug(
-      DGTSourceSolidConnector.name,
-      'Starting to generate login uri',
-      { source, connection }
-    );
-    // define basic elements of the request
-    const issuer = source.configuration.issuer;
-    const endpoint = source.configuration.authorization_endpoint;
-    const client = { client_id: source.configuration.client_id };
-    let params = Object.assign(
-      {
-        // response_type: 'code',
-        response_type: 'id_token token',
-        // display: 'popup',
-        scope: 'openid profile email',
-        redirect_uri: source.configuration.callbackUri,
-        state: null,
-        nonce: null,
-        key: null,
-      },
-      client
-    );
+  // public generateUri(
+  //   source: DGTSourceSolid,
+  //   connection: DGTConnectionSolid
+  // ): Observable<string> {
+  //   this.logger.debug(
+  //     DGTSourceSolidConnector.name,
+  //     'Starting to generate login uri',
+  //     { source, connection }
+  //   );
+  //   // define basic elements of the request
+  //   const issuer = source.configuration.issuer;
+  //   const endpoint = source.configuration.authorization_endpoint;
+  //   const client = { client_id: source.configuration.client_id };
+  //   let params = Object.assign(
+  //     {
+  //       response_type: 'code',
+  //       // response_type: 'id_token token',
+  //       // display: 'popup',
+  //       scope: 'openid profile email',
+  //       redirect_uri: source.configuration.callbackUri,
+  //       state: null,
+  //       nonce: null,
+  //       key: null,
+  //     },
+  //     client
+  //   );
 
-    // generate state and nonce random octets
-    params.state = this.crypto.generateRandomNumbers(16);
-    params.nonce = this.crypto.generateRandomNumbers(16);
+  //   // generate state and nonce random octets
+  //   params.state = this.crypto.generateRandomNumbers(16);
+  //   params.nonce = this.crypto.generateRandomNumbers(16);
 
-    return forkJoin(
-      this.crypto.digest(new Uint8Array(params.state)),
-      this.crypto.digest(new Uint8Array(params.nonce)),
-    )
-      .pipe(
-        map(digests => ({ digests })),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated digests', { data, params, source, connection })),
-        map(data => {
-          const state = base64url(Buffer.from(data.digests[0]));
-          const nonce = base64url(Buffer.from(data.digests[1]));
-          const key = `${issuer}/requestHistory/${state}`;
+  //   return forkJoin(
+  //     this.crypto.digest(new Uint8Array(params.state)),
+  //     this.crypto.digest(new Uint8Array(params.nonce)),
+  //   )
+  //     .pipe(
+  //       map(digests => ({ digests })),
+  //       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated digests', { data, params, source, connection })),
+  //       map(data => {
+  //         const state = base64url(Buffer.from(data.digests[0]));
+  //         const nonce = base64url(Buffer.from(data.digests[1]));
+  //         const key = `${issuer}/requestHistory/${state}`;
 
-          // store the request params for response validation
-          // with serialized octet values for state and nonce
-          connection.configuration.requestHistory = {};
-          connection.configuration.requestHistory[key] = JSON.stringify(params);
+  //         // store the request params for response validation
+  //         // with serialized octet values for state and nonce
+  //         connection.configuration.requestHistory = {};
+  //         connection.configuration.requestHistory[key] = JSON.stringify(params);
 
-          // replace state and nonce octets with base64url encoded digests
-          params.state = state;
-          params.nonce = nonce;
+  //         // replace state and nonce octets with base64url encoded digests
+  //         params.state = state;
+  //         params.nonce = nonce;
 
-          return data;
-        }),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, connection })),
-        switchMap(data => this.crypto.generateKeyPair()
-          .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
-        tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
-        map(data => {
-          connection.configuration.privateKey = JSON.stringify(data.sessionKeys.privateKey);
-          params.key = data.sessionKeys.publicKey;
-        }),
-        switchMap(() => {
-          if (source.configuration.request_parameter_supported) {
-            const excludeParams = ['scope', 'client_id', 'response_type', 'state'];
-            const keysToEncode = Object.keys(params).filter(key => !excludeParams.includes(key));
-            const payload = {};
+  //         return data;
+  //       }),
+  //       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated nonce, state and key', { data, params, source, connection })),
+  //       switchMap(data => this.crypto.generateKeyPair()
+  //         .pipe(map(sessionKeys => ({ ...data, sessionKeys })))),
+  //       tap(data => this.logger.debug(DGTSourceSolidConnector.name, 'Generated session keys', { data, params, source, connection })),
+  //       map(data => {
+  //         connection.configuration.privateKey = JSON.stringify(data.sessionKeys.privateKey);
+  //         params.key = data.sessionKeys.publicKey;
+  //       }),
+  //       switchMap(() => {
+  //         if (source.configuration.request_parameter_supported) {
+  //           const excludeParams = ['scope', 'client_id', 'response_type', 'state'];
+  //           const keysToEncode = Object.keys(params).filter(key => !excludeParams.includes(key));
+  //           const payload = {};
 
-            keysToEncode.forEach(key => {
-              payload[key] = params[key];
-            });
+  //           keysToEncode.forEach(key => {
+  //             payload[key] = params[key];
+  //           });
 
-            const requestParamJwt = new JWT({
-              header: { alg: 'none' },
-              payload
-            }, { filter: false });
+  //           const requestParamJwt = new JWT({
+  //             header: { alg: 'none' },
+  //             payload
+  //           }, { filter: false });
 
-            return from(requestParamJwt.encode()
-              .then(requestParamCompact => {
-                const newParams = {
-                  scope: params.scope,
-                  client_id: params.client_id,
-                  response_type: params.response_type,
-                  request: requestParamCompact,
-                  state: params.state,
-                };
+  //           return from(requestParamJwt.encode()
+  //             .then(requestParamCompact => {
+  //               const newParams = {
+  //                 scope: params.scope,
+  //                 client_id: params.client_id,
+  //                 response_type: params.response_type,
+  //                 request: requestParamCompact,
+  //                 state: params.state,
+  //               };
 
-                return newParams;
-              })
-              .then((encodedParams) => {
-                params = encodedParams;
-              })
-            );
-          }
-        }),
-        map(() => {
-          const url = new URL(endpoint);
-          url.search = this.encode(params);
+  //               return newParams;
+  //             })
+  //             .then((encodedParams) => {
+  //               params = encodedParams;
+  //             })
+  //           );
+  //         }
+  //       }),
+  //       map(() => {
+  //         const url = new URL(endpoint);
+  //         url.search = this.encode(params);
 
-          return url.href;
-        })
-      );
-  }
+  //         return url.href;
+  //       })
+  //     );
+  // }
 
   public retrieveWebId(connection: DGTConnectionSolid): string {
     let res = null;
@@ -632,15 +607,15 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
   }
 
 
-  private encode(data): string {
-    const pairs = [];
+  // private encode(data): string {
+  //   const pairs = [];
 
-    Object.keys(data).forEach((key) => {
-      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-    });
+  //   Object.keys(data).forEach((key) => {
+  //     pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+  //   });
 
-    return pairs.join('&');
-  }
+  //   return pairs.join('&');
+  // }
 
   public checkAccessRights(exchange: DGTExchange): Observable<boolean> {
     this.logger.debug(DGTSourceSolidConnector.name, 'Checking access rights', { exchange });

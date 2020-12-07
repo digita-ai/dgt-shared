@@ -1,4 +1,5 @@
 export interface DGTConnectionSolidConfiguration {
+  sessionId: string;
   webId: string;
   accessToken: string;
   expiresIn: string;
