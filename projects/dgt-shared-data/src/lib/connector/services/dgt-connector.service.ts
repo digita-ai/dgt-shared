@@ -14,8 +14,6 @@ import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.mo
 import { DGTProfileService } from '../../profile/services/dgt-profile.service';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
 
 @DGTInjectable()
@@ -85,6 +83,47 @@ export class DGTConnectorService {
           return [resources];
         }),
       ) as Observable<T[]>;
+    // return this.sources.get(destination).pipe(
+    //   map(source => ({ source })),
+    //   // get connection
+    //   mergeMap(data => this.connections.query({
+    //     type: DGTLDFilterType.PARTIAL,
+    //     partial: { holder: exchange.holder, source: data.source.uri }
+    //   } as DGTLDFilterPartial)
+    //     .pipe(
+    //       tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+    //       map(connection => connection.length > 0 ? connection : [null]),
+    //       map(connection => ({ ...data, connection: connection[0] })),
+    //     )),
+    //   // check if connection is set
+    //   map(data => {
+    //     if (data.connection !== null) {
+    //       return data;
+    //     } else {
+    //       throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
+    //     }
+    //   }),
+    //   // get connector
+    //   map(data => ({ ...data, connector: this.connectors.get(data.source.type) })),
+    //   // get purpose
+    //   mergeMap(data => this.purposes.get(exchange.purpose).pipe(
+    //     map(purpose => ({ ...data, purpose })),
+    //   )),
+    //   mergeMap(data => {
+    //     if (resources.length === 0) {
+    //       throw new DGTErrorArgument('triples can not be an empty list', resources);
+    //     }
+    //     return forkJoin(resources.map(resource => this.upstreamSync(
+    //       data.connector, resource, data.connection, null, exchange)
+    //     )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
+    //   }),
+    //   map(data => _.flatten(data.resultFromUpstream)),
+    //   // catch error if no connection found or triples was an empty list
+    //   catchError(() => {
+    //     this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
+    //     return [resources];
+    //   }),
+    // );
   }
 
   public upstreamSync<T extends DGTLDResource>(

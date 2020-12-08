@@ -13,7 +13,7 @@ import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-co
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
 import uuid from 'uuid';
-import { DGTLDNode } from '@digita-ai/dgt-shared-data/public-api';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()

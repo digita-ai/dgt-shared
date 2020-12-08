@@ -24,6 +24,10 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
             throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
 
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
         return of({ resources, transformer })
             .pipe(
                 switchMap(data => forkJoin(data.resources.map(resource => this.serializeOne(resource, data.transformer)))
@@ -54,11 +58,14 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
         return of({ resource, transformer })
             .pipe(
-                switchMap(data => transformer ? data.transformer.toTriples([data.resource])
-                    .pipe(map(transformed => ({ ...data, transformed, triples: _.flatten(transformed.map(r => r.triples)) })))
-                    : of({ ...data, transformed: [resource], triples: resource.triples })),
+                switchMap(data => data.transformer.toTriples([data.resource])
+                    .pipe(map(transformed => ({ ...data, transformed, triples: _.flatten(transformed.map(resource => resource.triples)) })))),
                 map(data => {
                     const parsedTriples: Triple[] = data.triples.map((triple: DGTLDTriple) => {
                         let object: Term = `${triple.object.value}` as Term;
@@ -81,7 +88,7 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
                         insert: [{ type: 'bgp', triples: parsedTriples, }],
                     };
                 }),
-            );
+            )
     }
 
     public deserialize<R extends DGTLDResource>(text: string, transformer: DGTLDTransformer<R>): Observable<R[]> {

@@ -1,4 +1,4 @@
-import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationService, DGTErrorArgument, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
@@ -9,8 +9,8 @@ import * as _ from 'lodash';
 import { DGTLDRepresentationTurtleFactory } from '../../linked-data/services/dgt-ld-representation-turtle-factory';
 import { DGTLDRepresentationSparqlInsertFactory } from '../../linked-data/services/dgt-ld-representation-sparql-insert-factory';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { Quad } from 'n3';
 import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
+import { DGTConfigurationBaseApi } from '../../configuration/models/dgt-configuration-base-api.model';
 
 /**
  * The DGTCacheSolidService is used to communicate with a Solid based cache
@@ -96,8 +96,41 @@ export class DGTCacheSolidService extends DGTCacheService {
      */
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
 
-        return of({ resources }).pipe(
-            switchMap(data => forkJoin(data.resources.map(resource => this.http.delete<string>(resource.uri)
+        if (resources.length > 1) {
+            throw new DGTErrorArgument('Deleting of more than one resource not supported yet', resources);
+        }
+
+        const headers = {
+            Accept: 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        };
+
+        // TODO this query doesnt delete for instance an mssql source's mapping
+
+        const query = (resource: T) => (`
+        DELETE {
+            GRAPH <${resource.uri.split('#')[0]}> {
+                ?s ?p  ?o.
+            }
+        }
+        WHERE {
+            GRAPH <${resource.uri.split('#')[0]}> {
+                ?s ?p ?o {
+                    select distinct ?s ?p ?o
+                    where {
+                        { ?s ?p ?o filter regex(?s, '${resource.uri}') }
+                        UNION
+                        { ?s ?p ?o filter regex(?o, '${resource.uri}') }
+                    }
+                }
+            }
+        }
+        `);
+
+        const uri = this.config.get(config => config.cache.sparqlEndpoint);
+
+        return of({ resources, headers, uri }).pipe(
+            switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
                 .pipe(map(() => resource))
             )).pipe(map(res => ({ ...data, deleted: res }))) // TODO filter resources for which http status code was not 200 OK? throw errors?
             ),
@@ -147,8 +180,8 @@ export class DGTCacheSolidService extends DGTCacheService {
 
         return of({ transformer, resource, headers: { Accept: 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
-                switchMap(data => this.http.head(data.uri)
-                    .pipe(map(headResponse => ({ ...data, exists: headResponse ? headResponse.success : null, headResponse })))),
+                switchMap(data => this.http.head(data.uri, data.headers)
+                    .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),
                 switchMap(data => (data.exists ? this.appendOne(data.transformer, data.resource) : this.createOne(data.transformer, data.resource))
                     .pipe(map(response => ({ ...data, response })))),

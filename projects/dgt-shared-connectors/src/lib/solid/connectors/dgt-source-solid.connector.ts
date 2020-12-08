@@ -165,7 +165,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                 headers: token ? { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token, } : { 'Content-Type': 'application/sparql-update', },
               })),
               switchMap(d => this.toSparqlDelete.serialize(data.groupedEntities[uri], transformer)
-                .pipe(map((serialized: string) => ({ ...d, serialized })))),
+                .pipe(map(serialized => ({ ...d, serialized })))),
               switchMap(d =>
                 this.http.patch(
                   uri,
@@ -260,7 +260,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                 headers: token ? { 'Content-Type': 'application/sparql-update', Authorization: 'Bearer ' + token, } : { 'Content-Type': 'application/sparql-update', }
               })),
               switchMap(d => this.toSparqlInsert.serialize([update.delta.updated], transformer)
-                .pipe(map((serialized: string) => ({ ...d, serialized })))),
+                .pipe(map(serialized => ({ ...d, serialized })))),
               switchMap(d => {
                 if (update.delta.original.triples.length === 0) {
                   return this.http.patch(
@@ -284,7 +284,7 @@ export class DGTSourceSolidConnector extends DGTConnector<DGTSourceSolidConfigur
                     [update.delta.updated],
                     'insertdelete',
                     [update.delta.original]
-                  ).split('\n').join(' '),
+                  ),
                   d.headers
                 );
               })

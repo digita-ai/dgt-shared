@@ -1,6 +1,6 @@
 import { Observable, of, forkJoin } from 'rxjs';
 
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -10,7 +10,9 @@ import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTCategory } from '../models/dgt-category.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
-import { DGTLDFilter, DGTLDFilterBGP } from '@digita-ai/dgt-shared-data/public-api';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 /** Transforms linked data to categories, and the other way around. */
 @DGTInjectable()
@@ -192,12 +194,29 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         } as T;
     }
 
-    private filterToTriples<T extends DGTCategory>(resource: T, resourceSubject: DGTLDNode): DGTLDTriple[] {
+    private filterToTriples(resource: DGTCategory, resourceSubject: DGTLDNode): DGTLDTriple[] {
         let res = [];
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        if (!resourceSubject) {
+            throw new DGTErrorArgument('Argument resourceSubject should be set.', resourceSubject);
+        }
+
+        if (!resource.filter) {
+            throw new DGTErrorArgument('Argumentresource.filter should be set.', resource.filter);
+        }
+
+        if (resource.filter.type !== DGTLDFilterType.BGP) {
+            throw new DGTErrorArgument('Argument resource filter type should be BGP.', resource);
+        }
 
         // solid connection
         // local copy of config to have autofill
-        const filter = resource.filter as DGTLDFilterBGP;
+        const filter: DGTLDFilterBGP = resource.filter as any;
+
         res = [
             {
                 predicate: 'http://digita.ai/voc/categoryfilter#type',
@@ -225,22 +244,30 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         return res;
     }
 
-    private filterToDomain(triple: DGTLDTriple, resource: DGTLDResource) {
+    private filterToDomain(triple: DGTLDTriple, resource: DGTLDResource): DGTLDFilter {
 
-        let config = null;
+        let config: DGTLDFilter = null;
+
+        if (!triple) {
+            throw new DGTErrorArgument('Argument triple should be set.', triple);
+        }
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
 
         const type = resource.triples.find(value =>
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/categoryfilter#type'
         );
 
-        const predicates = resource.triples.filter(value =>
+        const predicates: string[] = resource.triples.filter(value =>
             value.subject.value === triple.object.value &&
             value.predicate === 'http://digita.ai/voc/categoryfilter#predicates'
         ).map(predicate => predicate.object.value);
 
         config = {
-            type: type ? type.object.value : null,
+            type: DGTLDFilterType.BGP,
             predicates,
         } as DGTLDFilterBGP;
 
