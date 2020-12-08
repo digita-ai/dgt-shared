@@ -6,7 +6,7 @@ name: Node.js Package
 on:
  push:
    branches:
-     - feature/600707036-gh-actions-build-package
+     - develop
   # release:
     # types: [created]
 
