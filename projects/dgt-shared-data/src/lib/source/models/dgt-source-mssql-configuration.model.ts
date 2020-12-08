@@ -6,7 +6,10 @@ export interface DGTSourceMSSQLConfiguration {
     server: string;
     database: string;
     commands: {
-        [key: string]: Function,
+        select: string,
+        delete: string,
+        insert: string,
+        update: string,
     };
     mapping: DGTMap<string, string>;
 }

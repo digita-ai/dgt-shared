@@ -15,7 +15,7 @@ export class DGTSparqlQueryService {
 
     public generateSparqlUpdate(
         updatedEntities: DGTLDResource[],
-        updateType: 'insert' | 'delete' | 'insertdelete',
+        updateType: 'insertdelete',
         originalEntities?: DGTLDResource[]
     ): string {
         if (!updatedEntities) {
@@ -72,29 +72,7 @@ export class DGTSparqlQueryService {
 
         let query: Update = null;
 
-        if (updateType === 'delete') {
-            query = {
-                type: 'update',
-                prefixes: {},
-                updates: [
-                    {
-                        updateType,
-                        delete: [{ type: 'bgp', triples: insertTriples }],
-                    },
-                ],
-            };
-        } else if (updateType === 'insert') {
-            query = {
-                type: 'update',
-                prefixes: {},
-                updates: [
-                    {
-                        updateType,
-                        insert: [{ type: 'bgp', triples: insertTriples }],
-                    },
-                ],
-            };
-        } else if (updateType === 'insertdelete') {
+        if (updateType === 'insertdelete') {
             query = {
                 type: 'update',
                 prefixes: {},

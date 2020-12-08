@@ -1,5 +1,5 @@
-import { DGTCategory, DGTCategoryService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from "@digita-ai/dgt-shared-utils";
+import { DGTCategory, DGTCategoryService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -9,10 +9,10 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTCategoryRemoteService extends DGTCategoryService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>) {
+    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
         super();
     }
-    
+
     get(uri: string): Observable<DGTCategory> {
         this.logger.debug(DGTCategoryRemoteService.name, 'Starting to get', { uri });
 
@@ -22,28 +22,25 @@ export class DGTCategoryRemoteService extends DGTCategoryService {
 
         return of({ uri })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${data.uri}` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTCategory>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 map(response => response.data),
             );
     }
-    query(filter: Partial<DGTCategory>): Observable<DGTCategory[]> {
+    query(filter?: DGTLDFilter): Observable<DGTCategory[]> {
         this.logger.debug(DGTCategoryRemoteService.name, 'Starting to query', { filter });
-
-        if (!filter) {
-            throw new DGTErrorArgument('Argument filter should be set.', filter);
-        }
 
         return of({ filter })
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}category` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTCategory[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                map(response => _.filter<DGTCategory>(response.data, filter)),
+                switchMap(data => this.http.get<DGTCategory[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => ({ ...data, response })))),
+                switchMap(data => data.filter ? this.filters.run<DGTCategory>(data.filter, data.response.data) : of(data.response.data)),
             );
     }
-    save(resource: DGTCategory): Observable<DGTCategory> {
+    save<T extends DGTCategory>(resources: T[]): Observable<T[]> {
         throw new Error('Method not implemented.');
     }
     delete(resource: DGTCategory): Observable<DGTCategory> {

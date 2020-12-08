@@ -17,7 +17,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
         private paramChecker: DGTParameterCheckerService,
     ) { }
 
-    public run(filter: DGTLDFilterHolder, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    public run<R extends DGTLDResource>(filter: DGTLDFilterHolder, resources: R[]): Observable<R[]> {
         if (!filter) {
             throw new DGTErrorArgument('Argument filter should be set.', filter);
         }
