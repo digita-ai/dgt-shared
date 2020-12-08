@@ -10,8 +10,9 @@ import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTCategory } from '../models/dgt-category.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
-import { DGTLDFilter, DGTLDFilterBGP } from '@digita-ai/dgt-shared-data';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 
 /** Transforms linked data to categories, and the other way around. */
 @DGTInjectable()
