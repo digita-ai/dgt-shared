@@ -2,7 +2,7 @@
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
 import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import * as _ from 'lodash';
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
@@ -13,6 +13,7 @@ import { DGTLDFilterRunnerPartialService } from './dgt-ld-filter-runner-partial.
 import { DGTLDFilterSparqlService } from './dgt-ld-filter-sparql-service';
 import { DGTLDFilterSparqlExchangeService } from './dgt-ld-filter-sparql-exchange.service';
 import { DGTLDFilterSparqlPartialService } from './dgt-ld-filter-sparql-partial.service';
+import { DGTConfigurationBaseApi } from '../../configuration/models/dgt-configuration-base-api.model';
 
 /**
  * This service handles DGTLDFilters and their DGTLDFilterRunnerServices / DGTLDFilterSparqlService
@@ -29,6 +30,7 @@ export class DGTLDFilterService {
   constructor(
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
+    private config: DGTConfigurationService<DGTConfigurationBaseApi>,
   ) {
     // runner services
     this.registerRunnerService(new DGTLDFilterRunnerBGPService());
@@ -37,7 +39,7 @@ export class DGTLDFilterService {
     this.registerRunnerService(new DGTLDFilterRunnerCombinationService(this.paramChecker, this));
 
     // sparql services
-    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.paramChecker));
+    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.config, this.paramChecker));
     this.registerSparqlService( new DGTLDFilterSparqlPartialService(this.paramChecker));
   }
 
