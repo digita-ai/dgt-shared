@@ -233,27 +233,42 @@ export class DGTSourceMSSQLConnector extends DGTConnector<DGTSourceMSSQLConfigur
     }
 
     private getPool(source: DGTSource<any>): Observable<ConnectionPool> {
-        let pool: ConnectionPool = this.pools.get(source.uri);
+        let res: Observable<ConnectionPool> = of(null);
 
-        if (!this.pools || !pool || !pool.connected) {
-            try {
-                const config = this.extractConfig(source);
-                this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
-                const pool = new ConnectionPool(config);
-                pool.on('error', err => {
-                    this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
-                });
-                this.pools.set(source.uri, pool);
-                this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
-                return from(this.pools.get(source.uri).connect()).pipe(
-                    map(() => this.pools.get(source.uri)),
-                );
-            } catch (err) {
-                this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, pools: this.pools, source });
-                throw new DGTErrorArgument(err, err);
-            }
+        try {
+            const config = this.extractConfig(source);
+            this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool', config);
+            const pool = new ConnectionPool(config);
+            pool.on('error', err => {
+                this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
+            });
+            
+            res = from(pool.connect());
+        } catch (err) {
+            this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, source });
+            throw new DGTErrorArgument(err, err);
         }
+        // let pool: ConnectionPool = this.pools.get(source.uri);
 
-        return of(pool);
+        // if (!this.pools || !pool || !pool.connected) {
+        //     try {
+        //         const config = this.extractConfig(source);
+        //         this.logger.debug(DGTSourceMSSQLConnector.name, 'Creating connection pool');
+        //         const pool = new ConnectionPool(config);
+        //         pool.on('error', err => {
+        //             this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in connection pool', err);
+        //         });
+        //         this.pools.set(source.uri, pool);
+        //         this.logger.debug(DGTSourceMSSQLConnector.name, 'Connect to connection pool');
+        //         return from(this.pools.get(source.uri).connect()).pipe(
+        //             map(() => this.pools.get(source.uri)),
+        //         );
+        //     } catch (err) {
+        //         this.logger.debug(DGTSourceMSSQLConnector.name, 'Caught error in create connection', { err, pools: this.pools, source });
+        //         throw new DGTErrorArgument(err, err);
+        //     }
+        // }
+
+        return res;
     }
 }
