@@ -56,52 +56,35 @@ export class DGTConnectorService {
   public save<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
     this.paramChecker.checkParametersNotNull({ exchange, triples: resources });
 
-    return this.sources.get(exchange.source).pipe(
-      map(source => ({ source })),
-      // get connection
-      mergeMap(data => this.connections.query({
-        type: DGTLDFilterType.PARTIAL,
-        partial: { holder: exchange.holder, source: data.source.uri }
-      } as DGTLDFilterPartial)
-        .pipe(
-          tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
-          map(connection => connection.length > 0 ? connection : [null]),
-          map(connection => ({ ...data, connection: connection[0] })),
+    return of({ exchange, resources })
+      .pipe(
+        switchMap(data => this.sources.get(data.exchange.source)
+          .pipe(map(source => ({ ...data, source, connector: this.connectors.get(source.type) })))),
+        switchMap(data => this.connections.get(data.exchange.connection)
+          .pipe(map(connection => ({ ...data, connection })))),
+        // get purpose
+        mergeMap(data => this.purposes.get(exchange.purpose).pipe(
+          map(purpose => ({ ...data, purpose })),
         )),
-      // check if connection is set
-      map(data => {
-        if (data.connection !== null) {
-          return data;
-        } else {
-          this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
-          throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
-        }
-      }),
-      // get connector
-      map(data => ({ ...data, connector: this.connectors.get(data.source.type) })),
-      // get purpose
-      mergeMap(data => this.purposes.get(exchange.purpose).pipe(
-        map(purpose => ({ ...data, purpose })),
-      )),
-      // get profile to pass to upstreamsync
-      mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
-        map(profile => ({ ...data, profile }))
-      ) : of({ ...data, profile: null })),
-      mergeMap(data => {
-        if (resources.length === 0) {
-          this.logger.debug(DGTConnectorService.name, 'triples can not be an empty list');
-          throw new DGTErrorArgument('triples can not be an empty list', resources);
-        }
-        return forkJoin(resources.filter(r => r.triples && r.triples.length > 0).map(resource => this.upstreamSync(
-          data.connector, resource, data.connection, null, exchange, data.profile)
-        )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
-      }),
-      map(data => _.flatten(data.resultFromUpstream)),
-      // catch error if no connection found or triples was an empty list
-      catchError(() => {
-        return [resources];
-      }),
-    ) as Observable<T[]>;
+        // get profile to pass to upstreamsync
+        mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
+          map(profile => ({ ...data, profile }))
+        ) : of({ ...data, profile: null })),
+        mergeMap(data => {
+          if (resources.length === 0) {
+            this.logger.debug(DGTConnectorService.name, 'triples can not be an empty list');
+            throw new DGTErrorArgument('triples can not be an empty list', resources);
+          }
+          return forkJoin(resources.filter(r => r.triples && r.triples.length > 0).map(resource => this.upstreamSync(
+            data.connector, resource, data.connection, null, exchange, data.profile)
+          )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
+        }),
+        map(data => _.flatten(data.resultFromUpstream)),
+        // catch error if no connection found or triples was an empty list
+        catchError(() => {
+          return [resources];
+        }),
+      ) as Observable<T[]>;
   }
 
   public upstreamSync<T extends DGTLDResource>(
@@ -116,20 +99,20 @@ export class DGTConnectorService {
       { connector, resource, connection, transformer, exchange, profile });
 
     return this.calculateDocumentUri(resource, profile, connection).pipe(
-      tap( prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', {prepared, s: prepared.triples[0].subject})),
+      tap(prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', { prepared, s: prepared.triples[0].subject })),
       switchMap(preparedDomainEntity => {
         // find possible existing values to determine add or update
         return connector.query(preparedDomainEntity.triples[0].subject.value, exchange, transformer).pipe(
           map(existingValues => existingValues[0]),
-          map(existingValue => ({ ...existingValue, triples: [existingValue.triples.find(t => t.predicate === preparedDomainEntity.triples[0].predicate)]})),
+          map(existingValue => ({ ...existingValue, triples: [existingValue.triples.find(t => t.predicate === preparedDomainEntity.triples[0].predicate)] })),
           map(existingValue => ({ existingValue: existingValue.triples[0] ? existingValue : null, domainEntity: preparedDomainEntity })),
           catchError(error => {
-            this.logger.debug(DGTConnectorService.name, 'Error occured in upstreamsync', {error, resource});
-            throw new DGTErrorArgument('Error querying', {error});
+            this.logger.debug(DGTConnectorService.name, 'Error occured in upstreamsync', { error, resource });
+            throw new DGTErrorArgument('Error querying', { error });
           }),
         );
       }),
-      tap( data => this.logger.debug(DGTConnectorService.name, `Existing value: ${data.existingValue}`, { data })),
+      tap(data => this.logger.debug(DGTConnectorService.name, `Existing value: ${data.existingValue}`, { data })),
       switchMap(data => {
         if (data.existingValue) {
           data.domainEntity.triples[0].subject.value = data.existingValue.triples[0].subject.value;
@@ -153,8 +136,8 @@ export class DGTConnectorService {
           );
         }
       }),
-      catchError( error => {
-        this.logger.debug(DGTConnectorService.name, 'Error in upstreamsync, no syncing done', { error , resource});
+      catchError(error => {
+        this.logger.debug(DGTConnectorService.name, 'Error in upstreamsync, no syncing done', { error, resource });
         return of(resource);
       }),
     );
@@ -165,10 +148,10 @@ export class DGTConnectorService {
     profile: DGTProfile,
     connection: DGTConnection<any>,
   ): Observable<T> {
-    this.logger.debug(DGTConnectorService.name, 'Calculating document uri', {domainEntity, profile, connection});
+    this.logger.debug(DGTConnectorService.name, 'Calculating document uri', { domainEntity, profile, connection });
     let missingTypeReg = false;
     // profile will only have a value when we have a solid source / connection
-    if ( !profile ) {
+    if (!profile) {
       return of(domainEntity);
     }
     // find typeregistration in profile
@@ -226,13 +209,13 @@ export class DGTConnectorService {
           .pipe(map(purpose => ({ ...data, purpose })))),
         mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
           map(profile => ({ ...data, profile, typeRegistrations: profile && profile.typeRegistrations ? profile.typeRegistrations.filter(typeRegistration => data.purpose.predicates.includes(typeRegistration.forClass)) : [] }))
-        ) : of({ ...data, profile: null, typeRegistrations: null})),
+        ) : of({ ...data, profile: null, typeRegistrations: null })),
         switchMap(data => data.connector.query<T>(null, exchange, transformer)
           .pipe(map(resources => ({ ...data, resources })))),
         switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0
           ? forkJoin(data.typeRegistrations.map(typeRegistration => data.connector.query<T>(typeRegistration.instance, exchange, transformer)))
           : of([[]])).pipe(
-            map( (resourcesOfResources: T[]) =>
+            map((resourcesOfResources: T[]) =>
               ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] })
             )
           )
@@ -241,10 +224,10 @@ export class DGTConnectorService {
           const newRes = data.resources.map((resource: T) => {
             return {
               ...resource,
-              triples: resource.triples.filter( triple => data.purpose.predicates.includes( triple.predicate ) ),
+              triples: resource.triples.filter(triple => data.purpose.predicates.includes(triple.predicate)),
             };
           });
-          return { ...data, resources: newRes};
+          return { ...data, resources: newRes };
         }),
         tap(data => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
         map(data => data.resources),
