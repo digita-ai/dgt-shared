@@ -97,13 +97,13 @@ export class DGTLDRepresentationTurtleFactory extends DGTLDRepresentationFactory
             const objectJson = binding[objectVar];
 
             // assuming subjects are always references?
-            const subject: Quad_Subject = DataFactory.namedNode(subjectJson.value);
+            const subject: Quad_Subject = DataFactory.namedNode(subjectJson?.value);
             // predicates are always references
-            const predicate: Quad_Predicate = DataFactory.namedNode(predicateJson.value);
+            const predicate: Quad_Predicate = DataFactory.namedNode(predicateJson?.value);
             // objects can be references or literals
             const object: Quad_Object = objectJson.type === 'uri' ?
-                DataFactory.namedNode(objectJson.value) :
-                DataFactory.literal(objectJson.value);
+                DataFactory.namedNode(objectJson?.value) :
+                DataFactory.literal(objectJson?.value);
 
             return DataFactory.quad(subject, predicate, object, DataFactory.defaultGraph());
         });
