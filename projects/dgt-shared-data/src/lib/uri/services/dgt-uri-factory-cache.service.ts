@@ -1,5 +1,6 @@
-import { DGTConfigurationBaseApi, DGTConfigurationService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { v4 } from 'uuid';
+import { DGTConfigurationBaseApi } from '../../configuration/models/dgt-configuration-base-api.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
 
