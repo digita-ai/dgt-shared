@@ -2,9 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
+    "module": "commonjs",
+    "target": "es5",
     "types": [
       "jasmine",
-      "node"
+      "mocha",
+      "node",
+      "jasminewd2"
     ]
   },
   "files": [

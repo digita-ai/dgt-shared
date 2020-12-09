@@ -1,5 +1,4 @@
-import { NgModule, Type } from '@angular/core';
-import { DGTTitleService } from './interface/services/dgt-title.service';
+import { ModuleWithProviders, NgModule, Type } from '@angular/core';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTI8NService } from './i8n/services/dgt-i8n.service';
@@ -154,7 +153,7 @@ export const declarations = [
   DGTDataGroupComponent,
   DGTMenuComponent,
 ];
-export const imports: (any[] | Type<any>)[] = [
+export const imports: (any[] | Type<any> | ModuleWithProviders<{}>)[] = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
@@ -171,9 +170,15 @@ export const imports: (any[] | Type<any>)[] = [
   DGTSharedUtilsModule,
   DGTSharedDataModule,
   MatMenuModule,
+  TranslateModule.forRoot({
+    loader: {
+      provide: TranslateLoader,
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient],
+    },
+  }),
 ];
 export const providers = [
-  DGTTitleService,
   DGTI8NService,
   DGTPhoneValidator,
   DGTCompareValidator,
@@ -188,14 +193,7 @@ export const providers = [
   providers,
   imports: [
     ...imports,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
   ],
-  exports: [...imports, ...declarations],
+  exports: [...declarations],
 })
 export class DGTSharedWebModule { }

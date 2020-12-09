@@ -15,6 +15,7 @@
     "publish:web": "npm publish dist/dgt-shared-web",
     "reinstall": "rm -rf node_modules yarn.lock && yarn install && ./scripts/linkAndBuild.sh;",
     "test": "ng test",
+    "test:headless": "./scripts/test-headless.sh",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

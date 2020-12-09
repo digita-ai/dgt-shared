@@ -155,3 +155,5 @@ export { DGTCategoryTransformerService } from './lib/categories/services/dgt-cat
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
 export { DGTConfigurationBaseApi } from './lib/configuration/models/dgt-configuration-base-api.model';
+export { DGTProfileMockService } from './lib/profile/services/dgt-profile-mock.service';
+export { DGTDataValueMockService } from './lib/data-value/services/data-value-mock.service';

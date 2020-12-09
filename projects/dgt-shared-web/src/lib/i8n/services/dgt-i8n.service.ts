@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injector } from '@angular/core';
 import * as locale2 from 'locale2';
 import * as _ from 'lodash';
 import { DGTI8NLocale } from '../models/dgt-i8n-locale.model';

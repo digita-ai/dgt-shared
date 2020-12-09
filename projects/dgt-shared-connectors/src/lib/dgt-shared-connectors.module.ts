@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { DGTSharedDataModule } from '@digita-ai/dgt-shared-data';
 import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
 import { DGTSourceGravatarConnector } from './gravatar/connectors/dgt-source-gravatar.connector';
 import { DGTSourceMSSQLConnector } from './mssql/connectors/dgt-source-mssql.connector';
@@ -7,7 +8,8 @@ import { DGTSourceSolidTrustedAppTransformerService } from './solid/services/dgt
 
 export const declarations = [];
 export const imports = [
-  DGTSharedUtilsModule
+  DGTSharedUtilsModule,
+  DGTSharedDataModule,
 ];
 export const providers = [
   DGTSourceSolidConnector,

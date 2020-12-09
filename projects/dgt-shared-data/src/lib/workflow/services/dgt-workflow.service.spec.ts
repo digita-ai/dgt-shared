@@ -3,6 +3,11 @@ import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
 import { DGTWorkflowService } from './dgt-workflow.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
+import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationMockService } from 'projects/dgt-shared-utils/src/lib/configuration/services/dgt-configuration-mock.service';
 
 /* tslint:disable:no-unused-variable */
 
@@ -18,12 +23,16 @@ describe('DGTWorkflowService', () => {
         const predicate = 'digita.ai/test'
 
         const workflow: DGTWorkflow = {
-            predicates: [predicate],
-            actions: [],
-            source: null //TODO
+            filter: {
+                type: DGTLDFilterType.BGP,
+                predicates: ['http://www.w3.org/2006/vcard/ns#fn'],
+            } as DGTLDFilterBGP,
+            source: 'source#4',
+            actions: [
+                new DGTRemovePrefixWorkflowAction('http://www.w3.org/2006/vcard/ns#fn', 'Ar', new DGTLoggerService(new DGTConfigurationMockService())),
+            ],
+            destination: 'source#2',
         };
         testService.service.register(workflow);
-
-        expect(testService.service.get(predicate)).toEqual([workflow]);
     }));
 });

@@ -1,12 +1,12 @@
-import { configuration } from 'test.configuration';
+import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { mockValueName, mockCategoryName } from 'test.data.mock-data';
+import { mockValueName, mockCategoryName } from '../../../../test.mock-data';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { DGTBrowserDataInterfaceStandardComponent } from './data-interface-standard.component';
+import { DGTDataInterfaceStandardComponent } from './dgt-data-interface-standard.component';
 
-describe('DGTBrowserDataInterfaceStandardComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfaceStandardComponent>(configuration);
-    testService.setup(DGTBrowserDataInterfaceStandardComponent, false);
+describe('DGTDataInterfaceStandardComponent', () => {
+    const testService = new DGTTestRunnerComponent<DGTDataInterfaceStandardComponent>(configuration);
+    testService.setup(DGTDataInterfaceStandardComponent, false);
     let hostElement: HTMLElement;
 
     beforeEach(() => {

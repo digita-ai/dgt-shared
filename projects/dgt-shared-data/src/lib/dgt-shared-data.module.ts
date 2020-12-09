@@ -32,6 +32,7 @@ import { DGTCategoryCacheService } from './categories/services/dgt-category-cach
 import { DGTCategoryTransformerService } from './categories/services/dgt-category-transformer.service';
 import { DGTLDRepresentationSparqlInsertFactory } from './linked-data/services/dgt-ld-representation-sparql-insert-factory';
 import { DGTLDRepresentationSparqlDeleteFactory } from './linked-data/services/dgt-ld-representation-sparql-delete-factory';
+import { DGTLDResourceTransformerService } from './linked-data/services/dgt-ld-resource-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective
@@ -72,6 +73,7 @@ export const providers = [
   DGTCategoryTransformerService,
   DGTLDRepresentationSparqlInsertFactory,
   DGTLDRepresentationSparqlDeleteFactory,
+  DGTLDResourceTransformerService,
 ];
 
 @NgModule({

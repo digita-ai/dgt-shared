@@ -1,4 +1,4 @@
-import { NgModule, Type } from '@angular/core';
+import { NgModule, Provider, Type } from '@angular/core';
 import { DGTLoggerService } from './logging/services/dgt-logger.service';
 import { DGTErrorService } from './errors/services/dgt-error.service';
 import { DGTPlatformService } from './platform/services/dgt-platform.service';
@@ -12,7 +12,7 @@ import { DGTOriginService } from './origin/services/dgt-origin.service';
 
 export const declarations: (any[] | Type<any>)[] = [];
 export const imports = [];
-export const providers = [
+export const providers: Provider[] = [
   DGTLoggerService,
   DGTCryptoBrowserService,
   DGTConnectivityService,
@@ -34,6 +34,7 @@ export const providers = [
   imports,
   providers,
   exports: [
+    ...imports,
   ]
 })
 export class DGTSharedUtilsModule { }

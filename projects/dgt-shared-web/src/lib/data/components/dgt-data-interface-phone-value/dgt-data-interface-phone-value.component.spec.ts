@@ -1,10 +1,10 @@
-import { configuration } from 'test.configuration';
+import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { DGTBrowserDataInterfacePhoneValueComponent } from './data-interface-phone-value.component';
+import { DGTDataInterfacePhoneValueComponent } from './dgt-data-interface-phone-value.component';
 
-describe('DGTBrowserDataInterfacePhoneValueComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfacePhoneValueComponent>(configuration);
-    testService.setup(DGTBrowserDataInterfacePhoneValueComponent);
+describe('DGTDataInterfacePhoneValueComponent', () => {
+    const testService = new DGTTestRunnerComponent<DGTDataInterfacePhoneValueComponent>(configuration);
+    testService.setup(DGTDataInterfacePhoneValueComponent);
 
     it('should be created', () => {
         expect(testService.component).toBeTruthy();
