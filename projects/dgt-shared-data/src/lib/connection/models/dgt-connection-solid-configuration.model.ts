@@ -9,4 +9,6 @@ export interface DGTConnectionSolidConfiguration {
   loginUri: string;
   accountId: string;
   protocol: string;
+  refreshToken?: string;
+  sessionId?: string;
 }
