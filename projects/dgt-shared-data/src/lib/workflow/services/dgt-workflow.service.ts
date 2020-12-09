@@ -9,7 +9,7 @@ import { DGTConnectorService } from '../../connector/services/dgt-connector.serv
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilterPartial } from '@digita-ai/dgt-shared-data/lib/linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 
 @DGTInjectable()
 export class DGTWorkflowService {
