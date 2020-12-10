@@ -96,7 +96,6 @@ export { DGTSparqlDatasetMemory } from './lib/sparql/models/dgt-sparql-dataset-m
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
 export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';
-export { DGTCacheType } from './lib/cache/models/DGTCacheType.model';
 export { DGTCacheInMemoryService } from './lib/cache/services/dgt-cache-in-memory.service';
 export { DGTCacheSolidService } from './lib/cache/services/dgt-cache-solid.service';
 export { DGTSparqlQueryService } from './lib/sparql/services/dgt-sparql-query.service';
