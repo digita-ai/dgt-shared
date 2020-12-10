@@ -1,6 +1,6 @@
 import { DGTConnectionService, DGTConnection, DGTConnectionState, DGTLDFilterService, DGTLDFilter, DGTExchange } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { of, Observable } from 'rxjs';
+import { of, Observable, forkJoin } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
@@ -21,7 +21,19 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
   }
 
   public save<T extends DGTConnection<any>>(resources: T[]): Observable<T[]> {
-    throw new DGTErrorNotImplemented();
+    this.logger.debug(DGTConnectionRemoteService.name, 'Starting to save', { resources });
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        return of({ resources })
+            .pipe(
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection` })),
+                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                switchMap(data => forkJoin(resources.map(resource => this.http.post<T>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => response.data))))),
+            );
   }
 
   public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
