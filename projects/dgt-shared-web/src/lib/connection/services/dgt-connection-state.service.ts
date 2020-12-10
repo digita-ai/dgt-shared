@@ -29,8 +29,8 @@ export class DGTConnectionStateService extends DGTConnectionService {
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
-        map(data => data.connections ? data.connections.find(c => c.uri === data.uri) : null),
         take(1),
+        map(data => data.connections ? _.cloneDeep(data.connections.find(c => c.uri === data.uri)) : null),
       );
   }
 
