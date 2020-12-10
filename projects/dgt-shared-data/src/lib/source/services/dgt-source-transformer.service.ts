@@ -775,7 +775,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value: entry.value,
                     },
                 });
-            })
+            });
         } else if (resource.type.endsWith('gravatar')) {
             const config: DGTSourceGravatarConfiguration = resource.configuration;
             res = [

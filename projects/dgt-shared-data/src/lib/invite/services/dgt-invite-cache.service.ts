@@ -8,8 +8,6 @@ import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
-import { DGTLDFilterHolder } from '@digita-ai/dgt-shared-data/public-api';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {

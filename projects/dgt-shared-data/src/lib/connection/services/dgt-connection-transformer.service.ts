@@ -1,5 +1,5 @@
 import { Observable, of, forkJoin } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig, DGTConfigurationService, DGTConfigurationBaseApi } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService, DGTErrorConfig } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -22,7 +22,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     constructor(
         private logger: DGTLoggerService,
         private paramChecker: DGTParameterCheckerService,
-        private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) { }
 
     /**

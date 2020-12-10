@@ -1,0 +1,33 @@
+name: Docker
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - feature/*
+      - develop
+      - master
+
+    # Publish `v1.2.3` tags as releases.
+    # tags:
+      # - v*
+
+  # Run tests for any PRs.
+  # pull_request:
+
+env:
+  NPM_TOKEN: ${{secrets.GA_TOKEN}}
+
+jobs:
+  # Run tests.
+  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+      - run: yarn install
+      - run: yarn run build
