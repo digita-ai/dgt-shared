@@ -1,4 +1,4 @@
-import { DGTLDResource } from '@digita-ai/dgt-shared-data/public-api';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 export interface DGTConnectorType extends DGTLDResource {
     label: string;
