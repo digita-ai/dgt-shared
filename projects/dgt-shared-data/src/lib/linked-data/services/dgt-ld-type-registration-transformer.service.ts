@@ -1,16 +1,16 @@
 import { Observable, of, forkJoin } from 'rxjs';
 
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import uuid, { v4 } from 'uuid';
 import { map, tap } from 'rxjs/operators';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
+import { DGTLDUtils } from './dgt-ld-utils.service';
 
 /** Transforms linked data to typeRegistrations, and the other way around. */
 @DGTInjectable()
@@ -18,7 +18,8 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
+    private utils: DGTLDUtils,
   ) { }
 
   /**
@@ -60,7 +61,19 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Found typeRegistration subjects to transform', { typeRegistrationSubjectValues });
 
       if (typeRegistrationSubjectValues) {
-        res = typeRegistrationSubjectValues.map(typeRegistrationSubjectValue => this.transformOne(typeRegistrationSubjectValue, resource));
+        res = typeRegistrationSubjectValues.map(typeRegistrationSubjectValue => {
+          let typeRegistration = null;
+
+          try {
+            typeRegistration = this.transformOne(typeRegistrationSubjectValue, resource)
+          }
+          catch (error) {
+
+          }
+
+          return typeRegistration;
+        })
+        .filter(typeRegistration => typeRegistration !== null);
       }
     }
 
@@ -165,6 +178,10 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
     const typeRegistrationTriples = resource.triples.filter(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value
     );
+
+    if (!instance || !this.utils.isUrl(instance.object.value)) {
+      throw new DGTErrorArgument('Instance should be a url', instance);
+    }
 
     return {
       uri,
