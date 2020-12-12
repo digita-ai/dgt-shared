@@ -49,7 +49,7 @@ export class DGTSourceRemoteService extends DGTSourceService {
 
         return of({ resources })
             .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder` })),
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}source` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => forkJoin(resources.map(resource => this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
                     .pipe(map(response => response.data))))),

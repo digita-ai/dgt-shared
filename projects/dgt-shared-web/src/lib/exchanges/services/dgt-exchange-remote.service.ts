@@ -56,7 +56,19 @@ export class DGTExchangeRemoteService extends DGTExchangeService {
             );
     }
     delete(resource: DGTExchange): Observable<DGTExchange> {
-        throw new Error('Method not implemented.');
+        this.logger.debug(DGTExchangeRemoteService.name, 'Starting to delete', { resource });
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        return of({ resource })
+            .pipe(
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${encodeURIComponent(data.resource.uri)}` })),
+                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                switchMap(data => this.http.delete<DGTExchange>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+                map(response => response.data),
+            );
     }
 
 }

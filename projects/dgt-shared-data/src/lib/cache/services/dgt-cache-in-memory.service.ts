@@ -30,7 +30,13 @@ export class DGTCacheInMemoryService extends DGTCacheService {
     }
 
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
-        throw new Error('Method not implemented.');
+        this.logger.debug(DGTCacheInMemoryService.name, 'Starting to delete', { cache: this.cache, transformer, resources });
+        
+        this.cache = this.cache.filter(resource => !resources.some(r => r.uri === resource.uri))
+
+        this.logger.debug(DGTCacheInMemoryService.name, 'Finished to delete', { cache: this.cache, transformer, resources });
+
+        return of(resources);
     }
 
     public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {

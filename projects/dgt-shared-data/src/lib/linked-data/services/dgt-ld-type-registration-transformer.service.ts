@@ -2,7 +2,7 @@ import { Observable, of, forkJoin } from 'rxjs';
 
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import uuid, { v4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { map, tap } from 'rxjs/operators';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
@@ -101,7 +101,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
         value: '#' + uuid(),
         termType: DGTLDTermType.REFERENCE
       };
-      const typeRegistrationId = v4();
+      const typeRegistrationId = uuid();
       const typeRegistrationSubjectUri = `${uri}#${typeRegistrationId}`;
 
       if (!triples) {
