@@ -12,7 +12,7 @@ import { DGTConnectionSolidConfiguration } from '../models/dgt-connection-solid-
 import { DGTConnectionGravatarConfiguration } from '../models/dgt-connection-gravatar-configuration.model';
 import { DGTConnectionMSSQLConfiguration } from '../models/dgt-connection-mssql-configuration.model';
 import { DGTConnectionType } from '../models/dgt-connection-type.model';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to resources, and the other way around. */

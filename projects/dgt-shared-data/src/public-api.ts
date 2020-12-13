@@ -157,3 +157,4 @@ export { DGTCategoryCacheService } from './lib/categories/services/dgt-category-
 export { DGTCategoryTransformerService } from './lib/categories/services/dgt-category-transformer.service';
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
+export { DGTSecurityService } from './lib/security/services/dgt-security.service';

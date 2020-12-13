@@ -11,7 +11,7 @@ import { DGTSource } from '../models/dgt-source.model';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
-import uuid from 'uuid';
+import { v4 as uuid } from 'uuid';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to resources, and the other way around. */
