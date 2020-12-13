@@ -1,4 +1,4 @@
-import { DGTConfigurationService, DGTErrorArgument, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
@@ -10,7 +10,6 @@ import { DGTLDRepresentationTurtleFactory } from '../../linked-data/services/dgt
 import { DGTLDRepresentationSparqlInsertFactory } from '../../linked-data/services/dgt-ld-representation-sparql-insert-factory';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
-import { DGTConfigurationBaseApi } from '../../configuration/models/dgt-configuration-base-api.model';
 
 /**
  * The DGTCacheSolidService is used to communicate with a Solid based cache

@@ -1,6 +1,6 @@
 import { Observable, of, forkJoin } from 'rxjs';
 
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -13,6 +13,7 @@ import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 
 /** Transforms linked data to categories, and the other way around. */
 @DGTInjectable()

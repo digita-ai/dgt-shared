@@ -8,7 +8,6 @@ import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTSource } from '../models/dgt-source.model';
-import { DGTSourceType } from '../models/dgt-source-type.model';
 import { DGTSourceGravatarConfiguration } from '../models/dgt-source-gravatar-configuration.model';
 import { DGTSourceMSSQLConfiguration } from '../models/dgt-source-mssql-configuration.model';
 import { DGTSourceSolidConfiguration } from '../models/dgt-source-solid-configuration.model';
@@ -191,7 +190,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
     private configToTriples(resource: DGTSource<any>, resourceSubject: DGTLDNode): DGTLDTriple[] {
         let res = [];
 
-        if (resource.type === DGTSourceType.SOLID) {
+        if (resource.type.endsWith('solid')) {
             const config: DGTSourceSolidConfiguration = resource.configuration;
             res = [
                 {
@@ -672,7 +671,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     });
                 });
             });
-        } else if (resource.type === DGTSourceType.MSSQL) {
+        } else if (resource.type.endsWith('mssql')) {
             const config: DGTSourceMSSQLConfiguration = resource.configuration;
             res = [
                 {
@@ -776,8 +775,8 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                         value: entry.value,
                     },
                 });
-            })
-        } else if (resource.type === DGTSourceType.GRAVATAR) {
+            });
+        } else if (resource.type.endsWith('gravatar')) {
             const config: DGTSourceGravatarConfiguration = resource.configuration;
             res = [
                 {
@@ -805,10 +804,10 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
         return res;
     }
-    private configToDomain(triple: DGTLDTriple, resource: DGTLDResource, type: DGTSourceType): any {
+    private configToDomain(triple: DGTLDTriple, resource: DGTLDResource, type: string): any {
         let res = null;
 
-        if (type === DGTSourceType.SOLID) {
+        if (type.endsWith('solid')) {
             const issuer = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#issuer'
@@ -1065,7 +1064,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
                 keys,
             } as DGTSourceSolidConfiguration;
-        } else if (type === DGTSourceType.MSSQL) {
+        } else if (type.endsWith('mssql')) {
             const user = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#user'
@@ -1133,7 +1132,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     update: updateCommand ? updateCommand.object.value : null,
                 }
             };
-        } else if (type === DGTSourceType.GRAVATAR) {
+        } else if (type.endsWith('gravatar')) {
             const usernameField = resource.triples.find(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcegravatarconfig#usernamefield'
