@@ -43,6 +43,8 @@
       fixedInViewport="true"
       class="split-sidenav"
       [hidden]="!opened || !sidenavEnabled"
+      [style.color]="inverted ? '#2B4C7F' : 'white'"
+      [style.background-color]="inverted ? 'white' : '#2B4C7F'"
     >
       <ng-content select="dgt-page-sidenav"></ng-content>
     </div>
