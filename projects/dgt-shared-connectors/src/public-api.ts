@@ -11,3 +11,4 @@ export { DGTSourceGravatarResponse } from './lib/gravatar/models/dgt-source-grav
 export { DGTSourceGravatarConnector } from './lib/gravatar/connectors/dgt-source-gravatar.connector';
 export { DGTSharedConnectorsModule } from './lib/dgt-shared-connectors.module';
 export { DGTSourceSolidLogin } from './lib/solid/models/dgt-source-solid-login.model';
+export { DGTOIDCService } from './lib/oidc/services/dgt-oidc.service';
