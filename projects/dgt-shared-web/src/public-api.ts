@@ -105,3 +105,4 @@ export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-s
 export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
 export { DGTSourceStateService } from './lib/source/services/dgt-source-state.service';
 export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote.service';
+export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
