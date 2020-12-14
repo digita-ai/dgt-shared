@@ -1,4 +1,4 @@
-import { DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils/public-api';
+import { DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { IStorage } from '@inrupt/solid-client-authn-core';
 import { EventEmitter } from 'events';
 import { map, mergeMap, tap } from 'rxjs/operators';
