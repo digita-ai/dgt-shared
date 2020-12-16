@@ -1,10 +1,10 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, Input, OnInit} from '@angular/core';
 import { DGTColor } from '../../models/dgt-color.model';
 
 @Component({
   selector: 'dgt-chip',
   templateUrl: './dgt-chip.component.html',
-  styleUrls: ['./dgt-chip.component.scss']
+  styleUrls: ['./dgt-chip.component.scss'],
 })
 export class DGTChipComponent implements OnInit {
 

@@ -1,7 +1,7 @@
-import { DGTEvent } from '../models/dgt-event.model';
 import { Observable } from 'rxjs';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTEvent } from '../models/dgt-event.model';
 
 /** Service for managing events. */
 export abstract class DGTEventService {

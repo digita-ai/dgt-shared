@@ -1,11 +1,11 @@
-import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
-import { configuration } from '../../../test.configuration';
 import { async } from '@angular/core/testing';
-import { DGTCacheInMemoryService } from './dgt-cache-in-memory.service';
 import { DGTLDResource } from '@digita-ai/dgt-shared-data/public-api';
-import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils/public-api';
+import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils/lib/configuration/services/dgt-configuration-mock.service';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils/public-api';
+import { configuration } from '../../../test.configuration';
+import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
+import { DGTCacheInMemoryService } from './dgt-cache-in-memory.service';
 
 /* tslint:disable:no-unused-variable */
 

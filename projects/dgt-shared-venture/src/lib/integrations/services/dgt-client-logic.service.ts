@@ -1,9 +1,9 @@
 
+import { DGTLogicService } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { AngularFireFunctions } from 'angularfire2/functions';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { DGTLogicService } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export class DGTClientLogicService implements DGTLogicService {

@@ -1,11 +1,11 @@
 
-import { Observable, of } from 'rxjs';
-import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
+import { DGTLDTypeRegistrationService } from './dgt-ld-type-registration.service';
 
 @DGTInjectable()
 export class DGTLDTypeRegistrationMockService extends DGTLDTypeRegistrationService {

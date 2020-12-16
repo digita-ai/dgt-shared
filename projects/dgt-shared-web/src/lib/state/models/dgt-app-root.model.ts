@@ -1,9 +1,9 @@
-import { ActionReducerMap, Action, MetaReducer } from '@ngrx/store';
+import { Action, ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { EventsMap, EventsMapper } from 'redux-beacon';
 
 export abstract class DGTAppRoot {
     public reducers: ActionReducerMap<any, Action>;
-    public metaReducers: Array<MetaReducer<any>>;
+    public metaReducers: MetaReducer<any>[];
     public events: EventsMap | EventsMapper;
     public actions: {[key: string]: string};
 

@@ -1,12 +1,12 @@
-import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTCacheService } from './dgt-cache.service';
-import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
 export class DGTCacheInMemoryService extends DGTCacheService {
@@ -31,7 +31,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
 
     public delete<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
         this.logger.debug(DGTCacheInMemoryService.name, 'Starting to delete', { cache: this.cache, transformer, resources });
-        
+
         this.cache = this.cache.filter(resource => !resources.some(r => r.uri === resource.uri))
 
         this.logger.debug(DGTCacheInMemoryService.name, 'Finished to delete', { cache: this.cache, transformer, resources });
@@ -49,7 +49,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
                 tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
-                map(data => data.resources)
+                map(data => data.resources),
             )
     }
 
@@ -60,7 +60,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             .pipe(
                 switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
-                switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([]))
+                switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([])),
             );
     }
 

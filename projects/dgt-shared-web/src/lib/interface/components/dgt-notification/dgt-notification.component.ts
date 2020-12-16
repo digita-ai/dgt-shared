@@ -1,10 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DGTNotificationType } from '../../models/dgt-notification-type.model';
 
 @Component({
   selector: 'dgt-notification',
   templateUrl: './dgt-notification.component.html',
-  styleUrls: ['./dgt-notification.component.css']
+  styleUrls: ['./dgt-notification.component.css'],
 })
 export class DGTNotificationComponent {
 

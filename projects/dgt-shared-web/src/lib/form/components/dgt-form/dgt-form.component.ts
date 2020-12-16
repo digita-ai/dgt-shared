@@ -1,11 +1,11 @@
-import { Component, Input, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { DGTFormElementComponent } from '../dgt-form-element/dgt-form-element.component';
 
 @Component({
   selector: 'dgt-form',
   templateUrl: './dgt-form.component.html',
-  styleUrls: ['./dgt-form.component.scss']
+  styleUrls: ['./dgt-form.component.scss'],
 })
 export class DGTFormComponent implements AfterContentInit {
 

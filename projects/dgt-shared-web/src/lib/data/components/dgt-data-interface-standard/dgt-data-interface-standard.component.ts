@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTLDFilterBGP } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'dgt-data-interface-standard',
   templateUrl: './dgt-data-interface-standard.component.html',
-  styleUrls: ['./dgt-data-interface-standard.component.scss']
+  styleUrls: ['./dgt-data-interface-standard.component.scss'],
 })
 /**
  * The default way of displaying data. This component used the data-field component
@@ -64,7 +64,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
 
     if (values && category) {
       this.filterService.run(category.filter, values).subscribe(
-        (vals: DGTDataValue[]) => this.filteredFields = vals
+        (vals: DGTDataValue[]) => this.filteredFields = vals,
       );
       /* const filteredPredicates = _.flatten(category.filters
         .map((filter: DGTLDFilterBGP) => filter.predicates)

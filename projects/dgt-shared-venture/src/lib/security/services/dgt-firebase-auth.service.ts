@@ -1,24 +1,24 @@
 
-import { from as observableFrom, Observable, forkJoin, combineLatest } from 'rxjs';
-import { map, tap, catchError, switchMap } from 'rxjs/operators';
+import { combineLatest, forkJoin, from as observableFrom, Observable } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
+import { DGTDataService } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTAuthService, DGTBaseRootState, DGTStoreService, DGTUser } from '@digita-ai/dgt-shared-web';
+import { LoadEntity } from '@digita-ai/dgt-shared-web';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { User } from 'firebase';
 import * as _ from 'lodash';
-import { SetUser, SetProfile } from '../../state/models/dgt-actions.model';
 import { DGTProfile } from '../../domain/models/dgt-profile.model';
-import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DGTBaseRootState, DGTAuthService, DGTStoreService, DGTUser } from '@digita-ai/dgt-shared-web';
-import { LoadEntity } from '@digita-ai/dgt-shared-web';
+import { SetProfile, SetUser } from '../../state/models/dgt-actions.model';
 import { DGTFirebaseBaseAppState } from '../../state/models/dgt-firebase-base-app-state.model';
-import { DGTDataService } from '@digita-ai/dgt-shared-data';
 
 @DGTInjectable()
 export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAppState>> extends DGTAuthService {
 
   protected user: User;
   protected profile: DGTProfile;
-  protected profiles: Array<DGTProfile>;
+  protected profiles: DGTProfile[];
   public redirectResult: Observable<any>;
 
   constructor(private data: DGTDataService, private authIntance: AngularFireAuth, private logger: DGTLoggerService, private store: DGTStoreService<T>) {
@@ -40,7 +40,7 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
     combineLatest(
       this.authIntance.authState,
       this.store.select(state => state.app.profileList),
-      (user, profiles) => ({ user, profiles })
+      (user, profiles) => ({ user, profiles }),
     )
       .subscribe(slice => {
         let changed = false;
@@ -78,7 +78,7 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
     this.logger.debug(DGTFirebaseAuthService.name, 'Signing-in user.');
 
     return observableFrom(this.authIntance.auth.signInWithEmailAndPassword(email, password)).pipe(
-      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid))
+      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid)),
     );
   }
 
@@ -86,7 +86,7 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
     this.logger.debug(DGTFirebaseAuthService.name, 'Signing-in user with email link.');
 
     return observableFrom(this.authIntance.auth.signInWithEmailLink(email, link)).pipe(
-      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid))
+      switchMap((userCredentials: firebase.auth.UserCredential) => this.data.getEntity<DGTProfile>('profile', userCredentials.user.uid)),
     );
   }
 
@@ -98,7 +98,7 @@ export class DGTFirebaseAuthService<T extends DGTBaseRootState<DGTFirebaseBaseAp
       // URL must be whitelisted in the Firebase Console.
       url: returnUrl,
       // This must be true.
-      handleCodeInApp: true
+      handleCodeInApp: true,
     };
 
     return observableFrom(this.authIntance.auth.sendSignInLinkToEmail(email, actionCodeSettings));

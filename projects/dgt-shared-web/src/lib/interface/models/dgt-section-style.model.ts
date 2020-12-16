@@ -5,5 +5,5 @@ export enum DGTSectionState {
     LOCKED = 'locked',
     NORMAL = 'normal',
     SUCCESS = 'success',
-    WARNING = 'warning'
+    WARNING = 'warning',
 }

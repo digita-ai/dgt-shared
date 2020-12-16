@@ -1,9 +1,9 @@
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 
-import { DGTConfigurationService } from '../../configuration/services/dgt-configuration.service';
 import { DGTConfigurationBase } from '../../configuration/models/dgt-configuration-base.model';
-import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
+import { DGTConfigurationService } from '../../configuration/services/dgt-configuration.service';
 import { DGTInjectable } from '../../decorators/dgt-injectable';
+import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 
 @DGTInjectable()
 export class DGTLoggerService {
@@ -61,8 +61,10 @@ export class DGTLoggerService {
                 }
             } else {
                 if (data) {
+                    // tslint:disable-next-line: no-console
                     console.log('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
                 } else {
+                    // tslint:disable-next-line: no-console
                     console.log('[' + displayDate + ' ' + typeName + '] ' + message);
                 }
             }

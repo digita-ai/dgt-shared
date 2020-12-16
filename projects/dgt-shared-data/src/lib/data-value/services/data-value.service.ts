@@ -1,15 +1,15 @@
 
-import * as _ from 'lodash';
-import { Observable, forkJoin, of } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { switchMap, map } from 'rxjs/operators';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTDataValue } from '../models/data-value.model';
-import { DGTDataGroup } from '../models/data-group.model';
+import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTCategory } from '../../categories/models/dgt-category.model';
-import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTHolder } from '../../holder/models/dgt-holder.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { DGTDataGroup } from '../models/data-group.model';
+import { DGTDataValue } from '../models/data-value.model';
 
 @DGTInjectable()
 /**
@@ -21,7 +21,7 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
   constructor(
     protected logger: DGTLoggerService,
     protected paramChecker: DGTParameterCheckerService,
-    protected filters: DGTLDFilterService
+    protected filters: DGTLDFilterService,
   ) { }
 
   public abstract get(id: string): Observable<DGTDataValue>;
@@ -29,7 +29,6 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
   public abstract save(resources: DGTDataValue[]): Observable<DGTDataValue[]>;
   public abstract delete(resource: DGTDataValue): Observable<DGTDataValue>;
   public abstract getForHolder(holder: DGTHolder): Observable<DGTDataValue[]>;
-
 
   /**
    * get a list of predicates from a list of dataValues
@@ -51,7 +50,7 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
    */
   public getCategoriesWithValues(
     categories: DGTCategory[],
-    values: DGTDataValue[]
+    values: DGTDataValue[],
   ): Observable<DGTCategory[]> {
     this.paramChecker.checkParametersNotNull({ categories, values });
 
@@ -76,13 +75,13 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
   public getGroupsWithValues(
     groups: DGTDataGroup[],
     categories: DGTCategory[],
-    values: DGTDataValue[]
+    values: DGTDataValue[],
   ): Observable<DGTDataGroup[]> {
     this.paramChecker.checkParametersNotNull({ categories, groups, values });
 
     return this.getCategoriesWithValues(categories, values)
       .pipe(
-        map(data => groups.filter(group => data.filter(category => category.groupId === group.id).length > 0))
+        map(data => groups.filter(group => data.filter(category => category.groupId === group.id).length > 0)),
       );
   }
 
@@ -121,7 +120,7 @@ export abstract class DGTDataValueService implements DGTLDResourceService<DGTDat
     return of({ categories })
       .pipe(
         switchMap(data => forkJoin(data.categories.map(category => this.getValuesOfCategory(category, values)))),
-        map(data => _.flatten(data))
+        map(data => _.flatten(data)),
       );
   }
 }

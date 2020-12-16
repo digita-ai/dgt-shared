@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'dgt-form-validation',
   templateUrl: './dgt-form-validation.component.html',
-  styleUrls: ['./dgt-form-validation.component.scss']
+  styleUrls: ['./dgt-form-validation.component.scss'],
 })
 export class DGTFormValidationComponent implements OnInit {
 

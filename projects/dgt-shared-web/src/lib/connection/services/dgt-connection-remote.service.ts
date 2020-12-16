@@ -1,11 +1,11 @@
-import { DGTConnectionService, DGTConnection, DGTConnectionState, DGTLDFilterService, DGTLDFilter, DGTExchange } from '@digita-ai/dgt-shared-data';
+import { DGTConnection, DGTConnectionService, DGTConnectionState, DGTExchange, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { of, Observable, forkJoin } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTConnectionRemoteService extends DGTConnectionService {
@@ -15,7 +15,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
     private logger: DGTLoggerService,
-    private filters: DGTLDFilterService
+    private filters: DGTLDFilterService,
   ) {
     super();
   }
@@ -89,7 +89,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/link/${encodeURIComponent(data.sourceId)}` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.post<any>(data.uri, '', { Authorization: `Bearer ${data.accessToken}` })),
-        map(res => res.data)
+        map(res => res.data),
       );
   }
 
@@ -121,7 +121,7 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
         map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteId)}/connection` })),
         switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
         switchMap(data => this.http.post<T>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
-        map(res => res.data)
+        map(res => res.data),
       );
   }
 }

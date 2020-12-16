@@ -1,6 +1,5 @@
 import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
-
 @DGTInjectable()
 export class DGTLDUtils {
     constructor(private logger: DGTLoggerService) { }

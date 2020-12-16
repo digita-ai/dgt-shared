@@ -1,12 +1,12 @@
-import { Observable, of, forkJoin } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTInvite } from '../models/dgt-invite.model';
 
 /** Transforms linked data to resources, and the other way around. */
@@ -15,7 +15,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -29,7 +29,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
         return forkJoin(resources.map(resource => this.toDomainOne(resource)))
             .pipe(
-                map(resourcesRes => _.flatten(resourcesRes))
+                map(resourcesRes => _.flatten(resourcesRes)),
             );
     }
 
@@ -47,7 +47,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/invites#invite' &&
-                value.subject.value.endsWith('invite#')
+                value.subject.value.endsWith('invite#'),
             );
 
             if (resourceSubjectValues) {
@@ -75,7 +75,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
 
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             const newTriples: DGTLDTriple[] = [
@@ -90,7 +90,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.holder
+                        value: resource.holder,
                     },
                 },
                 {
@@ -99,7 +99,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.state
+                        value: resource.state,
                     },
                 },
                 {
@@ -108,7 +108,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.purpose
+                        value: resource.purpose,
                     },
                 },
             ];
@@ -120,7 +120,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.connection
+                        value: resource.connection,
                     },
                 });
             }
@@ -129,7 +129,7 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                 ...resource,
                 exchange: resource.exchange,
                 uri: resource.uri,
-                triples: newTriples
+                triples: newTriples,
             };
         });
 
@@ -152,16 +152,16 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
             value.subject.value === triple.object.value);
 
         const holder = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/invites#holder'
+            value.predicate === 'http://digita.ai/voc/invites#holder',
         );
         const state = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/invites#state'
+            value.predicate === 'http://digita.ai/voc/invites#state',
         );
         const purpose = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/invites#purpose'
+            value.predicate === 'http://digita.ai/voc/invites#purpose',
         );
         const connection = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/invites#connection'
+            value.predicate === 'http://digita.ai/voc/invites#connection',
         );
 
         return {

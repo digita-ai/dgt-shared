@@ -10,7 +10,7 @@ export interface DGTSparqlResult {
             [key: string]: {
                 type: string,
                 value: string,
-            }
+            },
         }[],
     };
 

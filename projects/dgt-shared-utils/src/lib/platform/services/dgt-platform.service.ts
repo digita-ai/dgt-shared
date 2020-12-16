@@ -1,7 +1,7 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { DGTPlatformType } from '../models/dgt-platform-type.model';
-import { isPlatformServer, isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { DGTInjectable } from '../../decorators/dgt-injectable';
+import { DGTPlatformType } from '../models/dgt-platform-type.model';
 
 @DGTInjectable()
 export class DGTPlatformService {
@@ -13,7 +13,7 @@ export class DGTPlatformService {
             this.type = DGTPlatformType.SERVER;
         } else if (platformId && isPlatformBrowser(platformId)) {
             this.type = DGTPlatformType.BROWSER;
-        } else if(!platformId) {
+        } else if (!platformId) {
             this.type = DGTPlatformType.SERVER;
         }
     }

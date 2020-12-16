@@ -1,18 +1,18 @@
-import { Component, Input, EventEmitter, Output, OnDestroy, HostBinding, ElementRef, Optional, Self, ViewChild } from '@angular/core';
-import { MatFormFieldControl } from '@angular/material';
-import { NgControl, ControlValueAccessor } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
-import * as _ from 'lodash';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Component, ElementRef, EventEmitter, HostBinding, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
 import { DGTFile } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'dgt-form-file',
   templateUrl: './dgt-form-file.component.html',
   styleUrls: ['./dgt-form-file.component.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: DGTFormFileComponent }]
+  providers: [{ provide: MatFormFieldControl, useExisting: DGTFormFileComponent }],
 })
 export class DGTFormFileComponent implements MatFormFieldControl<DGTFile>, OnDestroy, ControlValueAccessor {
   static nextId = 0;
@@ -85,7 +85,7 @@ export class DGTFormFileComponent implements MatFormFieldControl<DGTFile>, OnDes
     private logger: DGTLoggerService,
     private fm: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
   ) {
 
     // Replace the provider from above with this.
@@ -155,7 +155,7 @@ export class DGTFormFileComponent implements MatFormFieldControl<DGTFile>, OnDes
 
   onFilesAdded() {
     const files: { [key: string]: File } = this.file.nativeElement.files;
-    console.log(files);
+
     for (const key in files) {
       // tslint:disable-next-line:radix
       if (!isNaN(parseInt(key))) {

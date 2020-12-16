@@ -1,15 +1,11 @@
-import { JWT, JWK } from '@solid/jose';
-import { Observable, from } from 'rxjs';
+import { JWK, JWT } from '@solid/jose';
+import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 
 const DEFAULT_MAX_AGE = 3600; // Default token expiration, in seconds
 
 export class DGTSourceSolidToken extends JWT {
-
-    constructor(data: any, other: any) {
-        super(data, other);
-    }
 
     static issueFor(resourceServerUri: string, sessionKey: string, clientId: string, idToken: string): Observable<any> {
         if (resourceServerUri == null) {
@@ -40,12 +36,12 @@ export class DGTSourceSolidToken extends JWT {
                         aud,
                         key: importedSessionJwk,
                         iss: clientId,
-                        idToken
+                        idToken,
                     };
 
                     return DGTSourceSolidToken.issue(options);
                 }),
-                switchMap((jwt: any) => from(jwt.encode()))
+                switchMap((jwt: any) => from(jwt.encode())),
             );
     }
 
@@ -77,12 +73,16 @@ export class DGTSourceSolidToken extends JWT {
     }
 
     static isExpired(accessToken: string): boolean {
-        const json = this.decodeToken(accessToken);
+        const json = DGTSourceSolidToken.decodeToken(accessToken);
         let expired = false;
         if (json.exp) {
             const unixNow = Math.round((new Date()).getTime() / 1000);
             expired = json.exp < unixNow;
         }
         return expired;
+    }
+
+    constructor(data: any, other: any) {
+        super(data, other);
     }
 }

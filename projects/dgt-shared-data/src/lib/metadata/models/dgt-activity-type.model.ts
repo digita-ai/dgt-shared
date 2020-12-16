@@ -1,4 +1,4 @@
 export enum DGTActivityType {
     CREATED = 'created',
-    UPDATED = 'updated'
+    UPDATED = 'updated',
 }

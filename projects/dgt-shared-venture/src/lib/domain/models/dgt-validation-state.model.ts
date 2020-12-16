@@ -4,5 +4,5 @@ export enum DGTValidationState {
     VALIDATED = 3,
     EXCHANGED = 4,
     CONFIRMED = 5,
-    ARCHIVED = 6
+    ARCHIVED = 6,
 }

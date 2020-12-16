@@ -1,12 +1,12 @@
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTSecurityCredential } from '../models/dgt-security-credential.model';
 import { DGTSecurityCredentialService } from './dgt-security-credential.service';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { map, switchMap } from 'rxjs/operators';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTSecurityCredentialMockService extends DGTSecurityCredentialService {
@@ -48,8 +48,8 @@ export class DGTSecurityCredentialMockService extends DGTSecurityCredentialServi
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
                     return resource;
-                })
-                )
+                }),
+                ),
             );
     }
 

@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
-import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { Quad, DataFactory } from 'n3';
+import { DataFactory, Quad } from 'n3';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { map, switchMap } from 'rxjs/operators';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
+import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTLDTripleFactoryService } from './dgt-ld-triple-factory.service';
 
 /**
@@ -88,7 +88,6 @@ export class DGTLDRepresentationN3QuadFactory extends DGTLDRepresentationFactory
                 triples: this.triples.createFromQuads(quads, quads[0].subject.value),
             } as DGTLDResource);
         }
-
 
         this.logger.debug(DGTLDRepresentationN3QuadFactory.name, 'Converted Quads to DGTLDResource', resources);
 

@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DGTDataValueService, DGTCategory, DGTDataGroup, DGTDataValue } from '@digita-ai/dgt-shared-data';
-import * as _ from 'lodash';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DGTCategory, DGTDataGroup, DGTDataValue, DGTDataValueService } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'dgt-data-group',
   templateUrl: './dgt-data-group.component.html',
-  styleUrls: ['./dgt-data-group.component.scss']
+  styleUrls: ['./dgt-data-group.component.scss'],
 })
 /** This component acts as a container for categories that belong together */
 export class DGTDataGroupComponent implements OnInit {
@@ -50,7 +50,7 @@ export class DGTDataGroupComponent implements OnInit {
   constructor(
     private datavalueService: DGTDataValueService,
     private paramChecker: DGTParameterCheckerService,
-    private logger: DGTLoggerService
+    private logger: DGTLoggerService,
   ) {
     this.groupedValues = new Map();
     this.valueUpdated = new EventEmitter();
@@ -80,7 +80,7 @@ export class DGTDataGroupComponent implements OnInit {
               .subscribe(valuesOfCategory => {
                 this.groupedValues.set(
                   category.uri,
-                  valuesOfCategory
+                  valuesOfCategory,
                 );
               });
           }

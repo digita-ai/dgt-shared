@@ -1,6 +1,5 @@
 import { Observable } from 'rxjs';
 
-
 import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
 
 export abstract class DGTCryptoService {

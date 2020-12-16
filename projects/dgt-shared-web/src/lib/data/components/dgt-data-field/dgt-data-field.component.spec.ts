@@ -1,9 +1,9 @@
+import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { DGTBrowserDataFieldComponent } from './data-field.component';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from 'test.configuration';
 import { mockValueName } from 'test.data.mock-data';
-import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
-import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTBrowserDataFieldComponent } from './data-field.component';
 
 describe('DGTBrowserDataFieldComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTBrowserDataFieldComponent>(configuration);
@@ -16,7 +16,7 @@ describe('DGTBrowserDataFieldComponent', () => {
           description: 'Full name',
           fields: [
             'http://www.w3.org/2006/vcard/ns#fn',
-            'http://xmlns.com/foaf/0.1/name'
+            'http://xmlns.com/foaf/0.1/name',
         ],
         } as DGTCategoryField;
         testService.component.value = [mockValueName];

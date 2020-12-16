@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { MediaObserver, MediaChange } from '@angular/flex-layout';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MediaChange, MediaObserver } from '@angular/flex-layout';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { of } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
   selector: 'dgt-page',
@@ -16,16 +16,16 @@ import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
         transition(
           ':enter', [
             style({ transform: 'translateX(100%)', opacity: 0 }),
-            animate('350ms', style({ transform: 'translateX(0)', 'opacity': 1 }))
-          ]
+            animate('350ms', style({ transform: 'translateX(0)', 'opacity': 1 })),
+          ],
         ),
         transition(
           ':leave', [
             style({ transform: 'translateX(0)', 'opacity': 1 }),
-            animate('350ms', style({ transform: 'translateX(100%)', 'opacity': 0 }))
-          ]
-        )]
-    )
+            animate('350ms', style({ transform: 'translateX(100%)', 'opacity': 0 })),
+          ],
+        )],
+    ),
   ],
 })
 export class DGTPageComponent implements OnInit {
@@ -77,9 +77,9 @@ export class DGTPageComponent implements OnInit {
           delay(3000),
           tap(() => this.isFabHelpSummaryShown = true),
           delay(15000),
-          tap(() => this.isFabHelpSummaryShown = false)
+          tap(() => this.isFabHelpSummaryShown = false),
         )
-        .subscribe(() => console.log('finished'));
+        .subscribe(() => this.logger.debug(DGTPageComponent.name, 'Finished'));
     }
   }
 

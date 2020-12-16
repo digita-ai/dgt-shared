@@ -1,15 +1,15 @@
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTConnectorType } from '../models/dgt-connector-type.model';
-import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 
 /** Transforms linked data to connectortypes, and the other way around. */
 @DGTInjectable()
@@ -17,7 +17,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -31,7 +31,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
         return forkJoin(resources.map(entity => this.toDomainOne<T>(entity)))
             .pipe(
-                map(connectortypes => _.flatten(connectortypes))
+                map(connectortypes => _.flatten(connectortypes)),
             );
     }
 
@@ -49,7 +49,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
         if (resource && resource.triples) {
             const connectortypesubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/connectortypes#connectortype' &&
-                value.subject.value.endsWith('connectortype#')
+                value.subject.value.endsWith('connectortype#'),
             );
 
             if (connectortypesubjectValues) {
@@ -77,7 +77,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             } as DGTLDNode;
 
             const newTriples: DGTLDTriple[] = [
@@ -92,7 +92,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.description
+                        value: resource.description,
                     },
                 },
                 {
@@ -101,7 +101,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.group
+                        value: resource.group,
                     },
                 },
                 {
@@ -110,7 +110,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.label
+                        value: resource.label,
                     },
                 },
                 {
@@ -119,7 +119,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.icon
+                        value: resource.icon,
                     },
                 },
             ];
@@ -131,7 +131,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
                 icon: resource.icon,
                 group: resource.group,
                 label: resource.label,
-                triples: newTriples
+                triples: newTriples,
             };
         });
 
@@ -154,19 +154,19 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
             value.subject.value === triple.object.value);
 
         const description = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connectortypes#description'
+            value.predicate === 'http://digita.ai/voc/connectortypes#description',
         );
 
         const group = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connectortypes#group'
+            value.predicate === 'http://digita.ai/voc/connectortypes#group',
         );
 
         const label = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connectortypes#label'
+            value.predicate === 'http://digita.ai/voc/connectortypes#label',
         );
 
         const icon = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connectortypes#icon'
+            value.predicate === 'http://digita.ai/voc/connectortypes#icon',
         );
 
         return {

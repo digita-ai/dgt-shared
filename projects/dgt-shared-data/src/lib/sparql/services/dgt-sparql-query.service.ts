@@ -1,6 +1,6 @@
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { Generator, Update, Triple, Term } from 'sparqljs';
+import { Generator, Term, Triple, Update } from 'sparqljs';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
@@ -16,12 +16,12 @@ export class DGTSparqlQueryService {
     public generateSparqlUpdate(
         updatedEntities: DGTLDResource[],
         updateType: 'insertdelete',
-        originalEntities?: DGTLDResource[]
+        originalEntities?: DGTLDResource[],
     ): string {
         if (!updatedEntities) {
             throw new DGTErrorArgument(
                 'updatedEntities should be set.',
-                updatedEntities
+                updatedEntities,
             );
         }
         if (!updateType) {
@@ -30,24 +30,24 @@ export class DGTSparqlQueryService {
         if (updateType === 'insertdelete' && !originalEntities) {
             throw new DGTErrorArgument(
                 'originalEntities should be set.',
-                originalEntities
+                originalEntities,
             );
         }
 
         this.logger.debug(
             DGTSparqlQueryService.name,
             'Starting to generate SparQL for update',
-            { updatedEntities }
+            { updatedEntities },
         );
 
         const updatedTriples: DGTLDTriple[] = _.flatten(
-            updatedEntities.map((entity) => entity.triples)
+            updatedEntities.map((entity) => entity.triples),
         );
 
         this.logger.debug(
             DGTSparqlQueryService.name,
             'Transformed updatedEntities to triples',
-            { updatedTriples, updatedEntities }
+            { updatedTriples, updatedEntities },
         );
 
         const insertTriples: Triple[] = this.convertToTriples(updatedTriples);
@@ -55,12 +55,12 @@ export class DGTSparqlQueryService {
         let deleteTriples: Triple[];
         if (updateType === 'insertdelete') {
             const originalTriples: DGTLDTriple[] = _.flatten(
-                originalEntities.map((entity) => entity.triples)
+                originalEntities.map((entity) => entity.triples),
             );
             this.logger.debug(
                 DGTSparqlQueryService.name,
                 'Transformed originalEntities to triples',
-                { originalTriples, originalEntities }
+                { originalTriples, originalEntities },
             );
             deleteTriples = this.convertToTriples(originalTriples);
         }

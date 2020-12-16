@@ -9,4 +9,3 @@ export interface DGTProfile extends DGTLDResource {
     privateTypeIndex: string;
     typeRegistrations: DGTLDTypeRegistration[];
 }
-

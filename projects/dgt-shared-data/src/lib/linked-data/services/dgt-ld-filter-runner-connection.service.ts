@@ -1,13 +1,13 @@
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { forkJoin, Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { forkJoin, Observable, of } from 'rxjs';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 
+import { map, switchMap } from 'rxjs/operators';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDFilterConnection } from '../models/dgt-ld-filter-connection.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
-import { map, switchMap } from 'rxjs/operators';
 
 @DGTInjectable()
 export class DGTLDFilterRunnerConnectionService implements DGTLDFilterRunnerService<DGTLDFilterConnection> {
@@ -23,7 +23,7 @@ export class DGTLDFilterRunnerConnectionService implements DGTLDFilterRunnerServ
   if (!resources) {
       throw new DGTErrorArgument('Argument triples should be set.', resources);
   }
-  
+
   return of({filter, resources})
   .pipe(
       switchMap(data => forkJoin(resources.map(triple => this.runOne<R>(filter, triple).pipe(map(result => result ? triple : null))))),
@@ -35,7 +35,7 @@ private runOne<R extends DGTLDResource>(filter: DGTLDFilterConnection, resource:
   this.paramChecker.checkParametersNotNull({ filter, resource });
   return this.exchanges.get(resource.exchange).pipe(
       map(exchange => exchange && exchange.connection ? filter.connections.find(connection => connection.uri === exchange.connection) : null),
-      map(holder => holder !== null && holder !== undefined ? true : false)
+      map(holder => holder !== null && holder !== undefined ? true : false),
   );
 }
 }

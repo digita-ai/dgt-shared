@@ -1,12 +1,12 @@
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -47,8 +47,8 @@ export class DGTWorkflowService {
         switchMap(data =>
           data.workflow.destination ?
             this.connectors.save(data.exchange, data.updatedTriples, data.workflow.destination).pipe(
-              map(newTriple => ({ ...data, newTriple }))
-            ) : of(data)
+              map(newTriple => ({ ...data, newTriple })),
+            ) : of(data),
         ),
         map(data => data.triples),
       );

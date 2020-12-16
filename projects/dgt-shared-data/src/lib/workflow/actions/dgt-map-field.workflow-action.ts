@@ -1,8 +1,8 @@
-import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
-import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
 import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
+import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
 
 export class DGTMapFieldWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;

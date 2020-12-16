@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
 
 /** Service for managing typeRegistrations. */
 export abstract class DGTLDTypeRegistrationService {

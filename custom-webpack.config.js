@@ -8,6 +8,9 @@ module.exports = {
         '@sinonjs/text-encoding': 'TextEncoder',
         'isomorphic-webcrypto': 'crypto'
     },
+    stats: {
+        warningsFilter: [/Module not found.*nestjs\/common/i],
+    },
     node: {
         buffer: true,
         Buffer: true,

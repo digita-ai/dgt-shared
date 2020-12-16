@@ -1,12 +1,12 @@
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTSecurityCredential } from '../models/dgt-security-credential.model';
 
@@ -16,7 +16,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -30,7 +30,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
 
         return forkJoin(resources.map(entity => this.toDomainOne<T>(entity)))
             .pipe(
-                map(credentials => _.flatten(credentials))
+                map(credentials => _.flatten(credentials)),
             );
     }
 
@@ -48,7 +48,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
         if (resource && resource.triples) {
             const credentialSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/security#credential' &&
-                value.subject.value.endsWith('credential#')
+                value.subject.value.endsWith('credential#'),
             );
 
             if (credentialSubjectValues) {
@@ -76,7 +76,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
 
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             const newTriples: DGTLDTriple[] = [
@@ -91,7 +91,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.holder
+                        value: resource.holder,
                     },
                 },
                 {
@@ -100,7 +100,7 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.clientSecret
+                        value: resource.clientSecret,
                     },
                 },
             ];
@@ -131,11 +131,11 @@ export class DGTSecurityCredentialTransformerService implements DGTLDTransformer
             value.subject.value === triple.object.value);
 
         const holder = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/credentials#holder'
+            value.predicate === 'http://digita.ai/voc/credentials#holder',
         );
 
         const clientSecret = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/credentials#clientSecret'
+            value.predicate === 'http://digita.ai/voc/credentials#clientSecret',
         );
 
         return {

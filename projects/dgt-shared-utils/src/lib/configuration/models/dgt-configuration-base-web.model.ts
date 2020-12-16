@@ -12,14 +12,14 @@ export interface DGTConfigurationBaseWeb extends DGTConfigurationBase {
             domain: string,
             locale: string,
             language: string,
-            country: string
-        }[]
+            country: string,
+        }[],
     };
     server: {
         uri: string,
     };
     events: {
         file: string,
-        templates: any
+        templates: any,
     };
 }

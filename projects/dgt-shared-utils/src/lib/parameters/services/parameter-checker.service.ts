@@ -15,18 +15,18 @@ export class DGTParameterCheckerService {
    * by default the function will not check objects inside of objects
    * @throws DGTErrorArgument if null values are found
    */
-  public checkParametersNotNull( parameterList: {}, depth: number = 0 ): void {
+  public checkParametersNotNull(parameterList: {}, depth: number = 0): void {
     this.checkParametersNotNullHelper(parameterList, depth);
   }
-  private checkParametersNotNullHelper(parameterList: {}, depth: number = 0, previous: string = '' ): void {
-    if ( depth >= 0 && parameterList && Object.entries(parameterList).length > 0 ) {
+  private checkParametersNotNullHelper(parameterList: {}, depth: number = 0, previous: string = ''): void {
+    if (depth >= 0 && parameterList && Object.entries(parameterList).length > 0) {
       Object.entries(parameterList).forEach(entry => {
         const key = entry[0];
         const value = entry[1];
         if (!value && value !== 0) {
           throw new DGTErrorArgument(previous + key + ' should be set', value);
         }
-        if ( value && typeof value === 'object') {
+        if (value && typeof value === 'object') {
           this.checkParametersNotNullHelper({ ...value }, depth - 1, previous + key + '.');
         }
       });

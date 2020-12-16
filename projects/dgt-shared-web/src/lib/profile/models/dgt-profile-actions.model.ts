@@ -1,4 +1,4 @@
-import { DGTProfile, DGTConnectionSolid, DGTSourceSolid, DGTExchange } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionSolid, DGTExchange, DGTProfile, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
 import { DGTAbstractAction } from '../../state/models/dgt-abstract-action.model';
 import { DGTAction } from '../../state/models/dgt-action.model';
 
@@ -14,7 +14,7 @@ export interface DGTProfileLoadPayload {
 export class DGTProfileLoad implements DGTAbstractAction<DGTProfileLoadPayload> {
   type = DGTProfileActionTypes.LOAD_PROFILE;
 
-  constructor(public payload: DGTProfileLoadPayload, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) { }
+  constructor(public payload: DGTProfileLoadPayload, public onSuccess: DGTAction[] = null, public onFailure: DGTAction[] = null) { }
 }
 
 export interface DGTProfileLoadFinishedPayload {
@@ -25,6 +25,6 @@ export class DGTProfileLoadFinished implements DGTAbstractAction<DGTProfileLoadF
   type = DGTProfileActionTypes.LOAD_PROFILE_FINISHED;
 
   constructor(public payload: DGTProfileLoadFinishedPayload,
-              public onSuccess: Array<DGTAction> = null,
-              public onFailure: Array<DGTAction> = null) { }
+              public onSuccess: DGTAction[] = null,
+              public onFailure: DGTAction[] = null) { }
 }
