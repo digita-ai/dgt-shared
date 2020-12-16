@@ -10,6 +10,9 @@ import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTSecurityPolicy } from '../models/dgt-security-policy.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
+import { DGTSecurityPolicyType } from '../models/dgt-security-policy-type.model';
+import { DGTSecurityPolicyAllowPurpose } from '../models/dgt-security-policy-allow-purpose.model';
+import { DGTSecurityPolicyAdmin } from '../models/dgt-security-policy-admin.model';
 
 /** Transforms linked data to policies, and the other way around. */
 @DGTInjectable()
@@ -80,7 +83,7 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
                 termType: DGTLDTermType.REFERENCE
             } as DGTLDNode;
 
-            const newTriples: DGTLDTriple[] = [
+            let newTriples: DGTLDTriple[] = [
                 {
                     predicate: 'http://digita.ai/voc/policies#policy',
                     subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
@@ -105,6 +108,20 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
                     },
                 },
             ];
+
+            if (resource.type === DGTSecurityPolicyType.ALLOW_PURPOSE) {
+                newTriples = [
+                    ...newTriples,
+                    {
+                        predicate: 'http://digita.ai/voc/policies#purpose',
+                        subject: resourceSubject,
+                        object: {
+                            termType: DGTLDTermType.REFERENCE,
+                            dataType: DGTLDDataType.STRING,
+                            value: (resource as DGTSecurityPolicyAllowPurpose).purpose
+                        },
+                    },]
+            }
 
             return {
                 ...resource,
@@ -140,12 +157,32 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
             value.predicate === 'http://digita.ai/voc/policies#holder'
         );
 
-        return {
-            uri: triple.object.value,
-            holder: holder ? holder.object.value : null,
-            type: type ? type.object.value : null,
-            triples: [...resourceTriples, triple],
-            exchange: null,
-        } as T;
+        const purpose = resourceTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/policies#purpose'
+        );
+
+        let res: DGTSecurityPolicy = null;
+        const parsedType = type ? type.object.value : null;
+
+        if (parsedType === DGTSecurityPolicyType.ALLOW_PURPOSE) {
+            res = {
+                uri: triple.object.value,
+                holder: holder ? holder.object.value : null,
+                purpose: purpose ? purpose.object.value : null,
+                type: parsedType,
+                triples: [...resourceTriples, triple],
+                exchange: null,
+            } as DGTSecurityPolicyAllowPurpose;
+        } else if(parsedType === DGTSecurityPolicyType.ADMIN) {
+            res = {
+                uri: triple.object.value,
+                holder: holder ? holder.object.value : null,
+                type: parsedType,
+                triples: [...resourceTriples, triple],
+                exchange: null,
+            } as DGTSecurityPolicyAdmin;
+        }
+
+        return res as T;
     }
 }

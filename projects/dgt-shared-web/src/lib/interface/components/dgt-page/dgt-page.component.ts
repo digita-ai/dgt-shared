@@ -33,7 +33,10 @@ export class DGTPageComponent implements OnInit {
   @Input() public sidenavEnabled = true;
   /** The width of the side navigation */
   @Input() public sidenavSize = '300px';
-  
+
+  /** Whether the sidenav color scheme should be inverted or not */
+  @Input() public inverted = false;
+
   /** Enables the left rail */
   @Input() public railEnabled = true;
   /** Show header always */

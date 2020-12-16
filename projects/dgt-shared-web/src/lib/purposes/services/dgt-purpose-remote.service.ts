@@ -1,6 +1,6 @@
 import { DGTLDFilter, DGTLDFilterService, DGTPurpose, DGTPurposeService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import * as _ from 'lodash';
 import { DGTExchangeRemoteService } from '../../exchanges/services/dgt-exchange-remote.service';
 import { map, switchMap } from 'rxjs/operators';
@@ -42,7 +42,19 @@ export class DGTPurposeRemoteService extends DGTPurposeService {
             );
     }
     save(resources: DGTPurpose[]): Observable<DGTPurpose[]> {
-        throw new Error('Method not implemented.');
+        this.logger.debug(DGTPurposeRemoteService.name, 'Starting to save', { resources });
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        return of({ resources })
+            .pipe(
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}purpose` })),
+                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                switchMap(data => forkJoin(resources.map(resource => this.http.post<DGTPurpose>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => response.data))))),
+            );
     }
     delete(resource: DGTPurpose): Observable<DGTPurpose> {
         throw new Error('Method not implemented.');
