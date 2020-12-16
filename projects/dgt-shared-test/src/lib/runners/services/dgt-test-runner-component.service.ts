@@ -1,7 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Type } from '@angular/core';
-import { DGTTestRunner } from './dgt-test-runner.service';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DGTTestConfiguration } from '../../configuration/models/dgt-test-configuration.model';
+import { DGTTestRunner } from './dgt-test-runner.service';
 
 export class DGTTestRunnerComponent<T> extends DGTTestRunner {
     public component: T;

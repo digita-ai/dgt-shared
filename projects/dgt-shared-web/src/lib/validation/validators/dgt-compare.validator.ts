@@ -1,5 +1,5 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { ValidatorFn, AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()

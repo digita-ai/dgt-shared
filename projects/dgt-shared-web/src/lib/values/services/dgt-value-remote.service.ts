@@ -1,11 +1,11 @@
-import { DGTDataValue, DGTDataValueService, DGTHolder, DGTLDFilterService, DGTDataValueTransformerService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTDataValue, DGTDataValueService, DGTDataValueTransformerService, DGTHolder, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
-import * as _ from 'lodash';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 @DGTInjectable()
 export class DGTValueRemoteService extends DGTDataValueService {
     constructor(
@@ -15,7 +15,7 @@ export class DGTValueRemoteService extends DGTDataValueService {
         private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
         private transformer: DGTDataValueTransformerService,
         paramChecker: DGTParameterCheckerService,
-        filters: DGTLDFilterService
+        filters: DGTLDFilterService,
     ) {
         super(logger, paramChecker, filters);
     }

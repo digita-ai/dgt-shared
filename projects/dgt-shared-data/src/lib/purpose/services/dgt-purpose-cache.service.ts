@@ -51,7 +51,7 @@ export class DGTPurposeCacheService extends DGTPurposeService {
                 }
 
                 return resource
-            })
+            }),
         })
             .pipe(
                 switchMap(data => this.cache.save(this.transformer, data.resources)),
@@ -69,7 +69,7 @@ export class DGTPurposeCacheService extends DGTPurposeService {
             .pipe(
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources))
+                map(data => _.head(data.resources)),
             );
     }
 

@@ -1,18 +1,18 @@
 
-import { DGTLDFilter } from '../models/dgt-ld-filter.model';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTErrorArgument, DGTMap, DGTLoggerService, DGTParameterCheckerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import * as _ from 'lodash';
-import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
-import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
-import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-combination.service';
+import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
+import { DGTLDFilterRunnerCombinationService } from './dgt-ld-filter-runner-combination.service';
+import { DGTLDFilterRunnerExchangeService } from './dgt-ld-filter-runner-exchange.service';
 import { DGTLDFilterRunnerPartialService } from './dgt-ld-filter-runner-partial.service';
-import { DGTLDFilterSparqlService } from './dgt-ld-filter-sparql-service';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 import { DGTLDFilterSparqlExchangeService } from './dgt-ld-filter-sparql-exchange.service';
 import { DGTLDFilterSparqlPartialService } from './dgt-ld-filter-sparql-partial.service';
+import { DGTLDFilterSparqlService } from './dgt-ld-filter-sparql-service';
 
 /**
  * This service handles DGTLDFilters and their DGTLDFilterRunnerServices / DGTLDFilterSparqlService
@@ -38,7 +38,7 @@ export class DGTLDFilterService {
 
     // sparql services
     this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.paramChecker));
-    this.registerSparqlService( new DGTLDFilterSparqlPartialService(this.paramChecker));
+    this.registerSparqlService(new DGTLDFilterSparqlPartialService(this.paramChecker));
   }
 
   /**

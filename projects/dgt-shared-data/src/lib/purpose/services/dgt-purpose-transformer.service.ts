@@ -1,12 +1,12 @@
-import { Observable, of, forkJoin } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTPurpose } from '../models/dgt-purpose.model';
 
 /** Transforms linked data to resources, and the other way around. */
@@ -15,7 +15,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -29,7 +29,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
         return forkJoin(resources.map(resource => this.toDomainOne(resource)))
             .pipe(
-                map(resourcesRes => _.flatten(resourcesRes))
+                map(resourcesRes => _.flatten(resourcesRes)),
             );
     }
 
@@ -47,7 +47,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/purposes#purpose' &&
-                value.subject.value.endsWith('purpose#')
+                value.subject.value.endsWith('purpose#'),
             );
 
             if (resourceSubjectValues) {
@@ -75,7 +75,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             const newTriples: DGTLDTriple[] = [
@@ -90,7 +90,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.icon
+                        value: resource.icon,
                     },
                 },
                 {
@@ -99,20 +99,20 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.description
+                        value: resource.description,
                     },
                 },
             ];
 
             // add predicates array
-            resource.predicates.forEach( predicate => {
+            resource.predicates.forEach(predicate => {
                 newTriples.push({
                     predicate: 'http://digita.ai/voc/purposes#predicate',
                     subject: resourceSubject,
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: predicate
+                        value: predicate,
                     },
                 });
             });
@@ -125,19 +125,19 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.label
+                        value: resource.label,
                     },
                 });
             }
             if (resource.aclNeeded && resource.aclNeeded.length > 0) {
-                resource.aclNeeded.forEach( acl => {
+                resource.aclNeeded.forEach(acl => {
                     newTriples.push({
                         predicate: 'http://digita.ai/voc/purposes#aclneeded',
                         subject: resourceSubject,
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
-                            value: acl
+                            value: acl,
                         },
                     });
                 });
@@ -147,7 +147,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                 ...resource,
                 exchange: resource.exchange,
                 uri: resource.uri,
-                triples: newTriples
+                triples: newTriples,
             };
         });
 
@@ -170,19 +170,19 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
             value.subject.value === triple.object.value);
 
         const icon = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#icon'
+            value.predicate === 'http://digita.ai/voc/purposes#icon',
         );
         const description = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#description'
+            value.predicate === 'http://digita.ai/voc/purposes#description',
         );
         const label = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#label'
+            value.predicate === 'http://digita.ai/voc/purposes#label',
         );
         const predicates = resourceTriples.filter(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#predicate'
+            value.predicate === 'http://digita.ai/voc/purposes#predicate',
         );
         const aclNeeded = resourceTriples.filter(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#aclneeded'
+            value.predicate === 'http://digita.ai/voc/purposes#aclneeded',
         );
 
         return {
@@ -192,8 +192,8 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
             label: label ? label.object.value : null,
-            predicates: predicates && predicates.length > 0 ? predicates.map( p => p.object.value) : null,
-            aclNeeded: aclNeeded && aclNeeded.length > 0 ? aclNeeded.map( a => a.object.value) : null,
+            predicates: predicates && predicates.length > 0 ? predicates.map(p => p.object.value) : null,
+            aclNeeded: aclNeeded && aclNeeded.length > 0 ? aclNeeded.map(a => a.object.value) : null,
         };
     }
 }

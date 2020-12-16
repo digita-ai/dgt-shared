@@ -1,19 +1,19 @@
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTCategory } from '../models/dgt-category.model';
-import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 
 /** Transforms linked data to categories, and the other way around. */
 @DGTInjectable()
@@ -21,7 +21,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -35,7 +35,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
 
         return forkJoin(resources.map(entity => this.toDomainOne<T>(entity)))
             .pipe(
-                map(categories => _.flatten(categories))
+                map(categories => _.flatten(categories)),
             );
     }
 
@@ -53,7 +53,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         if (resource && resource.triples) {
             const categoriesubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/categories#category' &&
-                value.subject.value.endsWith('category#')
+                value.subject.value.endsWith('category#'),
             );
 
             if (categoriesubjectValues) {
@@ -81,7 +81,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
 
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             } as DGTLDNode;
 
             let newTriples: DGTLDTriple[] = [
@@ -96,7 +96,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.description
+                        value: resource.description,
                     },
                 },
                 {
@@ -105,7 +105,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.filter
+                        value: resource.filter,
                     },
                 },
                 {
@@ -114,7 +114,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.groupId
+                        value: resource.groupId,
                     },
                 },
                 {
@@ -123,7 +123,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.icon
+                        value: resource.icon,
                     },
                 },
                 {
@@ -132,7 +132,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: resource.title
+                        value: resource.title,
                     },
                 },
             ];
@@ -143,7 +143,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                 ...resource,
                 exchange: resource.exchange,
                 uri: resource.uri,
-                triples: newTriples
+                triples: newTriples,
             };
         });
 
@@ -166,19 +166,19 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
             value.subject.value === triple.object.value);
 
         const description = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/categories#description'
+            value.predicate === 'http://digita.ai/voc/categories#description',
         );
 
         const groupId = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/categories#groupId'
+            value.predicate === 'http://digita.ai/voc/categories#groupId',
         );
 
         const icon = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/categories#icon'
+            value.predicate === 'http://digita.ai/voc/categories#icon',
         );
 
         const title = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/categories#title'
+            value.predicate === 'http://digita.ai/voc/categories#title',
         );
 
         const filter = this.filterToDomain(triple, resource);
@@ -225,7 +225,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                 object: {
                     termType: DGTLDTermType.LITERAL,
                     dataType: DGTLDDataType.STRING,
-                    value: filter.type
+                    value: filter.type,
                 },
             },
         ];
@@ -237,7 +237,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
                 object: {
                     termType: DGTLDTermType.REFERENCE,
                     dataType: DGTLDDataType.STRING,
-                    value: predicate
+                    value: predicate,
                 },
             });
         });
@@ -259,12 +259,12 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
 
         const type = resource.triples.find(value =>
             value.subject.value === triple.object.value &&
-            value.predicate === 'http://digita.ai/voc/categoryfilter#type'
+            value.predicate === 'http://digita.ai/voc/categoryfilter#type',
         );
 
         const predicates: string[] = resource.triples.filter(value =>
             value.subject.value === triple.object.value &&
-            value.predicate === 'http://digita.ai/voc/categoryfilter#predicates'
+            value.predicate === 'http://digita.ai/voc/categoryfilter#predicates',
         ).map(predicate => predicate.object.value);
 
         config = {

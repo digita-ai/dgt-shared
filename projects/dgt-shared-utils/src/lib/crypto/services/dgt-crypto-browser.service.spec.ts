@@ -1,6 +1,6 @@
+import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
-import { async } from '@angular/core/testing';
 import { DGTCryptoBrowserService } from './dgt-crypto-browser.service';
 
 /* tslint:disable:no-unused-variable */
@@ -21,8 +21,7 @@ describe('DGTCryptoBrowserService', () => {
                 // private: alg='RS256', d, dp, dq,e='AQAB' ,ext=true, key_ops=['sign'], kty='RSA', n, q, p, qi
                 expect(keyPair).toBeTruthy();
                 done();
-            }
+            },
         )
     }));
 });
-

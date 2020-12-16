@@ -1,9 +1,9 @@
-import { Observable, of, from } from 'rxjs';
-import { ConnectionPool, IResult } from 'mssql';
-import { DGTExchange, DGTPurpose, DGTConnector, DGTLDTriple, DGTSource, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTLDDataType, DGTConnectionService, DGTSourceService, DGTExchangeService, DGTConnectionMSSQLConfiguration, DGTSourceMSSQLConfiguration, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
-import { switchMap, map, tap, catchError } from 'rxjs/operators';
-import { DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTConnection, DGTConnectionMSSQLConfiguration, DGTConnectionService, DGTConnector, DGTExchange, DGTExchangeService, DGTLDDataType, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTLDTriple, DGTPurpose, DGTSource, DGTSourceMSSQLConfiguration, DGTSourceService, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { ConnectionPool, IResult } from 'mssql';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 
 @DGTInjectable()
 export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration, DGTConnectionMSSQLConfiguration> {
@@ -59,13 +59,13 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
                             triples.push({
                                 subject: {
                                     value: exchange.holder,
-                                    termType: DGTLDTermType.REFERENCE
+                                    termType: DGTLDTermType.REFERENCE,
                                 },
                                 predicate: field,
                                 object: {
                                     value,
                                     termType: DGTLDTermType.LITERAL,
-                                    dataType: DGTLDDataType.STRING
+                                    dataType: DGTLDDataType.STRING,
                                 },
                             });
                         }
@@ -157,7 +157,7 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
             );
     }
 
-    public add<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>,): Observable<R[]> {
+    public add<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         this.logger.debug(DGTConnectorMSSQL.name, 'Starting ADD, creating connection pool', { resources, transformer });
 
         return of({ resources, transformer })
@@ -200,17 +200,9 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
     }
 
     private renderSelectQuery(template: string, templateVars: any): string {
-        // const templateVars = {
-        //     id
-        // };
-
         this.logger.debug(DGTConnectorMSSQL.name, 'Starting to render query', { template, templateVars });
 
-        const fillTemplate = function (template, templateVars) {
-            return new Function("return `" + template + "`;").call(templateVars);
-        }
-
-        const query = fillTemplate(template, templateVars);
+        const query = new Function('return `' + template + '`;').call(templateVars);
 
         this.logger.debug(DGTConnectorMSSQL.name, 'Rendered query', { template, templateVars, query });
 
@@ -225,8 +217,8 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
             database: source.configuration.database,
 
             options: {
-                encrypt: false // Use this if you're on Windows Azure
-            }
+                encrypt: false, // Use this if you're on Windows Azure
+            },
         };
     }
 
@@ -237,7 +229,7 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
             try {
                 const config = this.extractConfig(source);
                 this.logger.debug(DGTConnectorMSSQL.name, 'Creating connection pool');
-                const pool = new ConnectionPool(config);
+                pool = new ConnectionPool(config);
                 pool.on('error', err => {
                     this.logger.debug(DGTConnectorMSSQL.name, 'Caught error in connection pool', err);
                 });

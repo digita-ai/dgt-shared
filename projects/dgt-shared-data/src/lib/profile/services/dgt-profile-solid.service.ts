@@ -1,13 +1,13 @@
-import { DGTProfileService } from './dgt-profile.service';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTProfile } from '../models/dgt-profile.model';
 import { Observable, of } from 'rxjs';
-import { switchMap, map, tap } from 'rxjs/operators';
-import { DGTProfileTransformerService } from './dgt-profile-transformer.service';
-import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
+import { DGTProfile } from '../models/dgt-profile.model';
+import { DGTProfileTransformerService } from './dgt-profile-transformer.service';
+import { DGTProfileService } from './dgt-profile.service';
 
 @DGTInjectable()
 /** Service used for retrieving and updating a user's profile */
@@ -44,7 +44,7 @@ export class DGTProfileSolidService extends DGTProfileService {
         switchMap(data => this.typeRegistrations.all(data.profile)
           .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, profile: ({ ...data.profile, typeRegistrations }) })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved type registrations for profile', data)),
-        map(data => data.profile)
+        map(data => data.profile),
       );
   }
 
@@ -61,7 +61,7 @@ export class DGTProfileSolidService extends DGTProfileService {
     return of({ originalProfile, updatedProfile })
       .pipe(
         switchMap(data => this.connector.update([{ original: data.originalProfile, updated: data.updatedProfile }], this.transformer)
-          .pipe(map(updates => updates[0]))
+          .pipe(map(updates => updates[0])),
         ),
       );
   }

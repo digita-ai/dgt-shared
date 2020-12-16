@@ -7,6 +7,6 @@ export class DGTEmail {
             public to: string,
             public from: string,
             public templateType: DGTEmailTemplateType,
-            public attachments?: Array<DGTEmailAttachment>
+            public attachments?: DGTEmailAttachment[],
         ) { }
 }

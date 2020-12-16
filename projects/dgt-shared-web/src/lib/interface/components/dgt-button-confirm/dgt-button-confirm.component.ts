@@ -5,7 +5,7 @@ import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 @Component({
   selector: 'dgt-button-confirm',
   templateUrl: './dgt-button-confirm.component.html',
-  styleUrls: ['./dgt-button-confirm.component.scss']
+  styleUrls: ['./dgt-button-confirm.component.scss'],
 })
 export class DGTButtonConfirmComponent implements OnInit {
 

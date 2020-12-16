@@ -7,7 +7,7 @@ import { DGTSourceSolidTrustedAppTransformerService } from './solid/services/dgt
 
 export const declarations = [];
 export const imports = [
-  DGTSharedUtilsModule
+  DGTSharedUtilsModule,
 ];
 export const providers = [
   DGTConnectorSolid,
@@ -20,6 +20,6 @@ export const providers = [
   declarations,
   imports,
   providers,
-  exports: imports
+  exports: imports,
 })
 export class DGTSharedConnectorsModule { }

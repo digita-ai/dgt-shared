@@ -1,5 +1,5 @@
-import { DGTConnectionState } from './dgt-connection-state.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTConnectionState } from './dgt-connection-state.model';
 import { DGTConnectionType } from './dgt-connection-type.model';
 
 export interface DGTConnection<T> extends DGTLDResource {

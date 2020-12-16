@@ -1,22 +1,24 @@
 
-import { DGTEvent } from '../models/dgt-event.model';
-import { forkJoin, Observable, of, zip } from 'rxjs';
-import { map, tap, switchMap, mergeMap } from 'rxjs/operators';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTEventTransformerService } from './dgt-event-transformer.service';
-import { DGTEventService } from './dgt-event.service';
 import * as _ from 'lodash';
+import { forkJoin, Observable, of, zip } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
 import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
-import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
-import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTEvent } from '../models/dgt-event.model';
+import { DGTEventTransformerService } from './dgt-event-transformer.service';
+import { DGTEventService } from './dgt-event.service';
 
 /** Service for managing events in Solid. */
 @DGTInjectable()
 export class DGTEventSolidService extends DGTEventService {
+
+  readonly predicate = 'http://digita.ai/voc/events#event';
   constructor(
     private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTEventTransformerService,
@@ -27,8 +29,6 @@ export class DGTEventSolidService extends DGTEventService {
   ) {
     super();
   }
-
-  readonly predicate = 'http://digita.ai/voc/events#event';
 
   private isCorrectTypeRegistration = (typeRegistration: DGTLDTypeRegistration) => typeRegistration.forClass === 'http://digita.ai/voc/events#event';
 
@@ -55,7 +55,7 @@ export class DGTEventSolidService extends DGTEventService {
         switchMap(data => zip(...data.files.map(file => this.connector.query<DGTEvent>(file, data.exchange, this.transformer)))),
           // .pipe(map(events => ({ ...data, events: _.flatten(events) })))),
         tap(data => this.logger.debug(DGTEventService.name, 'Retrieved events.', data)),
-        map(data => _.flatten(data))
+        map(data => _.flatten(data)),
       );
   }
 
@@ -82,16 +82,16 @@ export class DGTEventSolidService extends DGTEventService {
             of({})
               .pipe(
                 switchMap(() => this.typeRegistrations.registerForResources(this.predicate, resource, data.profile)),
-                map(typeRegistrations => ({ ...resource, uri: typeRegistrations[0].instance }))
-              )
+                map(typeRegistrations => ({ ...resource, uri: typeRegistrations[0].instance })),
+              ),
+          ),
           )
-          )
-            .pipe(map(resources => ({ ...data, resources })))
+            .pipe(map(updatedResources => ({ ...data, resources: updatedResources }))),
         ),
         switchMap(data => this.connector.add<DGTEvent>(data.resources, this.transformer)
-          .pipe(map(addedEvents => ({ ...data, addedEvents, })))),
+          .pipe(map(addedEvents => ({ ...data, addedEvents })))),
         tap(data => this.logger.debug(DGTEventSolidService.name, 'Added new events', data)),
-        map(data => data.addedEvents)
+        map(data => data.addedEvents),
       );
   }
 
@@ -110,7 +110,7 @@ export class DGTEventSolidService extends DGTEventService {
     return of({ events })
       .pipe(
         switchMap(data => this.connector.delete(data.events, this.transformer)),
-        map(data => events)
+        map(data => events),
       );
   }
 }

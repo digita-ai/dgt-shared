@@ -1,11 +1,11 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
-import { DGTSectionState } from '../../models/dgt-section-style.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import * as _ from 'lodash';
+import { DGTSectionState } from '../../models/dgt-section-style.model';
 
 @Component({
   selector: 'dgt-section',
   templateUrl: './dgt-section.component.html',
-  styleUrls: ['./dgt-section.component.scss']
+  styleUrls: ['./dgt-section.component.scss'],
 })
 export class DGTSectionComponent {
 

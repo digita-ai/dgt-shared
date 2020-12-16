@@ -1,15 +1,15 @@
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTLDFilter } from '../models/dgt-ld-filter.model';
-import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { Observable, of, forkJoin, zip } from 'rxjs';
-import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { mergeMap, tap, map, switchMap } from 'rxjs/operators';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import * as _ from 'lodash';
-import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { forkJoin, Observable, of, zip } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
+import { DGTLDFilter } from '../models/dgt-ld-filter.model';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 
 @DGTInjectable()
 export class DGTLDService {
@@ -20,7 +20,7 @@ export class DGTLDService {
         private exchanges: DGTExchangeService,
         private paramChecker: DGTParameterCheckerService,
         private connectors: DGTConnectorService,
-        private workflows: DGTWorkflowService
+        private workflows: DGTWorkflowService,
     ) {
     }
 
@@ -50,7 +50,7 @@ export class DGTLDService {
             .pipe(
                 switchMap((data) => this.connectors.query<T>(data.exchange, transformer)
                     .pipe(map(resources => ({ ...data, resources })))),
-                switchMap(data => this.workflows.execute<T>(data.exchange, data.resources))
+                switchMap(data => this.workflows.execute<T>(data.exchange, data.resources)),
             );
     }
 }

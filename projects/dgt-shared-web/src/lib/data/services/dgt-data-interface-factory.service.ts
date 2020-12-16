@@ -1,7 +1,7 @@
-import { Injectable, ComponentFactoryResolver, } from '@angular/core';
+import { ComponentFactoryResolver, Injectable } from '@angular/core';
 import { DGTCategory, DGTDataValue } from '@digita-ai/dgt-shared-data';
-import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTDataInterfaceHostDirective } from '@digita-ai/dgt-shared-data';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { DGTDataInterfaceResolverService } from './dgt-data-interface-resolver.service';
 
 @DGTInjectable()

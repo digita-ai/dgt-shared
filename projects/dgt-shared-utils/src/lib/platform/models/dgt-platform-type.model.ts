@@ -1,3 +1,3 @@
 export enum DGTPlatformType {
-    NOT_SET, BROWSER, SERVER
+    NOT_SET, BROWSER, SERVER,
 }

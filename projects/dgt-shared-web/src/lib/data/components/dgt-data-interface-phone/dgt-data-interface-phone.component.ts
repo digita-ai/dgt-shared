@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataValue, DGTDataInterface } from '@digita-ai/dgt-shared-data';
+import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'dgt-data-interface-phone',
   templateUrl: './dgt-data-interface-phone.component.html',
-  styleUrls: ['./dgt-data-interface-phone.component.scss']
+  styleUrls: ['./dgt-data-interface-phone.component.scss'],
 })
 export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface {
 
@@ -51,7 +51,7 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
   ) {
     this.valueUpdated = new EventEmitter();
     this.submit = new EventEmitter();
@@ -79,7 +79,7 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
 
         return {
           key: phoneReference,
-          value
+          value,
         };
       });
 

@@ -1,8 +1,8 @@
 import { async } from '@angular/core/testing';
-import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
-import { configuration } from '../../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTUser } from '@digita-ai/dgt-shared-web';
+import { configuration } from '../../../../../test.configuration';
+import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
 
 describe('DGTPageHeaderProfile', () => {
     const testService = new DGTTestRunnerComponent<DGTPageHeaderProfileComponent>(configuration);
@@ -27,7 +27,7 @@ describe('DGTPageHeaderProfile', () => {
             references: null,
             locale: null,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
         } as DGTUser;
 
         testService.fixture.detectChanges();

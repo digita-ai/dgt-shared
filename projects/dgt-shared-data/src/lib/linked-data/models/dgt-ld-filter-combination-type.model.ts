@@ -1,3 +1,3 @@
 export enum DGTLDFilterByCombinationType {
-    AND, OR
+    AND, OR,
 }

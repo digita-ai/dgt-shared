@@ -1,15 +1,17 @@
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTSourceService } from './dgt-source.service';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTSource } from '../models/dgt-source.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTSource } from '../models/dgt-source.model';
+import { DGTSourceService } from './dgt-source.service';
 
 @DGTInjectable()
 export class DGTSourceMockService extends DGTSourceService {
+
+  public resources: DGTSource<any>[] = [];
 
   constructor(
     private logger: DGTLoggerService,
@@ -19,13 +21,11 @@ export class DGTSourceMockService extends DGTSourceService {
     super();
   }
 
-  public resources: Array<DGTSource<any>> = [];
-
   public get(uri: string): Observable<DGTSource<any>> {
     return of(this.resources.find(e => e.uri === uri));
   }
 
-  public query(filter?: DGTLDFilter): Observable<Array<DGTSource<any>>> {
+  public query(filter?: DGTLDFilter): Observable<DGTSource<any>[]> {
     this.logger.debug(DGTSourceMockService.name, 'Starting to query sources', filter);
 
     return of({ filter, resources: this.resources })
@@ -47,12 +47,12 @@ export class DGTSourceMockService extends DGTSourceService {
                     if (!resource.uri) {
                         resource.uri = this.uri.generate(resource, 'source');
                     }
-                    
+
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
                     return resource;
-                })
-                )
+                }),
+                ),
             );
   }
 

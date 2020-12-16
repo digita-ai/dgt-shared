@@ -2,8 +2,8 @@ import { Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 
 /** Transforms linked data to events, and the other way around. */
 @DGTInjectable()
@@ -11,7 +11,7 @@ export class DGTLDResourceTransformerService implements DGTLDTransformer<DGTLDRe
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**

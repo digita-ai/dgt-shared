@@ -6,7 +6,7 @@ import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 export class DGTErrorService {
 
   constructor(
-    private logger: DGTLoggerService
+    private logger: DGTLoggerService,
   ) { }
 
   public handle(typeName: string, error: Error, caught?: any) {

@@ -1,13 +1,13 @@
+import { DGTConnection, DGTConnectionGravatarConfiguration, DGTConnectionService, DGTConnector, DGTExchange, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTLDTriple, DGTPurpose, DGTSource, DGTSourceGravatarConfiguration, DGTSourceService, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTHttpResponse, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
-import { DGTConnector, DGTPurpose, DGTExchange, DGTSource, DGTLDTriple, DGTConnection, DGTLDTermType, DGTLDResource, DGTLDTransformer, DGTConnectionService, DGTSourceService, DGTConnectionGravatarConfiguration, DGTSourceGravatarConfiguration, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
-import { DGTHttpResponse, DGTLoggerService, DGTHttpService, DGTErrorNotImplemented, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Md5 } from 'ts-md5/dist/md5';
 import { DGTSourceGravatarResponse } from '../models/dgt-source-gravatar-response.model';
-import { map, tap, switchMap } from 'rxjs/operators';
 
 @DGTInjectable()
 export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfiguration, DGTConnectionGravatarConfiguration> {
-    constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService,) {
+    constructor(private logger: DGTLoggerService, private http: DGTHttpService, private connections: DGTConnectionService, private sources: DGTSourceService) {
         super();
     }
 
@@ -56,12 +56,12 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
                 triples.push({
                     subject: {
                         value: exchange.holder,
-                        termType: DGTLDTermType.REFERENCE
+                        termType: DGTLDTermType.REFERENCE,
                     },
                     predicate: source.configuration.usernameField,
                     object: {
                         value: entry.preferredUsername,
-                        termType: DGTLDTermType.LITERAL
+                        termType: DGTLDTermType.LITERAL,
                     },
                 });
             }
@@ -71,12 +71,12 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
                 triples.push({
                     subject: {
                         value: exchange.holder,
-                        termType: DGTLDTermType.REFERENCE
+                        termType: DGTLDTermType.REFERENCE,
                     },
                     predicate: source.configuration.thumbnailField,
                     object: {
                         value: entry.thumbnailUrl,
-                        termType: DGTLDTermType.LITERAL
+                        termType: DGTLDTermType.LITERAL,
                     },
                 });
             }
