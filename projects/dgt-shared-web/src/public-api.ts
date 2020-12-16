@@ -105,3 +105,5 @@ export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-s
 export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
 export { DGTSourceStateService } from './lib/source/services/dgt-source-state.service';
 export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote.service';
+export { DGTConnectionActionTypes } from './lib/connection/models/dgt-connection-actions.model';
+export { DGTSaveConnection } from './lib/connection/models/dgt-connection-actions.model';
