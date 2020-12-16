@@ -18,6 +18,12 @@
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "grep -E '\\.(ts)$' | xargs yarn lint --files",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~7.2.0",
