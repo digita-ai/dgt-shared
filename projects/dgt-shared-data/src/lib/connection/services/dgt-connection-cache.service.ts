@@ -83,4 +83,8 @@ export class DGTConnectionCacheService extends DGTConnectionService {
     public sendTokensForInvite(inviteId: string, fragvalue: string): Observable<DGTConnection<any>> {
         throw new DGTErrorNotImplemented();
     }
+
+    public getConnectionBySessionId(sessionId: string): Observable<DGTConnection<any>> {
+        throw new Error('Method not implemented.');
+    }
 }

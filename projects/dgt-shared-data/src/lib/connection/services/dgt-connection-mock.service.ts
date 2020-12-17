@@ -101,4 +101,8 @@ export class DGTConnectionMockService extends DGTConnectionService {
   public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
+
+  public getConnectionBySessionId(sessionId: string): Observable<DGTConnection<any>> {
+    throw new Error('Method not implemented.');
+  }
 }

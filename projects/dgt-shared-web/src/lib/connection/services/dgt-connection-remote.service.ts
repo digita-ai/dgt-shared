@@ -9,7 +9,6 @@ import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 
 @DGTInjectable()
 export class DGTConnectionRemoteService extends DGTConnectionService {
-
   constructor(
     public store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
     private http: DGTHttpService,
@@ -111,5 +110,9 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
         switchMap(data => this.http.post<T>(data.uri, body, { Authorization: `Bearer ${data.accessToken}`, 'Content-Type': 'application/json' })),
         map(res => res.data)
       );
+  }
+
+  getConnectionBySessionId(sessionId: string): Observable<DGTConnection<any>> {
+    throw new Error('Method not implemented.');
   }
 }
