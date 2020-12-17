@@ -11,7 +11,7 @@ import { DGTSaveConnection } from '../models/dgt-connection-actions.model';
 @DGTInjectable()
 export class DGTConnectionStateService extends DGTConnectionService {
 
-  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService) {
+  constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private logger: DGTLoggerService, private filters: DGTLDFilterService) {
     super();
   }
 
@@ -22,12 +22,9 @@ export class DGTConnectionStateService extends DGTConnectionService {
       throw new DGTErrorArgument('Argument connections should be set.', connections);
     }
 
-    return of({})
-      .pipe(
-        tap(() => this.store.dispatch(new DGTSaveConnection({ connections }))),
-        map(() => connections),
-        take(1),
-      );
+    this.store.dispatch(new DGTSaveConnection({ connections }));
+
+    return of(connections);
   }
 
   public get<T extends DGTConnection<any>>(uri: string): Observable<T> {
@@ -58,7 +55,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
-        switchMap(data => of(data.connections)),
+        switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.connections) : of(data.connections)),
         take(1),
       );
   }
@@ -86,7 +83,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
-        map(data => data.connections ? data.connections.find(c => c.configuration.sessionId === data.sessionId) : null),
+        map(data => data.connections ? data.connections.find(c => c.configuration && (data.sessionId.includes(c.configuration.sessionId))) : null),
         take(1),
       );
   }

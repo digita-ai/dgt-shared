@@ -4,5 +4,4 @@ import { DGTConnectionType } from './dgt-connection-type.model';
 
 export interface DGTConnectionSolid extends DGTConnection<DGTConnectionSolidConfiguration> {
     type: DGTConnectionType.SOLID;
-    session?: string;
  }
