@@ -3,12 +3,9 @@ import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGT
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap, mergeMap } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTSourceRemoteService extends DGTSourceService {
