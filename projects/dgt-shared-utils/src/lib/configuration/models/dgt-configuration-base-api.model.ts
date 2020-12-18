@@ -1,4 +1,4 @@
-import { DGTCacheType } from '@digita-ai/dgt-shared-data';
+import { DGTCacheType } from '../../cache/models/dgt-cache-type.model';
 import { DGTConfigurationBase } from './dgt-configuration-base.model';
 
 /** The configuration of the client */
@@ -16,4 +16,5 @@ export interface DGTConfigurationBaseApi extends DGTConfigurationBase {
         expiration: string;
         secret: string;
     };
+    connectorTypeSolid: string;
 }

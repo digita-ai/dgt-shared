@@ -2,19 +2,19 @@ import { Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTProfile } from '../models/dgt-profile.model';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
-import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
-import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTProfile } from '../models/dgt-profile.model';
 
 @DGTInjectable()
 /** Transforms profiles to linked data and vice-versa */
 export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile> {
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -53,7 +53,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             const profileUri = `${accountUri}/profile`;
             const documentSubject = {
                 value: '#me',
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             triples = [
@@ -63,7 +63,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.fullName
+                        value: profile.fullName,
                     },
                 },
                 {
@@ -72,7 +72,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.avatar ? `${profileUri}/${profile.avatar}` : null
+                        value: profile.avatar ? `${profileUri}/${profile.avatar}` : null,
                     },
                 },
                 {
@@ -81,7 +81,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.publicTypeIndex
+                        value: profile.publicTypeIndex,
                     },
                 },
                 {
@@ -90,7 +90,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.privateTypeIndex
+                        value: profile.privateTypeIndex,
                     },
                 },
             ];
@@ -98,7 +98,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             const newResource: DGTLDResource = {
                 ...profile,
                 uri,
-                triples: [...triples]
+                triples: [...triples],
             };
 
             this.logger.debug(DGTProfileTransformerService.name, 'Transformed profile to linked data', { newEntity: newResource, event: profile });
@@ -126,22 +126,22 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
 
         const fullName = resource.triples.find(value =>
             value.subject.value === uri &&
-            (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name')
+            (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name'),
         );
 
         const avatar = resource.triples.find(value =>
             value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto'
+            value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto',
         );
 
         const publicTypeIndex = resource.triples.find(value =>
             value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex'
+            value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex',
         );
 
         const privateTypeIndex = resource.triples.find(value =>
             value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex'
+            value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex',
         );
 
         return {

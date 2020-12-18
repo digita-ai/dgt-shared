@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
-import { DGTConnection } from '../models/dgt-connection.model';
-import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { Observable } from 'rxjs';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { DGTConnection } from '../models/dgt-connection.model';
 
 @DGTInjectable()
 export abstract class DGTConnectionService implements DGTLDResourceService<DGTConnection<any>> {

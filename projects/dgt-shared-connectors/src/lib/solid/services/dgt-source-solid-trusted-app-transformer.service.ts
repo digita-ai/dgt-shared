@@ -1,10 +1,10 @@
-import { DGTLDTriple, DGTLDTermType, DGTLDTransformer, DGTLDResource, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
-import { Observable, of, forkJoin } from 'rxjs';
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { DGTConnectionSolid, DGTLDResource, DGTLDTermType, DGTLDTransformer, DGTLDTriple } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
+import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
 
 /** Transforms linked data to trustedapps, and the other way around. */
 @DGTInjectable()
@@ -27,7 +27,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         return forkJoin(entities.map(entity => this.toDomainOne(entity)))
             .pipe(
-                map(trustedapps => _.flatten(trustedapps))
+                map(trustedapps => _.flatten(trustedapps)),
             )
     }
 
@@ -46,7 +46,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         if (entity && entity.triples) {
             const trustedAppTriples = entity.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/ns/auth/acl#trustedApp'
+                value.predicate === 'http://www.w3.org/ns/auth/acl#trustedApp',
             );
 
             this.logger.debug(DGTSourceSolidTrustedAppTransformerService.name, 'Found trusted app triples to transform', { trustedAppTriples });
@@ -94,12 +94,12 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
 
         const origin = entity.triples.find(value =>
             value.subject.value === trustedAppTriple.object.value &&
-            value.predicate === 'http://www.w3.org/ns/auth/acl#origin'
+            value.predicate === 'http://www.w3.org/ns/auth/acl#origin',
         );
 
         const modes = entity.triples.filter(value =>
             value.subject.value === trustedAppTriple.object.value &&
-            value.predicate === 'http://www.w3.org/ns/auth/acl#mode'
+            value.predicate === 'http://www.w3.org/ns/auth/acl#mode',
         );
 
         const parsedModes: DGTSourceSolidTrustedAppMode[] = modes ? modes.map(mode => {
@@ -107,7 +107,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
         }) : null;
 
         const triples = entity.triples.filter(value =>
-            value.subject.value === trustedAppTriple.object.value
+            value.subject.value === trustedAppTriple.object.value,
         );
 
         return {

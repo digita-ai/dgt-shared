@@ -1,15 +1,15 @@
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { Observable, of, forkJoin } from 'rxjs';
-import { map, switchMap, tap, mergeMap } from 'rxjs/operators';
-import * as _ from 'lodash';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
-import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 @DGTInjectable()
 export class DGTWorkflowService {
@@ -61,7 +61,7 @@ export class DGTWorkflowService {
     return of({ workflow, resources, exchange })
       .pipe(
         switchMap(data => this.filters.run<T>(workflow.filter, data.resources)
-          .pipe(map(resources => ({ ...data, resources })))),
+          .pipe(map(filteredResources => ({ ...data, resources: filteredResources })))),
         switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.resources)))
           .pipe(map((updatedResources: T[][]) => ({ ...data, updatedResources: _.flatten(updatedResources) })))),
         mergeMap(data => data.workflow.destination ? this.executeForDestination<T>(data.workflow, data.exchange, data.updatedResources) : of(data.resources)),

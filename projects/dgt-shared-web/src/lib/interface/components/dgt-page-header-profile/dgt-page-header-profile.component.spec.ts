@@ -1,7 +1,14 @@
 import { async } from '@angular/core/testing';
+<<<<<<< HEAD
 import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
 import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+=======
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+import { DGTUser } from '@digita-ai/dgt-shared-web';
+import { configuration } from '../../../../../test.configuration';
+import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
+>>>>>>> develop
 
 describe('DGTPageHeaderProfile', () => {
     const testService = new DGTTestRunnerComponent<DGTPageHeaderProfileComponent>(configuration);
@@ -17,6 +24,7 @@ describe('DGTPageHeaderProfile', () => {
         expect(element).toBeTruthy();
     }));
 
+<<<<<<< HEAD
     // it('should show profile link when logged in as individual', async(() => {
     //     testService.component.profile = {
     //         id: '3',
@@ -28,6 +36,19 @@ describe('DGTPageHeaderProfile', () => {
     //         createdAt: new Date(),
     //         updatedAt: new Date()
     //     } as DGTUser;
+=======
+    it('should show profile link when logged in as individual', async(() => {
+        testService.component.profile = {
+            id: '3',
+            email: 'mymove-ut-individual1@digita.ai',
+            emailValidated: true,
+            phone: '000000000',
+            references: null,
+            locale: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+        } as DGTUser;
+>>>>>>> develop
 
     //     testService.fixture.detectChanges();
 

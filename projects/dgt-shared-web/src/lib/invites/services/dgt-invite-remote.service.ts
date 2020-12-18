@@ -1,11 +1,11 @@
-import { DGTInvite, DGTInviteService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
 import { Injectable } from '@angular/core';
+import { DGTInvite, DGTInviteService, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
-import { DGTHttpService, DGTLoggerService, DGTErrorArgument, DGTConfigurationService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @Injectable()
 export class DGTInviteRemoteService extends DGTInviteService {

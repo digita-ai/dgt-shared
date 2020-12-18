@@ -29,7 +29,7 @@ export class DGTFile {
         return res;
     }
 
-    public static fromBuffer(type: string, bufferArray: Array<Buffer>): DGTFile {
+    public static fromBuffer(type: string, bufferArray: Buffer[]): DGTFile {
         let res: DGTFile = null;
 
         // this.logger.debug(DGTFile.name, 'Start creating image from buffer.');

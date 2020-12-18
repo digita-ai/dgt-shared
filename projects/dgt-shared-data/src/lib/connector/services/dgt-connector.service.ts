@@ -1,25 +1,23 @@
+import { DGTConfigurationBase, DGTConfigurationService, DGTErrorArgument, DGTErrorConfig, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument, DGTConfigurationService, DGTErrorConfig, DGTConfigurationBase } from '@digita-ai/dgt-shared-utils';
-import { DGTSourceType } from '../../source/models/dgt-source-type.model';
-import { Observable, forkJoin, of } from 'rxjs';
-import { map, mergeMap, tap, catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
-import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
-import { DGTConnector } from '../models/dgt-connector.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
-import { DGTProfileService } from '../../profile/services/dgt-profile.service';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
+import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTProfileService } from '../../profile/services/dgt-profile.service';
+import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
+import { DGTSourceService } from '../../source/services/dgt-source.service';
+import { DGTConnector } from '../models/dgt-connector.model';
 
 @DGTInjectable()
 export class DGTConnectorService {
 
-  private connectors: DGTMap<DGTSourceType, DGTConnector<any, any>>;
+  private connectors: DGTMap<string, DGTConnector<any, any>>;
 
   constructor(
     private logger: DGTLoggerService,
@@ -30,20 +28,19 @@ export class DGTConnectorService {
     private profiles: DGTProfileService,
     private config: DGTConfigurationService<DGTConfigurationBase>,
     private typeregistrationService: DGTLDTypeRegistrationService,
-    private resourceTransformer: DGTLDResourceTransformerService,
   ) { }
 
-  public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
+  public register(sourceType: string, connector: DGTConnector<any, any>) {
     this.paramChecker.checkParametersNotNull({ sourceType, connector });
 
     if (!this.connectors) {
-      this.connectors = new DGTMap<DGTSourceType, DGTConnector<any, any>>();
+      this.connectors = new DGTMap<string, DGTConnector<any, any>>();
     }
 
     this.connectors.set(sourceType, connector);
   }
 
-  public get(sourceType: DGTSourceType) {
+  public get(sourceType: string) {
     if (!sourceType) {
       throw new DGTErrorArgument('Argument sourceType should be set.', sourceType);
     }
@@ -64,17 +61,13 @@ export class DGTConnectorService {
         mergeMap(data => this.purposes.get(exchange.purpose).pipe(
           map(purpose => ({ ...data, purpose })),
         )),
-        // get profile to pass to upstreamsync
-        mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
-          map(profile => ({ ...data, profile }))
-        ) : of({ ...data, profile: null })),
         mergeMap(data => {
           if (resources.length === 0) {
             this.logger.debug(DGTConnectorService.name, 'triples can not be an empty list');
             throw new DGTErrorArgument('triples can not be an empty list', resources);
           }
           return forkJoin(resources.filter(r => r.triples && r.triples.length > 0).map(resource => this.upstreamSync(
-            data.connector, resource, data.connection, null, exchange, data.profile)
+            data.connector, resource, data.connection, null, exchange, null)
           )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
         }),
         map(data => _.flatten(data.resultFromUpstream)),
@@ -115,6 +108,47 @@ export class DGTConnectorService {
     //     }
     //     return forkJoin(resources.map(resource => this.upstreamSync(
     //       data.connector, resource, data.connection, null, exchange)
+    //     )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
+    //   }),
+    //   map(data => _.flatten(data.resultFromUpstream)),
+    //   // catch error if no connection found or triples was an empty list
+    //   catchError(() => {
+    //     this.logger.debug(DGTConnectorService.name, 'No connection was found for this upstreamSync');
+    //     return [resources];
+    //   }),
+    // );
+    // return this.sources.get(destination).pipe(
+    //   map(source => ({ source })),
+    //   // get connection
+    //   mergeMap(data => this.connections.query({
+    //     type: DGTLDFilterType.PARTIAL,
+    //     partial: { holder: exchange.holder, source: data.source.uri },
+    //   } as DGTLDFilterPartial)
+    //     .pipe(
+    //       tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
+    //       map(connection => connection.length > 0 ? connection : [null]),
+    //       map(connection => ({ ...data, connection: connection[0] })),
+    //     )),
+    //   // check if connection is set
+    //   map(data => {
+    //     if (data.connection !== null) {
+    //       return data;
+    //     } else {
+    //       throw new DGTErrorArgument('No connection found for this upstreamSync', data.connection);
+    //     }
+    //   }),
+    //   // get connector
+    //   map(data => ({ ...data, connector: this.connectors.get(data.source.type) })),
+    //   // get purpose
+    //   mergeMap(data => this.purposes.get(exchange.purpose).pipe(
+    //     map(purpose => ({ ...data, purpose })),
+    //   )),
+    //   mergeMap(data => {
+    //     if (resources.length === 0) {
+    //       throw new DGTErrorArgument('triples can not be an empty list', resources);
+    //     }
+    //     return forkJoin(resources.map(resource => this.upstreamSync(
+    //       data.connector, resource, data.connection, null, exchange),
     //     )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
     //   }),
     //   map(data => _.flatten(data.resultFromUpstream)),
@@ -246,18 +280,19 @@ export class DGTConnectorService {
           .pipe(map(source => ({ source, ...data, connector: this.get(source.type) })))),
         switchMap(data => this.purposes.get(data.exchange.purpose)
           .pipe(map(purpose => ({ ...data, purpose })))),
-        mergeMap(data => data.source.type === DGTSourceType.SOLID ? this.profiles.get(exchange).pipe(
-          map(profile => ({ ...data, profile, typeRegistrations: profile && profile.typeRegistrations ? profile.typeRegistrations.filter(typeRegistration => data.purpose.predicates.includes(typeRegistration.forClass)) : [] }))
-        ) : of({ ...data, profile: null, typeRegistrations: null })),
+        mergeMap(data => this.profiles.get(exchange).pipe(
+          map(profile => ({ ...data, profile, typeRegistrations: profile && profile.typeRegistrations ? profile.typeRegistrations.filter(typeRegistration => data.purpose.predicates.includes(typeRegistration.forClass)) : [] })),
+        )),
         switchMap(data => data.connector.query<T>(null, exchange, transformer)
           .pipe(map(resources => ({ ...data, resources })))),
         switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0
           ? forkJoin(data.typeRegistrations.map(typeRegistration => data.connector.query<T>(typeRegistration.instance, exchange, transformer)))
-          : of([[]])).pipe(
-            map((resourcesOfResources: T[]) =>
-              ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] })
-            )
-          )
+          : of([[]]))
+          .pipe(
+            map((resourcesOfResources) =>
+              ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] }),
+            ),
+          ),
         ),
         map(data => {
           const newRes = data.resources.map((resource: T) => {

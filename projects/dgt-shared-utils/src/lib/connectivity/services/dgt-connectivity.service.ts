@@ -1,8 +1,8 @@
 import { OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DGTPlatformService } from '../../platform/services/dgt-platform.service';
-import { DGTPlatformType } from '../../platform/models/dgt-platform-type.model';
 import { DGTInjectable } from '../../decorators/dgt-injectable';
+import { DGTPlatformType } from '../../platform/models/dgt-platform-type.model';
+import { DGTPlatformService } from '../../platform/services/dgt-platform.service';
 
 @DGTInjectable()
 export class DGTConnectivityService implements OnDestroy {

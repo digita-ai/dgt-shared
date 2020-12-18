@@ -6,13 +6,13 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
 
     // Note: express http converts all headers
     // to lower case.
-    private readonly AUTH_HEADER = "authorization";
-    private readonly LEGACY_AUTH_SCHEME = "JWT";
+    private readonly AUTH_HEADER = 'authorization';
+    private readonly LEGACY_AUTH_SCHEME = 'JWT';
     private readonly BEARER_AUTH_SCHEME = 'bearer';
 
     public fromHeader(header_name) {
         return (request) => {
-            var token = null;
+            let token = null;
             if (request.headers[header_name]) {
                 token = request.headers[header_name];
             }
@@ -22,7 +22,7 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
 
     public fromBodyField(field_name) {
         return (request) => {
-            var token = null;
+            let token = null;
             if (request.body && Object.prototype.hasOwnProperty.call(request.body, field_name)) {
                 token = request.body[field_name];
             }
@@ -32,8 +32,8 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
 
     public fromUrlQueryParameter(param_name) {
         return (request) => {
-            var token = null,
-                parsed_url = url.parse(request.url, true);
+            let token = null;
+            const parsed_url = url.parse(request.url, true);
             if (parsed_url.query && Object.prototype.hasOwnProperty.call(parsed_url.query, param_name)) {
                 token = parsed_url.query[param_name];
             }
@@ -41,15 +41,13 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
         };
     };
 
-
-
     public fromAuthHeaderWithScheme(auth_scheme) {
-        var auth_scheme_lower = auth_scheme.toLowerCase();
+        const auth_scheme_lower = auth_scheme.toLowerCase();
         return (request) => {
 
-            var token = null;
+            let token = null;
             if (request.headers[this.AUTH_HEADER]) {
-                var auth_params = this.parseAuthHeader(request.headers[this.AUTH_HEADER]);
+                const auth_params = this.parseAuthHeader(request.headers[this.AUTH_HEADER]);
                 if (auth_params && auth_scheme_lower === auth_params.scheme.toLowerCase()) {
                     token = auth_params.value;
                 }
@@ -68,8 +66,8 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
         }
 
         return (request) => {
-            var token = null;
-            var index = 0;
+            let token = null;
+            let index = 0;
             while (!token && index < extractors.length) {
                 token = extractors[index].call(this, request);
                 index++;
@@ -78,37 +76,36 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
         }
     };
 
-
     /**
      * This extractor mimics the behavior of the v1.*.* extraction logic.
      *
      * This extractor exists only to provide an easy transition from the v1.*.* API to the v2.0.0
      * API.
      *
-     * This extractor first checks the auth header, if it doesn't find a token there then it checks the 
+     * This extractor first checks the auth header, if it doesn't find a token there then it checks the
      * specified body field and finally the url query parameters.
-     * 
+     *
      * @param options
-     *          authScheme: Expected scheme when JWT can be found in HTTP Authorize header. Default is JWT. 
+     *          authScheme: Expected scheme when JWT can be found in HTTP Authorize header. Default is JWT.
      *          tokenBodyField: Field in request body containing token. Default is auth_token.
      *          tokenQueryParameterName: Query parameter name containing the token. Default is auth_token.
      */
     public versionOneCompatibility(options) {
-        var authScheme = options.authScheme || this.LEGACY_AUTH_SCHEME,
+        const authScheme = options.authScheme || this.LEGACY_AUTH_SCHEME,
             bodyField = options.tokenBodyField || 'auth_token',
             queryParam = options.tokenQueryParameterName || 'auth_token';
 
         return (request) => {
-            var authHeaderExtractor = this.fromAuthHeaderWithScheme(authScheme);
-            var token = authHeaderExtractor(request);
+            const authHeaderExtractor = this.fromAuthHeaderWithScheme(authScheme);
+            let token = authHeaderExtractor(request);
 
             if (!token) {
-                var bodyExtractor = this.fromBodyField(bodyField);
+                const bodyExtractor = this.fromBodyField(bodyField);
                 token = bodyExtractor(request);
             }
 
             if (!token) {
-                var queryExtractor = this.fromUrlQueryParameter(queryParam);
+                const queryExtractor = this.fromUrlQueryParameter(queryParam);
                 token = queryExtractor(request);
             }
 
@@ -117,11 +114,11 @@ export class DGTSecurityPassportStrategySolidJWTExtractorService {
     }
 
     private parseAuthHeader(hdrValue) {
-        var re = /(\S+)\s+(\S+)/;
+        const re = /(\S+)\s+(\S+)/;
         if (typeof hdrValue !== 'string') {
             return null;
         }
-        var matches = hdrValue.match(re);
+        const matches = hdrValue.match(re);
         return matches && { scheme: matches[1], value: matches[2] };
     }
 }

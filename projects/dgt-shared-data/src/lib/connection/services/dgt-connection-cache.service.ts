@@ -51,7 +51,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
                 }
 
                 return resource;
-            })
+            }),
         })
             .pipe(
                 switchMap(data => this.cache.save<T>(this.transformer, data.resources)
@@ -69,7 +69,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
             .pipe(
                 switchMap(data => this.cache.delete<T>(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources))
+                map(data => _.head(data.resources)),
             );
     }
     public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {

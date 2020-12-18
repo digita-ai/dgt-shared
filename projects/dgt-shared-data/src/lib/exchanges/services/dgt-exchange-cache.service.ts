@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { DGTExchangeService } from './dgt-exchange.service';
-import { DGTExchange } from '../models/dgt-exchange.model';
-import { DGTExchangeTransformerService } from './dgt-exchange-transformer.service';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTExchange } from '../models/dgt-exchange.model';
+import { DGTExchangeTransformerService } from './dgt-exchange-transformer.service';
+import { DGTExchangeService } from './dgt-exchange.service';
 
 @DGTInjectable()
 export class DGTExchangeCacheService extends DGTExchangeService {
@@ -51,11 +51,11 @@ export class DGTExchangeCacheService extends DGTExchangeService {
                 }
 
                 return resource
-            })
+            }),
         })
             .pipe(
                 switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(resources => resources))),
+                    .pipe(map(savedResources => savedResources))),
             );
     }
 
@@ -70,7 +70,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
             .pipe(
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources))
+                map(data => _.head(data.resources)),
             );
     }
 }

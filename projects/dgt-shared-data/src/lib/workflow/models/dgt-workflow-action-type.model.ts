@@ -1,3 +1,3 @@
 export enum DGTWorkflowActionType {
-    REMOVE_PREFIX = 'Remove prefix'
+    REMOVE_PREFIX = 'Remove prefix',
 }

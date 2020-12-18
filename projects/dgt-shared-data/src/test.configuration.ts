@@ -6,6 +6,7 @@ import { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 import { DGTConnectionService } from './lib/connection/services/dgt-connection-abstract.service';
 import { DGTConnectionMockService } from './lib/connection/services/dgt-connection-mock.service';
 import { declarations, imports, providers } from './lib/dgt-shared-data.module';
+<<<<<<< HEAD
 import { DGTExchangeMockService } from './lib/exchanges/services/dgt-exchange-mock.service';
 import { DGTExchangeService } from './lib/exchanges/services/dgt-exchange.service';
 import { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
@@ -18,6 +19,11 @@ import { DGTSourceMockService } from './lib/source/services/dgt-source-mock.serv
 import { DGTSourceService } from './lib/source/services/dgt-source.service';
 import { DGTUriFactorySolidService } from './lib/uri/services/dgt-uri-factory-solid.service';
 import { DGTUriFactoryService } from './lib/uri/services/dgt-uri-factory.service';
+=======
+import { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
+import { DGTDataService } from './lib/metadata/services/dgt-data.service';
+import { DGTMockDataService } from './lib/metadata/services/dgt-mock-data.service';
+>>>>>>> develop
 
 export const configuration: DGTTestConfiguration = {
     module: {
@@ -29,6 +35,7 @@ export const configuration: DGTTestConfiguration = {
         providers: [
             ...providers,
             {
+<<<<<<< HEAD
                 provide: DGTCacheService,
                 useClass: DGTCacheInMemoryService,
             },
@@ -63,7 +70,16 @@ export const configuration: DGTTestConfiguration = {
             {
                 provide: DGTLDTypeRegistrationService,
                 useClass: DGTLDTypeRegistrationMockService
+=======
+                provide: DGTMockDatabase,
+                useValue: new DGTMockDatabase([
+                ]),
+            },
+            {
+                provide: DGTDataService,
+                useClass: DGTMockDataService,
+>>>>>>> develop
             },
         ],
-    }
+    },
 };

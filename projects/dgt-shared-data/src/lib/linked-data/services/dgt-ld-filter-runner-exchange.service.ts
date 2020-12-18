@@ -1,7 +1,7 @@
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
@@ -20,7 +20,7 @@ export class DGTLDFilterRunnerExchangeService implements DGTLDFilterRunnerServic
   private runOne(filter: DGTLDFilterExchange, resource: DGTLDResource): boolean {
     this.paramChecker.checkParametersNotNull({ filter, resource });
     const match = filter.exchanges.find(
-      exchange => exchange.uri === resource.exchange
+      exchange => exchange.uri === resource.exchange,
     );
     return match ? true : false;
   }

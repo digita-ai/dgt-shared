@@ -1,10 +1,8 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { DGTProfileMockService, DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationMockService, DGTLDTypeRegistrationService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService, DGTDataValueService, DGTDataValueMockService } from '@digita-ai/dgt-shared-data';
+import { DGTDataService, DGTMockDatabase, DGTMockDataService, DGTQueryService } from '@digita-ai/dgt-shared-data';
 import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
-import { DGTConfigurationService, DGTConfigurationMockService, DGTCryptoBrowserService, DGTCryptoService } from '@digita-ai/dgt-shared-utils';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { DGTHttpService } from '@digita-ai/dgt-shared-utils';
 import { declarations, imports, providers } from './lib/dgt-shared-connectors.module';
-import { HttpClientModule } from '@angular/common/http';
 
 export const configuration: DGTTestConfiguration = {
     module: {
@@ -64,5 +62,5 @@ export const configuration: DGTTestConfiguration = {
                 useClass: DGTCryptoBrowserService
             },
         ],
-    }
+    },
 };

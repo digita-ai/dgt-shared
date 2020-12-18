@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTDataInterfaceDescentComponent } from './dgt-data-interface-descent.component';
+=======
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+import { configuration } from 'test.configuration';
+import { DGTBrowserDataInterfaceDescentComponent } from './data-interface-descent.component';
+>>>>>>> develop
 
 describe('DataInterfaceDescentComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataInterfaceDescentComponent>(configuration);

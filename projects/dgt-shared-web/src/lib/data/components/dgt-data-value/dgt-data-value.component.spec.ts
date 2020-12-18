@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTDataValueComponent } from './dgt-data-value.component';
 import { mockValueName, mockValueRole } from '../../../../test.mock-data';
+=======
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+>>>>>>> develop
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { configuration } from 'test.configuration';
+import { mockValueName, mockValueRole } from 'test.data.mock-data';
+import { DGTBrowserDataValueComponent } from './data-value.component';
 
 describe('DGTBrowserDataValueComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataValueComponent>(configuration);
@@ -21,13 +28,13 @@ describe('DGTBrowserDataValueComponent', () => {
 
     describe('onValueUpdated function', () => {
         it('should throw DGTErrorArgument when value is null', () => {
-            expect( () =>
-                testService.component.onValueUpdated(null, 'test')
+            expect(() =>
+                testService.component.onValueUpdated(null, 'test'),
             ).toThrowError(DGTErrorArgument);
         });
         it('should throw DGTErrorArgument when newObject is null', () => {
-            expect( () =>
-                testService.component.onValueUpdated(mockValueName, null)
+            expect(() =>
+                testService.component.onValueUpdated(mockValueName, null),
             ).toThrowError(DGTErrorArgument);
         });
 

@@ -1,7 +1,7 @@
-import { DGTReducerMethod } from './dgt-reducer-method.model';
 import { DGTAction } from './dgt-action.model';
+import { DGTReducerMethod } from './dgt-reducer-method.model';
 
-export function reduceFactory<T>(initialState: T, methods: Array<DGTReducerMethod<DGTAction, T>>): (state: T, action: DGTAction) => T {
+export function reduceFactory<T>(initialState: T, methods: DGTReducerMethod<DGTAction, T>[]): (state: T, action: DGTAction) => T {
     return (state: T, action: DGTAction) => {
         let res: T = state;
 

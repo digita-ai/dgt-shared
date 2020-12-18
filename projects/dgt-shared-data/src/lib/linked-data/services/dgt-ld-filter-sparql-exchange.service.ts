@@ -1,10 +1,8 @@
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
-import { DGTConfigurationService, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDFilterSparqlService } from './dgt-ld-filter-sparql-service';
-import { DGTConfigurationBaseApi } from '../../configuration/models/dgt-configuration-base-api.model';
 
 /** Service that allow conversion from an exchange filter to a SparQL query */
 @DGTInjectable()

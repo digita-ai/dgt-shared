@@ -1,14 +1,14 @@
 
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-combination-type.model';
 import { DGTLDFilterCombination } from '../models/dgt-ld-filter-combination.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTParameterCheckerService, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { Observable, forkJoin } from 'rxjs';
-import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-combination-type.model';
-import * as _ from 'lodash';
-import { map } from 'rxjs/operators';
-import { DGTLDFilterService } from './dgt-ld-filter.service';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
+import { DGTLDFilterService } from './dgt-ld-filter.service';
 
 @DGTInjectable()
 export class DGTLDFilterRunnerCombinationService implements DGTLDFilterRunnerService<DGTLDFilterCombination> {

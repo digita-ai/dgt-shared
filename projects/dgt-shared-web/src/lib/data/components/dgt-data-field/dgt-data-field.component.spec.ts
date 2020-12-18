@@ -1,8 +1,16 @@
+import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+<<<<<<< HEAD
 import { DGTDataFieldComponent } from './dgt-data-field.component';
 import { configuration } from '../../../../test.configuration';
 import { mockValueName } from '../../../../test.mock-data';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+=======
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { configuration } from 'test.configuration';
+import { mockValueName } from 'test.data.mock-data';
+import { DGTBrowserDataFieldComponent } from './data-field.component';
+>>>>>>> develop
 
 describe('DGTDataFieldComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataFieldComponent>(configuration);
@@ -11,6 +19,7 @@ describe('DGTDataFieldComponent', () => {
 
     beforeEach(() => {
         hostElement = testService.fixture.nativeElement;
+<<<<<<< HEAD
         // testService.component.field = {
         //   description: 'Full name',
         //   fields: [
@@ -19,6 +28,16 @@ describe('DGTDataFieldComponent', () => {
         // ],
         // } as DGTCategoryField;
         testService.component.value = mockValueName;
+=======
+        testService.component.field = {
+          description: 'Full name',
+          fields: [
+            'http://www.w3.org/2006/vcard/ns#fn',
+            'http://xmlns.com/foaf/0.1/name',
+        ],
+        } as DGTCategoryField;
+        testService.component.value = [mockValueName];
+>>>>>>> develop
         testService.fixture.detectChanges();
     });
 

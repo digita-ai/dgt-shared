@@ -1,10 +1,9 @@
-import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
+import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 
 @DGTInjectable()
 export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGTLDFilterBGP> {
@@ -34,7 +33,7 @@ export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGT
         const res = { ...resource };
 
         res.triples = res.triples.filter(triple => filter.predicates.find(
-            predicate => predicate === triple.predicate
+            predicate => predicate === triple.predicate,
         ))
 
         return res;

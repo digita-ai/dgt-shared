@@ -1,14 +1,14 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DGTNotification } from '../../models/dgt-notification.model';
 
 @Component({
   selector: 'dgt-notifications',
   templateUrl: './dgt-notifications.component.html',
-  styleUrls: ['./dgt-notifications.component.css']
+  styleUrls: ['./dgt-notifications.component.css'],
 })
 export class DGTNotificationsComponent {
 
-  @Input() public notifications: Array<DGTNotification>;
+  @Input() public notifications: DGTNotification[];
   @Output() public notificationDismissed: EventEmitter<DGTNotification> = new EventEmitter<DGTNotification>();
 
   constructor() { }

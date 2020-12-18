@@ -1,12 +1,12 @@
-import { Observable, of } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTInviteService } from './dgt-invite-abstract.service';
-import { DGTInvite } from '../models/dgt-invite.model';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTInvite } from '../models/dgt-invite.model';
+import { DGTInviteService } from './dgt-invite-abstract.service';
 
 @DGTInjectable()
 export class DGTInviteMockService extends DGTInviteService {
@@ -45,12 +45,12 @@ export class DGTInviteMockService extends DGTInviteService {
                     if (!resource.uri) {
                         resource.uri = this.uri.generate(resource, 'invite');
                     }
-                    
+
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
                     return resource;
-                })
-                )
+                }),
+                ),
             );
   }
 

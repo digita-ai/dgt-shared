@@ -1,7 +1,6 @@
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { DGTQuery } from '../models/dgt-query.model';
 
-
 @DGTInjectable()
 export class DGTQueryService {
     public execute<T>(entities: T, query: DGTQuery): T {

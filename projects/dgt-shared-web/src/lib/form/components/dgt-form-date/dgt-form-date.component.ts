@@ -1,18 +1,18 @@
-import { Component, Input, EventEmitter, Output, OnDestroy, HostBinding, ElementRef, Optional, Self, HostListener } from '@angular/core';
-import { MatFormFieldControl } from '@angular/material';
-import { NgControl, FormGroup, FormControl, Validators, ControlValueAccessor } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { FocusMonitor } from '@angular/cdk/a11y';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { Component, ElementRef, EventEmitter, HostBinding, HostListener, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NgControl, Validators } from '@angular/forms';
+import { MatFormFieldControl } from '@angular/material';
+import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import moment from 'moment';
-import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'dgt-form-date',
   templateUrl: './dgt-form-date.component.html',
   styleUrls: ['./dgt-form-date.component.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: DGTFormDateComponent }]
+  providers: [{ provide: MatFormFieldControl, useExisting: DGTFormDateComponent }],
 })
 export class DGTFormDateComponent implements MatFormFieldControl<Date>, OnDestroy, ControlValueAccessor {
   static nextId = 0;
@@ -50,7 +50,7 @@ export class DGTFormDateComponent implements MatFormFieldControl<Date>, OnDestro
   public get day(): number {
     return this._day;
   }
-  public set day(v: number
+  public set day(v: number,
   ) {
     this.logger.debug(DGTFormDateComponent.name, 'Updating day', { oldValue: this._day, newValue: v });
 
@@ -136,17 +136,17 @@ export class DGTFormDateComponent implements MatFormFieldControl<Date>, OnDestro
     private logger: DGTLoggerService,
     private fm: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
   ) {
     this.formGroup = new FormGroup({
       'year': new FormControl(this.year, [
-        Validators.required
+        Validators.required,
       ]),
       'month': new FormControl(this.month, [
-        Validators.required
+        Validators.required,
       ]),
       'day': new FormControl(this.day, [
-        Validators.required
+        Validators.required,
       ]),
     });
 

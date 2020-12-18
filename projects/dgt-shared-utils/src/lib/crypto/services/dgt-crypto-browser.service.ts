@@ -1,9 +1,9 @@
-import { DGTCryptoService } from './dgt-crypto.service';
-import { from, forkJoin, Observable } from 'rxjs';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { forkJoin, from, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
-import { DGTInjectable } from '../../decorators/dgt-injectable';
+import { DGTCryptoService } from './dgt-crypto.service';
 
 @DGTInjectable()
 export class DGTCryptoBrowserService extends DGTCryptoService {
@@ -23,12 +23,12 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
                 hash: { name: 'SHA-256' },
             },
             true,
-            ['sign', 'verify']
+            ['sign', 'verify'],
         ))
             .pipe(
                 switchMap(data => forkJoin(
                     crypto.subtle.exportKey('jwk', data.publicKey),
-                    crypto.subtle.exportKey('jwk', data.privateKey)
+                    crypto.subtle.exportKey('jwk', data.privateKey),
                 )),
                 map(data => {
                     const [publicJwk, privateJwk] = data;
@@ -36,8 +36,8 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
                     return { publicKey: publicJwk, privateKey: privateJwk };
                 }),
                 tap(res =>
-                    this.logger.debug(DGTCryptoBrowserService.name, 'Generated keypair', { res })
-                )
+                    this.logger.debug(DGTCryptoBrowserService.name, 'Generated keypair', { res }),
+                ),
             );
     }
 

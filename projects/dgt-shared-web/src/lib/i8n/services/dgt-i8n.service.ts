@@ -1,9 +1,9 @@
 import { Injector } from '@angular/core';
+import { DGTInjectable, DGTLoggerService, DGTPlatformService, DGTPlatformType } from '@digita-ai/dgt-shared-utils';
+import { TranslateService } from '@ngx-translate/core';
 import * as locale2 from 'locale2';
 import * as _ from 'lodash';
 import { DGTI8NLocale } from '../models/dgt-i8n-locale.model';
-import { TranslateService } from '@ngx-translate/core';
-import { DGTInjectable, DGTLoggerService, DGTPlatformService, DGTPlatformType } from '@digita-ai/dgt-shared-utils';
 
 @DGTInjectable()
 export class DGTI8NService {
@@ -12,7 +12,7 @@ export class DGTI8NService {
       private platform: DGTPlatformService,
       private injector: Injector,
       private translate: TranslateService,
-      private logger: DGTLoggerService
+      private logger: DGTLoggerService,
     ) { }
 
   public getUrlLocale(domainLocaleMapping: any): DGTI8NLocale {

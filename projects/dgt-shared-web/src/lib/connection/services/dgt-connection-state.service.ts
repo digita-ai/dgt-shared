@@ -1,11 +1,11 @@
-import { DGTConnectionService, DGTConnection, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTConnection, DGTConnectionService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { of, Observable } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTConnectionStateService extends DGTConnectionService {
@@ -29,8 +29,8 @@ export class DGTConnectionStateService extends DGTConnectionService {
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
-        map(data => data.connections ? data.connections.find(c => c.uri === data.uri) : null),
         take(1),
+        map(data => data.connections ? _.cloneDeep(data.connections.find(c => c.uri === data.uri)) : null),
       );
   }
 

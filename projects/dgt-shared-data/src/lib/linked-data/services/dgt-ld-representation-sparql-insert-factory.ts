@@ -1,13 +1,13 @@
-import { forkJoin, Observable, of } from 'rxjs';
-import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { Generator, Update, Triple, Term, UpdateOperation } from 'sparqljs';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { Generator, Term, Triple, Update, UpdateOperation } from 'sparqljs';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { map, switchMap } from 'rxjs/operators';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
+import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 
 @DGTInjectable()
 export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationFactory<string> {
@@ -34,20 +34,20 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
                     .pipe(map(updates => ({ ...data, updates })))),
                 map(data => {
 
-                    let query: Update = {
+                    const query: Update = {
                         type: 'update',
                         prefixes: {},
                         updates: data.updates,
                     };
 
-                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query object.', { query, });
+                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query object.', { query });
 
                     const body = this.generator.stringify(query);
 
-                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query string.', { body, query, });
+                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Created query string.', { body, query });
 
                     return body;
-                })
+                }),
             )
     }
 
@@ -65,7 +65,7 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
         return of({ resource, transformer })
             .pipe(
                 switchMap(data => data.transformer.toTriples([data.resource])
-                    .pipe(map(transformed => ({ ...data, transformed, triples: _.flatten(transformed.map(resource => resource.triples)) })))),
+                    .pipe(map(transformed => ({ ...data, transformed, triples: _.flatten(transformed.map(transformedResource => transformedResource.triples)) })))),
                 map(data => {
                     const parsedTriples: Triple[] = data.triples.map((triple: DGTLDTriple) => {
                         let object: Term = `${triple.object.value}` as Term;
@@ -81,11 +81,11 @@ export class DGTLDRepresentationSparqlInsertFactory extends DGTLDRepresentationF
                         };
                     });
 
-                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Parsed triples.', { insertTriples: parsedTriples, });
+                    this.logger.debug(DGTLDRepresentationSparqlInsertFactory.name, 'Parsed triples.', { insertTriples: parsedTriples });
 
                     return {
                         updateType: 'insert',
-                        insert: [{ type: 'bgp', triples: parsedTriples, }],
+                        insert: [{ type: 'bgp', triples: parsedTriples }],
                     };
                 }),
             )

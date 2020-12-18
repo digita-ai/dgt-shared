@@ -1,7 +1,7 @@
-import * as _ from 'lodash';
-import { User } from 'firebase';
-import { DGTProfile } from '../../domain/models/dgt-profile.model';
 import { DGTAbstractAction, DGTAction } from '@digita-ai/dgt-shared-web';
+import { User } from 'firebase';
+import * as _ from 'lodash';
+import { DGTProfile } from '../../domain/models/dgt-profile.model';
 
 export const ActionTypes = {
   SET_USER: '[App] Set user',
@@ -11,13 +11,13 @@ export const ActionTypes = {
 export class SetUser implements DGTAbstractAction<User> {
   type = ActionTypes.SET_USER;
 
-  constructor(public payload: User, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
+  constructor(public payload: User, public onSuccess: DGTAction[] = null, public onFailure: DGTAction[] = null) {
   }
 }
 
 export class SetProfile implements DGTAbstractAction<DGTProfile> {
   type = ActionTypes.SET_PROFILE;
 
-  constructor(public payload: DGTProfile, public onSuccess: Array<DGTAction> = null, public onFailure: Array<DGTAction> = null) {
+  constructor(public payload: DGTProfile, public onSuccess: DGTAction[] = null, public onFailure: DGTAction[] = null) {
   }
 }

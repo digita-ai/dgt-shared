@@ -79,5 +79,5 @@ export const configuration: DGTTestConfiguration = {
                 useClass: DGTDataValueMockService
             },
         ],
-    }
+    },
 };

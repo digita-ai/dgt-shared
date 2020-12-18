@@ -1,14 +1,14 @@
-import { Component, Input, ViewChild, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import * as _ from 'lodash';
+import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTParameterCheckerService, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTDataInterfaceHostDirective, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { DGTDataInterfaceFactoryService } from '../../services/dgt-data-interface-factory.service';
-import { DGTDataValue, DGTDataInterfaceHostDirective } from '@digita-ai/dgt-shared-data';
 
 @Component({
   selector: 'dgt-data-category',
   templateUrl: './dgt-data-category.component.html',
-  styleUrls: ['./dgt-data-category.component.scss']
+  styleUrls: ['./dgt-data-category.component.scss'],
 })
 export class DGTDataCategoryComponent implements AfterViewInit {
 
@@ -48,7 +48,7 @@ export class DGTDataCategoryComponent implements AfterViewInit {
   constructor(
     private interfaces: DGTDataInterfaceFactoryService,
     private paramChecker: DGTParameterCheckerService,
-    private logger: DGTLoggerService
+    private logger: DGTLoggerService,
   ) {
     this.valueUpdated = new EventEmitter();
     this.infoClicked = new EventEmitter();

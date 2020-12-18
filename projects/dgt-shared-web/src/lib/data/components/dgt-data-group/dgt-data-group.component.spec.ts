@@ -1,7 +1,13 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+<<<<<<< HEAD
 import { configuration } from '../../../../test.configuration';
 import { mockValueName, mockGroupIdentiy, mockValues, mockCategoryName } from '../../../../test.mock-data';
 import { DGTDataGroupComponent } from './dgt-data-group.component';
+=======
+import { configuration } from 'test.configuration';
+import { mockCategoryName, mockGroupIdentiy, mockValueName, mockValues } from 'test.data.mock-data';
+import { DGTDataGroupComponent } from './data-group.component';
+>>>>>>> develop
 
 describe('DGTBrowserDataGroupComponent', () => {
 
@@ -22,13 +28,13 @@ describe('DGTBrowserDataGroupComponent', () => {
       spyOn(testService.component.valueUpdated, 'emit');
       testService.component.onValueUpdated({
         value: mockValueName,
-        newObject: mockValueName.object.value
+        newObject: mockValueName.object.value,
       });
       expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
     });
     it('should throw error when val is null', () => {
-      expect( () =>
-        testService.component.onValueUpdated(null)
+      expect(() =>
+        testService.component.onValueUpdated(null),
       ).toThrow();
     });
   });

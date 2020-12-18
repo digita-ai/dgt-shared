@@ -4,5 +4,5 @@ export enum DGTLoggerLevel {
     WARN = 4,
     INFO = 3,
     DEBUG = 2,
-    TRACE = 1
+    TRACE = 1,
 }

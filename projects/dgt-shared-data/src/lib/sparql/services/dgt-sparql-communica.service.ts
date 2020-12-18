@@ -1,18 +1,18 @@
 
-import { DGTSparqlService } from './dgt-sparql.service';
-import { Observable, from, of } from 'rxjs';
-import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.model';
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
 import { ActorInitSparql } from '@comunica/actor-init-sparql';
 import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
-import { switchMap, map } from 'rxjs/operators';
-import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { Store, Quad, Quad_Subject, Quad_Predicate, Quad_Object, DataFactory, Term } from 'n3';
+import { IQueryResult } from '@comunica/actor-init-sparql/index-browser';
+import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DataFactory, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Store, Term } from 'n3';
+import { from, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
+import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.model';
 import { DGTSparqlResult } from '../models/dgt-sparql-result.model';
-import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation';
-import { IQueryResult } from '@comunica/actor-init-sparql/index-browser';
+import { DGTSparqlService } from './dgt-sparql.service';
 
 @DGTInjectable()
 export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDatasetMemory> {
@@ -33,10 +33,10 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
             this.engine.query(query,
                 {
                     sources: [
-                        { type: 'rdfjsSource', value: store }
-                    ]
-                }
-            )
+                        { type: 'rdfjsSource', value: store },
+                    ],
+                },
+            ),
         )
             .pipe(
                 map((result: IQueryResult) => ({ result: result.type === 'bindings' ? result as IActorQueryOperationOutputBindings : null })),
@@ -50,11 +50,11 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
                             const res: DGTSparqlResult = {
                                 head: {
                                     vars: data.result.variables,
-                                    link: null
+                                    link: null,
                                 },
                                 results: {
-                                    bindings: bindingsList as any
-                                }
+                                    bindings: bindingsList as any,
+                                },
                             }
 
                             observer.next(res);

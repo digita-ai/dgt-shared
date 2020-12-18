@@ -1,13 +1,16 @@
+import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
-import { async } from '@angular/core/testing';
-import { DGTWorkflowService } from './dgt-workflow.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
+<<<<<<< HEAD
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
 import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
 import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTConfigurationMockService } from 'projects/dgt-shared-utils/src/lib/configuration/services/dgt-configuration-mock.service';
+=======
+import { DGTWorkflowService } from './dgt-workflow.service';
+>>>>>>> develop
 
 /* tslint:disable:no-unused-variable */
 
@@ -23,6 +26,7 @@ describe('DGTWorkflowService', () => {
         const predicate = 'digita.ai/test'
 
         const workflow: DGTWorkflow = {
+<<<<<<< HEAD
             filter: {
                 type: DGTLDFilterType.BGP,
                 predicates: ['http://www.w3.org/2006/vcard/ns#fn'],
@@ -32,6 +36,11 @@ describe('DGTWorkflowService', () => {
                 new DGTRemovePrefixWorkflowAction('http://www.w3.org/2006/vcard/ns#fn', 'Ar', new DGTLoggerService(new DGTConfigurationMockService())),
             ],
             destination: 'source#2',
+=======
+            predicates: [predicate],
+            actions: [],
+            source: null, // TODO
+>>>>>>> develop
         };
         testService.service.register(workflow);
     }));

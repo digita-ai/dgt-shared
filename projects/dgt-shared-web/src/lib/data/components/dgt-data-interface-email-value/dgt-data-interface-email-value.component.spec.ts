@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTDataInterfaceEmailValueComponent } from './dgt-data-interface-email-value.component';
+=======
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+import { configuration } from 'test.configuration';
+import { DGTBrowserDataInterfaceEmailValueComponent } from './data-interface-email-value.component';
+>>>>>>> develop
 
 describe('DGTDataInterfaceEmailValueComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataInterfaceEmailValueComponent>(configuration);

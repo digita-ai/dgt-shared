@@ -1,7 +1,14 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+<<<<<<< HEAD
 import { configuration } from '../../../../test.configuration';
 import { mockValueName, mockCategoryName, mockValueRole } from '../../../../test.mock-data';
 import { DGTDataCategoryComponent } from './dgt-data-category.component';
+=======
+import { Navigate } from '@digita-ai/dgt-shared-web';
+import { configuration } from 'test.configuration';
+import { mockCategoryName, mockValueName, mockValueRole, mockValues } from 'test.data.mock-data';
+import { DGTDataCategoryComponent } from './data-category.component';
+>>>>>>> develop
 
 describe('DGTBrowserDataCategoryComponent', () => {
 
@@ -16,6 +23,7 @@ describe('DGTBrowserDataCategoryComponent', () => {
       testService.fixture.detectChanges();
     });
 
+<<<<<<< HEAD
     // xdescribe('viewCategoryPage function', () => {
     //     it('should dispatch Navigate', () => {
     //         spyOn(testService.component.store, 'dispatch');
@@ -23,21 +31,30 @@ describe('DGTBrowserDataCategoryComponent', () => {
     //         expect(testService.component.store.dispatch).toHaveBeenCalledWith(new Navigate( { path: [`/data/category/${mockCategoryName.title}`] } ));
     //     });
     // });
+=======
+    describe('viewCategoryPage function', () => {
+        it('should dispatch Navigate', () => {
+            spyOn(testService.component.store, 'dispatch');
+            testService.component.viewCategoryPage(mockCategoryName);
+            expect(testService.component.store.dispatch).toHaveBeenCalledWith(new Navigate({ path: [`/data/category/${mockCategoryName.title}`] }));
+        });
+    });
+>>>>>>> develop
 
     describe('onValueUpdated function', () => {
         it('should throw error when value is null', () => {
-            expect( () =>
-                testService.component.onValueUpdated(null)
+            expect(() =>
+                testService.component.onValueUpdated(null),
             ).toThrow();
         });
         it('should throw error when value.value is null', () => {
-            expect( () =>
-                testService.component.onValueUpdated({value: null, newObject: 'test'})
+            expect(() =>
+                testService.component.onValueUpdated({value: null, newObject: 'test'}),
             ).toThrow();
         });
         it('should throw error when value.newObject is null', () => {
-            expect( () =>
-                testService.component.onValueUpdated({value: mockValueName, newObject: null})
+            expect(() =>
+                testService.component.onValueUpdated({value: mockValueName, newObject: null}),
             ).toThrow();
         });
         it('should add value to valuesToUpdate Map', () => {
