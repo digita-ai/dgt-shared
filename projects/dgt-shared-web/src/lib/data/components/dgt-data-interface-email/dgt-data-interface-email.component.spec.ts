@@ -1,8 +1,8 @@
-import { configuration } from 'test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { DGTBrowserDataInterfaceEmailComponent } from './data-interface-email.component';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { mockCategoryEmail, mockTypeWork, mockValueEmail, mockReferenceEmail } from 'test.data.mock-data';
+import { configuration } from 'test.configuration';
+import { mockCategoryEmail, mockReferenceEmail, mockTypeWork, mockValueEmail } from 'test.data.mock-data';
+import { DGTBrowserDataInterfaceEmailComponent } from './data-interface-email.component';
 
 describe('DataInterfaceEmailComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfaceEmailComponent>(configuration);

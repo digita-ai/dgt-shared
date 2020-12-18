@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
     selector: 'dgt-data-interface-email-value',
     templateUrl: './dgt-data-interface-email-value.component.html',
-    styleUrls: ['./dgt-data-interface-email-value.component.scss']
+    styleUrls: ['./dgt-data-interface-email-value.component.scss'],
 })
 /** The Data Value component is a detailed view of a single Data Value */
 export class DGTDataInterfaceEmailValueComponent implements OnInit {
@@ -65,7 +65,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) {
         this.formGroup = new FormGroup({
             email: new FormControl(),

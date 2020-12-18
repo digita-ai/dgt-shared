@@ -1,4 +1,4 @@
-import { DGTProfile, DGTEvent, DGTSourceSolid, DGTConnectionSolid, DGTExchange } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionSolid, DGTEvent, DGTExchange, DGTProfile, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
 import { DGTAbstractAction } from '../../state/models/dgt-abstract-action.model';
 import { DGTAction } from '../../state/models/dgt-action.model';
 
@@ -20,10 +20,9 @@ export interface DGTEventsLoadPayload {
 export class DGTEventsLoad implements DGTAbstractAction<DGTEventsLoadPayload> {
     type = DGTEventsActionTypes.LOAD_EVENTS;
     constructor(public payload: DGTEventsLoadPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
-
 
 export interface DGTEventsLoadFinishedPayload {
     events: DGTEvent[];
@@ -33,10 +32,9 @@ export interface DGTEventsLoadFinishedPayload {
 export class DGTEventsLoadFinished implements DGTAbstractAction<DGTEventsLoadFinishedPayload> {
     type = DGTEventsActionTypes.LOAD_EVENTS_FINISHED;
     constructor(public payload: DGTEventsLoadFinishedPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
-
 
 export interface DGTEventsRemovePayload {
     exchange: DGTExchange;
@@ -46,10 +44,9 @@ export interface DGTEventsRemovePayload {
 export class DGTEventsRemove implements DGTAbstractAction<DGTEventsRemovePayload> {
     type = DGTEventsActionTypes.REMOVE_EVENT;
     constructor(public payload: DGTEventsRemovePayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
-
 
 export interface DGTEventsRemoveFinishedPayload {
     events: DGTEvent[];
@@ -58,10 +55,9 @@ export interface DGTEventsRemoveFinishedPayload {
 export class DGTEventsRemoveFinished implements DGTAbstractAction<DGTEventsRemoveFinishedPayload> {
     type = DGTEventsActionTypes.REMOVE_EVENT_FINISHED;
     constructor(public payload: DGTEventsRemoveFinishedPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
-
 
 export interface DGTEventsFeedbackPayload {
     event: DGTEvent;
@@ -70,8 +66,8 @@ export interface DGTEventsFeedbackPayload {
 export class DGTEventsFeedback implements DGTAbstractAction<DGTEventsFeedbackPayload> {
     type = DGTEventsActionTypes.FEEDBACK_EVENT;
     constructor(public payload: DGTEventsFeedbackPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
 
 export interface DGTEventsRegisterPayload {
@@ -82,8 +78,8 @@ export class DGTEventsRegister implements DGTAbstractAction<DGTEventsRegisterPay
     type = DGTEventsActionTypes.REGISTER_EVENT;
 
     constructor(public payload: DGTEventsRegisterPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }
 
 export interface DGTEventsRegisterFinishedPayload {
@@ -93,6 +89,6 @@ export class DGTEventsRegisterFinished implements DGTAbstractAction<DGTEventsReg
     type = DGTEventsActionTypes.REGISTER_EVENT_FINISHED;
 
     constructor(public payload: DGTEventsRegisterFinishedPayload,
-        public onSuccess: Array<DGTAction> = null,
-        public onFailure: Array<DGTAction> = null) { }
+        public onSuccess: DGTAction[] = null,
+        public onFailure: DGTAction[] = null) { }
 }

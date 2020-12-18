@@ -1,12 +1,12 @@
 
-import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-import { DGTLDFilterHolder } from '../models/dgt-ld-filter-holder.model';
-import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
-import { Observable, of, forkJoin } from 'rxjs';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDFilterHolder } from '../models/dgt-ld-filter-holder.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDFilterRunnerService } from './dgt-ld-filter-runner.service';
 
 @DGTInjectable()
 export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<DGTLDFilterHolder> {
@@ -37,7 +37,7 @@ export class DGTLDFilterRunnerHolderService implements DGTLDFilterRunnerService<
         this.paramChecker.checkParametersNotNull({ filter, resource });
         return this.exchanges.get(resource.exchange).pipe(
             map(exchange => exchange && exchange.holder ? filter.holders.find(holder => holder.uri === exchange.holder) : null),
-            map(holder => holder !== null && holder !== undefined ? true : false)
+            map(holder => holder !== null && holder !== undefined ? true : false),
         );
     }
 

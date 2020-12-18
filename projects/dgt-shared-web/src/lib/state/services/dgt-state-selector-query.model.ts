@@ -1,6 +1,6 @@
-import { DGTStateSelector } from '../models/dgt-state-selector.model';
-import { DGTQueryService, DGTQuery } from '@digita-ai/dgt-shared-data';
+import { DGTQuery, DGTQueryService } from '@digita-ai/dgt-shared-data';
 import { Observable, of } from 'rxjs';
+import { DGTStateSelector } from '../models/dgt-state-selector.model';
 
 export class DGTStateSelectorQuery<K> implements DGTStateSelector<K, K> {
 

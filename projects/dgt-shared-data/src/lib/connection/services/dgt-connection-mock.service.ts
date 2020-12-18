@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { v4 as uuid } from 'uuid';
 import * as _ from 'lodash';
-import { DGTConnectionService } from './dgt-connection-abstract.service';
-import { DGTConnection } from '../models/dgt-connection.model';
+import { Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { v4 as uuid } from 'uuid';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { map, switchMap } from 'rxjs/operators';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTConnection } from '../models/dgt-connection.model';
+import { DGTConnectionService } from './dgt-connection-abstract.service';
 
 @DGTInjectable()
 export class DGTConnectionMockService extends DGTConnectionService {
@@ -69,8 +69,8 @@ export class DGTConnectionMockService extends DGTConnectionService {
           this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
           return resource;
-        })
-        )
+        }),
+        ),
       );
   }
 

@@ -1,10 +1,10 @@
+import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
-import { async } from '@angular/core/testing';
-import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
+import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 
 /* tslint:disable:no-unused-variable */
 
@@ -35,14 +35,14 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 originalValue: null,
                 source: null,
                 connection: null,
-            }
+            },
         ];
 
         const filter: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
-               'foobar'
-            ]
+               'foobar',
+            ],
         };
 
         const filteredTriples: DGTLDTriple[] = [
@@ -54,12 +54,12 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 originalValue: null,
                 source: null,
                 connection: null,
-            }
+            },
         ];
 
         testService.service.run(filter, triples)
-            .subscribe(triples => {
-                expect(triples).toEqual(filteredTriples);
+            .subscribe(t => {
+                expect(t).toEqual(filteredTriples);
             });
     }));
 
@@ -91,15 +91,15 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 originalValue: null,
                 source: null,
                 connection: null,
-            }
+            },
         ];
 
         const filter: DGTLDFilterBGP = {
             type: DGTLDFilterType.BGP,
             predicates: [
                 'foobar',
-                'foobar2'
-            ]
+                'foobar2',
+            ],
         };
 
         const filteredTriples: DGTLDTriple[] = [
@@ -124,8 +124,8 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         ];
 
         testService.service.run(filter, triples)
-            .subscribe(triples => {
-                expect(triples).toEqual(filteredTriples);
+            .subscribe(t => {
+                expect(t).toEqual(filteredTriples);
             });
     }));
 

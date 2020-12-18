@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTCacheService } from '../../cache/services/dgt-cache.service';
-import { DGTHolderService } from './dgt-holder-abstract.service';
-import { DGTHolder } from '../models/dgt-holder.model';
-import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
+import { Observable, of } from 'rxjs';
 import { concatMap, map, switchMap } from 'rxjs/operators';
+import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTHolder } from '../models/dgt-holder.model';
+import { DGTHolderService } from './dgt-holder-abstract.service';
+import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
 
 @DGTInjectable()
 export class DGTHolderCacheService extends DGTHolderService {
@@ -51,7 +51,7 @@ export class DGTHolderCacheService extends DGTHolderService {
                 }
 
                 return resource;
-            })
+            }),
         })
             .pipe(
                 concatMap(data => this.cache.save(this.transformer, data.resources)
@@ -70,7 +70,7 @@ export class DGTHolderCacheService extends DGTHolderService {
             .pipe(
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources))
+                map(data => _.head(data.resources)),
             );
     }
 }

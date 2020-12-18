@@ -1,8 +1,8 @@
-import { async, TestBed } from '@angular/core/testing';
 import { Type } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 
-import { DGTTestRunner } from './dgt-test-runner.service';
 import { DGTTestConfiguration } from '../../configuration/models/dgt-test-configuration.model';
+import { DGTTestRunner } from './dgt-test-runner.service';
 
 export class DGTTestRunnerService<T> extends DGTTestRunner {
     public service: T;

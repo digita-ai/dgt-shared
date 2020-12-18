@@ -1,17 +1,17 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { DGTDataService, DGTLogicService, DGTSharedDataModule } from '@digita-ai/dgt-shared-data';
+import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
+import { DGTSharedWebModule } from '@digita-ai/dgt-shared-web';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { DGTSharedUtilsModule } from '@digita-ai/dgt-shared-utils';
-import { DGTSharedDataModule, DGTDataService, DGTLogicService } from '@digita-ai/dgt-shared-data';
-import { DGTSharedWebModule } from '@digita-ai/dgt-shared-web';
-import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { DGTFirebaseAuthService } from './security/services/dgt-firebase-auth.service';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { DGTVentureFileService } from './file/services/dgt-venture-file.service';
 import { DGTClientDataService } from './integrations/services/dgt-client-data.service';
 import { DGTClientLogicService } from './integrations/services/dgt-client-logic.service';
+import { DGTFirebaseAuthService } from './security/services/dgt-firebase-auth.service';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -24,23 +24,23 @@ export const imports = [
     loader: {
       provide: TranslateLoader,
       useFactory: HttpLoaderFactory,
-      deps: [HttpClient]
-    }
+      deps: [HttpClient],
+    },
   }),
   DGTSharedUtilsModule,
   DGTSharedDataModule,
   DGTSharedWebModule,
   AngularFireAuthModule,
-  AngularFireStorageModule
+  AngularFireStorageModule,
 ];
 export const providers = [
   {
     provide: DGTDataService,
-    useClass: DGTClientDataService
+    useClass: DGTClientDataService,
   },
   {
     provide: DGTLogicService,
-    useClass: DGTClientLogicService
+    useClass: DGTClientLogicService,
   },
   DGTVentureFileService,
   DGTFirebaseAuthService,
@@ -51,6 +51,6 @@ export const providers = [
   imports,
   providers,
   exports: [
-  ]
+  ],
 })
 export class DGTSharedVentureModule { }

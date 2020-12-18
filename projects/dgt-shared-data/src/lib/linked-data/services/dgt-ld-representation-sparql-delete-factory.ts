@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
-import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { Generator, Update, Triple, Term } from 'sparqljs';
-import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { Generator, Term, Triple, Update } from 'sparqljs';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
+import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 
 @DGTInjectable()
 export class DGTLDRepresentationSparqlDeleteFactory extends DGTLDRepresentationFactory<string> {
@@ -47,9 +47,9 @@ export class DGTLDRepresentationSparqlDeleteFactory extends DGTLDRepresentationF
                         };
                     });
 
-                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Parsed triples.', { insertTriples: parsedTriples, });
+                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Parsed triples.', { insertTriples: parsedTriples });
 
-                    let query: Update = {
+                    const query: Update = {
                         type: 'update',
                         prefixes: {},
                         updates: [
@@ -60,14 +60,14 @@ export class DGTLDRepresentationSparqlDeleteFactory extends DGTLDRepresentationF
                         ],
                     };
 
-                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Created query object.', { query, insertTriples: parsedTriples, });
+                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Created query object.', { query, insertTriples: parsedTriples });
 
                     const body = this.generator.stringify(query);
 
-                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Created query string.', { body, query, });
+                    this.logger.debug(DGTLDRepresentationSparqlDeleteFactory.name, 'Created query string.', { body, query });
 
                     return body;
-                })
+                }),
             )
     }
 

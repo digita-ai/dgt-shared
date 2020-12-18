@@ -1,18 +1,18 @@
-import { DGTSourceService, DGTSource, DGTLDFilter } from '@digita-ai/dgt-shared-data';
+import { DGTLDFilter, DGTSource, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { of, Observable } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, take } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTSourceStateService extends DGTSourceService {
 
   constructor(
     private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
-    private logger: DGTLoggerService
+    private logger: DGTLoggerService,
   ) {
     super();
   }

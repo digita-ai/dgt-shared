@@ -1,5 +1,5 @@
-import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 
 import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
@@ -17,7 +17,7 @@ export class DGTLDFilterSparqlExchangeService implements DGTLDFilterSparqlServic
         this.paramChecker.checkParametersNotNull({ filter });
 
         const transformedExchanges = filter.exchanges.map(exchange =>
-            `<${exchange.uri}> <http://digita.ai/voc/exchanges#connection> ?subject`
+            `<${exchange.uri}> <http://digita.ai/voc/exchanges#connection> ?subject`,
         );
         const whereExchanges = transformedExchanges.join(' UNION ');
 

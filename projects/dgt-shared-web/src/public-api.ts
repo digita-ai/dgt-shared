@@ -1,7 +1,7 @@
 /*
  * Public API Surface of dgt-shared-web
  */
-export { DGTPageContentGroupHeader } from './lib/interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
+export { DGTPageContentGroupHeaderComponent } from './lib/interface/components/dgt-page-content-group-header/dgt-page-content-group-header.component';
 export { DGTPageContentHeaderComponent } from './lib/interface/components/dgt-page-content-header/dgt-page-content-header.component';
 export { DGTPageContentHeaderTitleComponent } from './lib/interface/components/dgt-page-content-header-title/dgt-page-content-header-title.component';
 export { DGTPageContentHeaderSubtitleComponent } from './lib/interface/components/dgt-page-content-header-subtitle/dgt-page-content-header-subtitle.component';

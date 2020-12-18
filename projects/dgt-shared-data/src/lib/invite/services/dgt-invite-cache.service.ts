@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
-import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {
@@ -51,11 +51,11 @@ export class DGTInviteCacheService extends DGTInviteService {
                 }
 
                 return resource
-            })
+            }),
         })
             .pipe(
                 switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(resources => resources))),
+                    .pipe(map(savedResources => savedResources))),
             );
     }
 
@@ -70,7 +70,7 @@ export class DGTInviteCacheService extends DGTInviteService {
             .pipe(
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources))
+                map(data => _.head(data.resources)),
             );
     }
 

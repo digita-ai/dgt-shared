@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTMap, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataValue, DGTDataInterface } from '@digita-ai/dgt-shared-data';
+import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'dgt-data-interface-surveys',
   templateUrl: './dgt-data-interface-surveys.component.html',
-  styleUrls: ['./dgt-data-interface-surveys.component.scss']
+  styleUrls: ['./dgt-data-interface-surveys.component.scss'],
 })
 export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterface {
 

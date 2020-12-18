@@ -52,6 +52,6 @@ export interface DGTSourceSolidConfiguration {
         n: string,
         e: string,
         key_ops: string[],
-        ext: boolean
+        ext: boolean,
     }[];
 }

@@ -1,14 +1,14 @@
-import { Observable, of, forkJoin } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTConsent } from '../models/dgt-consent.model';
-import { v4 } from 'uuid';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { v4 } from 'uuid';
+import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
-import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
+import { DGTConsent } from '../models/dgt-consent.model';
 
 /** Transforms linked data to consents, and the other way around. */
 @DGTInjectable()
@@ -16,7 +16,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -30,7 +30,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
         return forkJoin(resources.map(entity => this.toDomainOne(entity)))
             .pipe(
-                map(consents => _.flatten(consents))
+                map(consents => _.flatten(consents)),
             )
     }
 
@@ -46,7 +46,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
         let res: DGTConsent[] = null;
 
         if (resource && resource.triples) {
-            const consentSubjectValues = resource.triples.filter(value => value.predicate === 'http://digita.ai/voc/consents#consent'
+            const consentSubjectValues = resource.triples.filter(value => value.predicate === 'http://digita.ai/voc/consents#consent',
             );
 
             this.logger.debug(DGTConsentTransformerService.name, 'Found subjects to transform', { consentSubjectValues: consentSubjectValues });
@@ -76,14 +76,14 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
             let triples = consent.triples;
             const documentSubject = {
                 value: '#',
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
             const consentId = consent.uri ? consent.uri : v4();
             this.logger.debug(DGTConsentTransformerService.name, 'starting to transform to linked data without uri for consent', { consent })
             const consentSubjectUri = `${consent.uri}#${consentId}`;
             const consentSubject = {
                 value: consentSubjectUri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             if (!triples) {
@@ -94,7 +94,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.DATETIME,
-                            value: consent.expirationDate
+                            value: consent.expirationDate,
                         },
                     },
                     {
@@ -103,7 +103,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.DATETIME,
-                            value: consent.createdAt
+                            value: consent.createdAt,
                         },
                     },
                     {
@@ -112,7 +112,7 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
-                            value: consent.purposeLabel
+                            value: consent.purposeLabel,
                         },
                     },
                     {
@@ -121,21 +121,21 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
                         object: {
                             termType: DGTLDTermType.LITERAL,
                             dataType: DGTLDDataType.STRING,
-                            value: consent.controller
+                            value: consent.controller,
                         },
                     },
                     {
                         predicate: 'http://digita.ai/voc/consents#consent',
                         subject: documentSubject,
                         object: consentSubject,
-                    }
+                    },
                 ];
             }
 
             const newEntity: DGTLDResource = {
                 ...consent,
                 uri: consent.uri,
-                triples
+                triples,
             };
 
             this.logger.debug(DGTConsentTransformerService.name, 'Transformed consent to linked data', { newEntity, consent: consent });
@@ -163,26 +163,26 @@ export class DGTConsentTransformerService implements DGTLDTransformer<DGTConsent
 
         const expirationDate = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/consents#expirationDate'
+            value.predicate === 'http://digita.ai/voc/consents#expirationDate',
         );
 
         const purposeLabel = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/consent#purposeLabel'
+            value.predicate === 'http://digita.ai/voc/consent#purposeLabel',
         );
 
         const controller = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/consent#controller'
+            value.predicate === 'http://digita.ai/voc/consent#controller',
         );
 
         const createdAt = resource.triples.find(value =>
             value.subject.value === consentSubjectValue.object.value &&
-            value.predicate === 'http://digita.ai/voc/consent#createdAt'
+            value.predicate === 'http://digita.ai/voc/consent#createdAt',
         );
 
         const consentTriples = resource.triples.filter(value =>
-            value.subject.value === consentSubjectValue.object.value
+            value.subject.value === consentSubjectValue.object.value,
         );
 
         return {

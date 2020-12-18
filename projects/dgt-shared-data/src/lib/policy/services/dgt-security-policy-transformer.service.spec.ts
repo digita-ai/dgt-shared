@@ -1,6 +1,6 @@
+import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
-import { async } from '@angular/core/testing';
 import { DGTSecurityPolicyTransformerService } from './dgt-security-policy-transformer.service';
 
 /* tslint:disable:no-unused-variable */

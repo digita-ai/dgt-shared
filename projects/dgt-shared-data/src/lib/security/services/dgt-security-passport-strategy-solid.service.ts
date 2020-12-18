@@ -1,6 +1,6 @@
-import { Strategy } from 'passport-strategy';
-import * as jwt from 'jsonwebtoken';
 import { JWT } from '@solid/jose';
+import * as jwt from 'jsonwebtoken';
+import { Strategy } from 'passport-strategy';
 
 /**
  * Strategy constructor
@@ -59,15 +59,15 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
         }
 
         this._passReqToCallback = options.passReqToCallback;
-        var jsonWebTokenOptions = options.jsonWebTokenOptions || {};
-        //for backwards compatibility, still allowing you to pass
-        //audience / issuer / algorithms / ignoreExpiration
-        //on the options.
+        const jsonWebTokenOptions = options.jsonWebTokenOptions || {};
+        // for backwards compatibility, still allowing you to pass
+        // audience / issuer / algorithms / ignoreExpiration
+        // on the options.
         this._verifOpts = this.assign(jsonWebTokenOptions, {
             audience: options.audience,
             issuer: options.issuer,
             algorithms: options.algorithms,
-            ignoreExpiration: !!options.ignoreExpiration
+            ignoreExpiration: !!options.ignoreExpiration,
         });
 
     }
@@ -83,8 +83,6 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
         // return jwt.verify(token, secretOrKey, options, callback);
         const decoded = jwt.decode(token);
 
-        
-
         callback(null, decoded);
 
         return decoded;
@@ -94,7 +92,7 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
      * Authenticate request based on JWT obtained from header or post body
      */
     public authenticate(req, options) {
-        var token = this._jwtFromRequest(req);
+        const token = this._jwtFromRequest(req);
 
         if (!token) {
             return this.fail(null, null);
@@ -110,7 +108,7 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
                         return this.fail(jwt_err);
                     } else {
                         // Pass the parsed token to the user
-                        var verified = (err, user, info) => {
+                        const verified = (err, user, info) => {
                             if (err) {
                                 return this.error(err);
                             } else if (!user) {
@@ -140,13 +138,13 @@ export class DGTSecurityPassportStrategySolidService extends Strategy {
             throw new TypeError('Cannot convert undefined or null to object');
         }
 
-        var to = Object(target);
+        const to = Object(target);
 
-        for (var index = 1; index < arguments.length; index++) {
-            var nextSource = arguments[index];
+        for (let index = 1; index < arguments.length; index++) {
+            const nextSource = arguments[index];
 
             if (nextSource != null) { // Skip over if undefined or null
-                for (var nextKey in nextSource) {
+                for (const nextKey in nextSource) {
                     // Avoid bugs when hasOwnProperty is shadowed
                     if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
                         to[nextKey] = nextSource[nextKey];

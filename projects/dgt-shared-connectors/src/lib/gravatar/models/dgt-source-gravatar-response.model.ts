@@ -1,6 +1,6 @@
 export interface DGTSourceGravatarResponse {
     entry: {
         preferredUsername: string,
-        thumbnailUrl: string
+        thumbnailUrl: string,
     }[];
 }

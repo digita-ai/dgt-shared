@@ -1,9 +1,9 @@
-import { DGTSource } from '../models/dgt-source.model';
-import { Observable } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { Observable } from 'rxjs';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
+import { DGTSource } from '../models/dgt-source.model';
 
 @DGTInjectable()
 export abstract class DGTSourceService implements DGTLDResourceService<DGTSource<any>> {

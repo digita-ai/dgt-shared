@@ -1,7 +1,7 @@
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { v4 } from 'uuid';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from './dgt-uri-factory.service';
-import { v4 } from 'uuid';
 /**
  * Service that generates URIs for resources from a solid pod
  * e.g. https://sanderclaes.inrupt.net/foo/bar
@@ -17,7 +17,7 @@ export class DGTUriFactorySolidService implements DGTUriFactoryService {
     public generate(resource: DGTLDResource, prefix: string): string {
         let res = resource.uri;
 
-        if(!res) {
+        if (!res) {
             res = v4();
         }
 

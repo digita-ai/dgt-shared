@@ -1,11 +1,11 @@
 
-import { CanLoad, Route, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, CanLoad, Route, RouterStateSnapshot } from '@angular/router';
 import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Observable } from 'rxjs';
 import { Navigate } from '../../state/models/dgt-actions.model';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTBrowserIsSupportedGuard implements CanLoad, CanActivate, CanActivateChild {

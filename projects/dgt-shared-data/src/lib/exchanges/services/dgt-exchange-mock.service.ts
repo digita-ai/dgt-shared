@@ -1,18 +1,18 @@
-import { Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTExchange } from '../models/dgt-exchange.model';
-import { DGTExchangeService } from './dgt-exchange.service';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTExchange } from '../models/dgt-exchange.model';
+import { DGTExchangeService } from './dgt-exchange.service';
 
 @DGTInjectable()
 export class DGTExchangeMockService extends DGTExchangeService {
     public resources: DGTExchange[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,) {
+    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService) {
         super();
     }
 
@@ -46,8 +46,8 @@ export class DGTExchangeMockService extends DGTExchangeService {
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
                     return resource;
-                })
-                )
+                }),
+                ),
             );
     }
 

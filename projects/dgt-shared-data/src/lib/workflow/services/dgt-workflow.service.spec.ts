@@ -1,8 +1,8 @@
+import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
-import { async } from '@angular/core/testing';
-import { DGTWorkflowService } from './dgt-workflow.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
+import { DGTWorkflowService } from './dgt-workflow.service';
 
 /* tslint:disable:no-unused-variable */
 
@@ -20,7 +20,7 @@ describe('DGTWorkflowService', () => {
         const workflow: DGTWorkflow = {
             predicates: [predicate],
             actions: [],
-            source: null //TODO
+            source: null, // TODO
         };
         testService.service.register(workflow);
 

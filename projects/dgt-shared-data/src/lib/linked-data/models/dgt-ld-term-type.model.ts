@@ -1,3 +1,3 @@
 export enum DGTLDTermType {
-    LITERAL, REFERENCE
+    LITERAL, REFERENCE,
 }

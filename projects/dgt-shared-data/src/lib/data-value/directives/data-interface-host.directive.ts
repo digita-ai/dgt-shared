@@ -1,8 +1,9 @@
-import { Directive, ViewContainerRef, EventEmitter, Output } from '@angular/core';
-import { DGTDataValue } from '../models/data-value.model';
+import { Directive, EventEmitter, Output, ViewContainerRef } from '@angular/core';
 import { DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTDataValue } from '../models/data-value.model';
 
 @Directive({
+  // tslint:disable-next-line: directive-selector
   selector: '[dgtDataInterfaceHost]',
 })
 export class DGTDataInterfaceHostDirective {
@@ -15,12 +16,11 @@ export class DGTDataInterfaceHostDirective {
 
   constructor(
     public viewContainerRef: ViewContainerRef,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
   ) {
     this.valueUpdated = new EventEmitter();
     this.submit = new EventEmitter();
   }
-
 
   /**
    * @param value Value to update

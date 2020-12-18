@@ -1,3 +1,3 @@
 export enum DGTSparqlDatasetType {
-    MEMORY = 'memory'
+    MEMORY = 'memory',
 }

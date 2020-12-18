@@ -1,4 +1,4 @@
 export enum DGTSecurityPolicyType {
     ADMIN = 'admin',
-    ALLOW_PURPOSE = 'allow_purpose'
+    ALLOW_PURPOSE = 'allow_purpose',
 }

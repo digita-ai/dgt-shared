@@ -1,10 +1,10 @@
 /* tslint:disable:no-unused-variable */
 
 import { async } from '@angular/core/testing';
-import { DGTQueryService } from './dgt-query.service';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTQuery } from '../models/dgt-query.model';
+import { DGTQueryService } from './dgt-query.service';
 
 describe('DGTQueryService', () => {
     const testService = new DGTTestRunnerService<DGTQueryService>(configuration);
@@ -15,16 +15,16 @@ describe('DGTQueryService', () => {
             { field1: 'hello' },
             { field1: 'hello' },
             { field1: null },
-            { field1: 'hello1' }
+            { field1: 'hello1' },
         ];
         const query: DGTQuery = {
             conditions: [
                 {
                     field: 'field1',
                     operator: '==',
-                    value: 'hello'
-                }
-            ]
+                    value: 'hello',
+                },
+            ],
         };
 
         const result = testService.service.execute<{ field1: string }[]>(entities, query);
@@ -37,16 +37,16 @@ describe('DGTQueryService', () => {
             { field1: 5 },
             { field1: 5 },
             { field1: null },
-            { field1: 7 }
+            { field1: 7 },
         ];
         const query: DGTQuery = {
             conditions: [
                 {
                     field: 'field1',
                     operator: '==',
-                    value: 5
-                }
-            ]
+                    value: 5,
+                },
+            ],
         };
 
         const result = testService.service.execute<{ field1: number }[]>(entities, query);
@@ -59,16 +59,16 @@ describe('DGTQueryService', () => {
             { field1: { field2: 'hello' } },
             { field1: { field2: 'hello' } },
             { field1: null },
-            { field1: { field2: 'hello1' } }
+            { field1: { field2: 'hello1' } },
         ];
         const query: DGTQuery = {
             conditions: [
                 {
                     field: 'field1.field2',
                     operator: '==',
-                    value: 'hello'
-                }
-            ]
+                    value: 'hello',
+                },
+            ],
         };
 
         const result = testService.service.execute<{ field1: { field2: string } }[]>(entities, query);
@@ -81,21 +81,21 @@ describe('DGTQueryService', () => {
             { field1: 'hello', field2: 'world' },
             { field1: 'hello', field2: 'world1' },
             { field1: null, field2: 'world' },
-            { field1: 'hello1', field2: 'world' }
+            { field1: 'hello1', field2: 'world' },
         ];
         const query: DGTQuery = {
             conditions: [
                 {
                     field: 'field1',
                     operator: '==',
-                    value: 'hello'
+                    value: 'hello',
                 },
                 {
                     field: 'field2',
                     operator: '==',
-                    value: 'world'
-                }
-            ]
+                    value: 'world',
+                },
+            ],
         };
 
         const result = testService.service.execute<{ field1: string, field2: string }[]>(entities, query);
