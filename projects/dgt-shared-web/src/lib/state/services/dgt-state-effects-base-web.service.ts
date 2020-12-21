@@ -154,7 +154,7 @@ export class DGTStateEffectsBaseWebService {
         // add typeRegistrations to the profile
         map(data => ({ ...data, profile: { ...data.profile, typeRegistrations: [...data.profile.typeRegistrations, ...data.typeRegistrationsRegistered] } })),
         switchMap(data => {
-            const profileLoaded = this.config.get(c => c.events.templates.profileLoaded)
+            const profileLoaded = this.config.get(c => c.events.templates.profileLoaded);
 
             if (!profileLoaded) {
                 throw new DGTErrorConfig('Config key events.templates.profileLoaded should be set.', profileLoaded);
@@ -168,7 +168,8 @@ export class DGTStateEffectsBaseWebService {
                     },
                     profile: data.profile,
                 }),
-            ]
+                ...data.action.onSuccess
+            ];
         }
         ),
         catchError((error, caught) => of(new HandleError({ typeName: DGTProfileLoad.name, error, caught }))),
