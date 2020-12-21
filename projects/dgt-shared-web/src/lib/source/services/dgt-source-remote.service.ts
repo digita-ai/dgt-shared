@@ -48,25 +48,26 @@ export class DGTSourceRemoteService extends DGTSourceService {
         }
 
         return of({ resources }).pipe(
-            switchMap(data => forkJoin(data.resources.map(resource => this.saveOne(resource)))),
+            switchMap(data => data.resources && data.resources.length ? forkJoin(data.resources.map(resource => {
+                
+                return of({resource}).pipe(
+                    map(data => ({...data, uri: data.resource.uri
+                        ? `${this.config.get(c => c.server.uri)}source/${encodeURIComponent(data.resource.uri)}`
+                        : `${this.config.get(c => c.server.uri)}source`})),
+                    switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                    switchMap(data => data.resource.uri
+                        ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                        : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                        ),
+                    tap(d => console.log('========= 1', d)),
+                    map(response => response.data),
+                    tap(d => console.log('========= 2', d)),
+                )
+            })) : of([] as DGTSource<any>[])),
+            tap(d => console.log('========== 3', d)),
         );
     }
 
-    private saveOne(resource: DGTSource<any>): Observable<DGTSource<any>> {
-        return of({resource}).pipe(
-            map(data => ({...data, uri: data.resource.uri
-                ? `${this.config.get(c => c.server.uri)}source/${encodeURIComponent(data.resource.uri)}`
-                : `${this.config.get(c => c.server.uri)}source`})),
-            switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-            tap(d => console.log('=========', d)),
-            switchMap(data => data.resource.uri
-                ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-                : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-            ),
-            tap(d => console.log('=========', d)),
-            map(response => response.data),
-        );
-    }
     delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
         throw new DGTErrorNotImplemented();
     }
