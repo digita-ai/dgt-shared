@@ -1,7 +1,7 @@
 import { DGTLDFilter, DGTLDFilterService, DGTSource, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, zip } from 'rxjs';
 import { map, switchMap, tap, mergeMap } from 'rxjs/operators';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
@@ -48,24 +48,21 @@ export class DGTSourceRemoteService extends DGTSourceService {
         }
 
         return of({ resources }).pipe(
-            switchMap(data => data.resources && data.resources.length ? forkJoin(data.resources.map(resource => {
-                
-                return of({resource}).pipe(
-                    map(data => ({...data, uri: data.resource.uri
-                        ? `${this.config.get(c => c.server.uri)}source/${encodeURIComponent(data.resource.uri)}`
-                        : `${this.config.get(c => c.server.uri)}source`})),
-                    switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                    switchMap(data => data.resource.uri
-                        ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-                        : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-                        ),
-                    tap(d => console.log('========= 1', d)),
-                    map(response => response.data),
-                    tap(d => console.log('========= 2', d)),
-                )
-            })) : of([] as DGTSource<any>[])),
-            tap(d => console.log('========== 3', d)),
+            switchMap(data => zip(...data.resources.map(resource => this.saveOne(resource)))),
         );
+    }
+    private saveOne(resource: DGTSource<any>): Observable<DGTSource<any>> {
+        return of({resource}).pipe(
+            map(data => ({...data, uri: data.resource.uri
+                ? `${this.config.get(c => c.server.uri)}source/${encodeURIComponent(data.resource.uri)}`
+                : `${this.config.get(c => c.server.uri)}source`})),
+            switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+            switchMap(data => data.resource.uri
+                ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                ),
+            map(response => response.data),
+        ) as Observable<DGTSource<any>>
     }
 
     delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
