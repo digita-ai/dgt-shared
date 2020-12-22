@@ -29,3 +29,4 @@ export { DGTOriginConfigService } from './lib/origin/services/dgt-origin-config.
 export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
 export { DGTSourceSolidToken } from './lib/tokens/solid/dgt-source-solid-token.model';
 export { DGTHttpResponse } from './lib/http/models/dgt-http-response.model';
+export { DGTHttpSessionService } from './lib/http/services/dgt-http-session.service';

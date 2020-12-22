@@ -91,7 +91,7 @@ export class DGTConnectionMockService extends DGTConnectionService {
       throw new DGTErrorArgument('Argument webId should be set.', webId);
     }
 
-    return of(this.resources.filter(connection => connection.configuration && connection.configuration.webId === webId));
+    return of(this.resources.filter(connection => connection.configuration && connection.configuration.session.info.webId === webId));
   }
 
   public getConnectionForInvite(inviteId: string, sourceId: string): Observable<any> {

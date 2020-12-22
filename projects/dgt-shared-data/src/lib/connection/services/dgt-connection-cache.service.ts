@@ -74,7 +74,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
     }
     public getConnectionsWithWebId(webId: string): Observable<DGTConnection<any>[]> {
         return this.query().pipe(
-            map(connections => connections.filter(connection => connection.configuration.webId === webId))
+            map(connections => connections.filter(connection => connection.configuration.session.info.webId === webId))
         );
     }
     public getConnectionForInvite(inviteId: string, sourceId: string): Observable<DGTConnection<any>> {

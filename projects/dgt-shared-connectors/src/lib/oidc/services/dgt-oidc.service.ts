@@ -32,10 +32,10 @@ export class DGTOIDCService {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        const session = new Session({ secureStorage: this.storage }, connection.configuration.sessionId);
+        const session = new Session({ secureStorage: this.storage });
 
 
-        this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING }]);
+        this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING, configuration: { ...connection.configuration, session } }]);
 
         if (!session.info.isLoggedIn) {
             session.login({ oidcIssuer: source.configuration.issuer, redirectUrl: source.configuration.callbackUri });
@@ -49,11 +49,13 @@ export class DGTOIDCService {
 
         const conn = { ...connection };
 
-        return this.getSession(conn.configuration.sessionId).pipe(mergeMap(session => {
+        return this.getSession(conn.configuration.session.info.sessionId).pipe(mergeMap(session => {
             if (session) {
                 return from(session.handleIncomingRedirect(window.location.href)).pipe(tap(sessionInfo => {
                     this.logger.debug(DGTOIDCService.name, 'Retrieved sessionInfo', sessionInfo);
                 }));
+            } else {
+                throw new DGTErrorArgument('Session not found.', session);
             }
         }));
     }

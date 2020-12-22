@@ -73,8 +73,6 @@ export class DGTConnectionStateService extends DGTConnectionService {
   }
 
   public getConnectionBySessionId<T extends DGTConnection<any>>(sessionId: string): Observable<T> {
-    this.logger.debug(DGTConnectionStateService.name, 'Starting to get', { sessionId });
-
     if (!sessionId) {
       throw new DGTErrorArgument('Argument sessionId should be set.', sessionId);
     }
@@ -83,7 +81,7 @@ export class DGTConnectionStateService extends DGTConnectionService {
       .pipe(
         switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
           .pipe(map((connections: T[]) => ({ ...data, connections })))),
-        map(data => data.connections ? data.connections.find(c => c.configuration && (data.sessionId.includes(c.configuration.sessionId))) : null),
+        map(data => data.connections ? data.connections.find(c => c.configuration && (data.sessionId.includes(c.configuration.session.info.sessionId))) : null),
         take(1),
       );
   }

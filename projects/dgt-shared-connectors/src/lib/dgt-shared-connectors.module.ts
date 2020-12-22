@@ -5,6 +5,7 @@ import { DGTSourceGravatarConnector } from './gravatar/connectors/dgt-source-gra
 import { DGTSourceMSSQLConnector } from './mssql/connectors/dgt-source-mssql.connector';
 import { DGTSourceSolidConnector } from './solid/connectors/dgt-source-solid.connector';
 import { DGTSourceSolidTrustedAppTransformerService } from './solid/services/dgt-source-solid-trusted-app-transformer.service';
+import { DGTConnectorSolidWeb } from './solid/connectors/dgt-source-solid-web.connector';
 
 export const declarations = [];
 export const imports = [
@@ -16,6 +17,7 @@ export const providers = [
   DGTSourceGravatarConnector,
   DGTSourceSolidTrustedAppTransformerService,
   DGTSessionStorageService,
+  DGTConnectorSolidWeb
 ];
 
 @NgModule({
