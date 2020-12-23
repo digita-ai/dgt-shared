@@ -265,7 +265,22 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
     }
 
     public prepare(source: DGTSourceSolid): Observable<DGTSourceSolid> {
-        throw new DGTErrorNotImplemented();
+
+        if (!source || source.type !== DGTSourceType.SOLID) {
+            throw new DGTErrorArgument('Argument source should be set.', source);
+        }
+
+        this.logger.debug(DGTConnectorSolidWeb.name, 'Starting to prepare source for connection', { source });
+
+        return of({ source })
+            .pipe(
+                switchMap(data => this.discover(data.source)
+                    .pipe(map(configuration => ({ ...data, source: { ...data.source, configuration: { ...data.source.configuration, ...configuration } } })))),
+                switchMap(data => this.register(data.source)
+                    .pipe(map(configuration => ({ ...data, source: { ...data.source, state: DGTSourceState.PREPARED, configuration: { ...data.source.configuration, ...configuration } } })))),
+                tap(src => this.logger.debug(DGTConnectorSolidWeb.name, 'Prepared source for connection', { src })),
+                map(data => data.source)
+            );
     }
 
     public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {

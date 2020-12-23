@@ -19,21 +19,16 @@ export class DGTHttpSessionService extends DGTHttpService {
 
         const request = from(session.fetch(uri, { method: 'GET', headers }));
 
-
-        // if (isText) {
-        //     request = this.http.get(uri, { headers, responseType: 'text', observe: 'response' });
-        // }
-
         return request
             .pipe(
-                tap(data => this.logger.debug(DGTHttpSessionService.name, 'Received response', { data })),
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    header: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -42,16 +37,16 @@ export class DGTHttpSessionService extends DGTHttpService {
     public post<T>(uri: string, body: any, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
         this.logger.debug(DGTHttpSessionService.name, 'Posting to URI', { uri, body, session });
 
-        // return this.http.post(uri, body, { headers, observe: 'response' })
         return from(session.fetch(uri, { method: 'POST', headers, body }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    header: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -63,12 +58,13 @@ export class DGTHttpSessionService extends DGTHttpService {
         return from(session.fetch(uri, { method: 'PUT', headers, body }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    headers: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -80,12 +76,13 @@ export class DGTHttpSessionService extends DGTHttpService {
         return from(session.fetch(uri, { method: 'DELETE', headers }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    headers: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -97,12 +94,13 @@ export class DGTHttpSessionService extends DGTHttpService {
         return from(session.fetch(uri, { method: 'PATCH', headers, body }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    headers: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -114,12 +112,14 @@ export class DGTHttpSessionService extends DGTHttpService {
         return from(session.fetch(uri, { method: 'HEAD', headers }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status,
-                    header: response.headers,
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    headers: d.response.headers,
+
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
@@ -131,12 +131,13 @@ export class DGTHttpSessionService extends DGTHttpService {
         return from(session.fetch(uri, { method: 'OPTIONS', headers }))
             .pipe(
                 mergeMap(response => from(response.text()).pipe(
-                    map(text => ({ ...response, text })))),
-                    tap(response => console.log('RESPONSE', response)),
-                map(response => ({
-                    data: response.text as any,
-                    success: true,
-                    status: response.status,
+                    map(text => ({ response, text })),
+                )),
+                map(d => ({
+                    data: d.text as any,
+                    success: d.response.ok,
+                    status: d.response.status,
+                    headers: d.response.headers,
                 })),
                 catchError(error => of(this.handleError<T>(error))),
             );
