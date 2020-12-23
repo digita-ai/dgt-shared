@@ -1,18 +1,39 @@
 import { DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of, zip } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDFilterExchange } from '../../linked-data/models/dgt-ld-filter-exchange.model';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
+import { DGTLDService } from '../../linked-data/services/dgt-ld.service';
+import { DGTSecurityPolicyType } from '../../policy/models/dgt-security-policy-type.model';
+import { DGTSecurityPolicyService } from '../../policy/services/dgt-security-policy.service';
+import { DGTSparqlDatasetType } from '../../sparql/models/dgt-sparql-dataset-type.model';
+import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 import { DGTCacheService } from './dgt-cache.service';
+import rawbody from 'raw-body';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
 
 @DGTInjectable()
 export class DGTCacheInMemoryService extends DGTCacheService {
     public cache: DGTLDResource[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private policies: DGTSecurityPolicyService,
+        private exchanges: DGTExchangeService,
+        private transformer: DGTLDResourceTransformerService,
+        private ld: DGTLDService,
+        private sparql: DGTSparqlCommunicaService,
+    ) {
         super();
     }
 
@@ -53,7 +74,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             )
     }
 
-    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
+    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTCacheInMemoryService.name, 'Starting to query', { cache: this.cache, transformer, filter });
 
         return of({ resources: this.cache, transformer, filter })
@@ -61,6 +82,17 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                 switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
                 switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([])),
+            );
+    }
+
+    public querySparql(query: string): Observable<string> {
+
+        return of({ query })
+            .pipe(
+                switchMap(data => this.ld.query<DGTLDResource>(null, this.transformer)
+                    .pipe(map(resources => ({ ...data, triples: _.flatten(resources.map(resource => resource.triples)) })))),
+                switchMap(data => this.sparql.query({ triples: data.triples, type: DGTSparqlDatasetType.MEMORY }, data.query)),
+                map(data => JSON.stringify(data.results)),
             );
     }
 

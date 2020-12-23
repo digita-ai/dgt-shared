@@ -19,7 +19,7 @@ export class DGTLDFilterSparqlExchangeService implements DGTLDFilterSparqlServic
         const transformedExchanges = filter.exchanges.map(exchange =>
             `<${exchange.uri}> <http://digita.ai/voc/exchanges#connection> ?subject`,
         );
-        const whereExchanges = transformedExchanges.join(' UNION ');
+        const whereExchanges = transformedExchanges.join(' . ');
 
         // this query returns all user data (from pods) for one or more exchanges
         // looks for triples which subject is the webId of the holder, this webId is gotten
