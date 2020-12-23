@@ -253,7 +253,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                                     throw new DGTErrorArgument('Updated values are undefined', update.delta.updated);
                                 }
 
-                                return this.http.patch(update.delta.updated.uri, this.sparql.generateSparqlUpdate([update.delta.updated], 'insertdelete', [update.delta.original]), d.headers);
+                                return this.http.patch(update.delta.updated.uri, this.sparql.generateSparqlUpdate([update.delta.updated], 'insertdelete', [update.delta.original]), d.headers, d.session);
                             })
                         )
                     )
