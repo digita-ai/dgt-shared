@@ -38,7 +38,6 @@ export class DGTLDFilterSparqlPartialService implements DGTLDFilterSparqlService
             }
             `.trim()
         ).join(' ');
-        console.log('XD', whereContent);
 
         // this query returns all system domain models that have a specific holder attribute
         // retrieves all URIs of these SDMs, then looks for the whole objects
