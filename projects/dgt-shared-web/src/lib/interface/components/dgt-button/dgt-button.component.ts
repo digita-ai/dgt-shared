@@ -1,13 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DGTColor } from '../../models/dgt-color.model';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DGTButtonConfirmComponent } from '../dgt-button-confirm/dgt-button-confirm.component';
 import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTColor } from '../../models/dgt-color.model';
+import { DGTButtonConfirmComponent } from '../dgt-button-confirm/dgt-button-confirm.component';
 
 @Component({
   selector: 'dgt-button',
   templateUrl: './dgt-button.component.html',
-  styleUrls: ['./dgt-button.component.scss']
+  styleUrls: ['./dgt-button.component.scss'],
 })
 export class DGTButtonComponent implements OnInit {
 

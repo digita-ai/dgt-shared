@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 @Component({
   selector: 'dgt-charm',
   templateUrl: './dgt-charm.component.html',
-  styleUrls: ['./dgt-charm.component.scss']
+  styleUrls: ['./dgt-charm.component.scss'],
 })
 export class DGTCharmComponent {
 

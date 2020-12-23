@@ -1,17 +1,17 @@
 
-import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTDataValue } from '../models/data-value.model';
+import { Observable, of } from 'rxjs';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTDataValue } from '../models/data-value.model';
 
 @DGTInjectable()
 export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataValue> {
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
   ) { }
 
   public toDomain(entities: DGTLDResource[]): Observable<DGTDataValue[]> {
@@ -36,7 +36,7 @@ export class DGTDataValueTransformerService implements DGTLDTransformer<DGTDataV
         uri: triple.subject.value,
         exchange: entity.exchange,
         ...triple,
-        triples: [triple]
+        triples: [triple],
       } as DGTDataValue;
     });
   }

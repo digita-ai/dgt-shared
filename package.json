@@ -1,6 +1,6 @@
 {
   "name": "dgt-shared",
-  "version": "0.2.0",
+  "version": "0.2.6",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -17,6 +17,12 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "grep -E '\\.(ts)$' | xargs yarn lint --files",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "private": true,
   "dependencies": {
@@ -69,6 +75,8 @@
     "@angular/cli": "~7.3.3",
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
+    "@commitlint/cli": "8.3.5",
+    "@commitlint/config-conventional": "8.3.4",
     "@ngrx/store": "^7.3.0",
     "@ngx-translate/core": "11.0.1",
     "@ngx-translate/http-loader": "4.0.0",
@@ -84,6 +92,7 @@
     "angularfire2": "5.1.1",
     "codelyzer": "~4.5.0",
     "firebase": "5.8.4",
+    "husky": "^4.3.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",
@@ -97,7 +106,8 @@
     "ts-node": "~7.0.0",
     "tsickle": "0.34.0",
     "tslib": "^1.9.0",
-    "tslint": "~5.11.0",
+    "tslint": "~5.20.0",
+    "tslint-jasmine-rules": "^1.6.1",
     "typescript": "3.8.3"
   },
   "browser": {

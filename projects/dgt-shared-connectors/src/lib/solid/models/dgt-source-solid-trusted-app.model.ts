@@ -1,5 +1,5 @@
-import { DGTSourceSolidTrustedAppMode } from './dgt-source-solid-trusted-app-mode.model';
 import { DGTLDResource } from '@digita-ai/dgt-shared-data';
+import { DGTSourceSolidTrustedAppMode } from './dgt-source-solid-trusted-app-mode.model';
 
 /**
  * An app which has access to a pod.

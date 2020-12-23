@@ -1,12 +1,12 @@
 /* tslint:disable:no-unused-variable */
 
 import { async } from '@angular/core/testing';
+import { DGTConnectionSolid, DGTExchange, DGTLDTermType, DGTLDTriple, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
+import { DGTError, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { configuration } from '../../../test.configuration';
 import { DGTSourceSolidConnector } from './dgt-source-solid.connector';
-import { DGTExchange, DGTSourceSolid, DGTConnectionSolid, DGTLDTriple, DGTLDTermType } from '@digita-ai/dgt-shared-data';
-import * as _ from 'lodash';
-import { DGTErrorArgument, DGTError } from '@digita-ai/dgt-shared-utils';
 
 describe('DGTSourceSolidConnector', () => {
     const testService = new DGTTestRunnerService<DGTSourceSolidConnector>(configuration);
@@ -74,19 +74,19 @@ describe('DGTSourceSolidConnector', () => {
                     predicate: 'http://digita.ai/voc/events#event',
                     subject: {
                         termType: DGTLDTermType.REFERENCE,
-                        value: 'https://john.my.id/'
+                        value: 'https://john.my.id/',
                     },
                     object: {
                         termType: DGTLDTermType.REFERENCE,
-                        value: 'https://john.my.id/#1'
+                        value: 'https://john.my.id/#1',
                     },
                     originalValue: {
                         termType: DGTLDTermType.REFERENCE,
-                        value: 'https://john.my.id/#1'
+                        value: 'https://john.my.id/#1',
                     },
                     source: 's-1',
                     connection: 'c-1',
-                }
+                },
             ];
 
             const result = testService.service.convert(response, webId, exchange, source, connection);

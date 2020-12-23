@@ -1,19 +1,19 @@
-import { mergeMap, map, catchError, tap, switchMap, first } from 'rxjs/operators';
-import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
-import { from, of } from 'rxjs';
+import { ApplicationRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { DGTErrorService, DGTLoggerService, DGTErrorConfig, DGTConfigurationService, DGTInjectable, DGTConnectivityService, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
-import { DGTProfileService, DGTLDTypeRegistrationService } from '@digita-ai/dgt-shared-data';
+import { SwUpdate } from '@angular/service-worker';
+import { DGTLDTypeRegistrationService, DGTProfileService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTConnectivityService, DGTErrorConfig, DGTErrorService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import * as _ from 'lodash';
-import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
+import { from, of } from 'rxjs';
+import { catchError, first, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTEventsRegister } from '../../events/models/dgt-events-actions.model';
 import { DGTI8NLocale } from '../../i8n/models/dgt-i8n-locale.model';
-import { ActionTypes, AddNotification, CheckConnection, CheckConnectionFinish, CheckUpdates, DismissAllNotifications, HandleError, Navigate, NavigateExternal, SetDefaultLocale, SetLocale } from '../models/dgt-actions.model';
-import { DGTNotification } from '../../interface/models/dgt-notification.model';
-import { DGTNotificationType } from '../../interface/models/dgt-notification-type.model';
 import { DGTI8NService } from '../../i8n/services/dgt-i8n.service';
-import { ApplicationRef } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
+import { DGTNotificationType } from '../../interface/models/dgt-notification-type.model';
+import { DGTNotification } from '../../interface/models/dgt-notification.model';
+import { DGTProfileActionTypes, DGTProfileLoad, DGTProfileLoadFinished } from '../../profile/models/dgt-profile-actions.model';
+import { ActionTypes, AddNotification, CheckConnection, CheckConnectionFinish, CheckUpdates, DismissAllNotifications, HandleError, Navigate, NavigateExternal, SetDefaultLocale, SetLocale } from '../models/dgt-actions.model';
 
 @DGTInjectable()
 export class DGTStateEffectsBaseWebService {
@@ -32,7 +32,7 @@ export class DGTStateEffectsBaseWebService {
 
                 return [
                     new SetDefaultLocale(defaultLocale),
-                    new SetLocale(locale)
+                    new SetLocale(locale),
                 ];
             }),
             catchError((error, caught) => of(new HandleError({ typeName: ROOT_EFFECTS_INIT, error, caught }))),
@@ -125,8 +125,8 @@ export class DGTStateEffectsBaseWebService {
             catchError((err, caught) => of(new HandleError({
                 typeName: CheckConnection.name,
                 error: err,
-                caught
-            })))
+                caught,
+            }))),
         );
 
     @Effect()
@@ -137,7 +137,7 @@ export class DGTStateEffectsBaseWebService {
             tap((action: HandleError) => this.errors.handle(action.payload.typeName, action.payload.error, action.payload.caught)),
             mergeMap(() => of(new AddNotification(new DGTNotification(
                 DGTNotificationType.DANGER,
-                'app.notifications.unexpected-error'
+                'app.notifications.unexpected-error',
             )))),
         );
 

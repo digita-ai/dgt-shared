@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { FormGroup, FormControl } from '@angular/forms';
-import { DGTDataValue, DGTDataInterface } from '@digita-ai/dgt-shared-data';
+import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'dgt-data-interface-descent',
   templateUrl: './dgt-data-interface-descent.component.html',
-  styleUrls: ['./dgt-data-interface-descent.component.scss']
+  styleUrls: ['./dgt-data-interface-descent.component.scss'],
 })
 export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterface {
 
@@ -55,7 +55,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
   ) {
     this.valueUpdated = new EventEmitter();
     this.submit = new EventEmitter();
@@ -113,7 +113,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     this.formGroup.patchValue({
       gender: this.gender,
       dateOfBirth: this.dateOfBirth,
-      placeOfBirth: this.placeOfBirth
+      placeOfBirth: this.placeOfBirth,
   });
   }
 

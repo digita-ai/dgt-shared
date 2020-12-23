@@ -1,8 +1,8 @@
-import { DGTLoggerService, DGTErrorArgument, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { DGTLDTriple } from '../models/dgt-ld-triple.model';
-import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { Parser, Quad } from 'n3';
 import { DGTLDNode } from '../models/dgt-ld-node.model';
-import { Quad, Parser } from 'n3';
+import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 
 @DGTInjectable()
 export class DGTLDTripleFactoryService {
@@ -42,7 +42,7 @@ export class DGTLDTripleFactoryService {
 
         this.logger.debug(DGTLDTripleFactoryService.name, 'Starting to convert quads to values', { uri });
         res = quads.map(quad => this.convertOne(uri, quad));
-        
+
         res = this.clean(res);
 
         return res;
@@ -73,12 +73,12 @@ export class DGTLDTripleFactoryService {
 
             subject = {
                 value: `${uri}`,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
         } else if (subject && subject.value && subject.value.startsWith('#')) {
             subject = {
                 value: `${uri.split('#')[0]}#${quad.subject.value.split('#')[1]}`,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
         }
 
@@ -92,14 +92,14 @@ export class DGTLDTripleFactoryService {
             res = {
                 dataType: quad.object.datatypeString,
                 value: quad.object.value,
-                termType: DGTLDTermType.LITERAL
+                termType: DGTLDTermType.LITERAL,
             };
         } else {
             if (quad.object.value.startsWith('#')) {
                 // here, the object is a reference to another triple
                 res = {
                     value: uri.split('#')[0] + quad.object.value,
-                    termType: DGTLDTermType.REFERENCE
+                    termType: DGTLDTermType.REFERENCE,
                 };
             } else if (quad.object.value.startsWith('undefined/')) {
                 // here, the object is a relative reference to a file
@@ -107,22 +107,21 @@ export class DGTLDTripleFactoryService {
                 // n3 parser wrongly interprets relative references
                 // in turtle, </events/lemonade3.ttl>
                 // is parsed to 'undefined/events/lemonade3.ttl'
-                // new versions of N3 might mix this issue, 
+                // new versions of N3 might mix this issue,
                 res = {
                     // the origin of an url: [[https://www.youtube.com]]/watch?v=y8kEiL81_R4
                     // to this, add the relative path
                     value: new URL(uri).origin + quad.object.value.replace('undefined', ''),
-                    termType: DGTLDTermType.REFERENCE
+                    termType: DGTLDTermType.REFERENCE,
                 }
             } else {
                 // here, the object is an absolute reference
                 res = {
                     value: quad.object.value,
-                    termType: DGTLDTermType.REFERENCE
+                    termType: DGTLDTermType.REFERENCE,
                 };
             }
         }
-
 
         return res;
     }

@@ -1,15 +1,13 @@
-import { Observable, of, forkJoin, from } from 'rxjs';
-import { DGTPurpose, DGTConnector, DGTExchange, DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration, DGTSourceType, DGTSourceSolid, DGTConnectionState, DGTConnectionSolid, DGTLDTriple, DGTLDResource, DGTLDTransformer, DGTSourceState, DGTSparqlQueryService, DGTSourceService, DGTLDTripleFactoryService, DGTConnectionService, DGTExchangeService, DGTPurposeService, DGTUriFactoryService, DGTLDRepresentationSparqlInsertFactory, DGTLDRepresentationSparqlDeleteFactory, DGTConnection, DGTSource } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService, DGTHttpService, DGTErrorArgument, DGTOriginService, DGTCryptoService, DGTInjectable, DGTSourceSolidToken, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
-import { switchMap, map, tap } from 'rxjs/operators';
-import { JWT } from '@solid/jose';
-import base64url from 'base64url';
+import { DGTConnectionService, DGTConnectionSolid, DGTConnectionSolidConfiguration, DGTConnector, DGTExchange, DGTExchangeService, DGTLDRepresentationSparqlDeleteFactory, DGTLDRepresentationSparqlInsertFactory, DGTLDResource, DGTLDTransformer, DGTLDTriple, DGTLDTripleFactoryService, DGTPurposeService, DGTSourceService, DGTSourceSolid, DGTSourceSolidConfiguration, DGTSourceState, DGTSparqlQueryService, DGTUriFactoryService } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService, DGTOriginService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
-import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
-import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
-import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTOIDCService } from '../../oidc/services/dgt-oidc.service';
+import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
+import { DGTSourceSolidTrustedAppMode } from '../models/dgt-source-solid-trusted-app-mode.model';
+import { DGTSourceSolidTrustedApp } from '../models/dgt-source-solid-trusted-app.model';
+import { DGTSourceSolidTrustedAppTransformerService } from '../services/dgt-source-solid-trusted-app-transformer.service';
 
 @DGTInjectable()
 export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration> {
@@ -18,7 +16,6 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
         private logger: DGTLoggerService,
         private http: DGTHttpService,
         private origin: DGTOriginService,
-        private crypto: DGTCryptoService,
         private transformer: DGTSourceSolidTrustedAppTransformerService,
         private triples: DGTLDTripleFactoryService,
         private connections: DGTConnectionService,
@@ -258,7 +255,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                         )
                     )
                 ).pipe(
-                    map((response) => domainEntities.map((update) => update.updated))
+                    map(() => domainEntities.map((update) => update.updated))
                 )
             )
         );
@@ -266,7 +263,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
 
     public prepare(source: DGTSourceSolid): Observable<DGTSourceSolid> {
 
-        if (!source || source.type !== DGTSourceType.SOLID) {
+        if (!source) {
             throw new DGTErrorArgument('Argument source should be set.', source);
         }
 
@@ -283,7 +280,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
             );
     }
 
-    public connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<DGTConnectionSolidConfiguration>, source: DGTSource<DGTSourceSolidConfiguration>): Observable<DGTConnectionSolid> {
+    public connect(): Observable<DGTConnectionSolid> {
         throw new DGTErrorNotImplemented();
     }
 

@@ -1,8 +1,8 @@
-import { Observable, of } from 'rxjs';
 import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
+import { DGTLDFilterPartial } from '../models/dgt-ld-filter-partial.model';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDFilterSparqlService } from './dgt-ld-filter-sparql-service';
-import { DGTLDFilterPartial } from '../models/dgt-ld-filter-partial.model';
 
 /** Service that allow conversion from an partial filter to a SparQL query */
 @DGTInjectable()
@@ -36,7 +36,7 @@ export class DGTLDFilterSparqlPartialService implements DGTLDFilterSparqlService
                     {?subject ?p ?o filter regex(?o, "${entry[1]}$")}
                 }
             }
-            `.trim()
+            `.trim(),
         ).join(' ');
 
         // this query returns all system domain models that have a specific holder attribute

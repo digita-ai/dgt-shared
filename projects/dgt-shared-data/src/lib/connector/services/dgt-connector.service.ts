@@ -1,23 +1,22 @@
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTParameterCheckerService, DGTMap, DGTLoggerService, DGTInjectable, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { DGTSourceType } from '../../source/models/dgt-source-type.model';
-import { Observable, forkJoin, of } from 'rxjs';
-import { map, mergeMap, tap, catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTConnection } from '../../connection/models/dgt-connection.model';
-import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
-import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
-import { DGTConnector } from '../models/dgt-connector.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
+import { DGTSourceService } from '../../source/services/dgt-source.service';
+import { DGTConnector } from '../models/dgt-connector.model';
 
 @DGTInjectable()
 export class DGTConnectorService {
 
-  private connectors: DGTMap<DGTSourceType, DGTConnector<any, any>>;
+  private connectors: DGTMap<string, DGTConnector<any, any>>;
 
   constructor(
     private logger: DGTLoggerService,
@@ -27,17 +26,17 @@ export class DGTConnectorService {
     private purposes: DGTPurposeService,
   ) { }
 
-  public register(sourceType: DGTSourceType, connector: DGTConnector<any, any>) {
+  public register(sourceType: string, connector: DGTConnector<any, any>) {
     this.paramChecker.checkParametersNotNull({ sourceType, connector });
 
     if (!this.connectors) {
-      this.connectors = new DGTMap<DGTSourceType, DGTConnector<any, any>>();
+      this.connectors = new DGTMap<string, DGTConnector<any, any>>();
     }
 
     this.connectors.set(sourceType, connector);
   }
 
-  public get(sourceType: DGTSourceType) {
+  public get(sourceType: string) {
     if (!sourceType) {
       throw new DGTErrorArgument('Argument sourceType should be set.', sourceType);
     }
@@ -53,7 +52,7 @@ export class DGTConnectorService {
       // get connection
       mergeMap(data => this.connections.query({
         type: DGTLDFilterType.PARTIAL,
-        partial: { holder: exchange.holder, source: data.source.uri }
+        partial: { holder: exchange.holder, source: data.source.uri },
       } as DGTLDFilterPartial)
         .pipe(
           tap(connection => this.logger.debug(DGTConnectorService.name, 'found connection for upstream', connection)),
@@ -79,7 +78,7 @@ export class DGTConnectorService {
           throw new DGTErrorArgument('triples can not be an empty list', resources);
         }
         return forkJoin(resources.map(resource => this.upstreamSync(
-          data.connector, resource, data.connection, null, exchange)
+          data.connector, resource, data.connection, null, exchange),
         )).pipe(map(resultFromUpstream => ({ ...data, resultFromUpstream })));
       }),
       map(data => _.flatten(data.resultFromUpstream)),

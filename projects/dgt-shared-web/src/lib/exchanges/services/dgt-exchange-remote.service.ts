@@ -1,11 +1,11 @@
 import { DGTExchange, DGTExchangeService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import * as _ from 'lodash';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTExchangeRemoteService extends DGTExchangeService {
@@ -41,10 +41,34 @@ export class DGTExchangeRemoteService extends DGTExchangeService {
             );
     }
     save(resources: DGTExchange[]): Observable<DGTExchange[]> {
-        throw new Error('Method not implemented.');
+        this.logger.debug(DGTExchangeRemoteService.name, 'Starting to save', { resources });
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        return of({ resources })
+            .pipe(
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange` })),
+                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                switchMap(data => forkJoin(resources.map(resource => this.http.post<DGTExchange>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                    .pipe(map(response => response.data))))),
+            );
     }
     delete(resource: DGTExchange): Observable<DGTExchange> {
-        throw new Error('Method not implemented.');
+        this.logger.debug(DGTExchangeRemoteService.name, 'Starting to delete', { resource });
+
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        return of({ resource })
+            .pipe(
+                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}exchange/${encodeURIComponent(data.resource.uri)}` })),
+                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+                switchMap(data => this.http.delete<DGTExchange>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+                map(response => response.data),
+            );
     }
 
 }

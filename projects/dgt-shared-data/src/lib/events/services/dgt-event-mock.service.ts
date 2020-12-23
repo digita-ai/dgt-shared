@@ -1,10 +1,10 @@
 
-import { DGTEvent } from '../models/dgt-event.model';
-import { Observable, of } from 'rxjs';
-import { DGTEventService } from './dgt-event.service';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
+import { Observable, of } from 'rxjs';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTEvent } from '../models/dgt-event.model';
+import { DGTEventService } from './dgt-event.service';
 
 @DGTInjectable()
 export class DGTEventMockService extends DGTEventService {

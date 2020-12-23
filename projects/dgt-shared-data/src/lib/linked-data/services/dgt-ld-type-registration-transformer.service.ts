@@ -1,16 +1,16 @@
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import uuid, { v4 } from 'uuid';
 import { map, tap } from 'rxjs/operators';
-import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
-import { DGTLDResource } from '../models/dgt-ld-resource.model';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
-import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
+import { v4 as uuid } from 'uuid';
 import { DGTLDDataType } from '../models/dgt-ld-data-type.model';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
+import { DGTLDTypeRegistration } from '../models/dgt-ld-type-registration.model';
+import { DGTLDUtils } from './dgt-ld-utils.service';
 
 /** Transforms linked data to typeRegistrations, and the other way around. */
 @DGTInjectable()
@@ -18,7 +18,8 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
+    private utils: DGTLDUtils,
   ) { }
 
   /**
@@ -54,13 +55,24 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
     if (resource && resource.triples) {
       const typeRegistrationSubjectValues = resource.triples.filter(value =>
         value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-        value.object.value === 'http://www.w3.org/ns/solid/terms#TypeRegistration'
+        value.object.value === 'http://www.w3.org/ns/solid/terms#TypeRegistration',
       );
 
       this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Found typeRegistration subjects to transform', { typeRegistrationSubjectValues });
 
       if (typeRegistrationSubjectValues) {
-        res = typeRegistrationSubjectValues.map(typeRegistrationSubjectValue => this.transformOne(typeRegistrationSubjectValue, resource));
+        res = typeRegistrationSubjectValues.map(typeRegistrationSubjectValue => {
+          let typeRegistration = null;
+
+          try {
+            typeRegistration = this.transformOne(typeRegistrationSubjectValue, resource)
+          } catch (error) {
+
+          }
+
+          return typeRegistration;
+        })
+        .filter(typeRegistration => typeRegistration !== null);
       }
     }
 
@@ -86,9 +98,9 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       const documentSubject = {
         // This line is only for human readability in the raw file
         value: '#' + uuid(),
-        termType: DGTLDTermType.REFERENCE
+        termType: DGTLDTermType.REFERENCE,
       };
-      const typeRegistrationId = v4();
+      const typeRegistrationId = uuid();
       const typeRegistrationSubjectUri = `${uri}#${typeRegistrationId}`;
 
       if (!triples) {
@@ -99,7 +111,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
             object: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
-              value: 'http://www.w3.org/ns/solid/terms#TypeRegistration'
+              value: 'http://www.w3.org/ns/solid/terms#TypeRegistration',
             },
           },
           {
@@ -108,7 +120,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
             object: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
-              value: typeRegistration.forClass
+              value: typeRegistration.forClass,
             },
           },
           {
@@ -117,7 +129,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
             object: {
               termType: DGTLDTermType.REFERENCE,
               dataType: DGTLDDataType.STRING,
-              value: typeRegistration.instance
+              value: typeRegistration.instance,
             },
           },
         ];
@@ -126,7 +138,7 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
       const newEntity: DGTLDResource = {
         ...typeRegistration,
         uri,
-        triples
+        triples,
       };
 
       this.logger.debug(DGTLDTypeRegistrationTransformerService.name, 'Transformed typeRegistration to linked data', { newEntity, typeRegistration });
@@ -154,17 +166,21 @@ export class DGTLDTypeRegistrationTransformerService implements DGTLDTransformer
 
     const forClass = resource.triples.find(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value &&
-      value.predicate === 'http://www.w3.org/ns/solid/terms#forClass'
+      value.predicate === 'http://www.w3.org/ns/solid/terms#forClass',
     );
 
     const instance = resource.triples.find(value =>
       value.subject.value === typeRegistrationSubjectValue.subject.value &&
-      value.predicate === 'http://www.w3.org/ns/solid/terms#instance'
+      value.predicate === 'http://www.w3.org/ns/solid/terms#instance',
     );
 
     const typeRegistrationTriples = resource.triples.filter(value =>
-      value.subject.value === typeRegistrationSubjectValue.subject.value
+      value.subject.value === typeRegistrationSubjectValue.subject.value,
     );
+
+    if (!instance || !this.utils.isUrl(instance.object.value)) {
+      throw new DGTErrorArgument('Instance should be a url', instance);
+    }
 
     return {
       uri,

@@ -1,9 +1,9 @@
 import { FormGroup } from '@angular/forms';
+import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTSmartElement } from './dgt-smart-element.model';
 import { DGTRobotVerificationResponse } from '../../validation/models/dgt-robot-verification-response.model';
-import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTSmartElement } from './dgt-smart-element.model';
 
 export abstract class DGTSmartForm<T extends DGTBaseRootState<DGTBaseAppState>> extends DGTSmartElement<T> {
     public captchaResponse: DGTRobotVerificationResponse = DGTRobotVerificationResponse.ROBOT;

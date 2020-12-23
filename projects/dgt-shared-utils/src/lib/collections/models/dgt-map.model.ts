@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
 export class DGTMap<T, S> {
-    private array: Array<{ key: T, value: S }> = new Array<{ key: T, value: S }>();
+    private array: { key: T, value: S }[] = new Array<{ key: T, value: S }>();
     public get size(): number { return this.array.length; }
     public [Symbol.toStringTag]: 'Map';
 
-    public static fromArray<T, S>(array: Array<{ key: T, value: S }>): DGTMap<T, S> {
+    public static fromArray<T, S>(array: { key: T, value: S }[]): DGTMap<T, S> {
         const res = new DGTMap<T, S>();
 
         if (array) {
@@ -15,7 +15,7 @@ export class DGTMap<T, S> {
         return res;
     }
 
-    constructor(map: DGTMap<T, S> | Array<{ key: T, value: S }> = null) {
+    constructor(map: DGTMap<T, S> | { key: T, value: S }[] = null) {
         if (map instanceof DGTMap) {
             this.array = map.array;
         } else if (map instanceof Array) {
@@ -88,7 +88,7 @@ export class DGTMap<T, S> {
         return this.array.map(tuple => tuple.value).values();
     }
 
-    public toArray(): Array<{ key: T, value: S }> {
+    public toArray(): { key: T, value: S }[] {
         return Array.from(this.array);
     }
 

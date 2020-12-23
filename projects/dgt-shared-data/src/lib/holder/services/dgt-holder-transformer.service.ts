@@ -1,11 +1,11 @@
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTHolder } from '../models/dgt-holder.model';
 
@@ -15,7 +15,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
     constructor(
         private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService
+        private paramChecker: DGTParameterCheckerService,
     ) { }
 
     /**
@@ -29,7 +29,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
 
         return forkJoin(resources.map(resource => this.toDomainOne(resource)))
             .pipe(
-                map(resourcesRes => _.flatten(resourcesRes))
+                map(resourcesRes => _.flatten(resourcesRes)),
             );
     }
 
@@ -47,7 +47,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
         if (resource && resource.triples) {
             const resourceSubjectValues = resource.triples.filter(value =>
                 value.predicate === 'http://digita.ai/voc/holders#holder' &&
-                value.subject.value.endsWith('holder#')
+                value.subject.value.endsWith('holder#'),
             );
 
             if (resourceSubjectValues) {
@@ -74,7 +74,7 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
         const transformedResources = resources.map<DGTLDResource>(resource => {
             const resourceSubject = {
                 value: resource.uri,
-                termType: DGTLDTermType.REFERENCE
+                termType: DGTLDTermType.REFERENCE,
             };
 
             const triples = [
@@ -82,14 +82,14 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
                     predicate: 'http://digita.ai/voc/holders#holder',
                     subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
                     object: resourceSubject,
-                }
+                },
             ];
 
             return {
                 ...resource,
                 exchange: resource.exchange,
                 uri: resource.uri,
-                triples
+                triples,
             };
         });
 

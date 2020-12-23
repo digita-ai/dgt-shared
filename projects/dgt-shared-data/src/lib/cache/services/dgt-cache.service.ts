@@ -1,9 +1,9 @@
 import { DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { Observable } from 'rxjs';
 import * as _ from 'lodash';
-import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { Observable } from 'rxjs';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 
 @DGTInjectable()
 export abstract class DGTCacheService {

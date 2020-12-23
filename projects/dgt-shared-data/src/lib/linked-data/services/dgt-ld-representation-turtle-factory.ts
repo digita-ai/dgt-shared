@@ -1,13 +1,13 @@
-import { Observable, of } from 'rxjs';
-import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { DGTLDRepresentationN3QuadFactory } from './dgt-ld-representation-n3-quad-factory';
-import { last, map, switchMap } from 'rxjs/operators';
 import { DataFactory, Parser, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Writer } from 'n3';
+import { Observable, of } from 'rxjs';
+import { last, map, switchMap } from 'rxjs/operators';
+import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
+import { DGTLDRepresentationFactory } from './dgt-ld-representation-factory';
+import { DGTLDRepresentationN3QuadFactory } from './dgt-ld-representation-n3-quad-factory';
 
 @DGTInjectable()
 export class DGTLDRepresentationTurtleFactory extends DGTLDRepresentationFactory<string> {

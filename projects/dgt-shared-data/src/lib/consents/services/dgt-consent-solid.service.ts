@@ -1,18 +1,18 @@
 
-import { forkJoin, Observable, of } from 'rxjs';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTConsentService } from './dgt-consent.service';
-import { DGTConsent } from '../models/dgt-consent.model';
-import { DGTConsentTransformerService } from './dgt-consent-transformer.service';
+import _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { v4 } from 'uuid';
-import _ from 'lodash';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
-import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTConnector } from '../../connector/models/dgt-connector.model';
-import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
+import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
+import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
+import { DGTConsent } from '../models/dgt-consent.model';
+import { DGTConsentTransformerService } from './dgt-consent-transformer.service';
+import { DGTConsentService } from './dgt-consent.service';
 
 @DGTInjectable()
 /** Service used for working with DGTConsents */
@@ -43,7 +43,7 @@ export class DGTConsentSolidService extends DGTConsentService {
         switchMap(data => forkJoin(data.files.map(file => this.connector.query<DGTConsent>(file, data.exchange, this.transformer)))
           .pipe(map(consents => ({ ...data, consents: _.flatten(consents) })))),
         tap(data => this.logger.debug(DGTConsentSolidService.name, 'Finished querying for consents', { data })),
-        map(data => data.consents)
+        map(data => data.consents),
       );
   }
 
@@ -64,7 +64,7 @@ export class DGTConsentSolidService extends DGTConsentService {
     const year = expirationDate.getFullYear();
     const month = expirationDate.getMonth();
     const day = expirationDate.getDate();
-    //TODO how long default ? Now 100 years - set expiry date to now to invalidate.
+    // TODO how long default ? Now 100 years - set expiry date to now to invalidate.
     expirationDate = new Date(year + 100, month, day);
     const createdAt = new Date();
 
@@ -83,9 +83,9 @@ export class DGTConsentSolidService extends DGTConsentService {
         switchMap(data => this.typeRegistrations.registerForResources('http://digita.ai/voc/consents#consent', data.resource, data.profile)
           .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, uri: typeRegistrations[0].instance }) })))),
         switchMap(data => this.connector.add<DGTConsent>([data.resource], this.transformer)
-          .pipe(map(addedConsents => ({ ...data, addedConsents, })))),
+          .pipe(map(addedConsents => ({ ...data, addedConsents })))),
         tap(data => this.logger.debug(DGTConsentSolidService.name, 'Added new consent', data)),
-        map(data => data.addedConsents)
+        map(data => data.addedConsents),
       );
   }
 
@@ -99,7 +99,7 @@ export class DGTConsentSolidService extends DGTConsentService {
     return of({ resources })
       .pipe(
         switchMap(data => this.connector.delete(data.resources, this.transformer)),
-        map(data => resources)
+        map(data => resources),
       );
   }
 
@@ -113,6 +113,5 @@ export class DGTConsentSolidService extends DGTConsentService {
   ) {
     super();
   }
-
 
 }

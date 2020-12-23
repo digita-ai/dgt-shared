@@ -1,13 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import * as _ from 'lodash';
-import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'dgt-data-field',
   templateUrl: './dgt-data-field.component.html',
-  styleUrls: ['./dgt-data-field.component.scss']
+  styleUrls: ['./dgt-data-field.component.scss'],
 })
 /** The Data Field component shows a text representation of a value */
 export class DGTDataFieldComponent {
@@ -33,7 +33,7 @@ export class DGTDataFieldComponent {
 
   constructor(
     private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService
+    private paramChecker: DGTParameterCheckerService,
   ) {
     this.formGroup = new FormGroup({
       desc: new FormControl(),

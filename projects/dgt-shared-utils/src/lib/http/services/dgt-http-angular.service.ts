@@ -1,12 +1,12 @@
 
-import { map, catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
-import { Observable, of } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { DGTInjectable } from '../../decorators/dgt-injectable';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTHttpResponse } from '../models/dgt-http-response.model';
 import { DGTHttpService } from './dgt-http.service';
-import { DGTInjectable } from '../../decorators/dgt-injectable';
 
 @DGTInjectable()
 export class DGTHttpAngularService extends DGTHttpService {
@@ -30,7 +30,7 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -44,7 +44,7 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -58,7 +58,7 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -72,7 +72,7 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -86,7 +86,7 @@ export class DGTHttpAngularService extends DGTHttpService {
         map(response => ({
           data: response.body as T,
           success: true,
-          status: response.status
+          status: response.status,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -101,7 +101,7 @@ export class DGTHttpAngularService extends DGTHttpService {
           data: response.body as T,
           success: true,
           status: response.status,
-          headers: response.headers
+          headers: response.headers,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -116,7 +116,7 @@ export class DGTHttpAngularService extends DGTHttpService {
           data: response.body as T,
           success: true,
           status: response.status,
-          headers: response.headers
+          headers: response.headers,
         })),
         catchError(error => of(this.handleError<T>(error))),
       );
@@ -137,7 +137,7 @@ export class DGTHttpAngularService extends DGTHttpService {
     return {
       data: null,
       success: false,
-      status: error.status
+      status: error.status,
     };
   }
 }

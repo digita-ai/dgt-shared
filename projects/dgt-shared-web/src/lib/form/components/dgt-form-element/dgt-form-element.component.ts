@@ -1,12 +1,12 @@
-import { Component, ContentChildren, QueryList, Input, AfterContentInit } from '@angular/core';
-import { DGTFormValidationComponent } from '../dgt-form-validation/dgt-form-validation.component';
-import { DGTFormControlComponent } from '../dgt-form-control/dgt-form-control.component';
+import { AfterContentInit, Component, ContentChildren, Input, QueryList } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { DGTFormControlComponent } from '../dgt-form-control/dgt-form-control.component';
+import { DGTFormValidationComponent } from '../dgt-form-validation/dgt-form-validation.component';
 
 @Component({
   selector: 'dgt-form-element',
   templateUrl: './dgt-form-element.component.html',
-  styleUrls: ['./dgt-form-element.component.scss']
+  styleUrls: ['./dgt-form-element.component.scss'],
 })
 export class DGTFormElementComponent implements AfterContentInit {
   public inline = false;

@@ -1,19 +1,19 @@
 
 import { map } from 'rxjs/operators';
 
-import { AngularFirestore, QueryFn } from 'angularfire2/firestore';
-import * as _ from 'lodash';
-import { Observable, from, forkJoin } from 'rxjs';
-import { firestore } from 'firebase';
 import { DGTDataService, DGTEntity, DGTQuery } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { AngularFirestore, QueryFn } from 'angularfire2/firestore';
+import { firestore } from 'firebase';
+import * as _ from 'lodash';
+import { forkJoin, from, Observable } from 'rxjs';
 
 @DGTInjectable()
 export class DGTClientDataService extends DGTDataService {
 
   constructor(
     private logger: DGTLoggerService,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
   ) {
     super();
   }
@@ -35,7 +35,7 @@ export class DGTClientDataService extends DGTDataService {
             entity.id = change.payload.doc.id;
 
             return entity;
-          })
+          }),
           ));
     } else {
       res = this.afs.collection<S>(entityType)
@@ -46,7 +46,7 @@ export class DGTClientDataService extends DGTDataService {
             entity.id = change.payload.doc.id;
 
             return entity;
-          })
+          }),
           ));
     }
 
@@ -85,7 +85,7 @@ export class DGTClientDataService extends DGTDataService {
         .pipe(
           map(() => {
             return entity;
-          })
+          }),
         );
     } else {
       res = from(this.afs.collection(entityType).add(entity))
@@ -93,15 +93,15 @@ export class DGTClientDataService extends DGTDataService {
           entity.id = reference.id;
 
           return entity;
-        })
+        }),
         );
     }
 
     return res;
   }
 
-  public createEntities<S extends DGTEntity>(entityType: string, entities: Array<S>): Observable<Array<S>> {
-    let res: Observable<Array<S>> = null;
+  public createEntities<S extends DGTEntity>(entityType: string, entities: S[]): Observable<S[]> {
+    let res: Observable<S[]> = null;
 
     this.logger.debug(DGTClientDataService.name, 'Creating entities for type ' + entityType, entities);
 
@@ -118,17 +118,17 @@ export class DGTClientDataService extends DGTDataService {
           if (entity.id) {
             observable = from(this.afs.collection(entityType).doc(entity.id).set(entity))
               .pipe(
-                map(() => entity)
+                map(() => entity),
               );
           } else {
             observable = from(this.afs.collection(entityType).add(entity))
               .pipe(
-                map(reference => Object.assign({}, entity, { id: reference.id }))
+                map(reference => Object.assign({}, entity, { id: reference.id })),
               );
           }
 
           return observable;
-        })
+        }),
       )
     }
 
@@ -148,7 +148,7 @@ export class DGTClientDataService extends DGTDataService {
 
     return from(this.afs.collection(entityType).doc(entity.id).set(entity))
       .pipe(
-        map(() => entity)
+        map(() => entity),
       );
   }
 
@@ -161,7 +161,7 @@ export class DGTClientDataService extends DGTDataService {
 
     return from(this.afs.collection(entityType).doc<S>(entityId).update(entity))
       .pipe(
-        map(() => entity)
+        map(() => entity),
       );
   }
 
@@ -179,7 +179,6 @@ export class DGTClientDataService extends DGTDataService {
             compiledQuery = compiledQuery.where(condition.field, condition.operator, condition.value);
           })
         }
-
 
         // if (query.pagination) {
         //   const start = query.pagination.page * query.pagination.size;
