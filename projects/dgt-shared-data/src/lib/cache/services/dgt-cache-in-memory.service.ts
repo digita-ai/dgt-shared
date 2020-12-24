@@ -74,6 +74,11 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             )
     }
 
+    /**
+     * Retrieves all DGTLDResources from the cache
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param filter The filter to run on the retrieved list of DGTLDResources
+     */
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTCacheInMemoryService.name, 'Starting to query', { cache: this.cache, transformer, filter });
 
@@ -85,6 +90,10 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             );
     }
 
+    /**
+     * Runs a SparQL query on data saved in memory
+     * @param query The query to execute
+     */
     public querySparql(query: string): Observable<string> {
 
         return of({ query })
