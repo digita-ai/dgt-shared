@@ -50,7 +50,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
                             const res: DGTSparqlResult = {
                                 head: {
                                     vars: data.result.variables,
-                                    link: null,
+                                    link: [],
                                 },
                                 results: {
                                     bindings: bindingsList as any,
