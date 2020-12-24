@@ -88,13 +88,13 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
         return of({ exchange, uri })
             .pipe(
                 switchMap(data => this.connections.get(data.exchange.connection)
-                    .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection, uri: data.uri ? data.uri : connection.configuration.session.info.webId })))),
+                    .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved connetion', data)),
                 switchMap(data => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ ...data, source })))),
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved source', data)),
                 switchMap(data => this.oidc.getSession(data.connection.configuration.session.info.sessionId)
-                    .pipe(map(session => ({ ...data, session, headers: { 'Accept': 'text/turtle', } })))),
+                    .pipe(map(session => ({ ...data, session, headers: { 'Accept': 'text/turtle' }, uri: data.uri ? data.uri : session.info.webId })))),
                 switchMap(data => this.http.get<string>(data.uri, data.headers, true, data.session)
                     .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Request completed', data)),
@@ -328,7 +328,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
             switchMap(data => this.purposes.get(exchange.purpose).pipe(
                 map(purpose => ({ ...data, purpose }))
             )),
-            switchMap(data => this.query<DGTSourceSolidTrustedApp>(data.connection.configuration.session.info.webId, exchange, this.transformer).pipe(
+            switchMap(data => this.query<DGTSourceSolidTrustedApp>(null, exchange, this.transformer).pipe(
                 map(trustedApps => ({ ...data, trustedApps }))
             )),
             tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved trusted apps', data.trustedApps)),

@@ -38,7 +38,7 @@ export class DGTProfileSolidService extends DGTProfileService {
         switchMap(data => this.connections.get(exchange.connection)
           .pipe(map(connection => ({ ...data, connection })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved connection', { data })),
-        switchMap(data => this.connector.query<DGTProfile>(data.connection.configuration.session.info.webId, data.exchange, this.transformer)
+        switchMap(data => this.connector.query<DGTProfile>(null, data.exchange, this.transformer)
           .pipe(map(profiles => ({ ...data, profile: profiles[0] })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
         switchMap(data => this.typeRegistrations.all(data.profile)
