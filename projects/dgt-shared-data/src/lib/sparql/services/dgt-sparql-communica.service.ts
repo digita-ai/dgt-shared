@@ -49,11 +49,15 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
 
                             const res: DGTSparqlResult = {
                                 head: {
-                                    vars: data.result.variables,
+                                    vars: data.result.variables.map(variable => variable.replace('?', '')),
                                     link: [],
                                 },
                                 results: {
-                                    bindings: bindingsList as any,
+                                    bindings: bindingsList.map(binding => ({
+                                        type: binding.get('termType'),
+                                        value: binding.get('value'),
+                                        datatype: binding.get('datatype').value,
+                                    } as any)),
                                 },
                             }
 
