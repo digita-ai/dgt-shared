@@ -2,7 +2,7 @@ import { DGTConnectionService, DGTConnectionSolid, DGTConnectionState, DGTSessio
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { ISessionInfo, Session, SessionManager } from '@inrupt/solid-client-authn-browser';
 import { from, Observable, of } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { mergeMap, take, tap } from 'rxjs/operators';
 
 @DGTInjectable()
 export class DGTOIDCService {
@@ -34,8 +34,7 @@ export class DGTOIDCService {
 
         const session = new Session({ secureStorage: this.storage });
 
-
-        this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING, configuration: { ...connection.configuration, session } }]);
+        this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING, configuration: { ...connection.configuration, sessionInfo: session.info } }]);
 
         if (!session.info.isLoggedIn) {
             session.login({ oidcIssuer: source.configuration.issuer, redirectUrl: source.configuration.callbackUri });
@@ -47,13 +46,11 @@ export class DGTOIDCService {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        const conn = { ...connection };
-
-        return this.getSession(conn.configuration.session.info.sessionId).pipe(mergeMap(session => {
+        return this.getSession(connection.configuration.sessionInfo.sessionId).pipe(mergeMap(session => {
             if (session) {
                 return from(session.handleIncomingRedirect(window.location.href)).pipe(tap(sessionInfo => {
                     this.logger.debug(DGTOIDCService.name, 'Retrieved sessionInfo', sessionInfo);
-                }));
+                }), take(1));
             } else {
                 throw new DGTErrorArgument('Session not found.', session);
             }

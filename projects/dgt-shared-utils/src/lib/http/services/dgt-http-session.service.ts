@@ -15,7 +15,7 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public get<T>(uri: string, headers?: { [key: string]: string }, isText: boolean = false, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Getting from URI', { uri, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Getting from URI', { uri, session, headers });
 
         return of({ uri, headers, session })
             .pipe(
@@ -36,11 +36,11 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public post<T>(uri: string, body: any, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Posting to URI', { uri, body, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Posting to URI', { uri, body, session, headers });
 
         return of({ uri, body, headers, session })
             .pipe(
-                switchMap(data => from(session.fetch(uri, { method: 'POST', headers, body })).pipe(
+                switchMap(data => from(session.fetch(uri, { method: 'POST', headers: data.headers, body })).pipe(
                     map(response => ({ ...data, response })),
                 )),
                 switchMap(data => from(data.response.text()).pipe(
@@ -57,10 +57,10 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public put<T>(uri: string, body: any, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Putting to URI', { uri, body, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Putting to URI', { uri, body, session, headers });
 
         return of({ uri, body, headers, session }).pipe(
-            switchMap(data => from(session.fetch(uri, { method: 'PUT', headers, body })).pipe(
+            switchMap(data => from(session.fetch(uri, { method: 'PUT', headers: data.headers, body })).pipe(
                 map(response => ({ ...data, response })),
             )),
             switchMap(data => from(data.response.text()).pipe(
@@ -80,7 +80,7 @@ export class DGTHttpSessionService extends DGTHttpService {
         this.logger.debug(DGTHttpSessionService.name, 'Deleting to URI', { uri, headers, session });
 
         return of({ uri, headers, session }).pipe(
-            switchMap(data => from(session.fetch(uri, { method: 'DELETE', headers })).pipe(
+            switchMap(data => from(session.fetch(uri, { method: 'DELETE', headers: data.headers })).pipe(
                 map(response => ({ ...data, response })),
             )),
             switchMap(data => from(data.response.text()).pipe(
@@ -97,10 +97,10 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public patch<T>(uri: string, body: any, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Patching to URI', { uri, body, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Patching to URI', { uri, body, session, headers });
 
         return of({ uri, body, headers, session }).pipe(
-            switchMap(data => from(session.fetch(uri, { method: 'PATCH', headers, body })).pipe(
+            switchMap(data => from(session.fetch(uri, { method: 'PATCH', headers: data.headers, body })).pipe(
                 map(response => ({ ...data, response })),
             )),
             switchMap(data => from(data.response.text()).pipe(
@@ -117,10 +117,10 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public head<T>(uri: string, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Sending HEAD request', { uri, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Sending HEAD request', { uri, session, headers });
 
         return of({ uri, headers, session }).pipe(
-            switchMap(data => from(session.fetch(uri, { method: 'HEAD', headers })).pipe(
+            switchMap(data => from(session.fetch(uri, { method: 'HEAD', headers: data.headers })).pipe(
                 map(response => ({ ...data, response })),
             )),
             switchMap(data => from(data.response.text()).pipe(
@@ -137,10 +137,10 @@ export class DGTHttpSessionService extends DGTHttpService {
     }
 
     public options<T>(uri: string, headers?: { [key: string]: string }, session?: Session): Observable<DGTHttpResponse<T>> {
-        this.logger.debug(DGTHttpSessionService.name, 'Sending OPTIONS request', { uri, session });
+        this.logger.debug(DGTHttpSessionService.name, 'Sending OPTIONS request', { uri, session, headers });
 
         return of({ uri, headers, session }).pipe(
-            switchMap(data => from(session.fetch(uri, { method: 'OPTIONS', headers })).pipe(
+            switchMap(data => from(session.fetch(uri, { method: 'OPTIONS', headers: data.headers })).pipe(
                 map(response => ({ ...data, response })),
             )),
             switchMap(data => from(data.response.text()).pipe(

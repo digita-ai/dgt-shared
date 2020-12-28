@@ -46,7 +46,7 @@ export class DGTCacheSolidService extends DGTCacheService {
             throw new DGTErrorArgument('Argument uri should be set.', uri);
         }
 
-        return of({ uri, transformer, headers: { Accept: 'text/turtle' } }).pipe(
+        return of({ uri, transformer, headers: { 'Accept': 'text/turtle' } }).pipe(
             switchMap(data => this.http.get<string>(data.uri, data.headers)
                 .pipe(map(response => ({ ...data, response }))),
             ),
@@ -68,7 +68,7 @@ export class DGTCacheSolidService extends DGTCacheService {
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
 
         const headers = {
-            Accept: 'application/sparql-results+json',
+            'Accept': 'application/sparql-results+json',
             'Content-Type': 'application/x-www-form-urlencoded',
         };
 
@@ -100,7 +100,7 @@ export class DGTCacheSolidService extends DGTCacheService {
         }
 
         const headers = {
-            Accept: 'application/sparql-results+json',
+            'Accept': 'application/sparql-results+json',
             'Content-Type': 'application/x-www-form-urlencoded',
         };
 
@@ -177,7 +177,7 @@ export class DGTCacheSolidService extends DGTCacheService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ transformer, resource, headers: { Accept: 'text/turtle' }, uri: resource.uri.split('#')[0] })
+        return of({ transformer, resource, headers: { 'Accept': 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
                 switchMap(data => this.http.head(data.uri, data.headers)
                     .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),

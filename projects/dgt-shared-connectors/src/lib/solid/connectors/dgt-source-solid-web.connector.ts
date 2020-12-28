@@ -61,7 +61,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                     .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
                 switchMap(data => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ ...data, source })))),
-                switchMap(data => this.oidc.getSession(data.connection.configuration.session.info.sessionId)
+                switchMap(data => this.oidc.getSession(data.connection.configuration.sessionInfo.sessionId)
                     .pipe(map(session => ({ ...data, session, headers: { 'Content-Type': 'application/sparql-update', } })))),
                 switchMap(data => forkJoin(Object.keys(data.groupedEntities).map(uri =>
                     of(uri).pipe(
@@ -89,11 +89,11 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
             .pipe(
                 switchMap(data => this.connections.get(data.exchange.connection)
                     .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
-                tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved connetion', data)),
+                tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved connection', data)),
                 switchMap(data => this.sources.get(data.exchange.source)
                     .pipe(map(source => ({ ...data, source })))),
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved source', data)),
-                switchMap(data => this.oidc.getSession(data.connection.configuration.session.info.sessionId)
+                switchMap(data => this.oidc.getSession(data.connection.configuration.sessionInfo.sessionId)
                     .pipe(map(session => ({ ...data, session, headers: { 'Accept': 'text/turtle' }, uri: data.uri ? data.uri : session.info.webId })))),
                 switchMap(data => this.http.get<string>(data.uri, data.headers, true, data.session)
                     .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
@@ -141,7 +141,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                 .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
             switchMap(data => this.sources.get(data.exchange.source)
                 .pipe(map(source => ({ ...data, source })))),
-            switchMap(data => this.oidc.getSession(data.connection.configuration.session.info.sessionId)
+            switchMap(data => this.oidc.getSession(data.connection.configuration.sessionInfo.sessionId)
                 .pipe(map(session => ({ ...data, session, headers: { 'Content-Type': 'application/sparql-update', } })))),
             tap((data) =>
                 this.logger.debug(
@@ -233,7 +233,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                 .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
             switchMap(data => this.sources.get(data.exchange.source)
                 .pipe(map(source => ({ ...data, source })))),
-            switchMap(data => this.oidc.getSession(data.connection.configuration.session.info.sessionId)
+            switchMap(data => this.oidc.getSession(data.connection.configuration.sessionInfo.sessionId)
                 .pipe(map(session => ({ ...data, session, headers: { 'Content-Type': 'application/sparql-update', } })))),
             switchMap((data) =>
                 forkJoin(
@@ -367,7 +367,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
         const uri = source.configuration.issuer + '/api/accounts/new';
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            Accept: '*/*',
+            'Accept': '*/*',
         };
 
         const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;

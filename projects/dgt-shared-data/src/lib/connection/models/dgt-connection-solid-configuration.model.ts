@@ -1,5 +1,3 @@
-import { Session } from '@inrupt/solid-client-authn-browser';
-
 export interface DGTConnectionSolidConfiguration {
   webId: string;
   accessToken: string;
@@ -12,5 +10,5 @@ export interface DGTConnectionSolidConfiguration {
   accountId: string;
   protocol: string;
   refreshToken?: string;
-  session?: Session;
+  sessionInfo?: any;
 }

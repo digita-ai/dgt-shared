@@ -95,7 +95,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
       .pipe(
         switchMap(data => this.connections.get(data.exchange.connection)
           .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection, uri: data.uri ? data.uri : connection.configuration.webId })))),
-        tap(data => this.logger.debug(DGTConnectorSolid.name, 'Retrieved connetion', data)),
+        tap(data => this.logger.debug(DGTConnectorSolid.name, 'Retrieved connection', data)),
         switchMap(data => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ ...data, source })))),
         tap(data => this.logger.debug(DGTConnectorSolid.name, 'Retrieved source', data)),
@@ -365,7 +365,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
     const uri = source.configuration.issuer + '/api/accounts/new';
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: '*/*',
+      'Accept': '*/*',
     };
 
     const body = `username=${loginData.username}&name=${loginData.name}&password=${loginData.password}&repeat_password=${loginData.password}&email=${loginData.email}`;

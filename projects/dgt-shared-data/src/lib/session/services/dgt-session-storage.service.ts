@@ -9,13 +9,13 @@ import { DGTConnectionService } from '../../connection/services/dgt-connection-a
 export class DGTSessionStorageService extends EventEmitter implements IStorage {
     public get(sessionId: string): Promise<string> {
         return this.connections.getConnectionBySessionId(sessionId).pipe(
-            map(connection => connection ? JSON.stringify(connection.configuration.session.info) : null),
+            map(connection => connection ? JSON.stringify(connection.configuration.sessionInfo) : null),
         ).toPromise();
     }
     public set(sessionId: string, value: string): Promise<void> {
-        const info = JSON.parse(value);
+        const sessionInfo = JSON.parse(value);
 
-        const regexMatchedWebId: string[] = info.webId.match('(https?://)(.*?/)(.*)');
+        const regexMatchedWebId: string[] = sessionInfo.webId.match('(https?://)(.*?/)(.*)');
         const accountId = regexMatchedWebId[2].replace('/', '');
         const protocol = regexMatchedWebId[1];
 
@@ -26,8 +26,8 @@ export class DGTSessionStorageService extends EventEmitter implements IStorage {
                     ...connection.configuration,
                     accountId,
                     protocol,
-                    session: { ...connection.configuration.session, info }
-                }, state: info.isLoggedIn ? DGTConnectionState.CONNECTED : DGTConnectionState.NOTCONNECTED
+                    sessionInfo,
+                }, state: sessionInfo.isLoggedIn ? DGTConnectionState.CONNECTED : DGTConnectionState.NOTCONNECTED
             })),
             map(connection => this.connections.save([connection]).subscribe()),
             map(() => { })
