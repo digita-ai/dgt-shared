@@ -1,4 +1,4 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -61,5 +61,8 @@ export class DGTHolderMockService extends DGTHolderService {
         this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
 
         return of(resource);
+    }
+    public getExtraInfo(): Observable<{[key: string]: {[key: string]: string}}> {
+        throw new DGTErrorNotImplemented();
     }
 }

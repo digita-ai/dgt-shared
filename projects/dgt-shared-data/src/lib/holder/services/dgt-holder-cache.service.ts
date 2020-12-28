@@ -1,4 +1,4 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTErrorNotImplemented } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { concatMap, map, switchMap } from 'rxjs/operators';
@@ -72,5 +72,8 @@ export class DGTHolderCacheService extends DGTHolderService {
                     .pipe(map(resources => ({ ...data, resources })))),
                 map(data => _.head(data.resources)),
             );
+    }
+    public getExtraInfo(): Observable<{[key: string]: {[key: string]: string}}> {
+        throw new DGTErrorNotImplemented();
     }
 }

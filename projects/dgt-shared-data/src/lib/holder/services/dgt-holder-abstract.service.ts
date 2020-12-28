@@ -10,4 +10,5 @@ export abstract class DGTHolderService implements DGTLDResourceService<DGTHolder
   public abstract query(filter?: DGTLDFilter): Observable<DGTHolder[]>;
   public abstract save(resources: DGTHolder[]): Observable<DGTHolder[]>;
   public abstract delete(resource: DGTHolder): Observable<DGTHolder>;
+  public abstract getExtraInfo(): Observable<{[key: string]: {[key: string]: string}}>;
 }

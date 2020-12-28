@@ -1,15 +1,21 @@
-import { DGTHolder, DGTHolderService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTHolder, DGTHolderService, DGTLDFilter, DGTLDFilterService, DGTSparqlResult } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTHolderRemoteService extends DGTHolderService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
+    constructor(
+        private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
+        private http: DGTHttpService,
+        private logger: DGTLoggerService,
+        private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
+        private filters: DGTLDFilterService,
+    ) {
         super();
     }
 
@@ -67,4 +73,19 @@ export class DGTHolderRemoteService extends DGTHolderService {
     public delete(resource: DGTHolder): Observable<DGTHolder> {
         throw new DGTErrorNotImplemented();
     }
+
+    public getExtraInfo(): Observable<{[key: string]: {[key: string]: string}}> {
+        return of({}).pipe(
+            map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}sparql` })),
+            tap(data => console.log('======= Got Res', data)),
+            switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+            tap(data => console.log('======= Got Res 2', data)),
+            switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {query: this.extraHoldersInfoQuery} , { Authorization: `Bearer ${data.accessToken}`}).pipe(
+                tap(response => this.logger.debug(DGTHolderRemoteService.name, 'Got Response', response)),
+                map(response => ({ ...data, response})),
+            )),
+            map(data => null),
+        );
+    }
+    private extraHoldersInfoQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX vcard: <http://www.w3.org/2006/vcard/ns#> select distinct ?name ?bday where { <https://stijntaelemans.inrupt.net/profile/card#me> foaf:name ?name . OPTIONAL { <https://stijntaelemans.inrupt.net/profile/card#me> vcard:fn ?name } . <https://stijntaelemans.inrupt.net/profile/card#me> vcard:bday ?bday }';
 }
