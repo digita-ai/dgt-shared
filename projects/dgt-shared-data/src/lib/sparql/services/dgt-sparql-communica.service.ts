@@ -56,7 +56,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
                                     bindings: bindingsList.map(binding => ({
                                         type: binding.get('termType'),
                                         value: binding.get('value'),
-                                        datatype: binding.get('datatype').value,
+                                        datatype: binding.get('language'),
                                     } as any)),
                                 },
                             }
