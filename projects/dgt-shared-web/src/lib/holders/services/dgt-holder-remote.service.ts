@@ -77,15 +77,31 @@ export class DGTHolderRemoteService extends DGTHolderService {
     public getExtraInfo(): Observable<{[key: string]: {[key: string]: string}}> {
         return of({}).pipe(
             map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}sparql` })),
-            tap(data => console.log('======= Got Res', data)),
             switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-            tap(data => console.log('======= Got Res 2', data)),
             switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {query: this.extraHoldersInfoQuery} , { Authorization: `Bearer ${data.accessToken}`}).pipe(
                 tap(response => this.logger.debug(DGTHolderRemoteService.name, 'Got Response', response)),
                 map(response => ({ ...data, response})),
             )),
-            map(data => null),
+            map(data => {
+                let res: {[key: string]: {[key:string]: string}} = {};
+                data.response.data.results.bindings.forEach(binding => {
+                    const name = binding['name'].value;
+                    const bday = binding['bday'].value;
+                    let tempobj = {};
+                    if (name) { tempobj = ({ ...tempobj, name}) }
+                    if (bday) { tempobj = ({ ...tempobj, bday}) }
+                    const webid = binding['webid'].value;
+                    if (webid) {
+                        res = ({ ...res, [webid]: tempobj });
+                    }
+                });
+                return ({ ...data, info: res});
+            }),
+            map(data => data.info),
         );
     }
-    private extraHoldersInfoQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> PREFIX vcard: <http://www.w3.org/2006/vcard/ns#> select distinct ?name ?bday where { <https://stijntaelemans.inrupt.net/profile/card#me> foaf:name ?name . OPTIONAL { <https://stijntaelemans.inrupt.net/profile/card#me> vcard:fn ?name } . <https://stijntaelemans.inrupt.net/profile/card#me> vcard:bday ?bday }';
+    private extraHoldersInfoQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
+    ' PREFIX vcard: <http://www.w3.org/2006/vcard/ns#> ' +
+    ' select distinct ?webid ?name ?bday ' +
+    ' where { OPTIONAL {?webid foaf:name ?name} . OPTIONAL { ?webid vcard:fn ?name } . OPTIONAL { ?webid vcard:bday ?bday } }';
 }
