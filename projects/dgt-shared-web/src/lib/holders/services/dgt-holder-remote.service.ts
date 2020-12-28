@@ -85,14 +85,14 @@ export class DGTHolderRemoteService extends DGTHolderService {
             map(data => {
                 let res: {[key: string]: {[key:string]: string}} = {};
                 data.response.data.results.bindings.forEach(binding => {
-                    const name = binding['name'].value;
-                    const bday = binding['bday'].value;
-                    let tempobj = {};
-                    if (name) { tempobj = ({ ...tempobj, name}) }
-                    if (bday) { tempobj = ({ ...tempobj, bday}) }
-                    const webid = binding['webid'].value;
-                    if (webid) {
-                        res = ({ ...res, [webid]: tempobj });
+                    const holder = binding['holder']?.value;
+                    if (holder) {
+                        res = ({ ...res, [holder]: {
+                            name: binding['name']?.value,
+                            bday: binding['bday']?.value,
+                            location: binding['location']?.value,
+                            picture: binding['picture']?.value,
+                        }});
                     }
                 });
                 return ({ ...data, info: res});
@@ -100,8 +100,28 @@ export class DGTHolderRemoteService extends DGTHolderService {
             map(data => data.info),
         );
     }
-    private extraHoldersInfoQuery = 'PREFIX foaf: <http://xmlns.com/foaf/0.1/> ' +
-    ' PREFIX vcard: <http://www.w3.org/2006/vcard/ns#> ' +
-    ' select distinct ?webid ?name ?bday ' +
-    ' where { OPTIONAL {?webid foaf:name ?name} . OPTIONAL { ?webid vcard:fn ?name } . OPTIONAL { ?webid vcard:bday ?bday } }';
+    private extraHoldersInfoQuery = `
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+    select distinct ?name ?bday ?location ?picture ?holder
+    where {
+      OPTIONAL { ?webid foaf:name ?name } . 
+      OPTIONAL { ?webid vcard:fn ?name } .
+      OPTIONAL { ?webid vcard:bday ?bday } .
+      OPTIONAL { ?webid vcard:hasPhoto ?picture } .
+      OPTIONAL { ?address vcard:locality ?location { select distinct ?address ?webid where { ?webid vcard:hasAddress ?address }} } .
+      {
+        SELECT ?holder ?webid
+        WHERE {
+          ?s <http://digita.ai/voc/connections#holder> ?holder .
+          ?s <http://digita.ai/voc/connectionsolidconfig#webid> ?webid . 
+          { 
+            SELECT ?holder
+              WHERE {
+                  <http://localhost:3001/sparql/holder#> <http://digita.ai/voc/holders#holder> ?holder
+            }
+          }
+        }
+      }
+    }`;
 }
