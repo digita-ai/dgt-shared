@@ -4,7 +4,8 @@ import { newEngine } from '@comunica/actor-init-sparql-rdfjs';
 import { IQueryResult } from '@comunica/actor-init-sparql/index-browser';
 import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-query-operation';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DataFactory, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Store, Term } from 'n3';
+import * as _ from 'lodash';
+import { DataFactory, Literal, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Store, Term } from 'n3';
 import { from, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
@@ -14,6 +15,7 @@ import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.mode
 import { DGTSparqlResult } from '../models/dgt-sparql-result.model';
 import { DGTSparqlService } from './dgt-sparql.service';
 
+/** The DGTSparqlCommunicaService exists to perform Sparql queries on linked data */
 @DGTInjectable()
 export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDatasetMemory> {
     private engine: ActorInitSparql;
@@ -24,6 +26,11 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
         this.engine = newEngine();
     }
 
+    /**
+     * Runs a Sparql query on a dataset
+     * @param dataset The in-memory dataset to query
+     * @param query the query to run
+     */
     public query(dataset: DGTSparqlDatasetMemory, query: string): Observable<DGTSparqlResult> {
         const store = this.toStore(dataset.triples);
 
@@ -53,13 +60,11 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
                                     link: [],
                                 },
                                 results: {
-                                    bindings: bindingsList.map(binding => ({
-                                        type: binding.get('termType'),
-                                        value: binding.get('value'),
-                                        datatype: binding.get('language'),
-                                    } as any)),
+                                    bindings: parseBindings(bindingsList),
                                 },
                             }
+
+                            this.logger.debug(DGTSparqlCommunicaService.name, 'Final bindings', bindingsList);
 
                             observer.next(res);
                             observer.complete();
@@ -75,6 +80,35 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
             );
     }
 
+    /**
+     * Converts Comunica Bindings to an Sparql ResultSet bindings object, readable by yasgui
+     * @param bindingsList List of Bindings to convert
+     */
+    private parseBindings(bindingsList: Bindings[]): { [key: string]: {type: string, value: string} }[] {
+        return bindingsList.map(bindings => {
+            // Converting Binding[] to DGTSparqlResult bindings so that yasgui can parse it
+            const keys = Array.from(((bindings as any) as Map<string, Term>).keys()).filter(key => key.startsWith('?'));
+            let result = {};
+            keys.forEach(key => {
+                const type = bindings.get(key).termType.toLowerCase()
+                const dataType = type === 'literal' ? (bindings.get(key) as Literal).language : undefined;
+                result = {
+                    ...result,
+                    [key.replace('?', '')]: {
+                        type,
+                        datatype: dataType,
+                        value: bindings.get(key).value,
+                    },
+                };
+            });
+            return result;
+        });
+    }
+
+    /**
+     * Converts a list of DGTLDTriples to a Store
+     * @param triples List of triples to convert
+     */
     private toStore(triples: DGTLDTriple[]): Store<any, any> {
         this.logger.debug(DGTSparqlCommunicaService.name, 'Starting to convert triples to n3 store', { triples });
 
@@ -97,6 +131,10 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
         return res;
     }
 
+    /**
+     * Converts a DGTLDNode to a Term
+     * @param node Node to convert
+     */
     private toTerm(node: DGTLDNode): Term {
         let res = null;
 
