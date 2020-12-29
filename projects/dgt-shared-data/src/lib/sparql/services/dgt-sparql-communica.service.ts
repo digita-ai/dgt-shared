@@ -60,7 +60,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
                                     link: [],
                                 },
                                 results: {
-                                    bindings: parseBindings(bindingsList),
+                                    bindings: this.parseBindings(bindingsList),
                                 },
                             }
 
@@ -81,17 +81,38 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
     }
 
     /**
-     * Converts Comunica Bindings to an Sparql ResultSet bindings object, readable by yasgui
+     * Converts Comunica Bindings to an Sparql ResultSet bindings object, so that it
+     * follows the w3 spec for select results -> https://www.w3.org/TR/sparql11-results-json/#select-results
      * @param bindingsList List of Bindings to convert
      */
     private parseBindings(bindingsList: Bindings[]): { [key: string]: {type: string, value: string} }[] {
         return bindingsList.map(bindings => {
-            // Converting Binding[] to DGTSparqlResult bindings so that yasgui can parse it
+            // get keys that are variables aka column headers
             const keys = Array.from(((bindings as any) as Map<string, Term>).keys()).filter(key => key.startsWith('?'));
             let result = {};
+            // for every variable in this binding
             keys.forEach(key => {
-                const type = bindings.get(key).termType.toLowerCase()
-                const dataType = type === 'literal' ? (bindings.get(key) as Literal).language : undefined;
+                // get type
+                let type = bindings.get(key).termType.toLowerCase()
+                // get dataType if literal
+                let dataType = undefined;
+
+                if (type === 'literal') {
+                    // TODO add support for languages with 'xml:lang' tag (see 3.2.2 Encoding RDF terms)
+                    const lang = (bindings.get(key) as Literal).language;
+                    // if the datatype is string, it can be ignored
+                    // also the datatype/language urls don't work properly
+                    if (lang !== 'http://www.w3.org/2001/xmlschema#string') {
+                        dataType = lang;
+                    }
+                // convert namednode type to uri
+                } else if (type === 'namednode') {
+                    type = 'uri';
+                }
+                // TODO add 'blanknode' -> 'bnode' conversion (see 3.2.2 Encoding RDF terms)
+
+                // fill in the new object with new values
+                // and remove '?' prefix from the key
                 result = {
                     ...result,
                     [key.replace('?', '')]: {
