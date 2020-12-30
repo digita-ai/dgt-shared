@@ -130,17 +130,22 @@ export class DGTCacheSolidService extends DGTCacheService {
         const query = (resource: T) => (`
         DELETE {
             GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p  ?o.
+                ?s ?p ?o.
             }
         }
         WHERE {
             GRAPH <${resource.uri.split('#')[0]}> {
                 ?s ?p ?o {
-                    select distinct ?s ?p ?o
-                    where {
-                        { ?s ?p ?o filter regex(?s, '${resource.uri}') }
+                    SELECT DISTINCT ?s ?p ?o
+                    WHERE {
+                        { ?s ?p ?o FILTER regex(?o, '${resource.uri}$') }
                         UNION
-                        { ?s ?p ?o filter regex(?o, '${resource.uri}') }
+                        { ?s ?p ?o FILTER regex(?s, '${resource.uri}$') }
+                        UNION
+                        {
+                            ?ss ?pp ?s FILTER regex(?ss, '${resource.uri}$').
+                            ?s ?p ?o
+                        }
                     }
                 }
             }
@@ -148,7 +153,7 @@ export class DGTCacheSolidService extends DGTCacheService {
         `);
 
         const uri = this.config.get(config => config.cache.sparqlEndpoint);
-
+ 
         return of({ resources, headers, uri }).pipe(
             switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
                 .pipe(map(() => resource)),
