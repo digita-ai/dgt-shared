@@ -1,3 +1,4 @@
 export enum DGTLDTermType {
-    LITERAL, REFERENCE,
+    LITERAL = 'literal',
+    REFERENCE = 'uri',
 }
