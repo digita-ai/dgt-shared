@@ -4,12 +4,20 @@ import { DGTLDNode } from '../models/dgt-ld-node.model';
 import { DGTLDTermType } from '../models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 
+/**
+ * This service parses linked data (rdf text or Quads) to DGTLDTriples / DGTLDNodes
+ */
 @DGTInjectable()
 export class DGTLDTripleFactoryService {
     private parser: Parser<Quad> = new Parser();
 
     constructor(private logger: DGTLoggerService) { }
 
+    /**
+     * Converts a linked data string to DGTLDTriples
+     * @param response The string to convert
+     * @param uri The URI where this data came from
+     */
     public createFromString(response: string, uri: string): DGTLDTriple[] {
         if (!response) {
             throw new DGTErrorArgument('Argument response should be set.', response);
@@ -33,6 +41,11 @@ export class DGTLDTripleFactoryService {
         return res;
     }
 
+    /**
+     * Converts Quads to DGTLDTriples
+     * @param quads The Quads to convert
+     * @param uri The URI where these Quads came from
+     */
     public createFromQuads(quads: Quad[], uri: string): DGTLDTriple[] {
         if (!quads) {
             throw new DGTErrorArgument('Argument quads should be set.', quads);
@@ -48,6 +61,11 @@ export class DGTLDTripleFactoryService {
         return res;
     }
 
+    /**
+     * Converts a single Quad to DGTLDTriple
+     * @param quads The Quad to convert
+     * @param uri Where this Quad came from
+     */
     private convertOne(uri: string, quad: Quad): DGTLDTriple {
         if (!quad) {
             throw new DGTErrorArgument('Argument quad should be set.', quad);
@@ -67,6 +85,11 @@ export class DGTLDTripleFactoryService {
         };
     }
 
+    /**
+     * Converts a Quad.subject to a DGTLDNode
+     * @param uri Where this Quad.subject came from
+     * @param quad The Quad of which to convert the subject
+     */
     private convertOneSubject(uri: string, quad: Quad): DGTLDNode {
         let subject: DGTLDNode = { value: quad.subject.value, termType: DGTLDTermType.REFERENCE };
         if (subject && subject.value && subject.value.startsWith('#me')) {
@@ -85,6 +108,11 @@ export class DGTLDTripleFactoryService {
         return subject;
     }
 
+    /**
+     * Converts a Quad.object to a DGTLDNode
+     * @param uri Where this Quad.object came from
+     * @param quad The Quad of which to convert the object
+     */
     private convertOneObject(uri: string, quad: Quad): DGTLDNode {
         let res = null;
 
@@ -141,6 +169,11 @@ export class DGTLDTripleFactoryService {
         return res;
     }
 
+    /**
+     * Removes the undefined/ prefix from triples and replaces it
+     * with the correct URI of these triples
+     * @param values Values to clean up
+     */
     private clean(values: DGTLDTriple[]): DGTLDTriple[] {
         return values
             .map(value => {
