@@ -1,6 +1,6 @@
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of, zip } from 'rxjs';
+import { Observable, of, zip } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
@@ -11,6 +11,9 @@ import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
 
+/**
+ * The service exists to retrieve all data from Solid pods
+ */
 @DGTInjectable()
 export class DGTLDService {
 
@@ -24,6 +27,11 @@ export class DGTLDService {
     ) {
     }
 
+    /**
+     * Retrieves all pod data for every exchange known
+     * @param filter The filter to execute on the results
+     * @param transformer The transformer used to transform DGTLDResources
+     */
     public query<T extends DGTLDResource>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
 
@@ -42,6 +50,11 @@ export class DGTLDService {
             );
     }
 
+    /**
+     * Retrieves pod data for a single exchange
+     * @param exchange The exchange to query for
+     * @param transformer The transformer used to transform DGTLDResources
+     */
     private queryForExchange<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTLDService.name, 'Getting values for exchange', { exchange });
 
