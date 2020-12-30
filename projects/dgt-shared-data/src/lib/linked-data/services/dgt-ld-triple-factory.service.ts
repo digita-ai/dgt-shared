@@ -116,10 +116,25 @@ export class DGTLDTripleFactoryService {
                 }
             } else {
                 // here, the object is an absolute reference
-                res = {
-                    value: quad.object.value,
-                    termType: DGTLDTermType.REFERENCE,
-                };
+                // or a reference to a file within the same directory as the profile
+                if (!quad.object.value.startsWith('http')) {
+                    // in this case, the url is a file in the same directory as the profile card
+                    // we must go back one from the profile uri
+                    // eg (https://test.inrupt.net/profile/card#me -> https://test.inrupt.net/profile/)
+                    // and add our filename here (https://test.inrupt.net/profile/image.png)
+                    const profileDir = [...uri.split('/').slice(0, -1), ''].join('/');
+                    res = {
+                        value: `${profileDir}${quad.object.value}`,
+                        termType: DGTLDTermType.REFERENCE,
+                    };
+
+                } else {
+                    // file is not local, aka an absolute reference (https://digita.ai/assets/favicon.png)
+                    res = {
+                        value: quad.object.value,
+                        termType: DGTLDTermType.REFERENCE,
+                    };
+                }
             }
         }
 

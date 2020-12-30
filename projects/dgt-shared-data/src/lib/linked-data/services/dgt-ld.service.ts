@@ -34,10 +34,11 @@ export class DGTLDService {
                 tap(data => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
                 mergeMap(data => zip(...data.exchanges.map(exchange => this.queryForExchange(exchange, data.transformer)))
                     .pipe(map(valuesOfValues => ({ ...data, values: _.flatten(valuesOfValues) })))),
+                tap(data => this.logger.debug(DGTLDService.name, 'Queried values', {results: data.values})),
                 switchMap(data => this.cache.save<T>(transformer, data.values)
                     .pipe(map(saved => ({ ...data, saved })))),
                 tap(data => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
-                switchMap(data => this.cache.query<T>(transformer, filter)),
+                switchMap(() => this.cache.query<T>(transformer, filter)),
             );
     }
 

@@ -80,7 +80,7 @@ export class DGTCacheSolidService extends DGTCacheService {
             switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {}, data.headers)
                 .pipe(map(response => ({ ...data, response }))),
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response.data.results)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', {results: data.response.data.results})),
             switchMap(data => this.toTurtle.deserializeResultSet<T>(data.response.data, transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', { resources: data.resources, transformer })),
