@@ -1,10 +1,10 @@
-import { DGTConfigurationService, DGTHttpService, DGTInjectable, DGTLoggerService, DGTErrorNotImplemented, DGTConfigurationBaseWeb } from '@digita-ai/dgt-shared-utils';
 import { DGTConnectorType, DGTConnectorTypeService, DGTLDFilter, DGTLDFilterService, DGTSource } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTConnectorTypeRemoteService implements DGTConnectorTypeService {

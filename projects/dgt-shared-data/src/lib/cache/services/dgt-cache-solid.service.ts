@@ -212,7 +212,7 @@ export class DGTCacheSolidService extends DGTCacheService {
         return of({ transformer, resource, headers: { Accept: 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
                 // First delete existing values for this resource
-                switchMap(data => this.delete(transformer, [resource]).pipe( map(() => data) )),
+                switchMap(data => this.delete(transformer, [resource]).pipe(map(() => data))),
                 switchMap(data => this.http.head(data.uri, data.headers)
                     .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),

@@ -2,10 +2,10 @@ import { DGTLDFilter, DGTLDFilterService, DGTSource, DGTSourceService } from '@d
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of, zip } from 'rxjs';
-import { map, switchMap, tap, mergeMap } from 'rxjs/operators';
-import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
-import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTSourceRemoteService extends DGTSourceService {
@@ -59,7 +59,7 @@ export class DGTSourceRemoteService extends DGTSourceService {
             switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
             switchMap(data => data.resource.uri
                 ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-                : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` }),
                 ),
             map(response => response.data),
         ) as Observable<DGTSource<any>>
