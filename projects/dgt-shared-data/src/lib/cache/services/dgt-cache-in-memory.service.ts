@@ -6,6 +6,7 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
 import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 import { DGTCacheService } from './dgt-cache.service';
 
@@ -78,13 +79,12 @@ export class DGTCacheInMemoryService extends DGTCacheService {
      * Runs a SparQL query on data saved in memory
      * @param query The query to execute
      */
-    public querySparql(query: string): Observable<string> {
+    public querySparql(query: string): Observable<DGTSparqlResult> {
 
         return of({ query })
             .pipe(
                 map(data => ({ ...data, triples: _.flatten(this.cache.map(resource => resource.triples)) })),
                 switchMap(data => this.sparql.query(data.query, { dataset: { triples: data.triples } })),
-                map(data => JSON.stringify(data)),
             );
     }
 
