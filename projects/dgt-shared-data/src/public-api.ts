@@ -71,7 +71,7 @@ export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-tri
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
-export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
+export { DGTWorkflowManagerService } from './lib/workflow/services/dgt-workflow-manager.service';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
 export { DGTDataValue } from './lib/data-value/models/data-value.model';

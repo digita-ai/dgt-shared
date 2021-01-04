@@ -9,7 +9,7 @@ import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.ser
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 @DGTInjectable()
-export class DGTWorkflowService {
+export class DGTWorkflowManagerService {
 
   private workflows: DGTWorkflow[] = [];
 
@@ -21,7 +21,7 @@ export class DGTWorkflowService {
   ) { }
 
   public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
+    this.logger.debug(DGTWorkflowManagerService.name, 'Executing workflow', { exchange, resources });
 
     this.paramChecker.checkParametersNotNull({ exchange, resources });
 
@@ -34,7 +34,7 @@ export class DGTWorkflowService {
   }
 
   private executeForWorkflow(workflow: DGTWorkflow, exchange: DGTExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
+    this.logger.debug(DGTWorkflowManagerService.name, 'Executing a single workflow', { workflow, exchange, resources });
 
     this.paramChecker.checkParametersNotNull({ workflow, resources });
 
@@ -55,7 +55,7 @@ export class DGTWorkflowService {
   }
 
   public register(workflow: DGTWorkflow) {
-    this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
+    this.logger.debug(DGTWorkflowManagerService.name, 'Registring workflow', { workflow });
 
     this.paramChecker.checkParametersNotNull({ workflow });
 
