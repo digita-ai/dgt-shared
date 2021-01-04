@@ -65,7 +65,7 @@ export class DGTCacheSolidService extends DGTCacheService {
      * @param transformer The transformer for this type of DGTLDResource
      * @param filter The filter to run on the retrieved list of DGTLDResources
      */
-    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
+    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
 
         const headers = {
             Accept: 'application/sparql-results+json',
@@ -80,11 +80,32 @@ export class DGTCacheSolidService extends DGTCacheService {
             switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {}, data.headers)
                 .pipe(map(response => ({ ...data, response }))),
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response.data.results)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', {results: data.response.data.results})),
             switchMap(data => this.toTurtle.deserializeResultSet<T>(data.response.data, transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', { resources: data.resources, transformer })),
             map(data => data.resources),
+        );
+    }
+
+    /**
+     * Runs a sparql query on the solid cache
+     * @param query The query to execute
+     */
+    public querySparql(query: string): Observable<string> {
+
+        const headers = {
+            'Accept': 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        };
+
+        return of({ body: query }).pipe(
+            map(data => ({ ...data, uri: `${this.config.get(conf => conf.cache.sparqlEndpoint)}?query=${encodeURIComponent(data.body)}` })),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created URI, starting to perform query', { body: data.uri })),
+            switchMap(data => this.http.post<string>(data.uri, null, headers)
+                .pipe(map(response => ({ ...data, response })))),
+            map(data => data.response.data),
+            tap(response => this.logger.debug(DGTCacheSolidService.name, 'Got response', { response })),
         );
     }
 
@@ -109,17 +130,22 @@ export class DGTCacheSolidService extends DGTCacheService {
         const query = (resource: T) => (`
         DELETE {
             GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p  ?o.
+                ?s ?p ?o.
             }
         }
         WHERE {
             GRAPH <${resource.uri.split('#')[0]}> {
                 ?s ?p ?o {
-                    select distinct ?s ?p ?o
-                    where {
-                        { ?s ?p ?o filter regex(?s, '${resource.uri}') }
+                    SELECT DISTINCT ?s ?p ?o
+                    WHERE {
+                        { ?s ?p ?o FILTER regex(?o, '${resource.uri}$') }
                         UNION
-                        { ?s ?p ?o filter regex(?o, '${resource.uri}') }
+                        { ?s ?p ?o FILTER regex(?s, '${resource.uri}$') }
+                        UNION
+                        {
+                            ?ss ?pp ?s FILTER regex(?ss, '${resource.uri}$').
+                            ?s ?p ?o
+                        }
                     }
                 }
             }
@@ -166,6 +192,12 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Saves (update/add) a single DDGTLDResource
+     * Update or add depends on whether the resource already exists (file to save to exists)
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to save
+     */
     private saveOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<T> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to save one', { transformer, resource });
 
@@ -179,6 +211,8 @@ export class DGTCacheSolidService extends DGTCacheService {
 
         return of({ transformer, resource, headers: { Accept: 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
+                // First delete existing values for this resource
+                switchMap(data => this.delete(transformer, [resource]).pipe( map(() => data) )),
                 switchMap(data => this.http.head(data.uri, data.headers)
                     .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),
@@ -189,6 +223,11 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Creates a single DGTLDResource
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to create
+     */
     private createOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to create one', { transformer, resource });
 
@@ -210,6 +249,11 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Updates a single DGTLDResource
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to add
+     */
     private appendOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to append one', { transformer, resource });
 

@@ -6,13 +6,19 @@ import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTSparqlDatasetType } from '../../sparql/models/dgt-sparql-dataset-type.model';
+import { DGTSparqlCommunicaService } from '../../sparql/services/dgt-sparql-communica.service';
 import { DGTCacheService } from './dgt-cache.service';
 
 @DGTInjectable()
 export class DGTCacheInMemoryService extends DGTCacheService {
     public cache: DGTLDResource[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private sparql: DGTSparqlCommunicaService,
+    ) {
         super();
     }
 
@@ -48,12 +54,17 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                     .pipe(map(transformed => ({ ...data, transformed })))),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
                 tap(data => this.cache = [...this.cache.filter(resource => !resources.some(r => r.uri === resource.uri && r.exchange === resource.exchange)), ...data.transformed]),
-                tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
+                tap(() => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
                 map(data => data.resources),
             )
     }
 
-    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
+    /**
+     * Retrieves all DGTLDResources from the cache
+     * @param transformer The transformer for this type of DGTLDResource
+     * @param filter The filter to run on the retrieved list of DGTLDResources
+     */
+    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTCacheInMemoryService.name, 'Starting to query', { cache: this.cache, transformer, filter });
 
         return of({ resources: this.cache, transformer, filter })
@@ -61,6 +72,20 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                 switchMap(data => !data.filter ? of(data.resources) : this.filters.run(data.filter, data.resources)),
                 tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Filtered resources', data)),
                 switchMap(data => data && data.length > 0 ? transformer.toDomain(data) : of([])),
+            );
+    }
+
+    /**
+     * Runs a SparQL query on data saved in memory
+     * @param query The query to execute
+     */
+    public querySparql(query: string): Observable<string> {
+
+        return of({ query })
+            .pipe(
+                map(data => ({...data, triples: _.flatten(this.cache.map(resource => resource.triples))})),
+                switchMap(data => this.sparql.query({ triples: data.triples, type: DGTSparqlDatasetType.MEMORY }, data.query)),
+                map(data => JSON.stringify(data)),
             );
     }
 
