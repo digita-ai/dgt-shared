@@ -106,3 +106,4 @@ export { DGTConnectionStateService } from './lib/connection/services/dgt-connect
 export { DGTSourceStateService } from './lib/source/services/dgt-source-state.service';
 export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote.service';
 export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
+export { DGTSparqlRemoteService } from './lib/sparql/services/dgt-sparql-remote.service';

@@ -67,6 +67,10 @@ export class DGTCacheSolidService extends DGTCacheService {
      */
     public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
 
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
         const headers = {
             Accept: 'application/sparql-results+json',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -92,7 +96,11 @@ export class DGTCacheSolidService extends DGTCacheService {
      * Runs a sparql query on the solid cache
      * @param query The query to execute
      */
-    public querySparql(query: string): Observable<string> {
+    public querySparql(query: string): Observable<DGTSparqlResult> {
+
+        if (!query) {
+            throw new DGTErrorArgument('Argument query should be set.', query);
+        }
 
         const headers = {
             'Accept': 'application/sparql-results+json',
@@ -102,7 +110,7 @@ export class DGTCacheSolidService extends DGTCacheService {
         return of({ body: query }).pipe(
             map(data => ({ ...data, uri: `${this.config.get(conf => conf.cache.sparqlEndpoint)}?query=${encodeURIComponent(data.body)}` })),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created URI, starting to perform query', { body: data.uri })),
-            switchMap(data => this.http.post<string>(data.uri, null, headers)
+            switchMap(data => this.http.post<DGTSparqlResult>(data.uri, null, headers)
                 .pipe(map(response => ({ ...data, response })))),
             map(data => data.response.data),
             tap(response => this.logger.debug(DGTCacheSolidService.name, 'Got response', { response })),
