@@ -1,8 +1,8 @@
 import { DGTLDFilter, DGTLDFilterService, DGTSource, DGTSourceService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { forkJoin, Observable, of, zip } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
@@ -47,14 +47,24 @@ export class DGTSourceRemoteService extends DGTSourceService {
             throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}source` })),
-                switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => forkJoin(resources.map(resource => this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
-                    .pipe(map(response => response.data))))),
-            );
+        return of({ resources }).pipe(
+            switchMap(data => zip(...data.resources.map(resource => this.saveOne(resource)))),
+        );
     }
+    private saveOne(resource: DGTSource<any>): Observable<DGTSource<any>> {
+        return of({resource}).pipe(
+            map(data => ({...data, uri: data.resource.uri
+                ? `${this.config.get(c => c.server.uri)}source/${encodeURIComponent(data.resource.uri)}`
+                : `${this.config.get(c => c.server.uri)}source`})),
+            switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+            switchMap(data => data.resource.uri
+                ? this.http.put<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` })
+                : this.http.post<DGTSource<any>>(data.uri, resource, { Authorization: `Bearer ${data.accessToken}` }),
+                ),
+            map(response => response.data),
+        ) as Observable<DGTSource<any>>
+    }
+
     delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
         throw new DGTErrorNotImplemented();
     }

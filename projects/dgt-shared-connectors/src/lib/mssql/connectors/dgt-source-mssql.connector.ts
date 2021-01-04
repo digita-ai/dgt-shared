@@ -44,15 +44,15 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
             );
     }
 
-    private convertResult(uri: string, sqlResult: IResult<any>, exchange: DGTExchange, mapping: DGTMap<string, string>): DGTLDResource {
+    private convertResult(uri: string, sqlResult: IResult<any>, exchange: DGTExchange, mapping: {[key: string]: string}): DGTLDResource {
         this.logger.debug(DGTConnectorMSSQL.name, 'Converting results', { mapping, sqlResult, exchange });
         const triples: DGTLDTriple[] = [];
 
         if (exchange && mapping && sqlResult && sqlResult.recordset) {
             sqlResult.recordset.forEach((record) => {
                 if (record) {
-                    mapping.forEach((field, key) => {
-                        this.logger.debug(DGTConnectorMSSQL.name, 'Converting for mapping', { field, key, record });
+                    Object.keys(mapping).forEach(key => {
+                        this.logger.debug(DGTConnectorMSSQL.name, 'Converting for mapping', { mapping, key, record });
                         const value = record[key];
 
                         if (value) {
@@ -61,7 +61,7 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
                                     value: exchange.holder,
                                     termType: DGTLDTermType.REFERENCE,
                                 },
-                                predicate: field,
+                                predicate: mapping[key],
                                 object: {
                                     value,
                                     termType: DGTLDTermType.LITERAL,
@@ -103,7 +103,7 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
                     // e.g. name="Tom Haegemans", points=1760
                     let columns = '';
                     resources.forEach(entity => {
-                        const columnName = data.source.configuration.mapping.getByValue(entity.updated.triples[0].predicate);
+                        const columnName = Object.keys(data.source.configuration.mapping).find(key => data.source.configuration.mapping[key] === entity.updated.triples[0].predicate);
                         columns = columns.concat(`${columnName}='${entity.updated.triples[0].object.value}', `);
                     });
                     // remove last comma
@@ -174,10 +174,10 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
                 switchMap(data => {
                     let cols = '';
                     let values = '';
-                    data.source.configuration.mapping.forEach((value: string, key: string) => {
+                    Object.keys(data.source.configuration.mapping).forEach((key: string) => {
                         cols += key + ', ';
                         // TEMP TEMP TEMP TEMP TEMP TEMP
-                        const temp = resources.find(e => e.triples[0].predicate === value);
+                        const temp = resources.find(e => e.triples[0].predicate === data.source.configuration.mapping[key]);
                         values += temp ? `'${temp.triples[0].object.value}',` : 'NULL, ';
                     });
                     const query = this.renderSelectQuery(data.source.configuration.commands.insert, { id: data.connection.configuration.personId, columns: cols.slice(0, -2), values: values.slice(0, -2) });
