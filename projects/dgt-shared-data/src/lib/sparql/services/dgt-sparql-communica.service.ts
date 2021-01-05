@@ -6,18 +6,18 @@ import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-quer
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DataFactory, Literal, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Store, Term } from 'n3';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTSparqlDatasetMemory } from '../models/dgt-sparql-dataset-memory.model';
+import { DGTSparqlOptionsComunica } from '../models/dgt-sparql-options-comunica.model';
 import { DGTSparqlResult } from '../models/dgt-sparql-result.model';
 import { DGTSparqlService } from './dgt-sparql.service';
 
 /** The DGTSparqlCommunicaService exists to perform Sparql queries on linked data */
 @DGTInjectable()
-export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDatasetMemory> {
+export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptionsComunica> {
     private engine: ActorInitSparql;
 
     constructor(private logger: DGTLoggerService) {
@@ -31,8 +31,12 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlDataset
      * @param dataset The in-memory dataset to query
      * @param query the query to run
      */
-    public query(dataset: DGTSparqlDatasetMemory, query: string): Observable<DGTSparqlResult> {
-        const store = this.toStore(dataset.triples);
+    public query(query: string, options: DGTSparqlOptionsComunica): Observable<DGTSparqlResult> {
+        if (!options) {
+            throw new DGTErrorArgument('Argument options should be set.', options);
+        }
+
+        const store = this.toStore(options.dataset.triples);
 
         this.logger.debug(DGTSparqlCommunicaService.name, 'Converted triples to n3 store', { store });
 
