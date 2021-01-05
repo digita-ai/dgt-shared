@@ -1,5 +1,5 @@
 import { RouterTestingModule } from '@angular/router/testing';
-import { DGTProfileMockService, DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationMockService, DGTLDTypeRegistrationService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService, DGTDataValueService, DGTDataValueMockService } from '@digita-ai/dgt-shared-data';
+import { DGTProfileMockService, DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationMockService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService, DGTDataValueService, DGTDataValueMockService } from '@digita-ai/dgt-shared-data';
 import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
 import { DGTConfigurationService, DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils';
 import { declarations, imports, providers } from './lib/dgt-shared-web.module';
@@ -69,10 +69,6 @@ export const configuration: DGTTestConfiguration = {
             {
                 provide: DGTProfileService,
                 useClass: DGTProfileMockService,
-            },
-            {
-                provide: DGTLDTypeRegistrationService,
-                useClass: DGTLDTypeRegistrationMockService
             },
             {
                 provide: DGTDataValueService,

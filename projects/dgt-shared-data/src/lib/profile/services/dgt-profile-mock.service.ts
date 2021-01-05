@@ -27,7 +27,7 @@ export class DGTProfileMockService extends DGTProfileService {
    * @param connection connection to retrieve the profile information from
    * @param source source to retrieve the profile information from
    */
-  public update(originalProfile: DGTProfile, updatedProfile: DGTProfile): Observable<DGTProfile> {
+  public update(resource: DGTProfile): Observable<DGTProfile> {
     throw new DGTErrorNotImplemented();
   }
 }

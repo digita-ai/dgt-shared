@@ -33,10 +33,7 @@ export { DGTLDFilterBGP } from './lib/linked-data/models/dgt-ld-filter-bgp.model
 export { DGTLDFilterHolder } from './lib/linked-data/models/dgt-ld-filter-holder.model';
 export { DGTLDFilterExchange } from './lib/linked-data/models/dgt-ld-filter-exchange.model';
 export { DGTLDTypeRegistration } from './lib/linked-data/models/dgt-ld-type-registration.model';
-export { DGTLDTypeRegistrationService } from './lib/linked-data/services/dgt-ld-type-registration.service';
 export { DGTLDTypeRegistrationTransformerService } from './lib/linked-data/services/dgt-ld-type-registration-transformer.service';
-export { DGTLDTypeRegistrationSolidService } from './lib/linked-data/services/dgt-ld-type-registration-solid.service';
-export { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
 export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
 export { DGTLDResourceService } from './lib/linked-data/services/dgt-ld-resource.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';

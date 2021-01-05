@@ -50,10 +50,6 @@ export const configuration: DGTTestConfiguration = {
                 useClass: DGTProfileMockService,
             },
             {
-                provide: DGTLDTypeRegistrationService,
-                useClass: DGTLDTypeRegistrationMockService
-            },
-            {
                 provide: DGTDataValueService,
                 useClass: DGTDataValueMockService
             },

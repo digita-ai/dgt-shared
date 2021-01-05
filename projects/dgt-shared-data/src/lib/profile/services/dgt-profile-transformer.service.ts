@@ -2,7 +2,6 @@ import { Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
@@ -151,7 +150,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
             avatar: avatar ? `${profileUri}/${avatar.object.value}` : null,
             triples: resource.triples,
-            typeRegistrations: [],
             exchange: resource.exchange,
         };
     }

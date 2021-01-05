@@ -20,7 +20,6 @@ import { DGTLDRepresentationSparqlDeleteFactory } from './linked-data/services/d
 import { DGTLDRepresentationSparqlInsertFactory } from './linked-data/services/dgt-ld-representation-sparql-insert-factory';
 import { DGTLDResourceTransformerService } from './linked-data/services/dgt-ld-resource-transformer.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
-import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/dgt-ld-type-registration-transformer.service';
 import { DGTLDUtils } from './linked-data/services/dgt-ld-utils.service';
 import { DGTLDService } from './linked-data/services/dgt-ld.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
@@ -50,7 +49,6 @@ export const providers = [
   DGTCacheSolidService,
   DGTWorkflowService,
   DGTLDTripleFactoryService,
-  DGTLDTypeRegistrationTransformerService,
   DGTDataValueTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,

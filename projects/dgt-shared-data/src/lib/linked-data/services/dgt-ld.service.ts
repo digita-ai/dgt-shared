@@ -1,6 +1,6 @@
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of, zip } from 'rxjs';
+import { Observable, of, zip } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
@@ -18,7 +18,6 @@ export class DGTLDService {
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
         private exchanges: DGTExchangeService,
-        private paramChecker: DGTParameterCheckerService,
         private connectors: DGTConnectorService,
         private workflows: DGTWorkflowService,
     ) {
@@ -44,13 +43,19 @@ export class DGTLDService {
     private queryForExchange<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTLDService.name, 'Getting values for exchange', { exchange });
 
-        this.paramChecker.checkParametersNotNull({ exchange });
+        if (!exchange) {
+            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
 
         return of({ exchange, transformer })
             .pipe(
-                switchMap((data) => this.connectors.query<T>(data.exchange, transformer)
+                switchMap((data) => this.connectors.query<T>(data.exchange, data.transformer)
                     .pipe(map(resources => ({ ...data, resources })))),
-                switchMap(data => this.workflows.execute<T>(data.exchange, data.resources)),
+                switchMap(data => this.workflows.execute<T>(data.exchange, data.resources, data.transformer)),
             );
     }
 }
