@@ -13,6 +13,7 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
+  MatBadgeModule,
 } from '@angular/material';
 import { RouterModule } from '@angular/router';
 import { DGTSharedDataModule } from '@digita-ai/dgt-shared-data';
@@ -85,6 +86,9 @@ import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-su
 import { DGTTitleService } from './interface/services/dgt-title.service';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
+import { DGTTimelinePageComponent } from './timeline/components/timeline-page/timeline-page.component';
+import { DGTTimelineEventGroupComponent } from './timeline/components/timeline-event-group/timeline-event-group.component';
+import { DGTTimelineEventSummaryComponent } from './timeline/components/timeline-event-summary/timeline-event-summary.component';
 
 // export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<any>>('Registered Reducers');
 
@@ -153,6 +157,9 @@ export const declarations = [
   DGTDataCategoryComponent,
   DGTDataGroupComponent,
   DGTMenuComponent,
+  DGTTimelinePageComponent,
+  DGTTimelineEventGroupComponent,
+  DGTTimelineEventSummaryComponent,
 ];
 export const imports: (any[] | Type<any>)[] = [
   CommonModule,
@@ -171,6 +178,7 @@ export const imports: (any[] | Type<any>)[] = [
   DGTSharedUtilsModule,
   DGTSharedDataModule,
   MatMenuModule,
+  MatBadgeModule,
 ];
 export const providers = [
   DGTTitleService,
