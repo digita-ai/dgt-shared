@@ -31,7 +31,10 @@ import { DGTSourceTransformerService } from './source/services/dgt-source-transf
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
 import { DGTUriFactoryCacheService } from './uri/services/dgt-uri-factory-cache.service';
 import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.service';
+import { DGTWorkflowCacheService } from './workflow/services/dgt-workflow-cache.service';
 import { DGTWorkflowManagerService } from './workflow/services/dgt-workflow-manager.service';
+import { DGTWorkflowMockService } from './workflow/services/dgt-workflow-mock.service';
+import { DGTWorkflowTransformerService } from './workflow/services/dgt-workflow-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective,
@@ -49,6 +52,9 @@ export const providers = [
   DGTCacheInMemoryService,
   DGTCacheSolidService,
   DGTWorkflowManagerService,
+  DGTWorkflowTransformerService,
+  DGTWorkflowCacheService,
+  DGTWorkflowMockService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
   DGTDataValueTransformerService,
