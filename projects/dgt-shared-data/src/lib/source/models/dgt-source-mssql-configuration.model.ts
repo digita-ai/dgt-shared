@@ -11,5 +11,5 @@ export interface DGTSourceMSSQLConfiguration {
         insert: string,
         update: string,
     };
-    mapping: DGTMap<string, string>;
+    mapping: {[key: string]: string};
 }

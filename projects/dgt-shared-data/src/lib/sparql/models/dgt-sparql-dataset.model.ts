@@ -1,5 +1,5 @@
-import { DGTSparqlDatasetType } from './dgt-sparql-dataset-type.model';
+import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 
 export interface DGTSparqlDataset {
-    type: DGTSparqlDatasetType;
+    triples: DGTLDTriple[];
 }

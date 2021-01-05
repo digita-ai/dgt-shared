@@ -87,9 +87,9 @@ export { DGTEventTransformerService } from './lib/events/services/dgt-event-tran
 export { DGTPurpose } from './lib/purpose/models/dgt-purpose.model';
 export { DGTSparqlService } from './lib/sparql/services/dgt-sparql.service';
 export { DGTSparqlCommunicaService } from './lib/sparql/services/dgt-sparql-communica.service';
+export { DGTSparqlOptionsComunica } from './lib/sparql/models/dgt-sparql-options-comunica.model';
+export { DGTSparqlOptionsRemote } from './lib/sparql/models/dgt-sparql-options-remote.model';
 export { DGTSparqlDataset } from './lib/sparql/models/dgt-sparql-dataset.model';
-export { DGTSparqlDatasetType } from './lib/sparql/models/dgt-sparql-dataset-type.model';
-export { DGTSparqlDatasetMemory } from './lib/sparql/models/dgt-sparql-dataset-memory.model';
 export { DGTSparqlResult } from './lib/sparql/models/dgt-sparql-result.model';
 export { DGTConnectorService } from './lib/connector/services/dgt-connector.service';
 export { DGTHolderService } from './lib/holder/services/dgt-holder-abstract.service';

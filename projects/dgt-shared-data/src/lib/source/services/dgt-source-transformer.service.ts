@@ -745,7 +745,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 },
             ];
-            config.mapping.toArray().forEach(entry => {
+            Object.keys(config.mapping).forEach(key => {
                 const subject = {
                     value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE,
@@ -761,7 +761,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: entry.key,
+                        value: key,
                     },
                 });
                 res.push({
@@ -770,7 +770,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: entry.value,
+                        value: config.mapping[key],
                     },
                 });
             });
@@ -1095,7 +1095,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-delete',
             );
-            const mappingMap = new DGTMap<string, string>();
+            let mappingMap = {};
             resource.triples.filter(value =>
                 value.subject.value === triple.object.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mapping',
@@ -1113,7 +1113,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 this.logger.debug(DGTSourceTransformerService.name, 'Converting mapping', { mapping, key, value, resmap: mappingMap });
 
                 if (key && value) {
-                    mappingMap.set(key.object.value, value.object.value);
+                    mappingMap = { ...mappingMap, [key.object.value]: value.object.value}
                 }
             });
 
