@@ -158,3 +158,7 @@ export { DGTCategoryTransformerService } from './lib/categories/services/dgt-cat
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
 export { DGTSecurityService } from './lib/security/services/dgt-security.service';
+export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-cache.service';
+export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';
+export { DGTWorkflowTransformerService } from './lib/workflow/services/dgt-workflow-transformer.service';
+export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
