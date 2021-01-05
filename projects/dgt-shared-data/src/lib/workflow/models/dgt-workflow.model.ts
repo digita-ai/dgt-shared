@@ -1,3 +1,4 @@
+import { DGTLDResource } from '@digita-ai/dgt-shared-data/public-api';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTWorkflowAction } from './dgt-workflow-action.model';
