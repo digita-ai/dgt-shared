@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataInterface, DGTLDResource, DGTLDTriple } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 
@@ -19,31 +18,31 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resource && this.category) {
+      this.updateReceived(this.resource, this.category);
     }
   }
 
-  /** all DGTDataValues of which we want to display the phone */
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  /** all DGTLDResources of which we want to display the phone */
+  private _resource: DGTLDResource;
+  public get resource(): DGTLDResource {
+    return this._resource;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
+  @Input() public set resource(resource: DGTLDResource) {
+    this._resource = resource;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resource && this.category) {
+      this.updateReceived(this.resource, this.category);
     }
   }
 
-  public phoneNumbers: DGTMap<DGTDataValue, { phone: string, type: string }>;
+  public phoneNumbers: DGTMap<DGTLDTriple, { phone: string, type: string }>;
 
-  private phoneValues: DGTDataValue[];
+  private phoneValues: DGTLDTriple[];
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{ value: DGTDataValue, newObject: any }>;
+  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
 
   /** Used to emit submit events */
   @Output()
@@ -59,18 +58,18 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
 
   ngOnInit() { }
 
-  private updateReceived(values: DGTDataValue[], category: DGTCategory) {
-    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { values, category });
-    this.paramChecker.checkParametersNotNull({ values, category });
+  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
+    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { resource, category });
+    this.paramChecker.checkParametersNotNull({ resource, category });
 
-    const phoneReferences = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone');
-    const phoneValues = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+    const phoneReferences = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone');
+    const phoneValues = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.phoneValues = phoneValues;
-    const phoneTypes = values.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered hasTelephone values and references', { phoneReferences, phoneValues });
+    const phoneTypes = resource.triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered hasTelephone resource and references', { phoneReferences, phoneValues });
 
     if (phoneReferences && phoneValues && phoneTypes) {
-      const phoneReferencesWithValues = phoneReferences.map<{ key: DGTDataValue; value: { phone: string, type: string }; }>(phoneReference => {
+      const phoneReferencesWithValues = phoneReferences.map<{ key: DGTLDTriple; value: { phone: string, type: string }; }>(phoneReference => {
         const phoneReferenceObject = phoneReference.object.value;
 
         const phoneValue = phoneValues.find(val => val.subject.value === phoneReferenceObject);
@@ -83,8 +82,8 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
         };
       });
 
-      this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Combined phone references with values', { phoneReferencesWithValues });
-      this.phoneNumbers = new DGTMap<DGTDataValue, { phone: string, type: string }>(phoneReferencesWithValues);
+      this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Combined phone references with resource', { phoneReferencesWithValues });
+      this.phoneNumbers = new DGTMap<DGTLDTriple, { phone: string, type: string }>(phoneReferencesWithValues);
       this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered phone number', { phoneNumbers: this.phoneNumbers });
     }
   }
@@ -94,10 +93,10 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: { value: DGTDataValue, newObject: any }): void {
+  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val });
-    const oldValue = this.phoneValues.find(value => value.subject.value === val.value.object.value);
-    this.valueUpdated.emit({ value: oldValue, newObject: val.newObject });
+    const oldValue = this.phoneValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
   }
 
   /**

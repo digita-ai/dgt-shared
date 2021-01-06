@@ -1,8 +1,8 @@
-<ng-container *ngIf="values">
+<ng-container *ngIf="resource">
   <dgt-page-content-group-header>{{ 'common.data.groups.' + group.id | translate}}</dgt-page-content-group-header>
   <ng-container *ngIf="categories">
     <dgt-data-category *ngFor="let category of categories"
-      [values]="groupedValues.get(category.uri)"
+      [resource]="groupedValues.get(category.uri)"
       [category]="groupedCategories[category.uri][0]"
       (valueUpdated)="onValueUpdated($event)"
       (infoClicked)="onInfoClicked($event)">

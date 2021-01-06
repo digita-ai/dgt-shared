@@ -2,7 +2,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { values } from 'lodash';
 import { map } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';

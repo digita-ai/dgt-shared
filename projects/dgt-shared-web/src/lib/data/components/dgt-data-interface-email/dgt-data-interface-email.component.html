@@ -1,5 +1,5 @@
-<ng-container *ngIf="category && values && emails">
-  <ng-container *ngFor="let email of values">
+<ng-container *ngIf="category && resource && emails">
+  <ng-container *ngFor="let email of resource">
     <dgt-data-interface-email-value *ngIf="email && emails.get(email)"
       (valueUpdated)="onValueUpdated($event)"
       (submit)="onSubmit()"

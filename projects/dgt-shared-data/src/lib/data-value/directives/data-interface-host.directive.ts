@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, Output, ViewContainerRef } from '@angular/core';
 import { DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTDataValue } from '../models/data-value.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @Directive({
   // tslint:disable-next-line: directive-selector
@@ -9,7 +9,7 @@ import { DGTDataValue } from '../models/data-value.model';
 export class DGTDataInterfaceHostDirective {
   /** Used to emit valueUpdated events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+  valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
   /** Used to emit submit events */
   @Output()
   submit: EventEmitter<any>;
@@ -27,7 +27,7 @@ export class DGTDataInterfaceHostDirective {
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: {value: DGTDataValue, newObject: any}): void {
+  public onValueUpdated(val: {value: DGTLDResource, newObject: any}): void {
   this.paramChecker.checkParametersNotNull({val}, 1);
   this.valueUpdated.emit(val);
   }

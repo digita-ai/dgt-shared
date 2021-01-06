@@ -9,7 +9,6 @@ import { DGTConnectorService } from './connector/services/dgt-connector.service'
 import { DGTSecurityCredentialMockService } from './credential/services/dgt-security-credential-mock.service';
 import { DGTSecurityCredentialTransformerService } from './credential/services/dgt-security-credential-transformer.service';
 import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
-import { DGTDataValueTransformerService } from './data-value/services/data-transformer-value.service';
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTExchangeTransformerService } from './exchanges/services/dgt-exchange-transformer.service';
 import { DGTHolderTransformerService } from './holder/services/dgt-holder-transformer.service';
@@ -51,7 +50,6 @@ export const providers = [
   DGTWorkflowService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
-  DGTDataValueTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,
   DGTConnectorService,

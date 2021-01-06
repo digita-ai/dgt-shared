@@ -99,7 +99,6 @@ export { DGTCategoryRemoteService } from './lib/categories/services/dgt-category
 export { DGTConnectionRemoteService } from './lib/connection/services/dgt-connection-remote.service';
 export { DGTExchangeRemoteService } from './lib/exchanges/services/dgt-exchange-remote.service';
 export { DGTHolderRemoteService } from './lib/holders/services/dgt-holder-remote.service';
-export { DGTValueRemoteService } from './lib/values/services/dgt-value-remote.service';
 export { DGTMenuComponent } from './lib/interface/components/dgt-menu/dgt-menu.component';
 export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-state.service';
 export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
@@ -107,3 +106,4 @@ export { DGTSourceStateService } from './lib/source/services/dgt-source-state.se
 export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote.service';
 export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
 export { DGTSparqlRemoteService } from './lib/sparql/services/dgt-sparql-remote.service';
+export { DGTLDResourceRemoteService } from './lib/resources/services/dgt-ld-resource-remote.service';

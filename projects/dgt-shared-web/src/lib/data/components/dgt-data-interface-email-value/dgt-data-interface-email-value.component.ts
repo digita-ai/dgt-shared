@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
@@ -15,12 +15,12 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
     public formGroup: FormGroup;
 
     /** The data value of this component */
-    private _value: DGTDataValue;
+    private _value: DGTLDResource;
     @Input()
-    public get value(): DGTDataValue {
+    public get value(): DGTLDResource {
         return this._value;
     }
-    public set value(value: DGTDataValue) {
+    public set value(value: DGTLDResource) {
         this._value = value;
 
         if (this.value && this.email) {
@@ -30,7 +30,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
 
     /** Used to emit valueUpdated events */
     @Output()
-    valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+    valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
 
     /** Used to emit submit events */
     @Output()
@@ -80,7 +80,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
      * On every update of the value input, update the form group values
      * @param values all values of this field
      */
-    private updateReceived(value: DGTDataValue, email: string) {
+    private updateReceived(value: DGTLDResource, email: string) {
         this.logger.debug(DGTDataInterfaceEmailValueComponent.name, 'Update received', { value, email });
         this.paramChecker.checkParametersNotNull({value, email});
 
@@ -104,7 +104,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
      * @throws DGTErrorArgument when value is not set
      * @emits
      */
-    public onValueUpdated(value: DGTDataValue, email: string, keypress: KeyboardEvent): void {
+    public onValueUpdated(value: DGTLDResource, email: string, keypress: KeyboardEvent): void {
         this.paramChecker.checkParametersNotNull({value, email});
         if (keypress.keyCode === 13) {
             this.submit.emit();

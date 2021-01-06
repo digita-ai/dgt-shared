@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 
@@ -15,18 +15,18 @@ export class DGTDataFieldComponent {
   public formGroup: FormGroup;
 
   /** The values for this field */
-  private _value: DGTDataValue;
-  public get value(): DGTDataValue {
+  private _value: DGTLDResource;
+  public get value(): DGTLDResource {
     return this._value;
   }
-  @Input() public set value(value: DGTDataValue) {
+  @Input() public set value(value: DGTLDResource) {
     this._value = value;
-    this.formGroup.setValue({desc: this.value.object.value});
+    this.formGroup.setValue({desc: this.value.triples[0].object.value});
   }
 
   /** Used to emit valueUpdated events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+  valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
   /** Used to emit updateValue events */
   @Output()
   submit: EventEmitter<any>;
@@ -49,7 +49,7 @@ export class DGTDataFieldComponent {
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(value: DGTDataValue, newObject: any, keypress: KeyboardEvent): void {
+  public onValueUpdated(value: DGTLDResource, newObject: any, keypress: KeyboardEvent): void {
     this.paramChecker.checkParametersNotNull({value, newObject});
     if (keypress.key === 'Enter') {
       this.submit.emit();

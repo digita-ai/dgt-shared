@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
@@ -15,19 +15,19 @@ export class DGTDataValueComponent implements OnInit {
   public formGroup: FormGroup;
 
   /** The data value of this component */
-  private _value: DGTDataValue;
+  private _value: DGTLDResource;
   @Input()
-  public get value(): DGTDataValue {
+  public get value(): DGTLDResource {
     return this._value;
   }
-  public set value(value: DGTDataValue) {
+  public set value(value: DGTLDResource) {
     this._value = value;
     this.updateReceived(value);
   }
 
   /** Used to emit valueUpdated events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+  valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
 
   constructor(
     private logger: DGTLoggerService,
@@ -37,7 +37,7 @@ export class DGTDataValueComponent implements OnInit {
       subject: new FormControl(),
       object: new FormControl(),
     });
-    this.valueUpdated = new EventEmitter<{value: DGTDataValue, newObject: any}>();
+    this.valueUpdated = new EventEmitter<{value: DGTLDResource, newObject: any}>();
   }
 
   ngOnInit() {
@@ -47,11 +47,11 @@ export class DGTDataValueComponent implements OnInit {
    * On every update of the value input, update the form group values
    * @param values all values of this field
    */
-  public updateReceived(value: DGTDataValue) {
-    if (value && value.subject && value.object) {
+  public updateReceived(value: DGTLDResource) {
+    if (value && value.triples) {
       this.formGroup.setValue({
-        subject: value.subject.value,
-        object: value.object.value,
+        subject: value.triples[0].subject.value,
+        object: value.triples[0].object.value,
       });
     } else {
       this.logger.debug(DGTDataValueComponent.name, 'value was not set', value);
@@ -63,7 +63,7 @@ export class DGTDataValueComponent implements OnInit {
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(value: DGTDataValue, newObject: string): void {
+  public onValueUpdated(value: DGTLDResource, newObject: string): void {
     this.paramChecker.checkParametersNotNull({value, newObject});
     this.valueUpdated.emit({value, newObject});
     this.formGroup.markAsPristine();

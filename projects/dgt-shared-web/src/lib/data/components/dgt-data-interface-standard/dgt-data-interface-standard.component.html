@@ -1,4 +1,4 @@
-<ng-container *ngIf="category && values">
+<ng-container *ngIf="category && resource">
   <dgt-data-field *ngFor="let value of filteredFields"
     [value]="value"
     (valueUpdated)="onValueUpdated($event)"

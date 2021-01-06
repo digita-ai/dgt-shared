@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataInterface, DGTLDResource, DGTLDTriple } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 
@@ -19,31 +18,31 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resource && this.category) {
+      this.updateReceived(this.resource, this.category);
     }
   }
 
-  /** all DGTDataValues of which we want to display the email */
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  /** all DGTLDResources of which we want to display the email */
+  private _resource: DGTLDResource;
+  public get resource(): DGTLDResource {
+    return this._resource;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
+  @Input() public set resource(resource: DGTLDResource) {
+    this._resource = resource;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resource && this.category) {
+      this.updateReceived(this.resource, this.category);
     }
   }
 
-  public emails: DGTMap<DGTDataValue, { email: string, type: string }>;
+  public emails: DGTMap<DGTLDTriple, { email: string, type: string }>;
 
-  private emailValues: DGTDataValue[];
+  private emailValues: DGTLDTriple[];
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
 
   /** Used to emit submit events */
   @Output()
@@ -59,19 +58,19 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
 
   ngOnInit() { }
 
-  private updateReceived(values: DGTDataValue[], category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
-    this.paramChecker.checkParametersNotNull({values, category});
+  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { resource, category });
+    this.paramChecker.checkParametersNotNull({ resource, category });
 
-    const emailReferences = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail');
-    const emailValues = values.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+    const emailReferences = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail');
+    const emailValues = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.emailValues = emailValues;
-    const emailTypes = values.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+    const emailTypes = resource.triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 
-    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email values and references', { emailReferences, emailValues });
+    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email resource and references', { emailReferences, emailValues });
 
     if (emailReferences && emailValues && emailTypes) {
-      const emailsReferencesWithValues = emailReferences.map<{ key: DGTDataValue; value: { email: string, type: string }; }>(emailReference => {
+      const emailsReferencesWithValues = emailReferences.map<{ key: DGTLDTriple; value: { email: string, type: string }; }>(emailReference => {
         const emailReferenceObject = emailReference.object.value;
 
         const emailValue = emailValues.find(val => val.subject.value === emailReferenceObject);
@@ -84,8 +83,8 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
         };
       });
 
-      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Combined email references with values', { emailsReferencesWithValues });
-      this.emails = new DGTMap<DGTDataValue, { email: string, type: string }>(emailsReferencesWithValues);
+      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Combined email references with resource', { emailsReferencesWithValues });
+      this.emails = new DGTMap<DGTLDTriple, { email: string, type: string }>(emailsReferencesWithValues);
       this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
     }
   }
@@ -95,10 +94,10 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: {value: DGTDataValue, newObject: any}): void {
-    this.paramChecker.checkParametersNotNull({val});
-    const oldValue = this.emailValues.find(value => value.subject.value === val.value.object.value);
-    this.valueUpdated.emit({value: oldValue, newObject: val.newObject});
+  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
+    this.paramChecker.checkParametersNotNull({ val });
+    const oldValue = this.emailValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
   }
 
   /**

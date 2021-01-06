@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DGTCategory, DGTDataInterface, DGTDataValue, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataInterface, DGTLDFilterService, DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLDFilterBGP } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 })
 /**
  * The default way of displaying data. This component used the data-field component
- * to display itd values.
+ * to display itd resource.
  */
 export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterface {
 
@@ -24,26 +24,26 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    this.updateReceived(this.values, category);
+    this.updateReceived(this.resource, category);
   }
 
-  /** holds the values to display */
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  /** holds the resource to display */
+  private _resource: DGTLDResource;
+  public get resource(): DGTLDResource {
+    return this._resource;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
+  @Input() public set resource(resource: DGTLDResource) {
+    this._resource = resource;
 
-    this.updateReceived(values, this.category);
+    this.updateReceived(resource, this.category);
   }
 
   /** List of category fields for which a value exists */
-  public filteredFields: DGTDataValue[];
+  public filteredFields: DGTLDResource[];
 
   /** Used to emit feedbackEvent events */
   @Output()
-  public valueUpdated: EventEmitter<{ value: DGTDataValue, newObject: any }>;
+  public valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
   /** Used to emit submit events */
   @Output()
   public submit: EventEmitter<any>;
@@ -59,19 +59,19 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
 
   ngOnInit() { }
 
-  private updateReceived(values: DGTDataValue[], category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { values, category });
+  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { resource, category });
 
-    if (values && category) {
-      this.filterService.run(category.filter, values).subscribe(
-        (vals: DGTDataValue[]) => this.filteredFields = vals,
+    if (resource && category) {
+      this.filterService.run(category.filter, [resource]).subscribe(
+        (vals: DGTLDResource[]) => this.filteredFields = vals,
       );
       /* const filteredPredicates = _.flatten(category.filters
         .map((filter: DGTLDFilterBGP) => filter.predicates)
       );
 
-      this.filteredFields = values
-        .filter((value: DGTDataValue) =>
+      this.filteredFields = resource
+        .filter((value: DGTLDResource) =>
           filteredPredicates.some(predicate => predicate === value.predicate)
         ); */
     }
@@ -82,7 +82,7 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: { value: DGTDataValue, newObject: any }): void {
+  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val }, 1);
     this.valueUpdated.emit(val);
   }
