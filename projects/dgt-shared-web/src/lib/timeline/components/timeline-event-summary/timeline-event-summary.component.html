@@ -43,11 +43,11 @@
   <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showJustification')" id="showJustification"
     mat-menu-item (click)='onShowJustification(events)'
   >
-    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.showJustification" | translate}}
+    <i class="fas fa-file-alt"></i> {{ "timeline.components.timeline-event-menu.showJustification" | translate}}
   </button>
   <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showInVault')" id="showInVault"
     mat-menu-item (click)='onShowInVault(events)'
   >
-    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.showInVault" | translate}}
+    <i class="fas fa-lock"></i> {{ "timeline.components.timeline-event-menu.showInVault" | translate}}
   </button>
 </dgt-menu>
