@@ -143,10 +143,8 @@ export class DGTTimelineEventSummaryComponent implements OnInit {
 
     const firstEvent = events[0];
     const exchange = exchagnges.find(e => e.uri === firstEvent.exchange);
-    const firstSource = sources.find(s => s.uri === exchange.source);
-    if (!firstSource) {
-      throw new DGTErrorArgument('Parameter firstSource should be set', events);
-    }
+    const firstSource = exchange ? sources.find(s => s.uri === exchange.source) : null;
+
     this.dateToLabelService.dateToTimeAgoString(firstEvent.date).subscribe(translatedDate => {
       this.timeAgoDisplayString = translatedDate;
     });
