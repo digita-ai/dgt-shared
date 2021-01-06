@@ -1,4 +1,4 @@
-<dgt-section [showIcon]="true" [showActions]="dotsMenuItems" [showSubtitle]="true">
+<dgt-section [showIcon]="true" [showActions]="dotsMenuItems && dotsMenuItems.length > 0" [showSubtitle]="true">
   <dgt-section-icon
     [matBadgeHidden]="!showBadge"
     matBadge="{{amount}}"
