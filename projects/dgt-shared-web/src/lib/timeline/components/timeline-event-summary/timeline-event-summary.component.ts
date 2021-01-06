@@ -17,6 +17,9 @@ import { DGTMenuComponent } from '../../../interface/components/dgt-menu/dgt-men
  */
 export class DGTTimelineEventSummaryComponent implements OnInit {
 
+  // a list of which items to show in the dots menu
+  @Input() public dotsMenuItems: string[]
+
   /** The list of similar events of the summary */
   private _events: DGTEvent[] = null;
   @Input() set events(events: DGTEvent[]) {
@@ -60,6 +63,8 @@ export class DGTTimelineEventSummaryComponent implements OnInit {
 
   @Output() eventReported: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
   @Output() eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
+  @Output() showJustification: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
+  @Output() showInVault: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
 
   /** Amount of time since the creation of the event, in readable format */
   public timeAgoDisplayString: string;
@@ -107,6 +112,22 @@ export class DGTTimelineEventSummaryComponent implements OnInit {
     }
     this.logger.debug(DGTTimelineEventSummaryComponent.name, 'Event Removed', events);
     this.eventRemoved.emit(events);
+  }
+
+  public onShowJustification(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument('Parameter events should be set', events);
+    }
+    this.logger.debug(DGTTimelineEventSummaryComponent.name, 'Showing justificaiton', events);
+    this.showJustification.emit(events);
+  }
+
+  public onShowInVault(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument('Parameter events should be set', events);
+    }
+    this.logger.debug(DGTTimelineEventSummaryComponent.name, 'Showing in vault', events);
+    this.showInVault.emit(events);
   }
 
   public update(events: DGTEvent[], sources: DGTSourceSolid[], exchagnges: DGTExchange[]) {

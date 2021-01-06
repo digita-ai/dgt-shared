@@ -5,6 +5,10 @@
     [events]="entry" 
     [sources]="sources"
     [exchanges]="exchanges"
+    [dotsMenuItems]="dotsMenuItems"
     (eventRemoved)="onEventRemoved($event)" 
-    (eventReported)="onEventReported($event)">
+    (eventReported)="onEventReported($event)"
+    (showJustification)="onShowJustification($event)"
+    (showInVault)="onShowInVault($event)"
+>
 </dgt-timeline-event-summary>

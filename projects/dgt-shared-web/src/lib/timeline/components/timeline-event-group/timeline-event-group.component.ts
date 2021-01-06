@@ -14,7 +14,9 @@ import * as _ from 'lodash';
 export class DGTTimelineEventGroupComponent implements OnInit {
 
   public groupedEvents: DGTEvent[][] = [];
-  
+  // a list of which items to show o, the dots menu
+  @Input() public dotsMenuItems: string[];
+
   private _events: DGTEvent[];
   get events(): DGTEvent[] { return this._events; }
   @Input() set events(events: DGTEvent[]) {
@@ -41,8 +43,10 @@ export class DGTTimelineEventGroupComponent implements OnInit {
   @Input() public exchanges: DGTExchange[];
 
 
-  @Output() eventReported: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
-  @Output() eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
+  @Output() public eventReported: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
+  @Output() public eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
+  @Output() public showJustification: EventEmitter<DGTEvent[]>= new EventEmitter();
+  @Output() public showInVault: EventEmitter<DGTEvent[]>= new EventEmitter();
 
   public displayDate: string;
 
@@ -77,6 +81,22 @@ export class DGTTimelineEventGroupComponent implements OnInit {
     }
     this.logger.debug(DGTTimelineEventGroupComponent.name, 'Removing event', events)
     this.eventRemoved.emit(events);
+  }
+
+  public onShowJustification(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument('Parameter events should be set', events);
+    }
+    this.logger.debug(DGTTimelineEventGroupComponent.name, 'Showing justification', events)
+    this.showJustification.emit(events);
+  }
+
+  public onShowInVault(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument('Parameter events should be set', events);
+    }
+    this.logger.debug(DGTTimelineEventGroupComponent.name, 'Showing in vault', events)
+    this.showInVault.emit(events);
   }
 
   /**

@@ -1,4 +1,4 @@
-<dgt-section [showIcon]="true" [showActions]="true" [showSubtitle]="true">
+<dgt-section [showIcon]="true" [showActions]="dotsMenuItems" [showSubtitle]="true">
   <dgt-section-icon
     [matBadgeHidden]="!showBadge"
     matBadge="{{amount}}"
@@ -30,7 +30,24 @@
 </dgt-section>
 
 <dgt-menu>
-  <button id="remove" mat-menu-item (click)='onEventRemoved(events)'>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('remove')" id="remove"
+    mat-menu-item (click)='onEventRemoved(events)'
+  >
     <i class="far fa-trash-alt"></i> {{ "timeline.components.timeline-event-menu.remove" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('report')" id="report"
+    mat-menu-item (click)='onEventReported(events)'
+  >
+    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.report" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showJustification')" id="showJustification"
+    mat-menu-item (click)='onShowJustification(events)'
+  >
+    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.showJustification" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showInVault')" id="showInVault"
+    mat-menu-item (click)='onShowInVault(events)'
+  >
+    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.showInVault" | translate}}
   </button>
 </dgt-menu>

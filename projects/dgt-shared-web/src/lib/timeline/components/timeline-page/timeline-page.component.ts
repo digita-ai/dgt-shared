@@ -11,6 +11,10 @@ import { DGTTitleService } from '../../../interface/services/dgt-title.service';
 })
 
 export class DGTTimelinePageComponent implements OnInit {
+  
+  // a list of which items to show in the dots menu
+  @Input() public dotsMenuItems: string[];
+
   private _events: DGTEvent[];
   @Input() set events(events: DGTEvent[]) {
     this._events = events;
@@ -28,6 +32,8 @@ export class DGTTimelinePageComponent implements OnInit {
   
   @Output() public eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter();
   @Output() public eventReported: EventEmitter<DGTEvent[]> = new EventEmitter();
+  @Output() public showJustification: EventEmitter<DGTEvent[]>= new EventEmitter();
+  @Output() public showInVault: EventEmitter<DGTEvent[]>= new EventEmitter();
 
   constructor(
     public commonTitleService: DGTTitleService,
@@ -65,5 +71,19 @@ export class DGTTimelinePageComponent implements OnInit {
       throw new DGTErrorArgument(DGTTimelinePageComponent.name, 'events should be set');
     }
     this.eventReported.emit(events);
+  }
+
+  public onShowJustification(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument(DGTTimelinePageComponent.name, 'events should be set');
+    }
+    this.showJustification.emit(events);
+  }
+
+  public onShowInVault(events: DGTEvent[]) {
+    if (!events) {
+      throw new DGTErrorArgument(DGTTimelinePageComponent.name, 'events should be set');
+    }
+    this.showInVault.emit(events);
   }
 }
