@@ -112,6 +112,33 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                         value: workflow.destination,
                     },
                 },
+                {
+                    predicate: 'http://digita.ai/voc/workflows#description',
+                    subject: workflowSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: workflow.description,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/workflows#label',
+                    subject: workflowSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: workflow.label,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/workflows#icon',
+                    subject: workflowSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: workflow.icon,
+                    },
+                },
             ];
 
             newTriples = newTriples.concat(this.filterToTriples(workflow, workflowSubject));
@@ -124,6 +151,9 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                 filter: workflow.filter,
                 source: workflow.source,
                 destination: workflow.destination,
+                description: workflow.description,
+                label: workflow.label,
+                icon: workflow.icon,
                 triples: newTriples,
             };
         });
@@ -157,12 +187,27 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
             value.predicate === 'http://digita.ai/voc/workflows#destination',
         );
 
+        const description = workflowTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/workflows#description',
+        );
+
+        const label = workflowTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/workflows#label',
+        );
+
+        const icon = workflowTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/workflows#icon',
+        );
+
         return {
             uri: triple.object.value,
             filter: filter,
             exchange: null,
             source: source ? source.object.value : null,
             destination: destination ? destination.object.value : null,
+            description: description ? description.object.value : null,
+            label: label ? label.object.value : null,
+            icon: icon ? icon.object.value : null,
             actions,
             triples: null,
         } as T;

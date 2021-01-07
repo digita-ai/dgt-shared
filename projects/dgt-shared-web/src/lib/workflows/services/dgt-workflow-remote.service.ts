@@ -1,12 +1,11 @@
-import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DGTBaseAppState, DGTBaseRootState, DGTStateStoreService } from '@digita-ai/dgt-shared-web';
+import { DGTConnectorService, DGTLDFilter, DGTLDFilterService, DGTWorkflow, DGTWorkflowService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTWorkflowService } from './dgt-workflow.service';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTWorkflowRemoteService extends DGTWorkflowService {
@@ -15,10 +14,12 @@ export class DGTWorkflowRemoteService extends DGTWorkflowService {
     public store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
-    private logger: DGTLoggerService,
-    private filters: DGTLDFilterService,
+    protected logger: DGTLoggerService,
+    protected filters: DGTLDFilterService,
+    protected paramChecker: DGTParameterCheckerService,
+    protected connectors: DGTConnectorService,
   ) {
-    super();
+    super(logger, paramChecker, filters, connectors);
   }
 
   public save<T extends DGTWorkflow>(workflows: T[]): Observable<T[]> {
