@@ -2,13 +2,13 @@ import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTWorkflowService } from './dgt-workflow.service';
+import { DGTWorkflowManagerService } from './dgt-workflow-manager.service';
 
 /* tslint:disable:no-unused-variable */
 
-describe('DGTWorkflowService', () => {
-    const testService = new DGTTestRunnerService<DGTWorkflowService>(configuration);
-    testService.setup(DGTWorkflowService);
+describe('DGTWorkflowManagerService', () => {
+    const testService = new DGTTestRunnerService<DGTWorkflowManagerService>(configuration);
+    testService.setup(DGTWorkflowManagerService);
 
     it('should be correctly instantiated', async(() => {
         expect(testService.service).toBeTruthy();
