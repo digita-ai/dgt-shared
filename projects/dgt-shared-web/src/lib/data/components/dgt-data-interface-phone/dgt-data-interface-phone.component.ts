@@ -97,8 +97,8 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
    */
   public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val });
-    // const oldValue = this.phoneValues.find(value => value.subject.value === val.value.triples[0].object.value);
-    // this.valueUpdated.emit({ value: oldValue, newObject: val.newObject });
+    const oldValue = this.phoneValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
   }
 
   /**

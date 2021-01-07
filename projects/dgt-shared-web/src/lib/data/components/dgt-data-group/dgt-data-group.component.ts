@@ -37,7 +37,7 @@ export class DGTDataGroupComponent implements OnInit {
 
   /** Used to emit feedbackEvent events */
   @Output()
-  public valueUpdated: EventEmitter<{ value: DGTLDResource[], newObject: any }>;
+  public valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
 
   /** Used to emit infoClicked events */
   @Output()
@@ -95,7 +95,7 @@ export class DGTDataGroupComponent implements OnInit {
    * @throws DGTErrorArgument when value is not set
    * @emits
   */
-  public onValueUpdated(val: { value: DGTLDResource[], newObject: any }): void {
+  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val }, 1);
     this.valueUpdated.emit(val);
   }

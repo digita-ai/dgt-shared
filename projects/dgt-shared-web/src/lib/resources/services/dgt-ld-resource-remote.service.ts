@@ -1,4 +1,4 @@
-import { DGTCategory, DGTDataGroup, DGTHolder, DGTLDFilter, DGTLDFilterService, DGTLDResource, DGTLDResourceTransformerService } from '@digita-ai/dgt-shared-data/';
+import { DGTCategory, DGTDataGroup, DGTHolder, DGTLDFilter, DGTLDFilterService, DGTLDResource, DGTLDResourceTransformerService, DGTLDTriple } from '@digita-ai/dgt-shared-data/';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -33,6 +33,9 @@ export class DGTLDResourceRemoteService {
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<DGTLDResource[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),
+                map(resources => resources[0].triples.map(triple => ({
+                    uri: triple.subject.value, exchange: resources[0].exchange, triples: [triple],
+                }) as DGTLDResource)),
             );
     }
     query(filter?: DGTLDFilter): Observable<DGTLDResource[]> {
@@ -57,6 +60,9 @@ export class DGTLDResourceRemoteService {
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
                 switchMap(data => this.http.get<any>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),
+                map(resources => resources[0].triples.map(triple => ({
+                    uri: triple.subject.value, exchange: resources[0].exchange, triples: [triple],
+                }) as DGTLDResource)),
             );
     }
 
@@ -82,25 +88,25 @@ export class DGTLDResourceRemoteService {
      */
     public getCategoriesWithValues(
         categories: DGTCategory[],
-        resources: DGTLDResource[],
+        values: DGTLDResource[],
     ): Observable<DGTCategory[]> {
-        this.paramChecker.checkParametersNotNull({ categories, resources });
+        this.paramChecker.checkParametersNotNull({ categories, values });
 
-        this.logger.debug(DGTLDResourceRemoteService.name, 'Getting categories with values', { categories });
+        this.logger.debug(DGTLDResourceRemoteService.name, 'Getting categories with values', { categories, values });
 
         return of({ categories })
             .pipe(
-                switchMap(data => forkJoin(data.categories.map(category => this.filters.run(category.filter, resources).pipe(map((triples: DGTLDResource[]) => (
-                    {
-                        category,
-                        triples: triples
-                            .filter(resource =>
-                                resource.triples !== null && resource.triples.length > 0)
-                            .filter(resource =>
-                                !(resource.triples.filter(triple => triple.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')) &&
-                                !(resource.triples.filter(triple => triple.predicate === 'http://www.w3.org/2006/vcard/ns#value'))),
-                    })))))
-                    .pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))),
+                switchMap(data => forkJoin(data.categories.map(category => this.filters.run(category.filter, values).pipe(
+                    map((resources) => (
+                        {
+                            category,
+                            triples: _.flatten(resources.filter(value => value.triples && value.triples.length)
+                                .map(value => value.triples))
+                                .filter(triple => triple.predicate !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
+                                .filter(triple => triple.predicate !== 'http://www.w3.org/2006/vcard/ns#value'),
+                        }),
+                    ))),
+                ).pipe(map(triplesPerCategory => ({ ...data, triplesPerCategory })))),
                 map(data => ({ ...data, filteredTriplesPerCategory: data.triplesPerCategory.filter(categoryWithTriples => categoryWithTriples && categoryWithTriples.triples.length > 0) })),
                 map(data => data.filteredTriplesPerCategory.map(triplesPerCategory => triplesPerCategory.category)),
             );
@@ -116,11 +122,11 @@ export class DGTLDResourceRemoteService {
     public getGroupsWithValues(
         groups: DGTDataGroup[],
         categories: DGTCategory[],
-        resources: DGTLDResource[],
+        triples: DGTLDResource[],
     ): Observable<DGTDataGroup[]> {
-        this.paramChecker.checkParametersNotNull({ categories, groups, resources });
+        this.paramChecker.checkParametersNotNull({ categories, groups, triples });
 
-        return this.getCategoriesWithValues(categories, resources)
+        return this.getCategoriesWithValues(categories, triples)
             .pipe(
                 map(data => groups.filter(group => data.filter(category => category.groupId === group.id).length > 0)),
             );

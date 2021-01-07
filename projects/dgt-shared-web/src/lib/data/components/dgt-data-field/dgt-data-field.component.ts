@@ -21,12 +21,12 @@ export class DGTDataFieldComponent {
   }
   @Input() public set value(value: DGTLDResource) {
     this._value = value;
-    this.formGroup.setValue({desc: this.value.triples[0].object.value});
+    this.formGroup.setValue({ desc: this.value.triples[0].object.value });
   }
 
   /** Used to emit valueUpdated events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
+  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
   /** Used to emit updateValue events */
   @Output()
   submit: EventEmitter<any>;
@@ -50,11 +50,11 @@ export class DGTDataFieldComponent {
    * @emits
    */
   public onValueUpdated(value: DGTLDResource, newObject: any, keypress: KeyboardEvent): void {
-    this.paramChecker.checkParametersNotNull({value, newObject});
+    this.paramChecker.checkParametersNotNull({ value, newObject });
     if (keypress.key === 'Enter') {
       this.submit.emit();
     } else {
-      this.valueUpdated.emit({value, newObject});
+      this.valueUpdated.emit({ value, newObject });
     }
   }
 }

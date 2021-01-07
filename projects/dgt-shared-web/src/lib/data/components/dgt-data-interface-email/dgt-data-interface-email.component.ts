@@ -98,8 +98,8 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
    */
   public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val });
-    // const oldValue = this.emailValues.find(value => value.subject.value === val.value.triples[0].object.value);
-    // this.valueUpdated.emit({ value: oldValue, newObject: val.newObject });
+    const oldValue = this.emailValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
   }
 
   /**

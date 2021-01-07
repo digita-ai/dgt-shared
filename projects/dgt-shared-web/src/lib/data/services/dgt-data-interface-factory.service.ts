@@ -12,7 +12,7 @@ export class DGTDataInterfaceFactoryService {
   ) { }
 
   public create(host: DGTDataInterfaceHostDirective, category: DGTCategory, values: DGTLDResource[]) {
-    this.paramChecker.checkParametersNotNull({viewcontainerref: host.viewContainerRef, category});
+    this.paramChecker.checkParametersNotNull({ viewcontainerref: host.viewContainerRef, category });
     // let viewContainerRef: ViewContainerRef = this.activitiesHost.viewContainerRef;
 
     host.viewContainerRef.clear();
