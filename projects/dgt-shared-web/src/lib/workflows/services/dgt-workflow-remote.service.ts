@@ -1,12 +1,11 @@
+import { DGTLDFilter, DGTLDFilterService, DGTWorkflow, DGTWorkflowService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { DGTBaseAppState, DGTBaseRootState, DGTStateStoreService } from '@digita-ai/dgt-shared-web';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTWorkflowService } from './dgt-workflow.service';
+import { map, switchMap } from 'rxjs/operators';
+import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
+import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
+import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
 
 @DGTInjectable()
 export class DGTWorkflowRemoteService extends DGTWorkflowService {

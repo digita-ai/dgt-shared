@@ -160,6 +160,5 @@ export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/secur
 export { DGTSecurityService } from './lib/security/services/dgt-security.service';
 export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-cache.service';
 export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';
-export { DGTWorkflowRemoteService } from './lib/workflow/services/dgt-workflow-remote.service';
 export { DGTWorkflowTransformerService } from './lib/workflow/services/dgt-workflow-transformer.service';
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
