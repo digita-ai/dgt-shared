@@ -196,15 +196,15 @@ export class DGTConnectorService {
         //     ),
         //   ),
         // ),
-        map(data => {
-          const newRes = data.resources.map((resource: T) => {
-            return {
-              ...resource,
-              triples: resource.triples.filter(triple => data.purpose.predicates.includes(triple.predicate)),
-            };
-          });
-          return { ...data, resources: newRes };
-        }),
+        // map(data => {
+        //   const newRes = data.resources.map((resource: T) => {
+        //     return {
+        //       ...resource,
+        //       triples: resource.triples.filter(triple => data.purpose.predicates.includes(triple.predicate)),
+        //     };
+        //   });
+        //   return { ...data, resources: newRes };
+        // }),
         tap(data => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
         map(data => data.resources),
         // catchError(() => of([])),

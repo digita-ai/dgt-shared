@@ -7,9 +7,10 @@ export class DGTConfigurationMockService<T extends DGTConfigurationBase> extends
         baseURI: 'test',
         logger: {
             minimumLevel: DGTLoggerLevel.DEBUG,
+            minimumLevelPrintData: DGTLoggerLevel.INFO,
         },
         typeRegistrations: {
-            'test': 'test'
+            'test': 'test',
         },
     }
 
