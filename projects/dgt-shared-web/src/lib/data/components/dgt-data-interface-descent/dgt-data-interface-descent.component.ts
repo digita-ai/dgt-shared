@@ -22,21 +22,21 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
-  /** resource needed to display descent data */
-  private _resource: DGTLDResource;
-  public get resource(): DGTLDResource {
-    return this._resource;
+  /** values needed to display descent data */
+  private _values: DGTLDResource[];
+  public get values(): DGTLDResource[] {
+    return this._values;
   }
-  @Input() public set resource(resource: DGTLDResource) {
-    this._resource = resource;
+  @Input() public set values(values: DGTLDResource[]) {
+    this._values = values;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
@@ -69,15 +69,17 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
   ngOnInit() {
   }
 
-  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Update received', { resource, category });
-    this.paramChecker.checkParametersNotNull({ resource, category });
+  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Update received', { values, category });
+    this.paramChecker.checkParametersNotNull({ values, category });
 
-    const genderReferences = resource.triples.filter(genderReference => {
+    const triples = _.flatten(values.map(resource => resource.triples));
+
+    const genderReferences = triples.filter(genderReference => {
       const genderReferenceObject = genderReference.object.value;
       const isHasGender = genderReference.predicate === 'http://www.w3.org/2006/vcard/ns#hasGender';
-      const hasGenderType = resource.triples.find(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
-      const hasGenderValue = resource.triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject) ? true : false;
+      const hasGenderType = triples.find(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
+      const hasGenderValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject) ? true : false;
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Checking gender reference', { genderReference, isHasGender, hasGenderType, hasGenderValue });
       return isHasGender && hasGenderType && hasGenderValue;
@@ -88,7 +90,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     if (genderReferences && genderReferences.length > 0) {
       const genderReference = genderReferences[0];
       const genderReferenceObject = genderReference.object.value;
-      const genderValue = resource.triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject);
+      const genderValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject);
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Retrieved gender value for first gender reference', { genderReference, genderValue });
 
@@ -97,13 +99,13 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
       }
     }
 
-    const dateOfBirthValue = resource.triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#bday');
+    const dateOfBirthValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#bday');
 
     if (dateOfBirthValue) {
       this.dateOfBirth = dateOfBirthValue.object.value;
     }
 
-    const placeOfBirthValue = resource.triples.find(value => value.predicate === 'https://www.w3.org/ns/person#placeOfBirth');
+    const placeOfBirthValue = triples.find(value => value.predicate === 'https://www.w3.org/ns/person#placeOfBirth');
 
     if (placeOfBirthValue) {
       this.placeOfBirth = placeOfBirthValue.object.value;

@@ -11,7 +11,7 @@ export class DGTDataInterfaceFactoryService {
     private paramChecker: DGTParameterCheckerService,
   ) { }
 
-  public create(host: DGTDataInterfaceHostDirective, category: DGTCategory, resource: DGTLDResource) {
+  public create(host: DGTDataInterfaceHostDirective, category: DGTCategory, values: DGTLDResource[]) {
     this.paramChecker.checkParametersNotNull({viewcontainerref: host.viewContainerRef, category});
     // let viewContainerRef: ViewContainerRef = this.activitiesHost.viewContainerRef;
 
@@ -23,7 +23,7 @@ export class DGTDataInterfaceFactoryService {
       const componentFactory = this.componentFactoryResolver.resolveComponentFactory(type);
       const componentRef = host.viewContainerRef.createComponent(componentFactory);
       componentRef.instance.category = category;
-      componentRef.instance.resource = resource;
+      componentRef.instance.values = values;
       componentRef.instance.valueUpdated.subscribe(event => host.onValueUpdated(event));
       componentRef.instance.submit.subscribe(() => host.onSubmit());
       componentRef.changeDetectorRef.detectChanges();

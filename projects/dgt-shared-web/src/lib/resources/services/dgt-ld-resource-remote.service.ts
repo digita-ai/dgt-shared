@@ -2,7 +2,7 @@ import { DGTCategory, DGTDataGroup, DGTHolder, DGTLDFilter, DGTLDFilterService, 
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
@@ -20,7 +20,7 @@ export class DGTLDResourceRemoteService {
 
     }
 
-    get(uri: string): Observable<DGTLDResource> {
+    get(uri: string): Observable<DGTLDResource[]> {
         this.logger.debug(DGTLDResourceRemoteService.name, 'Starting to get', { uri });
 
         if (!uri) {
@@ -31,9 +31,8 @@ export class DGTLDResourceRemoteService {
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}value/${encodeURIComponent(data.uri)}` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTLDResource>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
-                switchMap(response => this.transformer.toDomain([response.data])),
-                map(resources => _.head(resources)),
+                switchMap(data => this.http.get<DGTLDResource[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+                switchMap(response => this.transformer.toDomain(response.data)),
             );
     }
     query(filter?: DGTLDFilter): Observable<DGTLDResource[]> {
@@ -56,7 +55,7 @@ export class DGTLDResourceRemoteService {
             .pipe(
                 map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holder.uri)}/resources` })),
                 switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
-                switchMap(data => this.http.get<DGTLDResource[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+                switchMap(data => this.http.get<any>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
                 switchMap(response => this.transformer.toDomain(response.data)),
             );
     }

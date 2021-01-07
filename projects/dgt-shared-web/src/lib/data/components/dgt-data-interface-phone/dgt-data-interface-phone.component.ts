@@ -18,21 +18,21 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
   /** all DGTLDResources of which we want to display the phone */
-  private _resource: DGTLDResource;
-  public get resource(): DGTLDResource {
-    return this._resource;
+  private _values: DGTLDResource[];
+  public get values(): DGTLDResource[] {
+    return this._values;
   }
-  @Input() public set resource(resource: DGTLDResource) {
-    this._resource = resource;
+  @Input() public set values(values: DGTLDResource[]) {
+    this._values = values;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
@@ -58,15 +58,17 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
 
   ngOnInit() { }
 
-  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
-    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { resource, category });
-    this.paramChecker.checkParametersNotNull({ resource, category });
+  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { values, category });
+    this.paramChecker.checkParametersNotNull({ values, category });
 
-    const phoneReferences = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone');
-    const phoneValues = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+    const triples = _.flatten(values.map(resource => resource.triples));
+
+    const phoneReferences = triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone');
+    const phoneValues = triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.phoneValues = phoneValues;
-    const phoneTypes = resource.triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered hasTelephone resource and references', { phoneReferences, phoneValues });
+    const phoneTypes = triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+    this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered hasTelephone values and references', { phoneReferences, phoneValues });
 
     if (phoneReferences && phoneValues && phoneTypes) {
       const phoneReferencesWithValues = phoneReferences.map<{ key: DGTLDTriple; value: { phone: string, type: string }; }>(phoneReference => {
@@ -82,7 +84,7 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
         };
       });
 
-      this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Combined phone references with resource', { phoneReferencesWithValues });
+      this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Combined phone references with values', { phoneReferencesWithValues });
       this.phoneNumbers = new DGTMap<DGTLDTriple, { phone: string, type: string }>(phoneReferencesWithValues);
       this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Filtered phone number', { phoneNumbers: this.phoneNumbers });
     }
@@ -95,8 +97,8 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
    */
   public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val });
-    const oldValue = this.phoneValues.find(value => value.subject.value === val.value.triples[0].object.value);
-    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
+    // const oldValue = this.phoneValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    // this.valueUpdated.emit({ value: oldValue, newObject: val.newObject });
   }
 
   /**

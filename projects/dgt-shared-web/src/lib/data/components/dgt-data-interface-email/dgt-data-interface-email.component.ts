@@ -18,21 +18,21 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
   /** all DGTLDResources of which we want to display the email */
-  private _resource: DGTLDResource;
-  public get resource(): DGTLDResource {
-    return this._resource;
+  private _values: DGTLDResource[];
+  public get values(): DGTLDResource[] {
+    return this._values;
   }
-  @Input() public set resource(resource: DGTLDResource) {
-    this._resource = resource;
+  @Input() public set values(values: DGTLDResource[]) {
+    this._values = values;
 
-    if (this.resource && this.category) {
-      this.updateReceived(this.resource, this.category);
+    if (this.values && this.category) {
+      this.updateReceived(this.values, this.category);
     }
   }
 
@@ -58,16 +58,18 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
 
   ngOnInit() { }
 
-  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { resource, category });
-    this.paramChecker.checkParametersNotNull({ resource, category });
+  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
+    this.paramChecker.checkParametersNotNull({ values, category });
 
-    const emailReferences = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail');
-    const emailValues = resource.triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+    const triples = _.flatten(values.map(resource => resource.triples))
+
+    const emailReferences = triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail');
+    const emailValues = triples.filter(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
     this.emailValues = emailValues;
-    const emailTypes = resource.triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+    const emailTypes = triples.filter(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 
-    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email resource and references', { emailReferences, emailValues });
+    this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email values and references', { emailReferences, emailValues });
 
     if (emailReferences && emailValues && emailTypes) {
       const emailsReferencesWithValues = emailReferences.map<{ key: DGTLDTriple; value: { email: string, type: string }; }>(emailReference => {
@@ -83,7 +85,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
         };
       });
 
-      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Combined email references with resource', { emailsReferencesWithValues });
+      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Combined email references with values', { emailsReferencesWithValues });
       this.emails = new DGTMap<DGTLDTriple, { email: string, type: string }>(emailsReferencesWithValues);
       this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
     }
@@ -96,8 +98,8 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
    */
   public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val });
-    const oldValue = this.emailValues.find(value => value.subject.value === val.value.triples[0].object.value);
-    this.valueUpdated.emit({ value: { triples: [oldValue] } as DGTLDResource, newObject: val.newObject });
+    // const oldValue = this.emailValues.find(value => value.subject.value === val.value.triples[0].object.value);
+    // this.valueUpdated.emit({ value: oldValue, newObject: val.newObject });
   }
 
   /**

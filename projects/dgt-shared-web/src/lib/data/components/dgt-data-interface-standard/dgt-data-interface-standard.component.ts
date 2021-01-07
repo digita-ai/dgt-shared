@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 })
 /**
  * The default way of displaying data. This component used the data-field component
- * to display itd resource.
+ * to display itd values.
  */
 export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterface {
 
@@ -24,18 +24,18 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    this.updateReceived(this.resource, category);
+    this.updateReceived(this.values, category);
   }
 
-  /** holds the resource to display */
-  private _resource: DGTLDResource;
-  public get resource(): DGTLDResource {
-    return this._resource;
+  /** holds the values to display */
+  private _values: DGTLDResource[];
+  public get values(): DGTLDResource[] {
+    return this._values;
   }
-  @Input() public set resource(resource: DGTLDResource) {
-    this._resource = resource;
+  @Input() public set values(values: DGTLDResource[]) {
+    this._values = values;
 
-    this.updateReceived(resource, this.category);
+    this.updateReceived(values, this.category);
   }
 
   /** List of category fields for which a value exists */
@@ -59,19 +59,19 @@ export class DGTDataInterfaceStandardComponent implements OnInit, DGTDataInterfa
 
   ngOnInit() { }
 
-  private updateReceived(resource: DGTLDResource, category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { resource, category });
+  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceStandardComponent.name, 'Update received', { values, category });
 
-    if (resource && category) {
-      this.filterService.run(category.filter, [resource]).subscribe(
+    if (values && category) {
+      this.filterService.run(category.filter, values).subscribe(
         (vals: DGTLDResource[]) => this.filteredFields = vals,
       );
       /* const filteredPredicates = _.flatten(category.filters
         .map((filter: DGTLDFilterBGP) => filter.predicates)
       );
 
-      this.filteredFields = resource
-        .filter((value: DGTLDResource) =>
+      this.filteredFields = values
+        .filter((value: DGTLDResource[]) =>
           filteredPredicates.some(predicate => predicate === value.predicate)
         ); */
     }
