@@ -3,6 +3,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
+import uuid from 'uuid';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
@@ -12,12 +13,11 @@ import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
-import uuid from 'uuid';
-import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
-import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
 import { DGTMapFieldWorkflowAction } from '../actions/dgt-map-field.workflow-action';
+import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
+import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model';
+import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
+import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 /** Transforms linked data to workflows, and the other way around. */
 @DGTInjectable()
