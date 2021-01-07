@@ -1,4 +1,3 @@
-import { DGTLDTransformer } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -10,6 +9,7 @@ import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-parti
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
+import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
