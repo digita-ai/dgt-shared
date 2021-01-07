@@ -3,7 +3,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
-import uuid from 'uuid';
+import { v4 } from 'uuid';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
@@ -252,7 +252,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
 
         actions.forEach(action => {
             const subject = {
-                value: `${workflow.uri.split('#')[0]}#` + uuid(),
+                value: `${workflow.uri.split('#')[0]}#` + v4(),
                 termType: DGTLDTermType.REFERENCE,
             };
             res.push({
