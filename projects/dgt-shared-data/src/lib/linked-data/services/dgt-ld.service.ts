@@ -1,7 +1,7 @@
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of, zip } from 'rxjs';
-import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
@@ -35,7 +35,7 @@ export class DGTLDService {
      * @param transformer The transformer used to transform DGTLDResources
      */
     public query<T extends DGTLDResource>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<T[]> {
-        this.logger.debug(DGTLDService.name, 'Querying cache', { filter, transformer });
+        this.logger.debug(DGTLDService.name, 'Querying data', { filter, transformer });
 
         if (!transformer) {
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
@@ -44,17 +44,20 @@ export class DGTLDService {
         return of({ filter, transformer }).pipe(
             switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
             tap((data) => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
-            mergeMap((data) =>
-                zip(...data.exchanges.map((exchange) => this.queryForExchange(exchange, data.transformer))).pipe(
-                    map((valuesOfValues) => ({ ...data, values: _.flatten(valuesOfValues) })),
-                ),
-            ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Queried values', { results: data.values })),
             switchMap((data) =>
-                this.cache.save<T>(transformer, data.values).pipe(map((saved) => ({ ...data, saved }))),
+                zip(
+                    ...data.exchanges
+                        .filter((exchange) => exchange !== null)
+                        .map((exchange) => this.connectors.query<T>(exchange, data.transformer)),
+                ).pipe(map((resourcesOfResources) => ({ ...data, resources: _.flatten(resourcesOfResources) }))),
             ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
+            tap((data) => this.logger.info(DGTLDService.name, 'Refreshed resources', { resources: data.resources })),
+            switchMap((data) =>
+                this.cache.save<T>(transformer, data.resources).pipe(map((saved) => ({ ...data, saved }))),
+            ),
+            tap((data) => this.logger.debug(DGTLDService.name, 'Stored resources in cache', data)),
             switchMap(() => this.cache.query<T>(transformer, filter)),
+            // switchMap(data => this.workflows.execute<T>(data.exchange, data.resources, data.transformer)),
         );
     }
 
@@ -69,9 +72,11 @@ export class DGTLDService {
             switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
             tap((data) => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
             mergeMap((data) =>
-                zip(...data.exchanges.map((exchange) => this.queryForExchange(exchange, this.transformer))).pipe(
-                    map((valuesOfValues) => ({ ...data, values: _.flatten(valuesOfValues) })),
-                ),
+                zip(
+                    ...data.exchanges.map((exchange) =>
+                        this.connectors.query<DGTLDResource>(exchange, this.transformer),
+                    ),
+                ).pipe(map((valuesOfValues) => ({ ...data, values: _.flatten(valuesOfValues) }))),
             ),
             tap((data) => this.logger.debug(DGTLDService.name, 'Queried values', { results: data.values })),
             switchMap((data) =>
@@ -81,46 +86,6 @@ export class DGTLDService {
             ),
             tap((data) => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
             switchMap((data) => this.cache.querySparql(data.query)),
-        );
-    }
-
-    /**
-     * Retrieves pod data for a single exchange
-     * @param exchange The exchange to query for
-     * @param transformer The transformer used to transform DGTLDResources
-     */
-    private queryForExchange<T extends DGTLDResource>(
-        exchange: DGTExchange,
-        transformer: DGTLDTransformer<T>,
-    ): Observable<T[]> {
-        this.logger.debug(DGTLDService.name, 'Getting values for exchange', { exchange });
-
-        if (!exchange) {
-            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-        }
-
-        if (!transformer) {
-            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
-        }
-
-        return of({ exchange, transformer }).pipe(
-            switchMap((data) =>
-                this.connectors
-                    .query<T>(data.exchange, data.transformer)
-                    .pipe(map((resources) => ({ ...data, values: resources }))),
-            ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Queried values', { results: data.values })),
-            switchMap((data) =>
-                this.cache.save<T>(transformer, data.values).pipe(map((saved) => ({ ...data, saved }))),
-            ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
-            switchMap((data) =>
-                this.cache.query<T>(transformer, {
-                    type: DGTLDFilterType.EXCHANGE,
-                    exchanges: [data.exchange],
-                } as DGTLDFilterExchange),
-            ),
-            // switchMap(data => this.workflows.execute<T>(data.exchange, data.resources, data.transformer)),
         );
     }
 }

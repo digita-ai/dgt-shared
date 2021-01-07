@@ -66,7 +66,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
   }
 
   public query<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
-    this.logger.debug(DGTConnectorSolid.name, 'Starting to query linked data service', { exchange, transformer });
+    this.logger.info(DGTConnectorSolid.name, 'Starting to query linked data service', { exchange, transformer });
 
     if (!exchange) {
       throw new DGTErrorArgument('Argument exchange should be set.', exchange);
@@ -80,18 +80,17 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
       .pipe(
         switchMap(data => this.connections.get(data.exchange.connection)
           .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection })))),
-        tap(data => this.logger.debug(DGTConnectorSolid.name, 'Retrieved connetion', data)),
         switchMap(data => this.sources.get(data.exchange.source)
           .pipe(map(source => ({ ...data, source })))),
-        tap(data => this.logger.debug(DGTConnectorSolid.name, 'Retrieved source', data)),
         switchMap(data => this.updateDiscovery(data.connection, data.source, data.exchange)
           .pipe(map(connection => ({ ...data, connection })))),
         tap(data => this.logger.debug(DGTConnectorSolid.name, 'Updated discovery', data.connection)),
         tap(data => this.logger.debug(DGTConnectorSolid.name, JSON.stringify(data.connection), data.connection)),
         switchMap(data => forkJoin(data.connection.configuration.typeRegistrations.map(typeRegistration => this.queryOne(typeRegistration.instance, data.exchange, data.connection, data.source, data.transformer)))
-          .pipe(map(resources => ({ ...data, resources })))),
+          .pipe(map(resourcesOfResources => ({ ...data, resources: _.flatten(resourcesOfResources) })))),
         tap(data => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources', { data })),
-      ) as Observable<T[]>;
+        map(data => data.resources),
+      );
   }
 
   public queryOne<T extends DGTLDResource>(uri: string, exchange: DGTExchange, connection: DGTConnectionSolid, source: DGTSourceSolid, transformer: DGTLDTransformer<T>): Observable<T[]> {
