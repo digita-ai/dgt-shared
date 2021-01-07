@@ -3,16 +3,13 @@ import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../test.configuration';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
 import { DGTLDFilterBGP } from '../models/dgt-ld-filter-bgp.model';
-import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
-<<<<<<< HEAD
-import { DGTLDFilterService } from './dgt-ld-filter.service';
-import { DGTLDFilterCombination } from '../models/dgt-ld-filter-combination.model';
 import { DGTLDFilterByCombinationType } from '../models/dgt-ld-filter-combination-type.model';
+import { DGTLDFilterCombination } from '../models/dgt-ld-filter-combination.model';
+import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
-=======
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
+import { DGTLDFilterService } from './dgt-ld-filter.service';
 import { DGTCategoryFilterService } from './dgt-ld-filter.service';
->>>>>>> develop
 
 /* tslint:disable:no-unused-variable */
 
@@ -35,14 +32,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar2',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const filter: DGTLDFilterBGP = {
@@ -57,14 +47,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const resource: DGTLDResource = {
@@ -73,7 +56,6 @@ describe('DGTLDFilterService', () => {
             exchange: null,
         }
 
-<<<<<<< HEAD
         const filteredResource: DGTLDResource = {
             triples: filteredTriples,
             uri: null,
@@ -83,13 +65,8 @@ describe('DGTLDFilterService', () => {
         testService.service.registerRunnerService(new DGTLDFilterRunnerBGPService());
 
         testService.service.run(filter, [resource])
-            .subscribe(triples => {
-                expect(triples).toEqual([filteredResource]);
-=======
-        testService.service.run([filter], triples)
             .subscribe(t => {
-                expect(t).toEqual(filteredTriples);
->>>>>>> develop
+                expect(t).toEqual([filteredResource]);
             });
     }));
 
@@ -109,14 +86,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar3',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const filter1: DGTLDFilterBGP = {
@@ -136,7 +106,7 @@ describe('DGTLDFilterService', () => {
         const filter: DGTLDFilterCombination = {
             type: DGTLDFilterType.COMBINATION,
             combinationType: DGTLDFilterByCombinationType.AND,
-            filters: [filter1, filter2]
+            filters: [filter1, filter2],
         }
 
         const filteredTriples: DGTLDTriple[] = [
@@ -149,14 +119,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar2',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const resource: DGTLDResource = {
@@ -171,17 +134,11 @@ describe('DGTLDFilterService', () => {
             exchange: null,
         }
 
-<<<<<<< HEAD
         testService.service.registerRunnerService(new DGTLDFilterRunnerBGPService());
 
         testService.service.run(filter, [resource])
-            .subscribe(triples => {
-                expect(triples).toEqual([filteredResource]);
-=======
-        testService.service.run([filter1, filter2], triples)
-            .subscribe(this => {
-                expect(t).toEqual(filteredTriples),
->>>>>>> develop
+            .subscribe(t => {
+                expect(t).toEqual([filteredResource]);
             });
     }));
 
@@ -201,14 +158,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar3',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const filter1: DGTLDFilterBGP = {
@@ -228,7 +178,7 @@ describe('DGTLDFilterService', () => {
         const filter: DGTLDFilterCombination = {
             type: DGTLDFilterType.COMBINATION,
             combinationType: DGTLDFilterByCombinationType.AND,
-            filters: [filter1, filter2]
+            filters: [filter1, filter2],
         }
 
         const filteredTriples: DGTLDTriple[] = [
@@ -241,14 +191,7 @@ describe('DGTLDFilterService', () => {
                 predicate: 'foobar2',
                 subject: null,
                 object: null,
-<<<<<<< HEAD
-            }
-=======
-                originalValue: null,
-                source: null,
-                connection: null,
             },
->>>>>>> develop
         ];
 
         const resource: DGTLDResource = {
@@ -265,15 +208,9 @@ describe('DGTLDFilterService', () => {
 
         testService.service.registerRunnerService(new DGTLDFilterRunnerBGPService());
 
-<<<<<<< HEAD
         testService.service.run(filter, [resource])
-            .subscribe(triples => {
-                expect(triples).toEqual([filteredResource]);
-=======
-        testService.service.run([filter1, filter2], triples)
             .subscribe(t => {
-                expect(t).toEqual(filteredTriples);
->>>>>>> develop
+                expect(t).toEqual([filteredResource]);
             });
     }));
 

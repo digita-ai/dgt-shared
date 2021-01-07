@@ -7,7 +7,7 @@ import { declarations, imports, providers } from './lib/dgt-shared-connectors.mo
 export const configuration: DGTTestConfiguration = {
     module: {
         declarations: [
-            ...declarations
+            ...declarations,
         ],
         imports: [
             RouterTestingModule,
@@ -51,11 +51,11 @@ export const configuration: DGTTestConfiguration = {
             },
             {
                 provide: DGTDataValueService,
-                useClass: DGTDataValueMockService
+                useClass: DGTDataValueMockService,
             },
             {
                 provide: DGTCryptoService,
-                useClass: DGTCryptoBrowserService
+                useClass: DGTCryptoBrowserService,
             },
         ],
     },

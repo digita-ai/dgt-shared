@@ -86,7 +86,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptions
                 this.logger.error(DGTSparqlCommunicaService.name, 'An error occurred while executing query', error);
 
                 return null;
-            })
+            }),
         );
     }
 

@@ -1,28 +1,28 @@
-import { RouterTestingModule } from '@angular/router/testing';
-import { DGTProfileMockService, DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationMockService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService, DGTDataValueService, DGTDataValueMockService } from '@digita-ai/dgt-shared-data';
-import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
-import { DGTConfigurationService, DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils';
-import { declarations, imports, providers } from './lib/dgt-shared-web.module';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTDataValueMockService, DGTDataValueService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationMockService, DGTProfileMockService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService } from '@digita-ai/dgt-shared-data';
+import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
+import { DGTConfigurationMockService, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
+import { DGTDataInterfaceStandardComponent } from './lib/data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 import { DGTDataInterfaceFactoryService } from './lib/data/services/dgt-data-interface-factory.service';
 import { DGTDataInterfaceResolverMockService } from './lib/data/services/dgt-data-interface-resolver-mock.service';
 import { DGTDataInterfaceResolverService } from './lib/data/services/dgt-data-interface-resolver.service';
-import { DGTDataInterfaceStandardComponent } from './lib/data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
-import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { declarations, imports, providers } from './lib/dgt-shared-web.module';
 
 @NgModule({
     declarations: [],
     entryComponents: [
         DGTDataInterfaceStandardComponent,
-    ]
+    ],
 })
 export class DGTTestEntryComponentsModule { }
 
 export const configuration: DGTTestConfiguration = {
     module: {
         declarations: [
-            ...declarations
+            ...declarations,
         ],
         imports: [
             RouterTestingModule,
@@ -72,7 +72,7 @@ export const configuration: DGTTestConfiguration = {
             },
             {
                 provide: DGTDataValueService,
-                useClass: DGTDataValueMockService
+                useClass: DGTDataValueMockService,
             },
         ],
     },

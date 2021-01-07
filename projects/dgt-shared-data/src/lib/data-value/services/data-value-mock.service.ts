@@ -1,11 +1,11 @@
 
+import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
-import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
-import { DGTDataValue } from '../models/data-value.model';
 import { DGTHolder } from '../../holder/models/dgt-holder.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTDataValue } from '../models/data-value.model';
 import { DGTDataValueService } from './data-value.service';
 
 @DGTInjectable()
@@ -18,7 +18,7 @@ export abstract class DGTDataValueMockService extends DGTDataValueService {
   constructor(
     protected logger: DGTLoggerService,
     protected paramChecker: DGTParameterCheckerService,
-    protected filters: DGTLDFilterService
+    protected filters: DGTLDFilterService,
   ) {
     super(logger, paramChecker, filters)
   }

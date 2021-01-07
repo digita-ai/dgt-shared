@@ -1,6 +1,6 @@
-import { DGTProfile, DGTEvent, DGTConnectionState, DGTConnectionSolid, DGTSourceType, DGTSourceSolid, DGTSourceSolidConfiguration, DGTExchange, DGTSource } from '@digita-ai/dgt-shared-data';
-import moment from 'moment';
+import { DGTConnectionSolid, DGTConnectionState, DGTEvent, DGTExchange, DGTProfile, DGTSource, DGTSourceSolid, DGTSourceSolidConfiguration, DGTSourceType } from '@digita-ai/dgt-shared-data';
 import { DGTNotificationType } from '@digita-ai/dgt-shared-web';
+import moment from 'moment';
 
 export const mockSource1 = {
   exchange: null,
@@ -33,8 +33,8 @@ export const mockSource3 = {
   description: 'test-description',
   type: DGTSourceType.SOLID,
   configuration: {
-    issuer: 'https://inrupt.net'
-  } as DGTSourceSolidConfiguration
+    issuer: 'https://inrupt.net',
+  } as DGTSourceSolidConfiguration,
 } as DGTSourceSolid;
 
 export const mockConnection1 = {
@@ -110,7 +110,7 @@ export const mockProfile1 = {
   uri: '1',
   fullName: 'profile 1',
   avatar: 'https://bla/bla1.png',
-  exchange: mockExchange1.uri
+  exchange: mockExchange1.uri,
 } as DGTProfile;
 
 export const mockProfile2 = {
@@ -124,7 +124,7 @@ export const mockLoginData = {
   username: 'testusername',
   name: 'testusername',
   email: 'test@email.com',
-  password: 'TESTtest1324-'
+  password: 'TESTtest1324-',
 }
 
 export const mockSources = [
@@ -137,10 +137,10 @@ export const mockSources = [
     type: DGTSourceType.SOLID,
     configuration: {
       issuer: 'https://solid.community',
-    }
+    },
   } as DGTSource<any>,
   mockSource2,
-  mockSource3
+  mockSource3,
 ] as DGTSourceSolid[];
 
 export const mockConnections = [
@@ -151,7 +151,7 @@ export const mockConnections = [
 
 export const mockProfiles = [
   mockProfile1,
-  mockProfile2
+  mockProfile2,
 ];
 
 export const mockExchanges = [
@@ -179,7 +179,7 @@ export const eventJustNow = {
   icon: 'url-to-image-one',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
 
 export const event1HourAgo = {
@@ -190,7 +190,7 @@ export const event1HourAgo = {
   icon: 'url-to-image-two',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
 
 export const event10HoursAgo = {
@@ -201,7 +201,7 @@ export const event10HoursAgo = {
   icon: 'url-to-image-three',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
 
 export const eventYesterday = {
@@ -212,7 +212,7 @@ export const eventYesterday = {
   icon: 'url-to-image-four',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
 
 export const eventPast = {
@@ -223,7 +223,7 @@ export const eventPast = {
   icon: 'url-to-image-five',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
 
 export const eventToTestAdd = {
@@ -234,9 +234,8 @@ export const eventToTestAdd = {
   icon: 'url-to-image-six',
   stakeholderUri: 'https://digita.ai',
   exchange: mockExchange1.uri,
-  triples: null
+  triples: null,
 } as DGTEvent;
-
 
 export const eventListToday = [
   eventJustNow,

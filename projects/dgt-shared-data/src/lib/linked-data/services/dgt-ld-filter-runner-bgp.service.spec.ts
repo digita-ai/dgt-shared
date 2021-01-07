@@ -28,7 +28,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 predicate: 'foobar2',
                 subject: null,
                 object: null,
-            }
+            },
         ];
 
         const filter: DGTLDFilterBGP = {
@@ -43,7 +43,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 predicate: 'foobar',
                 subject: null,
                 object: null,
-            }
+            },
         ];
 
         const resource: DGTLDResource = {
@@ -59,8 +59,8 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         }
 
         testService.service.run(filter, [resource])
-            .subscribe(triples => {
-                expect(triples).toEqual([filteredResource]);
+            .subscribe(t => {
+                expect(t).toEqual([filteredResource]);
             });
     }));
 
@@ -80,7 +80,7 @@ describe('DGTCategoryFilterRunnerBGP', () => {
                 predicate: 'foobar3',
                 subject: null,
                 object: null,
-            }
+            },
         ];
 
         const filter: DGTLDFilterBGP = {
@@ -117,8 +117,8 @@ describe('DGTCategoryFilterRunnerBGP', () => {
         }
 
         testService.service.run(filter, [resource])
-            .subscribe(triples => {
-                expect(triples).toEqual([filteredResource]);
+            .subscribe(t => {
+                expect(t).toEqual([filteredResource]);
             });
     }));
 

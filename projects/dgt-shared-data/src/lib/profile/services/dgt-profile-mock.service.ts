@@ -1,8 +1,8 @@
-import { DGTProfileService } from './dgt-profile.service';
 import { DGTErrorNotImplemented, DGTInjectable } from '@digita-ai/dgt-shared-utils';
-import { DGTProfile } from '../models/dgt-profile.model';
 import { Observable } from 'rxjs';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTProfile } from '../models/dgt-profile.model';
+import { DGTProfileService } from './dgt-profile.service';
 
 @DGTInjectable()
 /** Service used for retrieving and updating a user's profile */

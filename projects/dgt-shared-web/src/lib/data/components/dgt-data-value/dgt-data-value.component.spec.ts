@@ -1,15 +1,15 @@
 <<<<<<< HEAD
-import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { DGTDataValueComponent } from './dgt-data-value.component';
-import { mockValueName, mockValueRole } from '../../../../test.mock-data';
 =======
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 >>>>>>> develop
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from 'test.configuration';
 import { mockValueName, mockValueRole } from 'test.data.mock-data';
+import { configuration } from '../../../../test.configuration';
+import { mockValueName, mockValueRole } from '../../../../test.mock-data';
 import { DGTBrowserDataValueComponent } from './data-value.component';
+import { DGTDataValueComponent } from './dgt-data-value.component';
 
 describe('DGTBrowserDataValueComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataValueComponent>(configuration);

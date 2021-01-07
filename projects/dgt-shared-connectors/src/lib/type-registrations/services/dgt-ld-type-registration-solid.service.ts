@@ -1,5 +1,5 @@
 
-import { DGTExchangeService, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTProfile, DGTLDTypeRegistration, DGTLDResource, DGTExchange, DGTConnectionSolid } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionSolid, DGTExchange, DGTExchangeService, DGTLDResource, DGTLDTypeRegistration, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTProfile } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -29,7 +29,6 @@ export class DGTLDTypeRegistrationSolidService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of typeRegistrations.
    */
-  
 
   /**
    * Registers/adds an typeRegistration to the SOLID-pod

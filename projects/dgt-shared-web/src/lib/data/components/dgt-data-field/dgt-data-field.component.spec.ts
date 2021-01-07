@@ -1,10 +1,10 @@
 import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-<<<<<<< HEAD
-import { DGTDataFieldComponent } from './dgt-data-field.component';
+import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
 import { mockValueName } from '../../../../test.mock-data';
-import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+<<<<<<< HEAD
+import { DGTDataFieldComponent } from './dgt-data-field.component';
 =======
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from 'test.configuration';

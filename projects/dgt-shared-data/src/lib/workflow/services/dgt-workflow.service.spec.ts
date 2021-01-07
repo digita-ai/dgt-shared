@@ -1,13 +1,13 @@
 import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
-import { configuration } from '../../../test.configuration';
-import { DGTWorkflow } from '../models/dgt-workflow.model';
-<<<<<<< HEAD
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
-import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
 import { DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { DGTConfigurationMockService } from 'projects/dgt-shared-utils/src/lib/configuration/services/dgt-configuration-mock.service';
+import { configuration } from '../../../test.configuration';
+import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
+<<<<<<< HEAD
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTRemovePrefixWorkflowAction } from '../actions/dgt-remove-prefix.workflow-action';
+import { DGTWorkflow } from '../models/dgt-workflow.model';
 =======
 import { DGTWorkflowService } from './dgt-workflow.service';
 >>>>>>> develop

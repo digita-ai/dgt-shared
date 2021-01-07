@@ -16,7 +16,7 @@ export const configuration: DGTTestConfiguration = {
             {
                 provide: DGTConfigurationService,
                 useClass: DGTConfigurationMockService,
-            }
+            },
         ],
     },
 };

@@ -17,10 +17,10 @@ import {
     DGTLoggerService,
     DGTOriginService,
 } from '@digita-ai/dgt-shared-utils';
+import { JWT } from '@solid/jose';
 import base64url from 'base64url';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { JWT } from '@solid/jose';
 import { DGTSourceSolidLogin } from '../models/dgt-source-solid-login.model';
 import { DGTSourceSolidToken } from '../models/dgt-source-solid-token.model';
 

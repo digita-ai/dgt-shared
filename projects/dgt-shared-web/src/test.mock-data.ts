@@ -1,7 +1,7 @@
 import { DGTCategory, DGTLDFilterBGP, DGTLDFilterType, DGTLDNode, DGTLDTriple } from '@digita-ai/dgt-shared-data'
-import { mockConnection1, mockSource2, mockConnection2, mockExchange3, mockExchange4 } from './test.events.mock-data';
-import { DGTDataValue, DGTDataGroup } from '@digita-ai/dgt-shared-data';
+import { DGTDataGroup, DGTDataValue } from '@digita-ai/dgt-shared-data';
 import { DGTI8NLocale } from '@digita-ai/dgt-shared-web';
+import { mockConnection1, mockConnection2, mockExchange3, mockExchange4, mockSource2 } from './test.events.mock-data';
 
 export const mockCategoryName = {
   exchange: null,
@@ -35,7 +35,7 @@ export const mockCategoryEmail = {
       predicates: [
         'http://www.w3.org/2006/vcard/ns#hasEmail',
         'http://www.w3.org/2006/vcard/ns#value',
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
+        'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
       ],
     } as DGTLDFilterBGP,
 } as DGTCategory;
@@ -68,7 +68,7 @@ export const mockPredicateType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#typ
 export const mockNodeString = {
   dataType: 'http://www.w3.org/2001/XMLSchema#string',
   termType: 0,
-  value: 'test-value'
+  value: 'test-value',
 } as DGTLDNode;
 export const mockNodePhone = {
   termType: 1,
@@ -106,8 +106,8 @@ export const mockValueName = {
       predicate: mockPredicateName,
       subject: mockNodeProfileReference,
       object: mockNodeString,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockValuePhone = {
   exchange: mockExchange3.uri,
@@ -122,8 +122,8 @@ export const mockValuePhone = {
       predicate: mockPredicateValue,
       subject: mockNodeReference,
       object: mockNodePhone,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockValueEmail = {
   uri: 'test-value-email',
@@ -139,8 +139,8 @@ export const mockValueEmail = {
       predicate: mockPredicateValue,
       subject: mockNodeReference,
       object: mockNodeEmail,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockValueEmailUpdated = {
   uri: 'test-value-email',
@@ -156,8 +156,8 @@ export const mockValueEmailUpdated = {
       predicate: mockPredicateValue,
       subject: mockNodeReference,
       object: { ...mockNodeEmail, value: 'suske.wiske@stripboek.be' },
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockValueRole = {
   uri: 'test-role',
@@ -173,11 +173,11 @@ export const mockValueRole = {
       predicate: mockPredicateRole,
       subject: mockNodeProfileReference,
       object: mockNodeString,
-    } as DGTLDTriple
+    } as DGTLDTriple,
   ],
 } as DGTDataValue;
 export const mockValues = [
-  mockValueName, mockValuePhone, mockValueEmail
+  mockValueName, mockValuePhone, mockValueEmail,
 ] as DGTDataValue[];
 
 // MOCK REFERENCES
@@ -199,8 +199,8 @@ export const mockReferencePhone = {
       predicate: mockPredicateHasPhone,
       subject: mockNodeProfileReference,
       object: mockNodeReference,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockReferenceEmail = {
   connection: '2',
@@ -220,8 +220,8 @@ export const mockReferenceEmail = {
       predicate: mockPredicateHasEmail,
       subject: mockNodeProfileReference,
       object: mockNodeReference,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 
 // MOCK OTHERS
@@ -238,14 +238,13 @@ export const mockTypeWork = {
       predicate: mockPredicateType,
       subject: mockNodeReference,
       object: mockNodeTypeWork,
-    } as DGTLDTriple
-  ]
+    } as DGTLDTriple,
+  ],
 } as DGTDataValue;
 export const mockGroupIdentiy = {
   id: 'test-group-identity',
-  description: 'Test Group Identity'
+  description: 'Test Group Identity',
 } as DGTDataGroup;
-
 
 export const mockLocale1 = {
   language: 'en',

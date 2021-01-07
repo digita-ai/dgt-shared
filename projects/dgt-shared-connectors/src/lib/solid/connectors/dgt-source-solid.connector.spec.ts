@@ -8,10 +8,10 @@ import { DGTConnectionSolid, DGTExchange, DGTLDTermType, DGTLDTriple, DGTSourceS
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { DGTError, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { configuration } from '../../../test.configuration';
-import { DGTSourceSolidConnector } from './dgt-source-solid.connector';
 <<<<<<< HEAD
 import * as _ from 'lodash';
+import { configuration } from '../../../test.configuration';
+import { DGTSourceSolidConnector } from './dgt-source-solid.connector';
 =======
 >>>>>>> develop
 

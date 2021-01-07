@@ -1,8 +1,8 @@
 import { async } from '@angular/core/testing';
+import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+import { configuration } from '../../../../test.configuration';
 <<<<<<< HEAD
 import { DGTPageHeaderProfileComponent } from './dgt-page-header-profile.component';
-import { configuration } from '../../../../test.configuration';
-import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 =======
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTUser } from '@digita-ai/dgt-shared-web';

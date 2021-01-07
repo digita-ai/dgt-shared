@@ -1,6 +1,6 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
-import { DGTConfigurationService, DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationMockService, DGTConfigurationService } from '@digita-ai/dgt-shared-utils';
 import { DGTCacheInMemoryService } from './lib/cache/services/dgt-cache-in-memory.service';
 import { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 import { DGTConnectionService } from './lib/connection/services/dgt-connection-abstract.service';

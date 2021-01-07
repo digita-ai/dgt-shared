@@ -561,9 +561,9 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                         ...data,
                         typeRegistrations: [
                             ..._.flatten(typeRegistrations),
-                            { 
+                            {
                                 instance: data.connection.configuration.webId,
-                                forClass: 'http://xmlns.com/foaf/0.1/Person'
+                                forClass: 'http://xmlns.com/foaf/0.1/Person',
                             } as DGTLDTypeRegistration,
                         ],
                     })),

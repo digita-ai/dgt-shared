@@ -1,6 +1,6 @@
 <<<<<<< HEAD
-import { configuration } from '../../../../test.configuration';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
+import { configuration } from '../../../../test.configuration';
 import { DGTDataInterfaceDescentComponent } from './dgt-data-interface-descent.component';
 =======
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
