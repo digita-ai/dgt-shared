@@ -11,6 +11,10 @@ import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 @DGTInjectable()
+/**
+ * The DGTWorkflowService contains methods for managing DGTWorkflows (CRUD)
+ * as well as the execution of workflows
+ */
 export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWorkflow> {
     public abstract get(id: string): Observable<DGTWorkflow>;
     public abstract query(filter?: DGTLDFilter): Observable<DGTWorkflow[]>;
@@ -24,6 +28,11 @@ export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWork
         protected connectors: DGTConnectorService,
     ) { }
 
+    /**
+     * Executes workflows for an exchange
+     * @param exchange The exchange to execute workflows for
+     * @param resources The resources that should be changed by this workflow
+     */
     public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
 
@@ -40,6 +49,12 @@ export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWork
         );
     }
 
+    /**
+     * Executes the actions of a single workflow
+     * @param workflow The workflow which contains the actions that should execute
+     * @param exchange The exchange to execute workflows for
+     * @param resources The resources that should be changed by this workflow
+     */
     private executeForWorkflow(workflow: DGTWorkflow, exchange: DGTExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
         this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
 

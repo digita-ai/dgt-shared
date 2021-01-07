@@ -1,5 +1,5 @@
-import { DGTLDFilter, DGTLDFilterService, DGTWorkflow, DGTWorkflowService } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConnectorService, DGTLDFilter, DGTLDFilterService, DGTWorkflow, DGTWorkflowService } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -14,10 +14,12 @@ export class DGTWorkflowRemoteService extends DGTWorkflowService {
     public store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
     private http: DGTHttpService,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
-    private logger: DGTLoggerService,
-    private filters: DGTLDFilterService,
+    protected logger: DGTLoggerService,
+    protected filters: DGTLDFilterService,
+    protected paramChecker: DGTParameterCheckerService,
+    protected connectors: DGTConnectorService,
   ) {
-    super();
+    super(logger, paramChecker, filters, connectors);
   }
 
   public save<T extends DGTWorkflow>(workflows: T[]): Observable<T[]> {
