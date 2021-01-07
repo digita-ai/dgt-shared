@@ -48,7 +48,15 @@ export class DGTLDService {
                 zip(
                     ...data.exchanges
                         .filter((exchange) => exchange !== null)
-                        .map((exchange) => this.connectors.query<T>(exchange, data.transformer)),
+                        .map((exchange) =>
+                            this.connectors
+                                .query<T>(exchange, data.transformer)
+                                .pipe(
+                                    switchMap((resources) =>
+                                        this.workflows.execute<T>(exchange, resources, data.transformer),
+                                    ),
+                                ),
+                        ),
                 ).pipe(map((resourcesOfResources) => ({ ...data, resources: _.flatten(resourcesOfResources) }))),
             ),
             tap((data) => this.logger.info(DGTLDService.name, 'Refreshed resources', { resources: data.resources })),
@@ -57,7 +65,6 @@ export class DGTLDService {
             ),
             tap((data) => this.logger.debug(DGTLDService.name, 'Stored resources in cache', data)),
             switchMap(() => this.cache.query<T>(transformer, filter)),
-            // switchMap(data => this.workflows.execute<T>(data.exchange, data.resources, data.transformer)),
         );
     }
 
