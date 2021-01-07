@@ -1,5 +1,5 @@
 
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationService, DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
@@ -29,6 +29,7 @@ export class DGTLDFilterService {
   constructor(
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
+    private config: DGTConfigurationService<any>,
   ) {
     // runner services
     this.registerRunnerService(new DGTLDFilterRunnerBGPService());
@@ -37,7 +38,7 @@ export class DGTLDFilterService {
     this.registerRunnerService(new DGTLDFilterRunnerCombinationService(this.paramChecker, this));
 
     // sparql services
-    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.paramChecker));
+    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.paramChecker, this.config));
     this.registerSparqlService(new DGTLDFilterSparqlPartialService(this.paramChecker));
   }
 

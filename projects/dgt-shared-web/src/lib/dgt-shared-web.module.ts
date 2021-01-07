@@ -4,6 +4,7 @@ import { NgModule, Type } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  MatBadgeModule,
   MatButtonModule,
   MatDialogModule,
   MatFormFieldModule,
@@ -83,6 +84,9 @@ import { DGTSectionTitleComponent } from './interface/components/dgt-section-tit
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
 import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-supported.guard';
 import { DGTTitleService } from './interface/services/dgt-title.service';
+import { DGTTimelineEventGroupComponent } from './timeline/components/timeline-event-group/timeline-event-group.component';
+import { DGTTimelineEventSummaryComponent } from './timeline/components/timeline-event-summary/timeline-event-summary.component';
+import { DGTTimelinePageComponent } from './timeline/components/timeline-page/timeline-page.component';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 
@@ -153,6 +157,9 @@ export const declarations = [
   DGTDataCategoryComponent,
   DGTDataGroupComponent,
   DGTMenuComponent,
+  DGTTimelinePageComponent,
+  DGTTimelineEventGroupComponent,
+  DGTTimelineEventSummaryComponent,
 ];
 export const imports: (any[] | Type<any>)[] = [
   CommonModule,
@@ -171,6 +178,7 @@ export const imports: (any[] | Type<any>)[] = [
   DGTSharedUtilsModule,
   DGTSharedDataModule,
   MatMenuModule,
+  MatBadgeModule,
 ];
 export const providers = [
   DGTTitleService,
