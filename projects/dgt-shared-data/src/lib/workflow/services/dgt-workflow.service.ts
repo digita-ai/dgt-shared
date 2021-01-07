@@ -1,5 +1,5 @@
 import { DGTLDTransformer } from '@digita-ai/dgt-shared-data/public-api';
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
@@ -8,121 +8,206 @@ import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
+import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
+import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTWorkflow } from '../models/dgt-workflow.model';
 
 @DGTInjectable()
-export class DGTWorkflowService {
+/**
+ * The DGTWorkflowService contains methods for managing DGTWorkflows (CRUD)
+ * as well as the execution of workflows
+ */
+export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWorkflow> {
+    public abstract get(id: string): Observable<DGTWorkflow>;
+    public abstract query(filter?: DGTLDFilter): Observable<DGTWorkflow[]>;
+    public abstract save<T extends DGTWorkflow>(resources: T[]): Observable<T[]>;
+    public abstract delete(resource: DGTWorkflow): Observable<DGTWorkflow>;
 
-  private workflows: DGTWorkflow[] = [];
+    constructor(
+        protected logger: DGTLoggerService,
+        protected filters: DGTLDFilterService,
+        protected connectors: DGTConnectorService,
+        protected exchanges: DGTExchangeService,
+    ) {}
 
-  constructor(
-    private logger: DGTLoggerService,
-    private filters: DGTLDFilterService,
-    private connectors: DGTConnectorService,
-    private paramChecker: DGTParameterCheckerService,
-    private exchanges: DGTExchangeService,
-  ) { }
+    public execute<T extends DGTLDResource>(
+        exchange: DGTExchange,
+        resources: T[],
+        transformer: DGTLDTransformer<T>,
+    ): Observable<T[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
 
-  public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
+        if (!exchange) {
+            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        }
 
-    if (!exchange) {
-      throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        return of({ transformer, exchange, resources }).pipe(
+            switchMap((data) =>
+                this.query().pipe(
+                    map((workflows) => ({
+                        ...data,
+                        workflows: workflows.filter((workflow) => workflow.source === exchange.source),
+                    })),
+                ),
+            ),
+            switchMap((data) =>
+                (data.workflows.length === 0
+                    ? of([data.resources])
+                    : forkJoin(
+                          data.workflows.map((workflow) =>
+                              this.executeForWorkflow(workflow, data.exchange, data.resources, data.transformer),
+                          ),
+                      )
+                ).pipe(map((updatedResources) => ({ ...data, updatedResources: _.flatten(updatedResources) }))),
+            ),
+            map((data) => data.resources),
+        );
     }
 
-    if (!resources) {
-      throw new DGTErrorArgument('Argument resources should be set.', resources);
+    private executeForWorkflow<T extends DGTLDResource>(
+        workflow: DGTWorkflow,
+        exchange: DGTExchange,
+        resources: T[],
+        transformer: DGTLDTransformer<T>,
+    ): Observable<T[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
+
+        if (!workflow) {
+            throw new DGTErrorArgument('Argument workflow should be set.', workflow);
+        }
+
+        if (!exchange) {
+            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        }
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        return of({ workflow, resources, exchange, transformer }).pipe(
+            switchMap((data) =>
+                this.filters
+                    .run<T>(workflow.filter, data.resources)
+                    .pipe(map((filteredResources) => ({ ...data, resources: filteredResources }))),
+            ),
+            switchMap((data) =>
+                forkJoin(workflow.actions.map((action) => action.execute(data.resources))).pipe(
+                    map((updatedResources: T[][]) => ({ ...data, updatedResources: _.flatten(updatedResources) })),
+                ),
+            ),
+            mergeMap((data) =>
+                data.workflow.destination
+                    ? this.executeForDestination<T>(data.workflow, data.exchange, data.updatedResources, transformer)
+                    : of(data.resources),
+            ),
+        );
     }
 
-    if (!transformer) {
-      throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+    private executeForDestination<T extends DGTLDResource>(
+        workflow: DGTWorkflow,
+        exchange: DGTExchange,
+        resources: T[],
+        transformer: DGTLDTransformer<T>,
+    ): Observable<T[]> {
+        this.logger.debug(DGTWorkflowService.name, 'Executing a workflow for a destination', {
+            workflow,
+            exchange,
+            resources,
+        });
+
+        if (!workflow) {
+            throw new DGTErrorArgument('Argument workflow should be set.', workflow);
+        }
+
+        if (!exchange) {
+            throw new DGTErrorArgument('Argument exchange should be set.', exchange);
+        }
+
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
+
+        return of({ workflow, exchange, resources, transformer }).pipe(
+            switchMap((data) =>
+                this.exchanges
+                    .query({
+                        type: DGTLDFilterType.PARTIAL,
+                        partial: {
+                            source: data.workflow.destination,
+                            holder: exchange.holder,
+                            purpose: exchange.purpose,
+                        },
+                    } as DGTLDFilterPartial)
+                    .pipe(map((exchanges) => ({ ...data, exchanges }))),
+            ),
+            tap((data) => this.logger.debug(DGTWorkflowService.name, 'Retrieved exchanges', data)),
+            // map(exchanges => ({ ...data, exchange: exchanges[0], updatedResources: data.updatedResources.map(tr => ({ ...tr, exchange: exchanges[0].uri })) })),
+            switchMap((data) => this.connectors.save<T>(data.exchange, data.resources, data.transformer)),
+        );
     }
+    // /**
+    //  * Executes workflows for an exchange
+    //  * @param exchange The exchange to execute workflows for
+    //  * @param resources The resources that should be changed by this workflow
+    //  */
+    // public execute<T extends DGTLDResource>(exchange: DGTExchange, resources: T[]): Observable<T[]> {
+    //     this.logger.debug(DGTWorkflowService.name, 'Executing workflow', { exchange, resources });
 
-    return of({ transformer, exchange, resources, workflows: this.workflows.filter(workflow => workflow.source === exchange.source) })
-      .pipe(
-        switchMap(data => (data.workflows.length === 0 ? of([data.resources]) : forkJoin(data.workflows.map(workflow => this.executeForWorkflow(workflow, data.exchange, data.resources, data.transformer))))
-          .pipe(map(updatedResources => ({ ...data, updatedResources: _.flatten(updatedResources) })))),
-        map(data => data.resources),
-      );
-  }
+    //     this.paramChecker.checkParametersNotNull({ exchange, resources });
 
-  private executeForWorkflow<T extends DGTLDResource>(workflow: DGTWorkflow, exchange: DGTExchange, resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
+    //     return of({ exchange, resources })
+    //     .pipe(
+    //         switchMap(data => this.query().pipe(
+    //             map(workflows => ({...data, workflows: workflows.filter(workflow => workflow.source === exchange.source)})),
+    //         )),
+    //         switchMap(data => (data.workflows.length === 0 ? of([data.resources]) : forkJoin(data.workflows.map(workflow => this.executeForWorkflow(workflow, data.exchange, data.resources))))
+    //         .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
+    //         map(data => data.resources),
+    //     );
+    // }
 
-    if (!workflow) {
-      throw new DGTErrorArgument('Argument workflow should be set.', workflow);
-    }
+    // /**
+    //  * Executes the actions of a single workflow
+    //  * @param workflow The workflow which contains the actions that should execute
+    //  * @param exchange The exchange to execute workflows for
+    //  * @param resources The resources that should be changed by this workflow
+    //  */
+    // private executeForWorkflow(workflow: DGTWorkflow, exchange: DGTExchange, resources: DGTLDResource[]): Observable<DGTLDResource[]> {
+    //     this.logger.debug(DGTWorkflowService.name, 'Executing a single workflow', { workflow, exchange, resources });
 
-    if (!exchange) {
-      throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-    }
+    //     this.paramChecker.checkParametersNotNull({ workflow, resources });
 
-    if (!resources) {
-      throw new DGTErrorArgument('Argument resources should be set.', resources);
-    }
-
-    if (!transformer) {
-      throw new DGTErrorArgument('Argument transformer should be set.', transformer);
-    }
-
-    return of({ workflow, resources, exchange, transformer })
-      .pipe(
-        switchMap(data => this.filters.run<T>(workflow.filter, data.resources)
-          .pipe(map(filteredResources => ({ ...data, resources: filteredResources })))),
-        switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.resources)))
-          .pipe(map((updatedResources: T[][]) => ({ ...data, updatedResources: _.flatten(updatedResources) })))),
-        mergeMap(data => data.workflow.destination ? this.executeForDestination<T>(data.workflow, data.exchange, data.updatedResources, transformer) : of(data.resources)),
-      );
-  }
-
-  private executeForDestination<T extends DGTLDResource>(workflow: DGTWorkflow, exchange: DGTExchange, resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
-    this.logger.debug(DGTWorkflowService.name, 'Executing a workflow for a destination', { workflow, exchange, resources });
-
-    if (!workflow) {
-      throw new DGTErrorArgument('Argument workflow should be set.', workflow);
-    }
-
-    if (!exchange) {
-      throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-    }
-
-    if (!resources) {
-      throw new DGTErrorArgument('Argument resources should be set.', resources);
-    }
-
-    if (!transformer) {
-      throw new DGTErrorArgument('Argument transformer should be set.', transformer);
-    }
-
-    return of({ workflow, exchange, resources, transformer })
-      .pipe(
-        switchMap(data => this.exchanges.query({
-          type: DGTLDFilterType.PARTIAL,
-          partial: {
-            source: data.workflow.destination,
-            holder: exchange.holder,
-            purpose: exchange.purpose,
-          }
-        } as DGTLDFilterPartial)
-          .pipe(map(exchanges => ({ ...data, exchanges })))),
-        tap(data => this.logger.debug(DGTWorkflowService.name, 'Retrieved exchanges', data)),
-        // map(exchanges => ({ ...data, exchange: exchanges[0], updatedResources: data.updatedResources.map(tr => ({ ...tr, exchange: exchanges[0].uri })) })),
-        switchMap(data => this.connectors.save<T>(data.exchange, data.resources, data.transformer)),
-      );
-  }
-
-  public register(workflow: DGTWorkflow) {
-    this.logger.debug(DGTWorkflowService.name, 'Registring workflow', { workflow });
-
-    this.paramChecker.checkParametersNotNull({ workflow });
-
-    if (!this.workflows) {
-      this.workflows = [];
-    }
-
-    this.workflows.push(workflow);
-  }
-
+    //     return of({ workflow, resources, exchange })
+    //     .pipe(
+    //         switchMap(data => this.filters.run(workflow.filter, data.resources)
+    //         .pipe(map(triples => ({ ...data, triples })))),
+    //         switchMap(data => forkJoin(workflow.actions.map(action => action.execute(data.triples)))
+    //         .pipe(map(updatedTriples => ({ ...data, updatedTriples: _.flatten(updatedTriples) })))),
+    //         switchMap(data =>
+    //         data.workflow.destination ?
+    //             this.connectors.save(data.exchange, data.updatedTriples, data.workflow.destination).pipe(
+    //             map(newTriple => ({ ...data, newTriple })),
+    //             ) : of(data),
+    //         ),
+    //         map(data => data.triples),
+    //     );
+    // }
 }

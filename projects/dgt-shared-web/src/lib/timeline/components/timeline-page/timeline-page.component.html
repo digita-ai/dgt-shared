@@ -1,0 +1,12 @@
+<dgt-timeline-event-group *ngFor="let day of eventsByDate"
+    [events]="day.events"
+    [sources]="sources"
+    [exchanges]="exchanges"
+    [date]="day.date"
+    [dotsMenuItems]="dotsMenuItems"
+    (eventRemoved)="onEventRemoved($event)"
+    (eventReported)="onEventReported($event)"
+    (showJustification)="onShowJustification($event)"
+    (showInVault)="onShowInVault($event)"
+>
+</dgt-timeline-event-group>

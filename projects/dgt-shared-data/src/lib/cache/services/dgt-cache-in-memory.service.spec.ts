@@ -1,9 +1,9 @@
 import { async } from '@angular/core/testing';
-import { DGTLDResource } from '@digita-ai/dgt-shared-data/public-api';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
 import { DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils/lib/configuration/services/dgt-configuration-mock.service';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils/public-api';
 import { configuration } from '../../../test.configuration';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDResourceTransformerService } from '../../linked-data/services/dgt-ld-resource-transformer.service';
 import { DGTCacheInMemoryService } from './dgt-cache-in-memory.service';
 

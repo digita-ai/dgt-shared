@@ -68,7 +68,6 @@ export { DGTLDTripleFactoryService } from './lib/linked-data/services/dgt-ld-tri
 export { DGTWorkflow } from './lib/workflow/models/dgt-workflow.model';
 export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.model';
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
-export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
 export { DGTDataValue } from './lib/data-value/models/data-value.model';
@@ -157,3 +156,7 @@ export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/secur
 export { DGTProfileMockService } from './lib/profile/services/dgt-profile-mock.service';
 export { DGTDataValueMockService } from './lib/data-value/services/data-value-mock.service';
 export { DGTSecurityService } from './lib/security/services/dgt-security.service';
+export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-cache.service';
+export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';
+export { DGTWorkflowTransformerService } from './lib/workflow/services/dgt-workflow-transformer.service';
+export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';

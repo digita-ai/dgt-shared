@@ -1,0 +1,14 @@
+<dgt-page-content-group-header>{{displayDate}}</dgt-page-content-group-header>
+
+<dgt-timeline-event-summary 
+    *ngFor="let entry of groupedEvents" 
+    [events]="entry" 
+    [sources]="sources"
+    [exchanges]="exchanges"
+    [dotsMenuItems]="dotsMenuItems"
+    (eventRemoved)="onEventRemoved($event)" 
+    (eventReported)="onEventReported($event)"
+    (showJustification)="onShowJustification($event)"
+    (showInVault)="onShowInVault($event)"
+>
+</dgt-timeline-event-summary>

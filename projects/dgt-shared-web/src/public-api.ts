@@ -107,3 +107,7 @@ export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote
 export { DGTDataInterfaceResolverMockService } from './lib/data/services/dgt-data-interface-resolver-mock.service';
 export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
 export { DGTSparqlRemoteService } from './lib/sparql/services/dgt-sparql-remote.service';
+export { DGTWorkflowRemoteService } from './lib/workflows/services/dgt-workflow-remote.service';
+export { DGTTimelinePageComponent } from './lib/timeline/components/timeline-page/timeline-page.component';
+export { DGTTimelineEventGroupComponent } from './lib/timeline/components/timeline-event-group/timeline-event-group.component';
+export { DGTTimelineEventSummaryComponent } from './lib/timeline/components/timeline-event-summary/timeline-event-summary.component';

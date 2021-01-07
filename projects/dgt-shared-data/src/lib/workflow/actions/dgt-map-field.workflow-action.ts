@@ -5,9 +5,9 @@ import { DGTWorkflowActionType } from '../models/dgt-workflow-action-type.model'
 import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
 
 export class DGTMapFieldWorkflowAction implements DGTWorkflowAction {
-    public type = DGTWorkflowActionType.REMOVE_PREFIX;
+    public type = DGTWorkflowActionType.MAP_FIELD;
 
-    constructor(private oldPredicate: string, private newPredicate: string, private logger: DGTLoggerService) { }
+    constructor(public oldPredicate: string, public newPredicate: string, private logger: DGTLoggerService) { }
 
     public execute(resources: DGTLDResource[]): Observable<DGTLDResource[]> {
         this.logger.debug(DGTMapFieldWorkflowAction.name, 'Executing map field action', { oldPredicate: this.oldPredicate, newPredicate: this.newPredicate, resources });

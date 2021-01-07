@@ -23,6 +23,16 @@ export class DGTLDFilterSparqlExchangeService implements DGTLDFilterSparqlServic
         const query = `select * where { ${subQueries} }`;
 
         return of(query.trim());
+        // this query returns all user data (from pods) for one or more exchanges
+        // looks for triples which subject is the webId of the holder, this webId is gotten
+        // from the connection (configuration.webid) which has a direct link to an exchange
+        // return of(`
+        // SELECT ?s ?p ?o
+        // ${filter.exchanges.map(e => 'FROM <' + this.config.get(c => c.cache.uri) + 'data/' + encodeURIComponent(e.uri) + '>').join(' ')}
+        // WHERE {
+        //     ?s ?p ?o
+        // }
+        // `.trim());
     }
 
 }

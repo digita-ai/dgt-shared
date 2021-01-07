@@ -7,7 +7,7 @@ import { DGTWorkflowAction } from '../models/dgt-workflow-action.model';
 export class DGTRemovePrefixWorkflowAction implements DGTWorkflowAction {
     public type = DGTWorkflowActionType.REMOVE_PREFIX;
 
-    constructor(private predicate: string, private prefix: string, private logger: DGTLoggerService) { }
+    constructor(public predicate: string, public prefix: string, private logger: DGTLoggerService) { }
 
     public execute(resources: DGTLDResource[]): Observable<DGTLDResource[]> {
         this.logger.debug(DGTRemovePrefixWorkflowAction.name, 'Executing remove prefix action', { predicate: this.predicate, prefix: this.prefix, resources });

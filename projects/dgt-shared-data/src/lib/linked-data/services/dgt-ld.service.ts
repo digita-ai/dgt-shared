@@ -1,15 +1,13 @@
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of, zip } from 'rxjs';
-import { catchError, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
 import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
-import { DGTLDFilterExchange } from '../models/dgt-ld-filter-exchange.model';
-import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
