@@ -74,115 +74,6 @@ export class DGTConnectorService {
         ) as Observable<T[]>;
     }
 
-    // public upstreamSync<T extends DGTLDResource>(
-    //   connector: DGTConnector<any, any>,
-    //   resource: T,
-    //   connection: DGTConnection<any>,
-    //   transformer: DGTLDTransformer<T>,
-    //   exchange: DGTExchange,
-    //   profile: DGTProfile,
-    // ): Observable<T> {
-    //   this.logger.debug(DGTConnectorService.name, 'upstream syncing',
-    //     { connector, resource, connection, transformer, exchange, profile });
-
-    //   return this.calculateDocumentUri(resource, profile, connection).pipe(
-    //     tap(prepared => this.logger.debug(DGTConnectorService.name, 'Calculated document uri for upstreamsync', { prepared, s: prepared.triples[0].subject })),
-    //     switchMap(preparedDomainEntity => {
-    //       // find possible existing values to determine add or update
-    //       return connector.query(exchange, transformer).pipe(
-    //         map(existingValues => existingValues[0]),
-    //         map(existingValue => ({ ...existingValue, triples: [existingValue.triples.find(t => t.predicate === preparedDomainEntity.triples[0].predicate)] })),
-    //         map(existingValue => ({ existingValue: existingValue.triples[0] ? existingValue : null, domainEntity: preparedDomainEntity })),
-    //         catchError(error => {
-    //           this.logger.debug(DGTConnectorService.name, 'Error occured in upstreamsync', { error, resource });
-    //           throw new DGTErrorArgument('Error querying', { error });
-    //         }),
-    //       );
-    //     }),
-    //     tap(data => this.logger.debug(DGTConnectorService.name, `Existing value: ${data.existingValue}`, { data })),
-    //     switchMap(data => {
-    //       if (data.existingValue) {
-    //         data.domainEntity.triples[0].subject.value = data.existingValue.triples[0].subject.value;
-    //         const updatedResource = { original: data.existingValue, updated: data.domainEntity };
-    //         this.logger.debug(DGTConnectorService.name, 'Updating value', { connector, updatedResource });
-    //         return connector.update<T>([updatedResource], transformer).pipe(
-    //           map(resources => resources[0]),
-    //           catchError((error) => {
-    //             this.logger.debug(DGTConnectorService.name, '[upstreamSync] error updating', { connector, updatedResource, error });
-    //             return of(data.domainEntity);
-    //           }),
-    //         );
-    //       } else {
-    //         this.logger.debug(DGTConnectorService.name, 'adding value', { connector, resource });
-    //         return connector.add<T>([resource], transformer).pipe(
-    //           map(resources => resources[0]),
-    //           catchError((error) => {
-    //             this.logger.debug(DGTConnectorService.name, '[upstreamSync] error adding', { connector, resource, error });
-    //             return of(resource);
-    //           }),
-    //         );
-    //       }
-    //     }),
-    //     catchError(error => {
-    //       this.logger.debug(DGTConnectorService.name, 'Error in upstreamsync, no syncing done', { error, resource });
-    //       return of(resource);
-    //     }),
-    //   );
-    // }
-
-    // public calculateDocumentUri<T extends DGTLDResource>(
-    //   domainEntity: T,
-    //   profile: DGTProfile,
-    //   connection: DGTConnection<any>,
-    // ): Observable<T> {
-    //   this.logger.debug(DGTConnectorService.name, 'Calculating document uri', { domainEntity, profile, connection });
-    //   let missingTypeReg = false;
-    //   // profile will only have a value when we have a solid source / connection
-    //   if (!profile) {
-    //     return of(domainEntity);
-    //   }
-    //   // find typeregistration in profile
-    //   const typeRegFound = profile.typeRegistrations.filter(reg =>
-    //     reg.forClass === domainEntity.triples[0].predicate
-    //   );
-    //   const origin = new URL(connection.configuration.webId).origin;
-    //   if (typeRegFound.length > 0) {
-    //     this.logger.debug(DGTConnectorService.name, 'Typeregistration found in profile', typeRegFound[0]);
-    //     // typeregistration found in profile
-    //     domainEntity.uri = typeRegFound[0].instance;
-    //   } else {
-    //     // check config for typeReg
-    //     const typeRegsInConfig = this.config.get(c => c.typeRegistrations);
-    //     const typeRegFoundInConfig = Object.keys(typeRegsInConfig).filter(key =>
-    //       key === domainEntity.triples[0].predicate
-    //     );
-    //     if (typeRegFoundInConfig && typeRegFoundInConfig.length > 0) {
-    //       this.logger.debug(DGTConnectorService.name, 'Typeregistration found in config', typeRegFoundInConfig[0]);
-    //       // typeReg found in config
-    //       missingTypeReg = true;
-    //       domainEntity.uri = origin + typeRegsInConfig[typeRegFoundInConfig[0]];
-    //     } else {
-    //       this.logger.debug(DGTConnectorService.name, 'no Typeregistration found in config');
-    //       // tslint:disable-next-line:max-line-length
-    //       throw new DGTErrorConfig('No TypeRegistration was found in the config matching this predicate', domainEntity.triples[0].predicate);
-    //     }
-    //   }
-
-    //   domainEntity.triples[0].subject.value = domainEntity.uri + '#';
-
-    //   return of(domainEntity).pipe(
-    //     switchMap(entity => {
-    //       if (missingTypeReg) {
-    //         return this.typeregistrationService.registerMissingTypeRegistrations(profile).pipe(
-    //           map(() => entity),
-    //         );
-    //       } else {
-    //         return of(entity);
-    //       }
-    //     })
-    //   );
-    // }
-
     public query<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTConnectorService.name, 'Querying resources for exchange', { exchange });
 
@@ -200,32 +91,9 @@ export class DGTConnectorService {
                     .get(data.exchange.source)
                     .pipe(map((source) => ({ source, ...data, connector: this.get(source.type) }))),
             ),
-            // switchMap(data => this.purposes.get(data.exchange.purpose)
-            //   .pipe(map(purpose => ({ ...data, purpose })))),
-            // mergeMap(data => this.profiles.get(exchange).pipe(
-            //   map(profile => ({ ...data, profile, typeRegistrations: profile && profile.typeRegistrations ? profile.typeRegistrations.filter(typeRegistration => data.purpose.predicates.includes(typeRegistration.forClass)) : [] })),
-            // )),
             switchMap((data) =>
                 data.connector.query<T>(exchange, transformer).pipe(map((resources) => ({ ...data, resources }))),
             ),
-            // switchMap(data => (data.typeRegistrations && data.typeRegistrations.length > 0
-            //   ? forkJoin(data.typeRegistrations.map(typeRegistration => data.connector.query<T>(exchange, transformer)))
-            //   : of([[]]))
-            //   .pipe(
-            //     map((resourcesOfResources) =>
-            //       ({ ...data, resources: [...data.resources, ..._.flatten(resourcesOfResources)] }),
-            //     ),
-            //   ),
-            // ),
-            // map(data => {
-            //   const newRes = data.resources.map((resource: T) => {
-            //     return {
-            //       ...resource,
-            //       triples: resource.triples.filter(triple => data.purpose.predicates.includes(triple.predicate)),
-            //     };
-            //   });
-            //   return { ...data, resources: newRes };
-            // }),
             tap((data) => this.logger.info(DGTConnectorService.name, 'Queried resources for exchange', data)),
             map((data) => data.resources),
             catchError((error, caught) => {

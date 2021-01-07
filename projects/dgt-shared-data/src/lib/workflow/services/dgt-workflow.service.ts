@@ -99,15 +99,16 @@ export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWork
         }
 
         return of({ workflow, resources, exchange, transformer }).pipe(
+            // switchMap((data) =>
+            //     this.filters
+            //         .run<T>(workflow.filter, data.resources)
+            //         .pipe(map((filteredResources) => ({ ...data, resources: filteredResources }))),
+            // ),
             switchMap((data) =>
-                this.filters
-                    .run<T>(workflow.filter, data.resources)
-                    .pipe(map((filteredResources) => ({ ...data, resources: filteredResources }))),
-            ),
-            switchMap((data) =>
-                forkJoin(workflow.actions.map((action) => action.execute(data.resources))).pipe(
-                    map((updatedResources: T[][]) => ({ ...data, updatedResources: _.flatten(updatedResources) })),
-                ),
+                (workflow.actions.length > 0
+                    ? forkJoin(workflow.actions.map((action) => action.execute(data.resources)))
+                    : of([[...data.resources]])
+                ).pipe(map((updatedResources: T[][]) => ({ ...data, updatedResources: _.flatten(updatedResources) }))),
             ),
             mergeMap((data) =>
                 data.workflow.destination
