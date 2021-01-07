@@ -34,6 +34,7 @@ import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.
 import { DGTWorkflowCacheService } from './workflow/services/dgt-workflow-cache.service';
 import { DGTWorkflowManagerService } from './workflow/services/dgt-workflow-manager.service';
 import { DGTWorkflowMockService } from './workflow/services/dgt-workflow-mock.service';
+import { DGTWorkflowRemoteService } from './workflow/services/dgt-workflow-remote.service';
 import { DGTWorkflowTransformerService } from './workflow/services/dgt-workflow-transformer.service';
 
 export const declarations = [
@@ -55,6 +56,7 @@ export const providers = [
   DGTWorkflowTransformerService,
   DGTWorkflowCacheService,
   DGTWorkflowMockService,
+  DGTWorkflowRemoteService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
   DGTDataValueTransformerService,
