@@ -4,6 +4,7 @@ export interface DGTConfigurationBase {
     baseURI: string;
     logger: {
         minimumLevel: DGTLoggerLevel,
+        minimumLevelPrintData: DGTLoggerLevel,
     };
     typeRegistrations?: {
         [key: string]: string;
