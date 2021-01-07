@@ -1,1 +1,4 @@
-<ng-content></ng-content>
+<ng-content *ngIf="!this.iconString"></ng-content>
+
+<img *ngIf="this.iconString && !isFAIcon" src="{{this.iconString}}" alt="icon">
+<i *ngIf="this.iconString && isFAIcon" class="{{this.iconString}}"></i>

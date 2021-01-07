@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'dgt-section-icon',
@@ -7,9 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DGTSectionIconComponent implements OnInit {
 
+  private _iconString: string;
+  @Input() set iconString(iconString: string) {
+    if (iconString) {
+      const reg = iconString.match(/fa.\sfa-.*/);
+      this.isFAIcon = reg && reg.length > 0;
+      this._iconString = iconString;
+    }
+  }
+  get iconString(): string {
+    return this._iconString;
+  }
+
+  public isFAIcon = false;
+
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
 }
