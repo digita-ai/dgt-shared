@@ -82,13 +82,14 @@ export class DGTLDService {
                     ...data.exchanges
                         .filter((exchange) => exchange !== null)
                         .map((exchange) =>
-                            this.connectors
-                                .query<T>(exchange, data.transformer)
-                                .pipe(
-                                    switchMap((resources) =>
-                                        this.workflows.execute<T>(exchange, resources, data.transformer),
-                                    ),
+                            this.cache.isStaleForExchange(exchange).pipe(
+                                switchMap((isStale) =>
+                                    isStale ? this.connectors.query<T>(exchange, data.transformer) : of([] as T[]),
                                 ),
+                                switchMap((resources) =>
+                                    this.workflows.execute<T>(exchange, resources, data.transformer),
+                                ),
+                            ),
                         ),
                 ).pipe(map((resourcesOfResources) => ({ ...data, resources: _.flatten(resourcesOfResources) }))),
             ),

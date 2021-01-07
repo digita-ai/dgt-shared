@@ -2,6 +2,7 @@ import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dg
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -132,6 +133,10 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             map((data) => ({ ...data, triples: _.flatten(this.cache.map((resource) => resource.triples)) })),
             switchMap((data) => this.sparql.query(data.query, { dataset: { triples: data.triples } })),
         );
+    }
+
+    public isStaleForExchange(exchange: DGTExchange): Observable<boolean> {
+        return of(true);
     }
 
     // public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
