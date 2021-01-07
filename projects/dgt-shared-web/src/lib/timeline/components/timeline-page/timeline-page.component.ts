@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { DGTEvent, DGTSource, DGTExchange } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DGTEvent, DGTExchange, DGTSource } from '@digita-ai/dgt-shared-data';
+import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DGTTitleService } from '../../../interface/services/dgt-title.service';
 
@@ -11,7 +11,7 @@ import { DGTTitleService } from '../../../interface/services/dgt-title.service';
 })
 
 export class DGTTimelinePageComponent implements OnInit {
-  
+
   // a list of which items to show in the dots menu
   @Input() public dotsMenuItems: string[];
 
@@ -29,11 +29,11 @@ export class DGTTimelinePageComponent implements OnInit {
 
   @Input() public sources: DGTSource<any>[];
   @Input() public exchanges: DGTExchange[];
-  
+
   @Output() public eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter();
   @Output() public eventReported: EventEmitter<DGTEvent[]> = new EventEmitter();
-  @Output() public showJustification: EventEmitter<DGTEvent[]>= new EventEmitter();
-  @Output() public showInVault: EventEmitter<DGTEvent[]>= new EventEmitter();
+  @Output() public showJustification: EventEmitter<DGTEvent[]> = new EventEmitter();
+  @Output() public showInVault: EventEmitter<DGTEvent[]> = new EventEmitter();
 
   constructor(
     public commonTitleService: DGTTitleService,

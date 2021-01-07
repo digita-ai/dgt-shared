@@ -1,4 +1,4 @@
-import { DGTInjectable, DGTParameterCheckerService, DGTConfigurationService, DGTConfigurationBaseApi } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 

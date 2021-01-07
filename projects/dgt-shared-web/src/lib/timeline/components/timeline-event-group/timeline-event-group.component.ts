@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DGTEvent, DGTExchange, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
-import { DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { DGTDateToLabelService } from '../../../date/services/dgt-date-to-label.service';
+import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { DGTDateToLabelService } from '../../../date/services/dgt-date-to-label.service';
 
 @Component({
   selector: 'dgt-timeline-event-group',
@@ -25,9 +25,7 @@ export class DGTTimelineEventGroupComponent implements OnInit {
       this.groupedEvents = this.groupEvents(events);
     }
   };
-  
-  
-  
+
   private _date: Date = null;
   get date(): Date { return this._date; }
   @Input() set date(date: Date) {
@@ -42,11 +40,10 @@ export class DGTTimelineEventGroupComponent implements OnInit {
   @Input() public sources: DGTSourceSolid[];
   @Input() public exchanges: DGTExchange[];
 
-
   @Output() public eventReported: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
   @Output() public eventRemoved: EventEmitter<DGTEvent[]> = new EventEmitter<DGTEvent[]>();
-  @Output() public showJustification: EventEmitter<DGTEvent[]>= new EventEmitter();
-  @Output() public showInVault: EventEmitter<DGTEvent[]>= new EventEmitter();
+  @Output() public showJustification: EventEmitter<DGTEvent[]> = new EventEmitter();
+  @Output() public showInVault: EventEmitter<DGTEvent[]> = new EventEmitter();
 
   public displayDate: string;
 
