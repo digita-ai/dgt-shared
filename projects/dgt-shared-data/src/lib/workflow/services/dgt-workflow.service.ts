@@ -1,4 +1,4 @@
-import { DGTLDTransformer } from '@digita-ai/dgt-shared-data/public-api';
+import { DGTLDTransformer } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
