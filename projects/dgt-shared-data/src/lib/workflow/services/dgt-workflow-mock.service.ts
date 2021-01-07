@@ -1,7 +1,8 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
@@ -12,8 +13,14 @@ import { DGTWorkflowService } from './dgt-workflow.service';
 export class DGTWorkflowMockService extends DGTWorkflowService {
     public workflows: DGTWorkflow[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService) {
-        super();
+    constructor(
+        private uri: DGTUriFactoryService,
+        protected logger: DGTLoggerService,
+        protected paramChecker: DGTParameterCheckerService,
+        protected filters: DGTLDFilterService,
+        protected connectors: DGTConnectorService,
+    ) {
+        super(logger, paramChecker, filters, connectors);
     }
 
     public get(workflowUri: string): Observable<DGTWorkflow> {

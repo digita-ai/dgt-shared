@@ -7,7 +7,7 @@ import { DGTConnectorService } from '../../connector/services/dgt-connector.serv
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTSparqlResult } from '../../sparql/models/dgt-sparql-result.model';
-import { DGTWorkflowManagerService } from '../../workflow/services/dgt-workflow-manager.service';
+import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service';
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
@@ -25,7 +25,7 @@ export class DGTLDService {
         private exchanges: DGTExchangeService,
         private paramChecker: DGTParameterCheckerService,
         private connectors: DGTConnectorService,
-        private workflows: DGTWorkflowManagerService,
+        private workflows: DGTWorkflowService,
         private transformer: DGTLDResourceTransformerService,
     ) {
     }
