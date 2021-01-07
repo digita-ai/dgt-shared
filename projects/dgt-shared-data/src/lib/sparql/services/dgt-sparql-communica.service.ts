@@ -5,8 +5,8 @@ import { Bindings, IActorQueryOperationOutputBindings } from '@comunica/bus-quer
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { DataFactory, Literal, Quad, Quad_Object, Quad_Predicate, Quad_Subject, Store, Term } from 'n3';
-import { from, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
 import { DGTLDTriple } from '../../linked-data/models/dgt-ld-triple.model';
@@ -31,21 +31,26 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptions
      * @param query the query to run
      */
     public query(query: string, options: DGTSparqlOptionsComunica): Observable<DGTSparqlResult> {
+        this.logger.info(DGTSparqlCommunicaService.name, 'Starting to run query', { query, options, triples: options.dataset.triples });
+
         if (!options) {
             throw new DGTErrorArgument('Argument options should be set.', options);
         }
 
         const store = this.toStore(options.dataset.triples);
 
-        this.logger.debug(DGTSparqlCommunicaService.name, 'Converted triples to n3 store', { store });
+        this.logger.info(DGTSparqlCommunicaService.name, 'Converted triples to n3 store', { store });
 
-        return from(
-            this.engine.query(query, {
-                sources: [{ type: 'rdfjsSource', value: store }],
-            }),
-        ).pipe(
-            map((result: IQueryResult) => ({
-                result: result.type === 'bindings' ? (result as IActorQueryOperationOutputBindings) : null,
+        return of({ query, store, options }).pipe(
+            switchMap((data) =>
+                from(
+                    this.engine.query(data.query, {
+                        sources: [{ type: 'rdfjsSource', value: data.store }],
+                    }),
+                ).pipe(map((result) => ({ ...data, result }))),
+            ),
+            map((data) => ({
+                result: data.result.type === 'bindings' ? (data.result as IActorQueryOperationOutputBindings) : null,
             })),
             switchMap((data) => {
                 const bindingsList: Bindings[] = [];
@@ -77,6 +82,11 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptions
                     });
                 });
             }),
+            catchError(error => {
+                this.logger.error(DGTSparqlCommunicaService.name, 'An error occurred while executing query', error);
+
+                return null;
+            })
         );
     }
 
