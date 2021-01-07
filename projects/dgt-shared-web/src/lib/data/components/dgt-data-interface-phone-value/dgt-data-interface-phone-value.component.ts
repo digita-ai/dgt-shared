@@ -15,12 +15,12 @@ export class DGTDataInterfacePhoneValueComponent implements OnInit {
     public formGroup: FormGroup;
 
     /** The data value of this component */
-    private _value: DGTLDResource[];
+    private _value: DGTLDResource;
     @Input()
-    public get value(): DGTLDResource[] {
+    public get value(): DGTLDResource {
         return this._value;
     }
-    public set value(value: DGTLDResource[]) {
+    public set value(value: DGTLDResource) {
         this._value = value;
 
         if (this.value && this.phone) {
@@ -30,7 +30,7 @@ export class DGTDataInterfacePhoneValueComponent implements OnInit {
 
     /** Used to emit valueUpdated events */
     @Output()
-    valueUpdated: EventEmitter<{value: DGTLDResource[], newObject: any}>;
+    valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
 
     /** Used to emit submit events */
     @Output()
@@ -80,7 +80,7 @@ export class DGTDataInterfacePhoneValueComponent implements OnInit {
      * On every update of the value input, update the form group values
      * @param values all values of this field
      */
-    private updateReceived(value: DGTLDResource[], phone: string) {
+    private updateReceived(value: DGTLDResource, phone: string) {
         this.logger.debug(DGTDataInterfacePhoneValueComponent.name, 'Update received', { value, phone });
         this.paramChecker.checkParametersNotNull({value, phone});
 
@@ -103,7 +103,7 @@ export class DGTDataInterfacePhoneValueComponent implements OnInit {
      * @throws DGTErrorArgument when value is not set
      * @emits
      */
-    public onValueUpdated(value: DGTLDResource[], phone: string): void {
+    public onValueUpdated(value: DGTLDResource, phone: string): void {
         const parsedPhone = `tel:${phone}`;
         this.paramChecker.checkParametersNotNull({value, phone});
         this.valueUpdated.emit({value, newObject: parsedPhone});
