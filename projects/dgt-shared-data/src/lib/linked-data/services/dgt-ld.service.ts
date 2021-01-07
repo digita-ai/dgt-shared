@@ -35,7 +35,7 @@ export class DGTLDService {
      * @param transformer The transformer used to transform DGTLDResources
      */
     public query<T extends DGTLDResource>(filter: DGTLDFilter, transformer: DGTLDTransformer<T>): Observable<T[]> {
-        this.logger.debug(DGTLDService.name, 'Querying data', { filter, transformer });
+        this.logger.debug(DGTLDService.name, 'Querying with filter', { filter, transformer });
 
         if (!transformer) {
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
@@ -43,7 +43,40 @@ export class DGTLDService {
 
         return of({ filter, transformer }).pipe(
             switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
+            switchMap((data) =>
+                this.refreshForExchanges(data.exchanges, data.transformer).pipe(
+                    map((refreshedResources) => ({ ...data, refreshedResources })),
+                ),
+            ),
+            switchMap((data) => this.cache.query<T>(transformer, filter)),
+        );
+    }
+
+    public querySparql(query: string): Observable<DGTSparqlResult> {
+        this.logger.debug(DGTLDService.name, 'Querying with sparql', { query });
+
+        if (!query) {
+            throw new DGTErrorArgument('Argument query should be set.', query);
+        }
+
+        return of({ query }).pipe(
+            switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
+            switchMap((data) =>
+                this.refreshForExchanges(data.exchanges, this.transformer).pipe(
+                    map((refreshedResources) => ({ ...data, refreshedResources })),
+                ),
+            ),
+            switchMap((data) => this.cache.querySparql(data.query)),
+        );
+    }
+
+    private refreshForExchanges<T extends DGTLDResource>(
+        exchanges: DGTExchange[],
+        transformer: DGTLDTransformer<T>,
+    ): Observable<T[]> {
+        this.logger.debug(DGTLDService.name, 'Refreshing cache for exchanges', { exchanges, transformer });
+
+        return of({ exchanges, transformer }).pipe(
             switchMap((data) =>
                 zip(
                     ...data.exchanges
@@ -64,35 +97,7 @@ export class DGTLDService {
                 this.cache.save<T>(transformer, data.resources).pipe(map((saved) => ({ ...data, saved }))),
             ),
             tap((data) => this.logger.debug(DGTLDService.name, 'Stored resources in cache', data)),
-            switchMap(() => this.cache.query<T>(transformer, filter)),
-        );
-    }
-
-    public querySparql(query: string): Observable<DGTSparqlResult> {
-        this.logger.debug(DGTLDService.name, 'Querying cache', { query });
-
-        if (!query) {
-            throw new DGTErrorArgument('Argument query should be set.', query);
-        }
-
-        return of({ query }).pipe(
-            switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Retrieved exchanges', data)),
-            mergeMap((data) =>
-                zip(
-                    ...data.exchanges.map((exchange) =>
-                        this.connectors.query<DGTLDResource>(exchange, this.transformer),
-                    ),
-                ).pipe(map((valuesOfValues) => ({ ...data, values: _.flatten(valuesOfValues) }))),
-            ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Queried values', { results: data.values })),
-            switchMap((data) =>
-                this.cache
-                    .save<DGTLDResource>(this.transformer, data.values)
-                    .pipe(map((saved) => ({ ...data, saved }))),
-            ),
-            tap((data) => this.logger.debug(DGTLDService.name, 'Stored values in cache', data)),
-            switchMap((data) => this.cache.querySparql(data.query)),
+            map((data) => data.resources),
         );
     }
 }
