@@ -28,7 +28,6 @@ export { DGTRobotVerificationResponse } from './lib/validation/models/dgt-robot-
 export { DGTSmartElement } from './lib/interface/models/dgt-smart-element.model';
 export { DGTSmartForm } from './lib/interface/models/dgt-smart-form.model';
 export { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
-export { DGTTitleService } from './lib/interface/services/dgt-title.service';
 export { DGTI8NLocale } from './lib/i8n/models/dgt-i8n-locale.model';
 export { DGTI8NService } from './lib/i8n/services/dgt-i8n.service';
 export * from './lib/state/models/dgt-actions.model';
@@ -105,6 +104,7 @@ export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-s
 export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
 export { DGTSourceStateService } from './lib/source/services/dgt-source-state.service';
 export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote.service';
+export { DGTDataInterfaceResolverMockService } from './lib/data/services/dgt-data-interface-resolver-mock.service';
 export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
 export { DGTSparqlRemoteService } from './lib/sparql/services/dgt-sparql-remote.service';
 export { DGTWorkflowRemoteService } from './lib/workflows/services/dgt-workflow-remote.service';

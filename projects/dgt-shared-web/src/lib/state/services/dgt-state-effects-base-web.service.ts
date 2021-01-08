@@ -1,7 +1,7 @@
 import { ApplicationRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
-import { DGTLDTypeRegistrationService, DGTProfileService } from '@digita-ai/dgt-shared-data';
+import { DGTProfileService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTConnectivityService, DGTErrorConfig, DGTErrorService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { Actions, Effect, ofType, ROOT_EFFECTS_INIT } from '@ngrx/effects';
 import * as _ from 'lodash';
@@ -148,11 +148,9 @@ export class DGTStateEffectsBaseWebService {
         mergeMap((action: DGTProfileLoad) => this.profiles.get(action.payload.exchange)
             .pipe(map(profile => ({ profile, action })))),
         tap(data => this.logger.debug(DGTProfileLoad.name, 'Retrieved profile for exchange', data)),
-        switchMap(data => this.registrationsService.registerMissingTypeRegistrations(data.profile)
-            .pipe(map(typeRegistrationsRegistered => ({ ...data, typeRegistrationsRegistered })))),
         tap(data => this.logger.debug(DGTProfileLoad.name, 'Registered missing type registrations', data)),
         // add typeRegistrations to the profile
-        map(data => ({ ...data, profile: { ...data.profile, typeRegistrations: [...data.profile.typeRegistrations, ...data.typeRegistrationsRegistered] } })),
+        map(data => ({ ...data, profile: { ...data.profile } })),
         switchMap(data => {
             const profileLoaded = this.config.get(c => c.events.templates.profileLoaded)
 
@@ -183,7 +181,6 @@ export class DGTStateEffectsBaseWebService {
         protected logger: DGTLoggerService,
         protected config: DGTConfigurationService<DGTConfigurationBaseWeb>,
         protected profiles: DGTProfileService,
-        protected registrationsService: DGTLDTypeRegistrationService,
         protected updates: SwUpdate,
         protected appRef: ApplicationRef,
     ) { }

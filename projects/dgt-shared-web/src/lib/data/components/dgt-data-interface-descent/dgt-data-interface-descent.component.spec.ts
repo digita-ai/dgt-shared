@@ -1,10 +1,10 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { configuration } from 'test.configuration';
-import { DGTBrowserDataInterfaceDescentComponent } from './data-interface-descent.component';
+import { configuration } from '../../../../test.configuration';
+import { DGTDataInterfaceDescentComponent } from './dgt-data-interface-descent.component';
 
 describe('DataInterfaceDescentComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfaceDescentComponent>(configuration);
-    testService.setup(DGTBrowserDataInterfaceDescentComponent);
+    const testService = new DGTTestRunnerComponent<DGTDataInterfaceDescentComponent>(configuration);
+    testService.setup(DGTDataInterfaceDescentComponent);
 
     it('should be created', () => {
         expect(testService.component).toBeTruthy();

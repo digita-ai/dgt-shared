@@ -1,7 +1,7 @@
 // import { DGTBrowserTimelineEventMenuComponent } from './timeline-event-menu.component';
 // import { async } from '@angular/core/testing';
 // import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-// import { configuration } from 'test.configuration';
+// import { configuration } from '../../../../test.configuration';
 // import { eventJustNow } from 'test.events.mock-data';
 
 // describe('DGTBrowserTimelineEventMenuComponent', () => {

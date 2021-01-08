@@ -33,10 +33,7 @@ export { DGTLDFilterBGP } from './lib/linked-data/models/dgt-ld-filter-bgp.model
 export { DGTLDFilterHolder } from './lib/linked-data/models/dgt-ld-filter-holder.model';
 export { DGTLDFilterExchange } from './lib/linked-data/models/dgt-ld-filter-exchange.model';
 export { DGTLDTypeRegistration } from './lib/linked-data/models/dgt-ld-type-registration.model';
-export { DGTLDTypeRegistrationService } from './lib/linked-data/services/dgt-ld-type-registration.service';
 export { DGTLDTypeRegistrationTransformerService } from './lib/linked-data/services/dgt-ld-type-registration-transformer.service';
-export { DGTLDTypeRegistrationSolidService } from './lib/linked-data/services/dgt-ld-type-registration-solid.service';
-export { DGTLDTypeRegistrationMockService } from './lib/linked-data/services/dgt-ld-type-registration-mock.service';
 export { DGTLDService } from './lib/linked-data/services/dgt-ld.service';
 export { DGTLDResourceService } from './lib/linked-data/services/dgt-ld-resource.service';
 export { DGTFunctionResult } from './lib/logic/models/dgt-function-result.model';
@@ -156,6 +153,8 @@ export { DGTCategoryCacheService } from './lib/categories/services/dgt-category-
 export { DGTCategoryTransformerService } from './lib/categories/services/dgt-category-transformer.service';
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
+export { DGTProfileMockService } from './lib/profile/services/dgt-profile-mock.service';
+export { DGTDataValueMockService } from './lib/data-value/services/data-value-mock.service';
 export { DGTSecurityService } from './lib/security/services/dgt-security.service';
 export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-cache.service';
 export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';

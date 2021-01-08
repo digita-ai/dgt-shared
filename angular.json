@@ -48,13 +48,21 @@
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
             "tsConfig": "projects/dgt-shared-web/tsconfig.lib.json",
-            "project": "projects/dgt-shared-web/ng-package.json",
+            "project": "projects/dgt-shared-web/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "projects/dgt-shared-web/src/test.ts",
+            "styles": [
+              "projects/dgt-shared-web/theme/styles.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects/dgt-shared-web/theme/"
+              ]
+            },
             "tsConfig": "projects/dgt-shared-web/tsconfig.spec.json",
             "karmaConfig": "projects/dgt-shared-web/karma.conf.js"
           }

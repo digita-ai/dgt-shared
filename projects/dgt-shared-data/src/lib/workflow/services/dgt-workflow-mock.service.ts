@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
@@ -19,8 +20,9 @@ export class DGTWorkflowMockService extends DGTWorkflowService {
         protected paramChecker: DGTParameterCheckerService,
         protected filters: DGTLDFilterService,
         protected connectors: DGTConnectorService,
+        protected exchanges: DGTExchangeService,
     ) {
-        super(logger, paramChecker, filters, connectors);
+        super(logger, filters, connectors, exchanges);
     }
 
     public get(workflowUri: string): Observable<DGTWorkflow> {

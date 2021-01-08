@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DGTEvent, DGTExchange, DGTSource } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTTitleService } from '../../../interface/services/dgt-title.service';
 
 @Component({
   selector: 'dgt-timeline-page',
@@ -36,7 +35,6 @@ export class DGTTimelinePageComponent implements OnInit {
   @Output() public showInVault: EventEmitter<DGTEvent[]> = new EventEmitter();
 
   constructor(
-    public commonTitleService: DGTTitleService,
     private logger: DGTLoggerService,
   ) { }
 

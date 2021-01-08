@@ -5,10 +5,9 @@ import { forkJoin, Observable, of, zip } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
-import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTEvent } from '../models/dgt-event.model';
 import { DGTEventTransformerService } from './dgt-event-transformer.service';
@@ -22,10 +21,8 @@ export class DGTEventSolidService extends DGTEventService {
   constructor(
     private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTEventTransformerService,
-    private typeRegistrations: DGTLDTypeRegistrationService,
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
-    private exchanges: DGTExchangeService,
   ) {
     super();
   }
@@ -40,22 +37,14 @@ export class DGTEventSolidService extends DGTEventService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of events.
    */
-  public getAll(profile: DGTProfile): Observable<DGTEvent[]> {
-    this.logger.debug(DGTEventService.name, 'Preparing to get all events.', { profile });
+  public getAll(exchange: DGTExchange): Observable<DGTEvent[]> {
+    this.logger.debug(DGTEventService.name, 'Preparing to get all events.', { exchange });
 
-    this.paramChecker.checkParametersNotNull({ profile });
+    this.paramChecker.checkParametersNotNull({ exchange });
 
-    const files = _.uniq(profile.typeRegistrations.filter(this.isCorrectTypeRegistration).map(typeRegistration => typeRegistration.instance));
-
-    return of({ files, profile })
+    return of({ exchange })
       .pipe(
-        switchMap(data => this.exchanges.get(profile.exchange)
-          .pipe(map(exchange => ({ ...data, exchange })))),
-        tap(data => this.logger.debug(DGTEventService.name, 'Retrieved exchange.', data)),
-        switchMap(data => zip(...data.files.map(file => this.connector.query<DGTEvent>(file, data.exchange, this.transformer)))),
-          // .pipe(map(events => ({ ...data, events: _.flatten(events) })))),
-        tap(data => this.logger.debug(DGTEventService.name, 'Retrieved events.', data)),
-        map(data => _.flatten(data)),
+        switchMap(data => this.connector.query<DGTEvent>(data.exchange, this.transformer)),
       );
   }
 
@@ -68,27 +57,14 @@ export class DGTEventSolidService extends DGTEventService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of registered event.
    */
-  public register(profile: DGTProfile, resources: DGTEvent[]): Observable<DGTEvent[]> {
-    this.logger.debug(DGTEventService.name, 'Preparing to register event.', { profile, resources });
+  public register(resources: DGTEvent[]): Observable<DGTEvent[]> {
+    this.logger.debug(DGTEventService.name, 'Preparing to register event.', { resources });
 
-    this.paramChecker.checkParametersNotNull({ resources, profile });
+    this.paramChecker.checkParametersNotNull({ resources });
 
-    const files = profile.typeRegistrations.filter(this.isCorrectTypeRegistration).map(typeRegistration => typeRegistration.instance);
-
-    return of({ files, resources, profile })
+    return of({ resources })
       .pipe(
-        switchMap(data =>
-          forkJoin(data.resources.map(resource =>
-            of({})
-              .pipe(
-                switchMap(() => this.typeRegistrations.registerForResources(this.predicate, resource, data.profile)),
-                map(typeRegistrations => ({ ...resource, uri: typeRegistrations[0].instance })),
-              ),
-          ),
-          )
-            .pipe(map(updatedResources => ({ ...data, resources: updatedResources }))),
-        ),
-        switchMap(data => this.connector.add<DGTEvent>(data.resources, this.transformer)
+        switchMap(data => this.connector.save<DGTEvent>(data.resources, this.transformer)
           .pipe(map(addedEvents => ({ ...data, addedEvents })))),
         tap(data => this.logger.debug(DGTEventSolidService.name, 'Added new events', data)),
         map(data => data.addedEvents),
