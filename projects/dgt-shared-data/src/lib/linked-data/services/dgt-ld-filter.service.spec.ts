@@ -9,7 +9,6 @@ import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDFilterRunnerBGPService } from './dgt-ld-filter-runner-bgp.service';
 import { DGTLDFilterService } from './dgt-ld-filter.service';
-import { DGTCategoryFilterService } from './dgt-ld-filter.service';
 
 /* tslint:disable:no-unused-variable */
 

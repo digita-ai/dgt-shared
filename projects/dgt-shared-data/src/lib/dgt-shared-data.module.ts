@@ -20,6 +20,7 @@ import { DGTLDRepresentationSparqlDeleteFactory } from './linked-data/services/d
 import { DGTLDRepresentationSparqlInsertFactory } from './linked-data/services/dgt-ld-representation-sparql-insert-factory';
 import { DGTLDResourceTransformerService } from './linked-data/services/dgt-ld-resource-transformer.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
+import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/dgt-ld-type-registration-transformer.service';
 import { DGTLDUtils } from './linked-data/services/dgt-ld-utils.service';
 import { DGTLDService } from './linked-data/services/dgt-ld.service';
 import { DGTQueryService } from './metadata/services/dgt-query.service';
@@ -28,6 +29,7 @@ import { DGTSecurityPolicyTransformerService } from './policy/services/dgt-secur
 import { DGTProfileTransformerService } from './profile/services/dgt-profile-transformer.service';
 import { DGTPurposeTransformerService } from './purpose/services/dgt-purpose-transformer.service';
 import { DGTSourceTransformerService } from './source/services/dgt-source-transformer.service';
+import { DGTSparqlCommunicaService } from './sparql/services/dgt-sparql-communica.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
 import { DGTUriFactoryCacheService } from './uri/services/dgt-uri-factory-cache.service';
 import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.service';
@@ -75,6 +77,8 @@ export const providers = [
   DGTLDRepresentationSparqlInsertFactory,
   DGTLDRepresentationSparqlDeleteFactory,
   DGTLDResourceTransformerService,
+  DGTSparqlCommunicaService,
+  DGTLDTypeRegistrationTransformerService,
 ];
 
 @NgModule({

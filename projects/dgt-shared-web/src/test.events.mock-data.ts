@@ -1,4 +1,4 @@
-import { DGTConnectionSolid, DGTConnectionState, DGTEvent, DGTExchange, DGTProfile, DGTSource, DGTSourceSolid, DGTSourceSolidConfiguration, DGTSourceType } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionSolid, DGTConnectionState, DGTEvent, DGTExchange, DGTProfile, DGTSource, DGTSourceSolid, DGTSourceSolidConfiguration } from '@digita-ai/dgt-shared-data';
 import { DGTNotificationType } from '@digita-ai/dgt-shared-web';
 import moment from 'moment';
 
@@ -8,7 +8,7 @@ export const mockSource1 = {
   uri: '1',
   icon: 'fas fa-users',
   description: 'Inrupt',
-  type: DGTSourceType.SOLID,
+  type: '1',
   configuration: {
     issuer: 'https://inrupt.net',
   } as DGTSourceSolidConfiguration,
@@ -20,7 +20,7 @@ export const mockSource2 = {
   uri: '2',
   icon: 'fas fa-users',
   description: 'Inrupt',
-  type: DGTSourceType.SOLID,
+  type: '1',
   configuration: {
     issuer: 'https://inrupt.net',
   } as DGTSourceSolidConfiguration,
@@ -31,7 +31,7 @@ export const mockSource3 = {
   triples: null,
   uri: '3',
   description: 'test-description',
-  type: DGTSourceType.SOLID,
+  type: '1',
   configuration: {
     issuer: 'https://inrupt.net',
   } as DGTSourceSolidConfiguration,
@@ -134,7 +134,7 @@ export const mockSources = [
     uri: '1',
     icon: 'fas fa-users',
     description: 'Solid Community',
-    type: DGTSourceType.SOLID,
+    type: '1',
     configuration: {
       issuer: 'https://solid.community',
     },

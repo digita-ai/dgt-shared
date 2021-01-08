@@ -1,4 +1,4 @@
-import { DGTCategory, DGTLDFilterBGP, DGTLDFilterType, DGTLDNode, DGTLDTriple } from '@digita-ai/dgt-shared-data'
+import { DGTCategory, DGTLDFilterBGP, DGTLDFilterType, DGTLDNode, DGTLDTermType, DGTLDTriple } from '@digita-ai/dgt-shared-data'
 import { DGTDataGroup, DGTDataValue } from '@digita-ai/dgt-shared-data';
 import { DGTI8NLocale } from '@digita-ai/dgt-shared-web';
 import { mockConnection1, mockConnection2, mockExchange3, mockExchange4, mockSource2 } from './test.events.mock-data';
@@ -67,28 +67,28 @@ export const mockPredicateType = 'http://www.w3.org/1999/02/22-rdf-syntax-ns#typ
 // MOCK NODES
 export const mockNodeString = {
   dataType: 'http://www.w3.org/2001/XMLSchema#string',
-  termType: 0,
+  termType: DGTLDTermType.LITERAL,
   value: 'test-value',
 } as DGTLDNode;
 export const mockNodePhone = {
-  termType: 1,
+  termType: DGTLDTermType.LITERAL,
   value: 'tel:+32479876543',
 } as DGTLDNode;
 export const mockNodeEmail = {
-  termType: 1,
+  termType: DGTLDTermType.LITERAL,
   value: 'mailto:jip@janneke.be',
 } as DGTLDNode;
 export const mockNodeProfileReference = {
   value: 'https://digitatest.inrupt.net/profile/card#me',
-  termType: 1,
+  termType: DGTLDTermType.REFERENCE,
 } as DGTLDNode;
 export const mockNodeTypeWork = {
   value: 'http://www.w3.org/2006/vcard/ns#Work',
-  termType: 1,
+  termType: DGTLDTermType.REFERENCE,
 } as DGTLDNode;
 export const mockNodeReference = {
   value: 'https://digitest.inrupt.net/profile/card#id1589374258090',
-  termType: 1,
+  termType: DGTLDTermType.REFERENCE,
 } as DGTLDNode;
 
 // MOCK VALUES

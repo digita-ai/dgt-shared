@@ -1,6 +1,6 @@
 import { async } from '@angular/core/testing';
 import { DGTTestRunnerService } from '@digita-ai/dgt-shared-test';
-import { DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils/lib/configuration/services/dgt-configuration-mock.service';
+import { DGTConfigurationMockService } from '@digita-ai/dgt-shared-utils';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../test.configuration';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';

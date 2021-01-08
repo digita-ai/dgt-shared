@@ -1,8 +1,8 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { configuration } from 'test.configuration';
-import { mockCategoryName, mockValueName } from 'test.data.mock-data';
-import { DGTBrowserDataInterfaceStandardComponent } from './data-interface-standard.component';
+import { configuration } from '../../../../test.configuration';
+import { mockCategoryName, mockValueName } from '../../../../test.mock-data';
+import { DGTDataInterfaceStandardComponent } from './dgt-data-interface-standard.component';
 
 describe('DGTDataInterfaceStandardComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTDataInterfaceStandardComponent>(configuration);
