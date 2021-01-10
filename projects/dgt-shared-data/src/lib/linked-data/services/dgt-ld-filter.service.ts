@@ -1,5 +1,5 @@
 
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTMap, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { DGTLDFilterType } from '../models/dgt-ld-filter-type.model';
@@ -29,6 +29,7 @@ export class DGTLDFilterService {
   constructor(
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
+    private config: DGTConfigurationService<DGTConfigurationBaseApi>,
   ) {
     // runner services
     this.registerRunnerService(new DGTLDFilterRunnerBGPService());
@@ -37,7 +38,7 @@ export class DGTLDFilterService {
     this.registerRunnerService(new DGTLDFilterRunnerCombinationService(this.paramChecker, this));
 
     // sparql services
-    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.paramChecker));
+    this.registerSparqlService(new DGTLDFilterSparqlExchangeService(this.config, this.paramChecker));
     this.registerSparqlService(new DGTLDFilterSparqlPartialService(this.paramChecker));
   }
 
@@ -82,7 +83,7 @@ export class DGTLDFilterService {
   public getQuery(filter: DGTLDFilter): Observable<string> {
     this.logger.debug(DGTLDFilterService.name, 'Creating query', { filter });
 
-    this.paramChecker.checkParametersNotNull({filter});
+    this.paramChecker.checkParametersNotNull({ filter });
     const sparqlService = this.sparqlServices.get(filter.type);
     if (!sparqlService) {
       throw new DGTErrorArgument('No runner registered for the given filter type.', { filter, sparqlService });

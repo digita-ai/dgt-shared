@@ -8,9 +8,23 @@ import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 @DGTInjectable()
 export class DGTLoggerService {
     private readonly minimumLevel: DGTLoggerLevel;
+    private readonly minimumLevelPrintData: DGTLoggerLevel;
 
     constructor(private config: DGTConfigurationService<DGTConfigurationBase>) {
         this.minimumLevel = this.config.get<DGTLoggerLevel>(c => c.logger.minimumLevel);
+        this.minimumLevelPrintData = this.config.get<DGTLoggerLevel>(c => c.logger.minimumLevelPrintData);
+    }
+
+    public info(typeName: string, message: string, data?: any) {
+        if (!typeName) {
+            throw new DGTErrorArgument('Typename should be set', typeName);
+        }
+
+        if (!message) {
+            throw new DGTErrorArgument('Message should be set', message);
+        }
+
+        this.log(DGTLoggerLevel.INFO, typeName, message, data);
     }
 
     public debug(typeName: string, message: string, data?: any) {
@@ -54,13 +68,13 @@ export class DGTLoggerService {
 
         if (level >= this.minimumLevel) {
             if (level >= DGTLoggerLevel.WARN) {
-                if (data) {
+                if (data && level >= this.minimumLevelPrintData) {
                     console.error('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
                 } else {
                     console.error('[' + displayDate + ' ' + typeName + '] ' + message);
                 }
             } else {
-                if (data) {
+                if (data && level >= this.minimumLevelPrintData) {
                     // tslint:disable-next-line: no-console
                     console.log('[' + displayDate + ' ' + typeName + '] ' + message, '\n', data);
                 } else {

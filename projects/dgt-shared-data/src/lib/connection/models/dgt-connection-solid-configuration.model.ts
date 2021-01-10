@@ -1,3 +1,5 @@
+import { DGTLDTypeRegistration } from '../../linked-data/models/dgt-ld-type-registration.model';
+
 export interface DGTConnectionSolidConfiguration {
   webId: string;
   accessToken: string;
@@ -9,4 +11,6 @@ export interface DGTConnectionSolidConfiguration {
   loginUri: string;
   accountId: string;
   protocol: string;
+  typeIndexes: string[];
+  typeRegistrations: DGTLDTypeRegistration[];
 }

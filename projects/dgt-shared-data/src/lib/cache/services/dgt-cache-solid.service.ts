@@ -2,6 +2,7 @@ import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGT
 import * as _ from 'lodash';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -281,5 +282,9 @@ export class DGTCacheSolidService extends DGTCacheService {
                     .pipe(map(response => ({ ...data, response })))),
                 map(data => data.response),
             );
+    }
+
+    public isStaleForExchange(exchange: DGTExchange): Observable<boolean> {
+        return of(true);
     }
 }

@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { NgModule, Type } from '@angular/core';
+import { ModuleWithProviders, NgModule, Type } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
+  MatBadgeModule,
   MatButtonModule,
   MatDialogModule,
   MatFormFieldModule,
@@ -82,7 +83,9 @@ import { DGTSectionSummaryComponent } from './interface/components/dgt-section-s
 import { DGTSectionTitleComponent } from './interface/components/dgt-section-title/dgt-section-title.component';
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
 import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-supported.guard';
-import { DGTTitleService } from './interface/services/dgt-title.service';
+import { DGTTimelineEventGroupComponent } from './timeline/components/timeline-event-group/timeline-event-group.component';
+import { DGTTimelineEventSummaryComponent } from './timeline/components/timeline-event-summary/timeline-event-summary.component';
+import { DGTTimelinePageComponent } from './timeline/components/timeline-page/timeline-page.component';
 import { DGTCompareValidator } from './validation/validators/dgt-compare.validator';
 import { DGTPhoneValidator } from './validation/validators/dgt-phone.validator';
 
@@ -153,8 +156,11 @@ export const declarations = [
   DGTDataCategoryComponent,
   DGTDataGroupComponent,
   DGTMenuComponent,
+  DGTTimelinePageComponent,
+  DGTTimelineEventGroupComponent,
+  DGTTimelineEventSummaryComponent,
 ];
-export const imports: (any[] | Type<any>)[] = [
+export const imports: (any[] | Type<any> | ModuleWithProviders<{}>)[] = [
   CommonModule,
   FormsModule,
   ReactiveFormsModule,
@@ -171,9 +177,16 @@ export const imports: (any[] | Type<any>)[] = [
   DGTSharedUtilsModule,
   DGTSharedDataModule,
   MatMenuModule,
+  TranslateModule.forRoot({
+    loader: {
+      provide: TranslateLoader,
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient],
+    },
+  }),
+  MatBadgeModule,
 ];
 export const providers = [
-  DGTTitleService,
   DGTI8NService,
   DGTPhoneValidator,
   DGTCompareValidator,
@@ -188,14 +201,7 @@ export const providers = [
   providers,
   imports: [
     ...imports,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
   ],
-  exports: [...imports, ...declarations],
+  exports: [...declarations],
 })
 export class DGTSharedWebModule { }

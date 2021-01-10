@@ -1,0 +1,53 @@
+<dgt-section [showIcon]="true" [showActions]="dotsMenuItems && dotsMenuItems.length > 0" [showSubtitle]="true">
+  <dgt-section-icon
+    [matBadgeHidden]="!showBadge"
+    matBadge="{{amount}}"
+    matBadgeColor="accent"
+    matBadgePosition="before"
+    [iconString]="iconUri"
+  >
+  </dgt-section-icon>
+  <dgt-section-title>
+    <span>
+      {{description}}
+    </span>
+  </dgt-section-title>
+  <dgt-section-subtitle>
+    <div *ngIf="uri; then thenBlockUri else elseBlockUri"></div>
+    <ng-template #thenBlockUri>
+      {{timeAgoDisplayString}} by <a href="{{uri}}">{{cutUri}}</a> - {{podProvider}}
+    </ng-template>
+    <ng-template #elseBlockUri>
+      {{timeAgoDisplayString}} {{ "timeline.components.timeline-event-summary.by" | translate }} <a>{{cutUri}}</a> -
+      {{podProvider}}
+    </ng-template>
+  </dgt-section-subtitle>
+  <dgt-section-action>
+    <button id="dots" [matMenuTriggerFor]="childComponentMenu?.menu">
+      <i class="fas fa-ellipsis-v"></i>
+    </button>
+  </dgt-section-action>
+</dgt-section>
+
+<dgt-menu>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('remove')" id="remove"
+    mat-menu-item (click)='onEventRemoved(events)'
+  >
+    <i class="far fa-trash-alt"></i> {{ "timeline.components.timeline-event-menu.remove" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('report')" id="report"
+    mat-menu-item (click)='onEventReported(events)'
+  >
+    <i class="far fa-flag"></i> {{ "timeline.components.timeline-event-menu.report" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showJustification')" id="showJustification"
+    mat-menu-item (click)='onShowJustification(events)'
+  >
+    <i class="fas fa-file-alt"></i> {{ "timeline.components.timeline-event-menu.showJustification" | translate}}
+  </button>
+  <button *ngIf="dotsMenuItems && dotsMenuItems.includes('showInVault')" id="showInVault"
+    mat-menu-item (click)='onShowInVault(events)'
+  >
+    <i class="fas fa-lock"></i> {{ "timeline.components.timeline-event-menu.showInVault" | translate}}
+  </button>
+</dgt-menu>

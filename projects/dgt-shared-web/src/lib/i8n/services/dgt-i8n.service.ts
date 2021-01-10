@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injector } from '@angular/core';
 import { DGTInjectable, DGTLoggerService, DGTPlatformService, DGTPlatformType } from '@digita-ai/dgt-shared-utils';
 import { TranslateService } from '@ngx-translate/core';
 import * as locale2 from 'locale2';

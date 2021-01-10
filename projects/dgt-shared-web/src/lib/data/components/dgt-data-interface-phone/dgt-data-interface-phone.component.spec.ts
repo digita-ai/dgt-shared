@@ -1,12 +1,12 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { configuration } from 'test.configuration';
-import { mockCategoryPhone, mockReferencePhone, mockTypeWork, mockValuePhone } from 'test.data.mock-data';
-import { DGTBrowserDataInterfacePhoneComponent } from './data-interface-phone.component';
+import { configuration } from '../../../../test.configuration';
+import { mockCategoryPhone, mockReferencePhone, mockTypeWork, mockValuePhone } from '../../../../test.mock-data';
+import { DGTDataInterfacePhoneComponent } from './dgt-data-interface-phone.component';
 
 describe('DataInterfaceEmailComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfacePhoneComponent>(configuration);
-    testService.setup(DGTBrowserDataInterfacePhoneComponent, false);
+    const testService = new DGTTestRunnerComponent<DGTDataInterfacePhoneComponent>(configuration);
+    testService.setup(DGTDataInterfacePhoneComponent, false);
     let hostElement: HTMLElement;
 
     beforeEach(() => {

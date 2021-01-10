@@ -1,14 +1,11 @@
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { v4 } from 'uuid';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
-import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
-import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
-import { DGTProfile } from '../../profile/models/dgt-profile.model';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTConsent } from '../models/dgt-consent.model';
 import { DGTConsentTransformerService } from './dgt-consent-transformer.service';
@@ -28,20 +25,18 @@ export class DGTConsentSolidService extends DGTConsentService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of consents.
    */
-  public getAll(profile: DGTProfile): Observable<DGTConsent[]> {
-    this.logger.debug(DGTConsentSolidService.name, 'Starting to get all consents', { profile });
-    this.paramChecker.checkParametersNotNull({ profile });
+  public getAll(exchange: DGTExchange): Observable<DGTConsent[]> {
+    this.logger.debug(DGTConsentSolidService.name, 'Starting to get all consents', { exchange });
+    this.paramChecker.checkParametersNotNull({ exchange });
 
-    const files = profile.typeRegistrations.filter(this.isCorrectTypeRegistration).map(typeRegistration => typeRegistration.instance);
+    // const files = profile.typeRegistrations.filter(this.isCorrectTypeRegistration).map(typeRegistration => typeRegistration.instance);
 
-    this.logger.debug(DGTConsentSolidService.name, 'Filtered files', { files });
+    // this.logger.debug(DGTConsentSolidService.name, 'Filtered files', { files });
 
-    return of({ profile, files })
+    return of({ exchange })
       .pipe(
-        switchMap(data => this.exchanges.get(profile.exchange)
-          .pipe(map(exchange => ({ ...data, exchange })))),
-        switchMap(data => forkJoin(data.files.map(file => this.connector.query<DGTConsent>(file, data.exchange, this.transformer)))
-          .pipe(map(consents => ({ ...data, consents: _.flatten(consents) })))),
+        switchMap(data => this.connector.query<DGTConsent>(data.exchange, this.transformer)
+          .pipe(map(consents => ({ ...data, consents })))),
         tap(data => this.logger.debug(DGTConsentSolidService.name, 'Finished querying for consents', { data })),
         map(data => data.consents),
       );
@@ -56,33 +51,14 @@ export class DGTConsentSolidService extends DGTConsentService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of registered consent.
    */
-  public register(profile: DGTProfile, purposeLabel: string): Observable<DGTConsent[]> {
-    this.paramChecker.checkParametersNotNull({ profile, purposeLabel });
-    this.logger.debug(DGTConsentService.name, 'Preparing to register consent.', { profile });
+  public register(resource: DGTConsent): Observable<DGTConsent[]> {
+    this.logger.debug(DGTConsentService.name, 'Preparing to register consent.', { resource });
 
-    let expirationDate = new Date();
-    const year = expirationDate.getFullYear();
-    const month = expirationDate.getMonth();
-    const day = expirationDate.getDate();
-    // TODO how long default ? Now 100 years - set expiry date to now to invalidate.
-    expirationDate = new Date(year + 100, month, day);
-    const createdAt = new Date();
+    this.paramChecker.checkParametersNotNull({ resource });
 
-    const resource: DGTConsent = {
-      uri: v4(),
-      triples: null,
-      expirationDate,
-      purposeLabel,
-      controller: 'Vito.be',
-      exchange: profile.exchange,
-      createdAt,
-    };
-
-    return of({ resource, profile })
+    return of({ resource })
       .pipe(
-        switchMap(data => this.typeRegistrations.registerForResources('http://digita.ai/voc/consents#consent', data.resource, data.profile)
-          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, resource: ({ ...data.resource, uri: typeRegistrations[0].instance }) })))),
-        switchMap(data => this.connector.add<DGTConsent>([data.resource], this.transformer)
+        switchMap(data => this.connector.save<DGTConsent>([data.resource], this.transformer)
           .pipe(map(addedConsents => ({ ...data, addedConsents })))),
         tap(data => this.logger.debug(DGTConsentSolidService.name, 'Added new consent', data)),
         map(data => data.addedConsents),
@@ -105,11 +81,9 @@ export class DGTConsentSolidService extends DGTConsentService {
 
   constructor(
     protected logger: DGTLoggerService,
-    private typeRegistrations: DGTLDTypeRegistrationService,
     private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTConsentTransformerService,
     private paramChecker: DGTParameterCheckerService,
-    private exchanges: DGTExchangeService,
   ) {
     super();
   }

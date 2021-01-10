@@ -1,6 +1,6 @@
 {
   "name": "dgt-shared",
-  "version": "0.2.9",
+  "version": "0.2.14",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -15,6 +15,7 @@
     "publish:web": "npm publish dist/dgt-shared-web",
     "reinstall": "rm -rf node_modules yarn.lock && yarn install && ./scripts/linkAndBuild.sh;",
     "test": "ng test",
+    "test:headless": "./scripts/test-headless.sh",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -42,11 +43,15 @@
     "@comunica/actor-init-sparql-rdfjs": "^1.16.2",
     "@comunica/bus-sparql-serialize": "^1.16.0",
     "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
     "@ngrx/effects": "^7.3.0",
     "@solid/jose": "^0.6.0",
     "awesome-phonenumber": "^2.5.0",
     "base64url": "^3.0.1",
     "buffer": "^5.4.3",
+    "cache-manager": "^3.4.0",
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
     "core-js": "^2.5.4",
     "jsonwebtoken": "^8.2.0",
     "locale2": "^2.3.1",
