@@ -1,5 +1,5 @@
 <dgt-section [showContent]="true" [showIcon]="true" [showActions]="false" [showSubtitle]="true"
-  *ngIf="category && values">
+  *ngIf="category && resources">
   <dgt-section-icon>
     <i [class]="category.icon"></i>
   </dgt-section-icon>
@@ -13,9 +13,9 @@
   </dgt-section-subtitle>
 
   <dgt-section-content>
-    <div dgtDataInterfaceHost (valueUpdated)="onValueUpdated($event)" (submit)="updateValues(valuesToUpdate)">
+    <div dgtDataInterfaceHost (resourceUpdated)="onResourceUpdated($event)" (submit)="updateResources(resourcesToUpdate)">
     </div>
-    <dgt-button (called)="updateValues(valuesToUpdate)" type="submit" color="accent" *ngIf="valuesToUpdate.size > 0">
+    <dgt-button (called)="updateResources(resourcesToUpdate)" type="submit" color="accent" *ngIf="resourcesToUpdate.size > 0">
       Save Changes
     </dgt-button>
   </dgt-section-content>

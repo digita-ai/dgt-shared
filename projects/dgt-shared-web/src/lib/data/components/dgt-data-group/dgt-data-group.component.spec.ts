@@ -19,16 +19,16 @@ describe('DGTBrowserDataGroupComponent', () => {
 
   describe('function: onValueChanged', () => {
     it('should emit valuedChanged when parameters are valid', () => {
-      spyOn(testService.component.valueUpdated, 'emit');
-      testService.component.onValueUpdated({
+      spyOn(testService.component.resourceUpdated, 'emit');
+      testService.component.onResourceUpdated({
         value: mockValueName,
         newObject: mockValueName.object.value,
       });
-      expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
+      expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
     });
     it('should throw error when val is null', () => {
       expect(() =>
-        testService.component.onValueUpdated(null),
+        testService.component.onResourceUpdated(null),
       ).toThrow();
     });
   });

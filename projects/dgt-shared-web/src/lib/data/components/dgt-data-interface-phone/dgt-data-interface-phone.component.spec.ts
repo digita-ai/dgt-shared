@@ -20,14 +20,14 @@ describe('DataInterfaceEmailComponent', () => {
         expect(testService.component).toBeTruthy();
     });
 
-    describe('onValueUpdated function', () => {
-        it('should emit valueUpdated with correct val', () => {
-            spyOn(testService.component.valueUpdated, 'emit');
-            testService.component.onValueUpdated({value: mockValuePhone, newObject: 'test'});
-            expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
+    describe('onResourceUpdated function', () => {
+        it('should emit resourceUpdated with correct val', () => {
+            spyOn(testService.component.resourceUpdated, 'emit');
+            testService.component.onResourceUpdated({value: mockValuePhone, newObject: 'test'});
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
         });
         it('should throw DGTErrorArgument if val is null', () => {
-            expect(() => { testService.component.onValueUpdated(null) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(null) }).toThrowError(DGTErrorArgument);
         });
     });
 

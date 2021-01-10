@@ -27,15 +27,15 @@ describe('DGTDataInterfaceStandardComponent', () => {
         });
     });
 
-    describe('onValueUpdated function', () => {
-        it('should emit valueUpdated with correct val', () => {
+    describe('onResourceUpdated function', () => {
+        it('should emit resourceUpdated with correct val', () => {
             const payload = {value: mockValueName, newObject: 'test'};
-            spyOn(testService.component.valueUpdated, 'emit');
-            testService.component.onValueUpdated(payload);
-            expect(testService.component.valueUpdated.emit).toHaveBeenCalledWith(payload);
+            spyOn(testService.component.resourceUpdated, 'emit');
+            testService.component.onResourceUpdated(payload);
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalledWith(payload);
         });
         it('should throw DGTErrorArgument if val is null', () => {
-            expect(() => { testService.component.onValueUpdated(null) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(null) }).toThrowError(DGTErrorArgument);
         });
     });
 

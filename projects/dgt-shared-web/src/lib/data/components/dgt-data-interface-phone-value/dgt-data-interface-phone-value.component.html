@@ -4,7 +4,7 @@
       <mat-form-field appearance="outline">
         <mat-label>{{ 'common.data.terms.' + type | translate}}</mat-label>
         <input matInput
-        (keyup)="onValueUpdated(value, formGroup.get('phone').value)"
+        (keyup)="onResourceUpdated(resource, formGroup.get('phone').value)"
         (keyup.enter)="onSubmit()"
         readonly="false"
         type="tel"

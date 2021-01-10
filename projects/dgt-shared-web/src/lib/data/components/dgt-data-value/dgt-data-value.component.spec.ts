@@ -2,11 +2,11 @@ import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
 import { mockValueName, mockValueRole } from '../../../../test.mock-data';
-import { DGTDataValueComponent } from './dgt-data-value.component';
+import { DGTLDResourceComponent } from './dgt-data-value.component';
 
 describe('DGTBrowserDataValueComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTDataValueComponent>(configuration);
-    testService.setup(DGTDataValueComponent);
+    const testService = new DGTTestRunnerComponent<DGTLDResourceComponent>(configuration);
+    testService.setup(DGTLDResourceComponent);
     let hostElement: HTMLElement;
 
     beforeEach(() => {
@@ -19,22 +19,22 @@ describe('DGTBrowserDataValueComponent', () => {
         expect(testService.component).toBeTruthy();
     });
 
-    describe('onValueUpdated function', () => {
+    describe('onResourceUpdated function', () => {
         it('should throw DGTErrorArgument when value is null', () => {
             expect(() =>
-                testService.component.onValueUpdated(null, 'test'),
+                testService.component.onResourceUpdated(null, 'test'),
             ).toThrowError(DGTErrorArgument);
         });
         it('should throw DGTErrorArgument when newObject is null', () => {
             expect(() =>
-                testService.component.onValueUpdated(mockValueName, null),
+                testService.component.onResourceUpdated(mockValueName, null),
             ).toThrowError(DGTErrorArgument);
         });
 
-        it('should emit valueUpdated when called', () => {
-            spyOn(testService.component.valueUpdated, 'emit');
-            testService.component.onValueUpdated(mockValueName, mockValueName.object.value);
-            expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
+        it('should emit resourceUpdated when called', () => {
+            spyOn(testService.component.resourceUpdated, 'emit');
+            testService.component.onResourceUpdated(mockValueName, mockValueName.object.value);
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
         });
     });
 

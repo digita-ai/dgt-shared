@@ -10,27 +10,26 @@ import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-sha
 })
 /** The Data Value component is a detailed view of a single Data Value */
 export class DGTDataInterfaceEmailValueComponent implements OnInit {
-
     /** The form to display the data in */
     public formGroup: FormGroup;
 
     /** The data value of this component */
-    private _value: DGTLDResource;
+    private _resource: DGTLDResource;
     @Input()
-    public get value(): DGTLDResource {
-        return this._value;
+    public get resource(): DGTLDResource {
+        return this._resource;
     }
-    public set value(value: DGTLDResource) {
-        this._value = value;
+    public set resource(resource: DGTLDResource) {
+        this._resource = resource;
 
-        if (this.value && this.email) {
-            this.updateReceived(this.value, this.email);
+        if (this.resource && this.email) {
+            this.updateReceived(this.resource, this.email);
         }
     }
 
-    /** Used to emit valueUpdated events */
+    /** Used to emit resourceUpdated events */
     @Output()
-    valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
+    resourceUpdated: EventEmitter<{ resource: DGTLDResource; newObject: any }>;
 
     /** Used to emit submit events */
     @Output()
@@ -45,8 +44,8 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
     public set email(v: string) {
         this._email = v;
 
-        if (this.value && this.email) {
-            this.updateReceived(this.value, this.email);
+        if (this.resource && this.email) {
+            this.updateReceived(this.resource, this.email);
         }
     }
 
@@ -63,26 +62,23 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
     /** cleaned version of email to be displayed */
     public emailCleaned: string = null;
 
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) {
+    constructor(private logger: DGTLoggerService, private paramChecker: DGTParameterCheckerService) {
         this.formGroup = new FormGroup({
             email: new FormControl(),
         });
-        this.valueUpdated = new EventEmitter();
+        this.resourceUpdated = new EventEmitter();
         this.submit = new EventEmitter();
     }
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     /**
      * On every update of the value input, update the form group values
      * @param values all values of this field
      */
-    private updateReceived(value: DGTLDResource, email: string) {
-        this.logger.debug(DGTDataInterfaceEmailValueComponent.name, 'Update received', { value, email });
-        this.paramChecker.checkParametersNotNull({value, email});
+    private updateReceived(resource: DGTLDResource, email: string) {
+        this.logger.debug(DGTDataInterfaceEmailValueComponent.name, 'Update received', { resource, email });
+        this.paramChecker.checkParametersNotNull({ resource, email });
 
         const emailSplit = email.split('mailto:');
 
@@ -104,13 +100,13 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
      * @throws DGTErrorArgument when value is not set
      * @emits
      */
-    public onValueUpdated(value: DGTLDResource, email: string, keypress: KeyboardEvent): void {
-        this.paramChecker.checkParametersNotNull({value, email});
+    public onResourceUpdated(resource: DGTLDResource, email: string, keypress: KeyboardEvent): void {
+        this.paramChecker.checkParametersNotNull({ resource, email });
         if (keypress.keyCode === 13) {
             this.submit.emit();
         } else {
             const parsedEmail = `mailto:${email}`;
-            this.valueUpdated.emit({value, newObject: parsedEmail});
+            this.resourceUpdated.emit({ resource, newObject: parsedEmail });
         }
     }
 }

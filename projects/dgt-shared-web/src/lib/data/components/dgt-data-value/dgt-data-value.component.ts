@@ -4,68 +4,63 @@ import { DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
-  selector: 'dgt-data-value',
-  templateUrl: './dgt-data-value.component.html',
-  styleUrls: ['./dgt-data-value.component.scss'],
+    selector: 'dgt-data-value',
+    templateUrl: './dgt-data-value.component.html',
+    styleUrls: ['./dgt-data-value.component.scss'],
 })
 /** The Data Value component is a detailed view of a single Data Value */
-export class DGTDataValueComponent implements OnInit {
+export class DGTLDResourceComponent implements OnInit {
+    /** The form to display the data in */
+    public formGroup: FormGroup;
 
-  /** The form to display the data in */
-  public formGroup: FormGroup;
-
-  /** The data value of this component */
-  private _value: DGTLDResource;
-  @Input()
-  public get value(): DGTLDResource {
-    return this._value;
-  }
-  public set value(value: DGTLDResource) {
-    this._value = value;
-    this.updateReceived(value);
-  }
-
-  /** Used to emit valueUpdated events */
-  @Output()
-  valueUpdated: EventEmitter<{value: DGTLDResource, newObject: any}>;
-
-  constructor(
-    private logger: DGTLoggerService,
-    private paramChecker: DGTParameterCheckerService,
-  ) {
-    this.formGroup = new FormGroup({
-      subject: new FormControl(),
-      object: new FormControl(),
-    });
-    this.valueUpdated = new EventEmitter<{value: DGTLDResource, newObject: any}>();
-  }
-
-  ngOnInit() {
-  }
-
-  /**
-   * On every update of the value input, update the form group values
-   * @param values all values of this field
-   */
-  public updateReceived(value: DGTLDResource) {
-    if (value && value.triples) {
-      this.formGroup.setValue({
-        subject: value.triples[0].subject.value,
-        object: value.triples[0].object.value,
-      });
-    } else {
-      this.logger.debug(DGTDataValueComponent.name, 'value was not set', value);
+    /** The data resource of this component */
+    private _resource: DGTLDResource;
+    @Input()
+    public get resource(): DGTLDResource {
+        return this._resource;
     }
-  }
+    public set resource(resource: DGTLDResource) {
+        this._resource = resource;
+        this.updateReceived(resource);
+    }
 
-  /**
-   * @param value Value to update
-   * @throws DGTErrorArgument when value is not set
-   * @emits
-   */
-  public onValueUpdated(value: DGTLDResource, newObject: string): void {
-    this.paramChecker.checkParametersNotNull({value, newObject});
-    this.valueUpdated.emit({value, newObject});
-    this.formGroup.markAsPristine();
-  }
+    /** Used to emit resourceUpdated events */
+    @Output()
+    resourceUpdated: EventEmitter<{ resource: DGTLDResource; newObject: any }>;
+
+    constructor(private logger: DGTLoggerService, private paramChecker: DGTParameterCheckerService) {
+        this.formGroup = new FormGroup({
+            subject: new FormControl(),
+            object: new FormControl(),
+        });
+        this.resourceUpdated = new EventEmitter<{ resource: DGTLDResource; newObject: any }>();
+    }
+
+    ngOnInit() {}
+
+    /**
+     * On every update of the value input, update the form group values
+     * @param values all values of this field
+     */
+    public updateReceived(resource: DGTLDResource) {
+        if (resource && resource.triples) {
+            this.formGroup.setValue({
+                subject: resource.triples[0].subject.value,
+                object: resource.triples[0].object.value,
+            });
+        } else {
+            this.logger.debug(DGTLDResourceComponent.name, 'resource was not set', resource);
+        }
+    }
+
+    /**
+     * @param resource Value to update
+     * @throws DGTErrorArgument when value is not set
+     * @emits
+     */
+    public onResourceUpdated(resource: DGTLDResource, newObject: string): void {
+        this.paramChecker.checkParametersNotNull({ resource, newObject });
+        this.resourceUpdated.emit({ resource, newObject });
+        this.formGroup.markAsPristine();
+    }
 }

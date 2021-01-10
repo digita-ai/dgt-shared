@@ -20,7 +20,6 @@ export { DGTQueryCondition } from './lib/metadata/models/dgt-query-condition.mod
 export { DGTQueryConditionOperator } from './lib/metadata/models/dgt-query-condition-operator.model';
 export { DGTQueryService } from './lib/metadata/services/dgt-query.service';
 export { DGTQueryPagination } from './lib/metadata/models/dgt-query-pagination.model';
-export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/categories/models/dgt-category.model';

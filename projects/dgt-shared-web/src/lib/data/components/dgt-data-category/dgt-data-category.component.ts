@@ -12,18 +12,18 @@ import { DGTDataInterfaceFactoryService } from '../../services/dgt-data-interfac
 export class DGTDataCategoryComponent implements AfterViewInit {
 
   /** Updates in children that need updating */
-  public valuesToUpdate: Map<string, { value: DGTLDResource, newObject: any }>;
+  public resourcesToUpdate: Map<string, { resource: DGTLDResource, newObject: any }>;
 
   @ViewChild(DGTDataInterfaceHostDirective) host: DGTDataInterfaceHostDirective;
 
-  /** Data values that belong under this group */
-  private _values: DGTLDResource[];
-  public get values(): DGTLDResource[] {
-    return this._values;
+  /** Data resources that belong under this group */
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTLDResource[]) {
-    this._values = values;
-    this.updateReceived(values, this.category);
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
+    this.updateReceived(resources, this.category);
   }
 
   /** Categories of this group */
@@ -33,12 +33,12 @@ export class DGTDataCategoryComponent implements AfterViewInit {
   }
   @Input() public set category(category: DGTCategory) {
     this._category = category;
-    this.updateReceived(this.values, category);
+    this.updateReceived(this.resources, category);
   }
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
+  resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   /** Used to emit infoClicked events */
   @Output()
@@ -49,30 +49,30 @@ export class DGTDataCategoryComponent implements AfterViewInit {
     private paramChecker: DGTParameterCheckerService,
     private logger: DGTLoggerService,
   ) {
-    this.valueUpdated = new EventEmitter();
+    this.resourceUpdated = new EventEmitter();
     this.infoClicked = new EventEmitter();
-    this.valuesToUpdate = new Map();
+    this.resourcesToUpdate = new Map();
   }
 
   ngAfterViewInit(): void {
     if (this.host) {
-      this.interfaces.create(this.host, this.category, this.values);
+      this.interfaces.create(this.host, this.category, this.resources);
     }
   }
 
   /**
-   * @param value Value to update
-   * @throws DGTErrorArgument when value is not set
+   * @param resource resource to update
+   * @throws DGTErrorArgument when resource is not set
    * @emits
   */
-  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val }, 1);
-    this.valuesToUpdate.set(val.value.uri, val);
+    this.resourcesToUpdate.set(val.resource.uri, val);
   }
 
-  public updateValues(values: Map<string, { value: DGTLDResource, newObject: any }>): void {
-    values.forEach(value => this.valueUpdated.emit(value));
-    this.valuesToUpdate.clear();
+  public updateResources(updates: Map<string, { resource: DGTLDResource, newObject: any }>): void {
+    updates.forEach(update => this.resourceUpdated.emit(update));
+    this.resourcesToUpdate.clear();
   }
 
   public clickedInfo(category: DGTCategory): void {
@@ -80,8 +80,8 @@ export class DGTDataCategoryComponent implements AfterViewInit {
     this.infoClicked.emit(category);
   }
 
-  updateReceived(values: DGTLDResource[], categories: DGTCategory): any {
-    if (values && categories) {
+  updateReceived(resources: DGTLDResource[], categories: DGTCategory): any {
+    if (resources && categories) {
       this.ngAfterViewInit();
     }
   }

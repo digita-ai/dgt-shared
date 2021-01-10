@@ -17,20 +17,20 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
-  private _values: DGTLDResource[];
-  public get values(): DGTLDResource[] {
-    return this._values;
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTLDResource[]) {
-    this._values = values;
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
@@ -38,31 +38,31 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
+  resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   @Output()
   submit: EventEmitter<any>;
 
   constructor(private logger: DGTLoggerService) {
-    this.valueUpdated = new EventEmitter();
+    this.resourceUpdated = new EventEmitter();
     this.submit = new EventEmitter();
   }
 
   ngOnInit() {
   }
 
-  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceSurveysComponent.name, 'Update received', { values, category });
+  private updateReceived(resources: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceSurveysComponent.name, 'Update received', { resources, category });
 
-    if (!values) {
-      throw new DGTErrorArgument('Argument values should be set.', values);
+    if (!resources) {
+      throw new DGTErrorArgument('Argument resources should be set.', resources);
     }
 
     if (!category) {
       throw new DGTErrorArgument('Argument category should be set.', category);
     }
 
-    const surveyReferences = _.flatten(values.map(resource => resource.triples)).filter(value => value.predicate === 'http://digita.ai/voc/health#survey');
+    const surveyReferences = _.flatten(resources.map(resource => resource.triples)).filter(triple => triple.predicate === 'http://digita.ai/voc/health#survey');
 
     surveyReferences.map(surveyReference => {
 
@@ -99,10 +99,10 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
     if (!val) {
       throw new DGTErrorArgument('Argument value should be set.', val);
     }
-    this.valueUpdated.emit(val);
+    this.resourceUpdated.emit(val);
   }
 }

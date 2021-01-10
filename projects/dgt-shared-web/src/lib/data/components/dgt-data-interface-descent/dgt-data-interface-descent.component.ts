@@ -22,21 +22,21 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
   /** values needed to display descent data */
-  private _values: DGTLDResource[];
-  public get values(): DGTLDResource[] {
-    return this._values;
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTLDResource[]) {
-    this._values = values;
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
@@ -46,7 +46,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{ value: DGTLDResource, newObject: any }>;
+  resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   /** Used to emit submit events */
   @Output()
@@ -56,7 +56,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
   ) {
-    this.valueUpdated = new EventEmitter();
+    this.resourceUpdated = new EventEmitter();
     this.submit = new EventEmitter();
 
     this.formGroup = new FormGroup({
@@ -123,9 +123,9 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: { value: DGTLDResource, newObject: any }): void {
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val }, 1);
-    this.valueUpdated.emit(val);
+    this.resourceUpdated.emit(val);
   }
 
   /**
