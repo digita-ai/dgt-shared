@@ -98,10 +98,10 @@ export class DGTConnectorService {
             switchMap((data) => this.purposes.get(data.exchange.purpose).pipe(
                 map(purpose => ({ ...data, purpose})),
             )),
-            map((data) => ({ ...data, resource: data.resources.map(res => ({
+            map((data) => ({ ...data, resources: data.resources.map(res => ({
                 ...res,
-                triples: res.triples.filter(tr => data.purpose.predicates.find(pred => tr.predicate === pred)),
-            } as DGTLDResource ))})),
+                triples: res.triples.filter(tr => data.purpose.predicates.find(pred => tr.predicate === pred)?.length > 0),
+            } as T ))})),
             map((data) => data.resources),
             catchError((error, caught) => {
                 this.logger.error(DGTConnectorService.name, 'Error while querying connectors', error, {
