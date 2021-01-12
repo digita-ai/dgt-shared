@@ -1,6 +1,6 @@
-import { DGTCategory, DGTLDFilterBGP, DGTLDFilterType, DGTLDNode, DGTLDTermType, DGTLDTriple } from '@digita-ai/dgt-shared-data'
-import { DGTDataGroup, DGTDataValue } from '@digita-ai/dgt-shared-data';
-import { DGTI8NLocale } from '@digita-ai/dgt-shared-web';
+import { DGTCategory, DGTLDFilterBGP, DGTLDFilterType, DGTLDNode, DGTLDResource, DGTLDTermType, DGTLDTriple } from '@digita-ai/dgt-shared-data'
+import { DGTDataGroup } from '@digita-ai/dgt-shared-data';
+import { DGTI8NLocale } from './lib/i8n/models/dgt-i8n-locale.model';
 import { mockConnection1, mockConnection2, mockExchange3, mockExchange4, mockSource2 } from './test.events.mock-data';
 
 export const mockCategoryName = {
@@ -108,7 +108,7 @@ export const mockValueName = {
       object: mockNodeString,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockValuePhone = {
   exchange: mockExchange3.uri,
   object: mockNodePhone,
@@ -124,7 +124,7 @@ export const mockValuePhone = {
       object: mockNodePhone,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockValueEmail = {
   uri: 'test-value-email',
   exchange: mockExchange4.uri,
@@ -141,7 +141,7 @@ export const mockValueEmail = {
       object: mockNodeEmail,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockValueEmailUpdated = {
   uri: 'test-value-email',
   exchange: mockExchange4.uri,
@@ -158,7 +158,7 @@ export const mockValueEmailUpdated = {
       object: { ...mockNodeEmail, value: 'suske.wiske@stripboek.be' },
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockValueRole = {
   uri: 'test-role',
   exchange: mockExchange3.uri,
@@ -175,10 +175,10 @@ export const mockValueRole = {
       object: mockNodeString,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockValues = [
   mockValueName, mockValuePhone, mockValueEmail,
-] as DGTDataValue[];
+] as DGTLDResource[];
 
 // MOCK REFERENCES
 export const mockReferencePhone = {
@@ -201,7 +201,7 @@ export const mockReferencePhone = {
       object: mockNodeReference,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockReferenceEmail = {
   connection: '2',
   // uri: mockNodeProfileReference.value,
@@ -222,14 +222,12 @@ export const mockReferenceEmail = {
       object: mockNodeReference,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 
 // MOCK OTHERS
 export const mockTypeWork = {
   exchange: mockExchange3.uri,
-  object: mockNodeTypeWork,
-  predicate: mockPredicateType,
-  subject: mockNodeReference,
+  uri: 'test-value-phone',
   triples: [
     {
       uri: 'test-value-phone',
@@ -240,7 +238,7 @@ export const mockTypeWork = {
       object: mockNodeTypeWork,
     } as DGTLDTriple,
   ],
-} as DGTDataValue;
+} as DGTLDResource;
 export const mockGroupIdentiy = {
   id: 'test-group-identity',
   description: 'Test Group Identity',

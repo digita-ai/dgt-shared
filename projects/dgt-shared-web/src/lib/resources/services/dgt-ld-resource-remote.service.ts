@@ -7,7 +7,7 @@ import {
     DGTLDResource,
     DGTLDResourceTransformerService,
     DGTLDTriple,
-} from '@digita-ai/dgt-shared-data/';
+} from '@digita-ai/dgt-shared-data';
 import {
     DGTConfigurationBaseWeb,
     DGTConfigurationService,

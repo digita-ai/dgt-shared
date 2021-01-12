@@ -50,7 +50,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
         super();
     }
 
-    private add<T extends DGTLDResource>(resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
+    public add<T extends DGTLDResource>(resources: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
         this.logger.debug(DGTConnectorSolid.name, 'Starting to add entity', { domainEntities: resources });
 
         return of({ resources, transformer }).pipe(
@@ -297,7 +297,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
         );
     }
 
-    private update<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
+    public update<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         if (!resources) {
             throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
