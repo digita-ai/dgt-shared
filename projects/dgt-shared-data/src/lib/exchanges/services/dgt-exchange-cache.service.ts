@@ -1,14 +1,14 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTConfigurationService, DGTConfigurationBaseApi } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTExchange } from '../models/dgt-exchange.model';
 import { DGTExchangeTransformerService } from './dgt-exchange-transformer.service';
 import { DGTExchangeService } from './dgt-exchange.service';
-import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 
 @DGTInjectable()
 export class DGTExchangeCacheService extends DGTExchangeService {

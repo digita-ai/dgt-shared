@@ -1,13 +1,16 @@
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { Observable, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, of, forkJoin } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
@@ -17,6 +20,7 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         private cache: DGTCacheService,
         private transformer: DGTConnectionTransformerService,
         private uri: DGTUriFactoryService,
+        private exchanges: DGTExchangeService,
     ) {
         super();
     }
@@ -65,12 +69,23 @@ export class DGTConnectionCacheService extends DGTConnectionService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete<T>(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            // GET ALL EXCHANGES CONNECTED TO THIS CONNECTION
+            switchMap(data => this.exchanges.query({
+                type: DGTLDFilterType.PARTIAL,
+                partial: { connection: data.resource.uri },
+            } as DGTLDFilterPartial).pipe(
+                map(exchanges => ({ ...data, exchanges })),
+            )),
+            // DELETE ALL EXCHANGES CONNECTED TO THIS CONNECTION
+            switchMap(data => forkJoin(data.exchanges.map(ex => this.exchanges.delete(ex))).pipe(
+                map(deletedExchanges => data),
+            )),
+            // DELETE THE CONNECTION ITSELF
+            switchMap(data => this.cache.delete<T>(this.transformer, [data.resource])
+                .pipe(map(resources => ({ ...data, resources })))),
+            map(data => _.head(data.resources)),
+        );
     }
     public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
         return this.query<T>().pipe(
