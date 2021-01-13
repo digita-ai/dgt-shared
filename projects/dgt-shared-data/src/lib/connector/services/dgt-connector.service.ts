@@ -12,6 +12,7 @@ import { DGTConnectionService } from '../../connection/services/dgt-connection-a
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
+import { DGTLDUtils } from '../../linked-data/services/dgt-ld-utils.service';
 import { DGTPurposeService } from '../../purpose/services/dgt-purpose.service';
 import { DGTSourceService } from '../../source/services/dgt-source.service';
 import { DGTConnector } from '../models/dgt-connector.model';
@@ -26,6 +27,7 @@ export class DGTConnectorService {
         private connections: DGTConnectionService,
         private paramChecker: DGTParameterCheckerService,
         private purposes: DGTPurposeService,
+        private ldService: DGTLDUtils,
     ) {}
 
     public register(sourceType: string, connector: DGTConnector<any, any>) {
@@ -98,10 +100,10 @@ export class DGTConnectorService {
             switchMap((data) => this.purposes.get(data.exchange.purpose).pipe(
                 map(purpose => ({ ...data, purpose})),
             )),
-            map((data) => ({ ...data, resources: data.resources.map(res => ({
-                ...res,
-                triples: res.triples.filter(tr => data.purpose.predicates.find(pred => tr.predicate === pred)?.length > 0),
-            } as T ))})),
+            map((data) => ({
+                ...data,
+                resources: data.resources.map(res => this.ldService.filterResourceByPredicates(res, data.purpose.predicates)),
+            })),
             map((data) => data.resources),
             catchError((error, caught) => {
                 this.logger.error(DGTConnectorService.name, 'Error while querying connectors', error, {
