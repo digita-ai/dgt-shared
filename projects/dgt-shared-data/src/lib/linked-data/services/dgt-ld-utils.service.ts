@@ -1,5 +1,6 @@
-import { DGTLDResource, DGTLDTriple } from '@digita-ai/dgt-shared-data/public-api';
-import { DGTInjectable, DGTLoggerService, DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTLDResource } from '../models/dgt-ld-resource.model';
+import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 
 @DGTInjectable()
 export class DGTLDUtils {
