@@ -75,7 +75,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
                     uri: this.config.get(c => c.cache.uri) + 'data/' + encodeURIComponent(data.resource.uri),
                     exchange: null, triples: null,
                 } as DGTLDResource]).pipe(
-                    map( () => data)
+                    map(() => data),
                 )),
                 // DELETE THE EXCHANGE ITSELF
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
