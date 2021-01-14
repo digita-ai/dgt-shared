@@ -1,16 +1,16 @@
 import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTConnection } from '../models/dgt-connection.model';
 import { DGTConnectionService } from './dgt-connection-abstract.service';
 import { DGTConnectionTransformerService } from './dgt-connection-transformer.service';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
@@ -96,6 +96,9 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         throw new DGTErrorNotImplemented();
     }
     public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
+        throw new DGTErrorNotImplemented();
+    }
+    public getConnectionsForHolder(holderUri: string): Observable<DGTConnection<any>[]> {
         throw new DGTErrorNotImplemented();
     }
 }

@@ -135,4 +135,13 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
         map(res => res.data),
       );
   }
+
+  public getConnectionsForHolder<T extends DGTConnection<any>>(holderUri: string): Observable<T[]> {
+    return of({holderUri}).pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holderUri)}/connections` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.get<T[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      map(response => response.data),
+    );
+  }
 }
