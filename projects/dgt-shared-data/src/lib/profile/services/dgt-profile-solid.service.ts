@@ -32,7 +32,7 @@ export class DGTProfileSolidService extends DGTProfileService {
     return of({ exchange })
       .pipe(
         switchMap(data => this.connector.query<DGTProfile>(data.exchange, this.transformer)
-          .pipe(map(profiles => ({ ...data, profile: profiles[0] })))),
+          .pipe(map(profiles => ({ ...data, profile: profiles[1] })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved type registrations for profile', data)),
         map(data => data.profile),

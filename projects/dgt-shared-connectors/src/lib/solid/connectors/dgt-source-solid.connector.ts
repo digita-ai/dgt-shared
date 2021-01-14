@@ -220,7 +220,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                             ...data,
                             resources: resources.map((resource) => ({
                                 ...resource,
-                                uri: this.uris.generate(data.resource, 'data'),
+                                uri: this.uris.generate(resource, 'data'),
                             })),
                         })),
                     ),
