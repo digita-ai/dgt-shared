@@ -1,6 +1,6 @@
 {
   "name": "dgt-shared",
-  "version": "0.2.14",
+  "version": "0.2.16",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

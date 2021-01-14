@@ -13,7 +13,7 @@ describe('DGTCryptoBrowserService', () => {
         expect(testService.service).toBeTruthy();
     }));
 
-    it('should log a debug message', async((done) => {
+    it('should log a debug message', ((done) => {
         testService.service.generateKeyPair()
         .subscribe(
             (keyPair) => {
