@@ -12,5 +12,5 @@ describe('DGTConnectorSolid', () => {
     it('should be correctly instantiated', (() => {
         expect(testService.service).toBeTruthy();
     }));
-    
+
 });
