@@ -72,7 +72,7 @@ export class DGTLDService {
         exchanges: DGTExchange[],
         transformer: DGTLDTransformer<T>,
     ): Observable<T[]> {
-        this.logger.debug(DGTLDService.name, 'Refreshing cache for exchanges', { exchanges, transformer });
+        this.logger.info(DGTLDService.name, 'Refreshing cache for exchanges', { exchanges, transformer });
 
         return of({ exchanges, transformer }).pipe(
             switchMap((data) =>
@@ -91,7 +91,7 @@ export class DGTLDService {
                         ),
                 ).pipe(map((resourcesOfResources) => ({ ...data, resources: _.flatten(resourcesOfResources) }))),
             ),
-            tap((data) => this.logger.info(DGTLDService.name, 'Refreshed resources', { resources: data.resources })),
+            tap((data) => this.logger.debug(DGTLDService.name, 'Refreshed resources', { resources: data.resources })),
             switchMap((data) =>
                 this.cache.save<T>(transformer, data.resources).pipe(map((saved) => ({ ...data, saved }))),
             ),

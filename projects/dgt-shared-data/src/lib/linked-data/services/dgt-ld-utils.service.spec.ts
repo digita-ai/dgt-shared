@@ -66,4 +66,74 @@ describe('DGTLDUtilsService', () => {
       expect(testService.service.filterTriplesByPredicates(triples, predicatesD)).toEqual([])
     }));
   });
+
+  describe('combineResources', () => {
+    it('should error when resources is null', async(() => {
+      expect(() => {
+        testService.service.combineResources(null)
+      }).toThrowError(DGTErrorArgument);
+    }));
+    it('should combine two similar resources', async(() => {
+      const resource1: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleA,
+        ],
+      };
+
+      const resource2: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleB,
+        ],
+      };
+
+      const resource3: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleA, tripleB,
+        ],
+      };
+
+      expect(testService.service.combineResources([resource1, resource2])).toEqual([resource3]);
+    }));
+    it('should combine two similar and one different resources', async(() => {
+      const resource1: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleA,
+        ],
+      };
+
+      const resource2: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleB,
+        ],
+      };
+
+      const resource3: DGTLDResource = {
+        uri: 'foo2',
+        exchange: 'bar',
+        triples: [
+          tripleC,
+        ],
+      };
+
+      const combined: DGTLDResource = {
+        uri: 'foo',
+        exchange: 'bar',
+        triples: [
+          tripleA, tripleB,
+        ],
+      };
+
+      expect(testService.service.combineResources([resource1, resource2, resource3])).toEqual([combined, resource3]);
+    }));
+  });
 });

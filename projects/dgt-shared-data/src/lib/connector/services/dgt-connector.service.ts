@@ -27,7 +27,7 @@ export class DGTConnectorService {
         private connections: DGTConnectionService,
         private paramChecker: DGTParameterCheckerService,
         private purposes: DGTPurposeService,
-        private ldService: DGTLDUtils,
+        private utils: DGTLDUtils,
     ) {}
 
     public register(sourceType: string, connector: DGTConnector<any, any>) {
@@ -102,7 +102,11 @@ export class DGTConnectorService {
             )),
             map((data) => ({
                 ...data,
-                resources: data.resources.map(res => this.ldService.filterResourceByPredicates(res, data.purpose.predicates)),
+                resources: data.resources.map(res => this.utils.filterResourceByPredicates(res, data.purpose.predicates)),
+            })),
+            map((data) => ({
+                ...data,
+                resources: this.utils.combineResources(data.resources),
             })),
             map((data) => data.resources),
             catchError((error, caught) => {

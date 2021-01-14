@@ -83,18 +83,15 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             switchMap((data) =>
                 transformer.toTriples(data.resources).pipe(map((transformed) => ({ ...data, transformed }))),
             ),
-            tap((data) => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
+            tap((data) => this.logger.info(DGTCacheInMemoryService.name, 'Transformed before save', data)),
             tap(
                 (data) =>
                     (this.cache = [
-                        ...this.cache.filter(
-                            (resource) =>
-                                !resources.some((r) => r.uri === resource.uri && r.exchange === resource.exchange),
-                        ),
+                        ...this.cache.filter((resource) => !data.transformed.some((r) => r.uri === resource.uri)),
                         ...data.transformed,
                     ]),
             ),
-            tap(() => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
+            tap(() => this.logger.info(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
             map((data) => data.resources),
         );
     }
@@ -138,31 +135,4 @@ export class DGTCacheInMemoryService extends DGTCacheService {
     public isStaleForExchange(exchange: DGTExchange): Observable<boolean> {
         return of(true);
     }
-
-    // public getValuesForExchange(exchange: DGTExchange): Observable<DGTLDTriple[]> {
-    //     this.logger.debug(DGTCacheInMemoryService.name, 'Retrieving values from cache for exchange', { exchange });
-    //     if (!exchange) {
-    //         throw new DGTErrorArgument('Argument exchange should be set.', exchange);
-    //     }
-    //     return of(this.cache.filter(triple => triple.exchange === exchange.id));
-    // }
-    // public remove(query: DGTQuery): Observable<any> {
-    //     this.logger.debug(DGTCacheInMemoryService.name, 'Removing values from cache', { query });
-    //     if (!query) {
-    //         throw new DGTErrorArgument('Argument query should be set.', query);
-    //     }
-    //     this.cache = this.queries.execute(this.cache, query);
-    //     return of(this.cache);
-    // }
-    // public storeForExchange(exchange: DGTExchange, values: DGTLDTriple[]): Observable<DGTLDTriple[]> {
-    //     this.logger.debug(DGTCacheInMemoryService.name, 'Storing values for exchange to cache', { exchange, values });
-    //     return of({ values, exchange })
-    //         .pipe(
-    //             switchMap(data => this.remove({ conditions: [{ field: 'exchange', operator: '==', value: data.exchange.id }] })
-    //                 .pipe(map(removal => data))),
-    //             tap(data => this.logger.debug(DGTCacheInMemoryService.name, 'Removed old values, ready to store new ones', data)),
-    //             tap(data => this.cache = data.values),
-    //             map(data => data.values),
-    //         );
-    // }
 }
