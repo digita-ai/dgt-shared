@@ -78,9 +78,9 @@ export class DGTConnectionCacheService extends DGTConnectionService {
                 map(exchanges => ({ ...data, exchanges })),
             )),
             // DELETE ALL EXCHANGES CONNECTED TO THIS CONNECTION
-            switchMap(data => forkJoin(data.exchanges.map(ex => this.exchanges.delete(ex))).pipe(
+            switchMap(data => data.exchanges.length > 0 ? forkJoin(data.exchanges.map(ex => this.exchanges.delete(ex))).pipe(
                 map(deletedExchanges => data),
-            )),
+            ) : of(data)),
             // DELETE THE CONNECTION ITSELF
             switchMap(data => this.cache.delete<T>(this.transformer, [data.resource])
                 .pipe(map(resources => ({ ...data, resources })))),
