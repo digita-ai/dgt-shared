@@ -45,13 +45,13 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
         let res: DGTHolder[] = null;
 
         if (resource && resource.triples) {
-            const credentialValues = resource.triples.filter(value =>
+            const holderValues = resource.triples.filter(value =>
                 value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
                 value.object.value === 'http://digita.ai/voc/holders#holder',
             );
 
-            if (credentialValues) {
-                res = credentialValues.map(resourceValue => this.transformOne(resourceValue, resource));
+            if (holderValues) {
+                res = holderValues.map(holderValue => this.transformOne(holderValue, resource));
             }
         }
 

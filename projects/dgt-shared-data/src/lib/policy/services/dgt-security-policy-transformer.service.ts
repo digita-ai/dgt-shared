@@ -49,13 +49,13 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
         let res: DGTSecurityPolicy[] = null;
 
         if (resource && resource.triples) {
-            const credentialValues = resource.triples.filter(value =>
+            const policyValues = resource.triples.filter(value =>
                 value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
                 value.object.value === 'http://digita.ai/voc/policies#policy',
             );
 
-            if (credentialValues) {
-                res = credentialValues.map(resourceValue => this.transformOne(resourceValue, resource));
+            if (policyValues) {
+                res = policyValues.map(policyValue => this.transformOne(policyValue, resource));
             }
         }
 

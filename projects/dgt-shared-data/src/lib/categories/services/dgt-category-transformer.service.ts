@@ -51,13 +51,13 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         let res: DGTCategory[] = null;
 
         if (resource && resource.triples) {
-            const credentialValues = resource.triples.filter(value =>
+            const categoryValues = resource.triples.filter(value =>
                 value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
                 value.object.value === 'http://digita.ai/voc/categories#category',
             );
 
-            if (credentialValues) {
-                res = credentialValues.map(credentialValue => this.transformOne<T>(credentialValue, resource));
+            if (categoryValues) {
+                res = categoryValues.map(categoryValue => this.transformOne<T>(categoryValue, resource));
             }
         }
 
