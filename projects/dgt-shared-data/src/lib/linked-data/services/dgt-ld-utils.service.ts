@@ -1,10 +1,11 @@
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import * as _ from 'lodash';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTriple } from '../models/dgt-ld-triple.model';
 
 @DGTInjectable()
 export class DGTLDUtils {
-    constructor(private logger: DGTLoggerService) { }
+    constructor(private logger: DGTLoggerService) {}
 
     public same(predicate1: string, predicate2: string): boolean {
         return predicate1 && predicate2 && predicate1 === predicate2;
@@ -32,7 +33,7 @@ export class DGTLDUtils {
             throw new DGTErrorArgument('Parameter predicates should be set', predicates);
         }
 
-        return triples.filter(tr => predicates.find(pred => tr.predicate === pred)?.length > 0);
+        return triples.filter((tr) => predicates.find((pred) => tr.predicate === pred)?.length > 0);
     }
 
     public filterResourceByPredicates<T extends DGTLDResource>(resource: T, predicates: string[]): T {
@@ -50,5 +51,25 @@ export class DGTLDUtils {
             ...resource,
             triples: this.filterTriplesByPredicates(resource.triples, predicates),
         } as T;
+    }
+
+    public combineResources<T extends DGTLDResource>(resources: T[]): T[] {
+        if (!resources) {
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
+        }
+
+        let res: T[] = [];
+
+        const groupedResources = _.groupBy(resources, 'uri');
+
+        for (const uri of Object.keys(groupedResources)) {
+            const resourcesForUri = groupedResources[uri];
+            const triples = _.flatten(resourcesForUri.map((resource) => resource.triples));
+            const firstResource = _.head(resourcesForUri);
+
+            res = [...res, { ...firstResource, uri, triples }];
+        }
+
+        return res;
     }
 }

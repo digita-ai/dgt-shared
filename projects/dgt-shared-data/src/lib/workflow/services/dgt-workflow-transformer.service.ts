@@ -365,7 +365,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         return res;
     }
 
-    private actionToDomain(triple: DGTLDTriple, workflow: DGTLDResource): any {
+    private actionToDomain(triple: DGTLDTriple, workflow: DGTLDResource): DGTWorkflowAction[] {
 
         if (!triple) {
             throw new DGTErrorArgument('Argument triple should be set.', triple);
@@ -379,13 +379,11 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
             value.subject.value === triple.subject.value &&
             value.predicate === 'http://digita.ai/voc/workflow#actions',
         ).map(action => {
-            let res = {};
+            let res: DGTWorkflowAction;
             const type = workflow.triples.find(value =>
                 value.subject.value === action.object.value &&
                 value.predicate === 'http://digita.ai/voc/workflow#actiontype',
             );
-
-            res = { type: type ? type.object.value : null }
 
             if (type.object.value === DGTWorkflowActionType.REMOVE_PREFIX) {
                 const predicate = workflow.triples.find(value =>
@@ -398,10 +396,8 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                     value.predicate === 'http://digita.ai/voc/workflow#actionprefix',
                 );
 
-                res = {
-                    ...res,
-                    predicate: predicate ? predicate.object.value : null,
-                    prefix: prefix ? prefix.object.value : null,
+                if (predicate && prefix) {
+                    res = new DGTRemovePrefixWorkflowAction(predicate.object.value, prefix.object.value, this.logger);
                 }
             } else if (type.object.value === DGTWorkflowActionType.MAP_FIELD) {
                 const oldpredicate = workflow.triples.find(value =>
@@ -413,17 +409,13 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                     value.subject.value === action.object.value &&
                     value.predicate === 'http://digita.ai/voc/workflow#actionnewPredicate',
                 );
-
-                res = {
-                    ...res,
-                    oldpredicate: oldpredicate ? oldpredicate.object.value : null,
-                    newpredicate: newpredicate ? newpredicate.object.value : null,
+                if (oldpredicate && newpredicate) {
+                    res = new DGTMapFieldWorkflowAction(oldpredicate.object.value, newpredicate.object.value, this.logger);
                 }
             }
-
             return res;
         });
 
-        return actions;
+        return actions.filter(action => action !== undefined);
     }
 }
