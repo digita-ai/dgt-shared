@@ -45,13 +45,13 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         let res: DGTExchange[] = null;
 
         if (resource && resource.triples) {
-            const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/exchanges#exchange' &&
-                value.subject.value.endsWith('exchange#'),
+            const exchangeValues = resource.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/exchanges#exchange',
             );
 
-            if (resourceSubjectValues) {
-                res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
+            if (exchangeValues) {
+                res = exchangeValues.map(exchangeValue => this.transformOne(exchangeValue, resource));
             }
         }
 
@@ -80,9 +80,13 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/exchanges#exchange',
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/exchanges#exchange',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/exchanges#purpose',
@@ -146,7 +150,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const purpose = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/exchanges#purpose',
@@ -162,7 +166,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         );
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             triples: null,
             exchange: null,
             purpose: purpose ? purpose.object.value : null,

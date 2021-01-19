@@ -55,13 +55,13 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         let res: DGTWorkflow[] = null;
 
         if (workflow && workflow.triples) {
-            const workflowsubjectValues = workflow.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/workflows#workflow' &&
-                value.subject.value.endsWith('workflow#'),
+            const workflowValues = workflow.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/workflows#workflow',
             );
 
-            if (workflowsubjectValues) {
-                res = workflowsubjectValues.map(workflowsubjectValue => this.transformOne(workflowsubjectValue, workflow));
+            if (workflowValues) {
+                res = workflowValues.map(workflowValue => this.transformOne(workflowValue, workflow));
             }
         }
 
@@ -90,9 +90,13 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/workflows#workflow',
-                    subject: { value: `${workflow.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: workflowSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: workflowSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/workflows#workflow',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/workflows#source',
@@ -174,7 +178,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         this.paramChecker.checkParametersNotNull({ triple, entity: workflow });
 
         const workflowTriples = workflow.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const filter = this.filterToDomain(triple, workflow);
         const actions = this.actionToDomain(triple, workflow)
@@ -200,7 +204,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         );
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             filter: filter,
             exchange: null,
             source: source ? source.object.value : null,
@@ -264,7 +268,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         }
 
         const predicates: string[] = workflow.triples.filter(value =>
-            value.subject.value === triple.object.value &&
+            value.subject.value === triple.subject.value &&
             value.predicate === 'http://digita.ai/voc/workflowfilter#predicates',
         ).map(predicate => predicate.object.value);
 
@@ -372,7 +376,7 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         }
 
         const actions = workflow.triples.filter(value =>
-            value.subject.value === triple.object.value &&
+            value.subject.value === triple.subject.value &&
             value.predicate === 'http://digita.ai/voc/workflow#actions',
         ).map(action => {
             let res: DGTWorkflowAction;

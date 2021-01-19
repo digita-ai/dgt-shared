@@ -1,7 +1,6 @@
-import { forkJoin, Observable, of } from 'rxjs';
-
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
@@ -50,13 +49,13 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
         let res: DGTSecurityPolicy[] = null;
 
         if (resource && resource.triples) {
-            const policiesubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/policies#policy' &&
-                value.subject.value.endsWith('policy#'),
+            const policyValues = resource.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/policies#policy',
             );
 
-            if (policiesubjectValues) {
-                res = policiesubjectValues.map(policiesubjectValue => this.transformOne(policiesubjectValue, resource));
+            if (policyValues) {
+                res = policyValues.map(policyValue => this.transformOne(policyValue, resource));
             }
         }
 
@@ -85,9 +84,12 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/policies#policy',
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        value: 'http://digita.ai/voc/policies#policy',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/policies#holder',
@@ -147,7 +149,7 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
         this.paramChecker.checkParametersNotNull({ triple, entity: resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const type = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/policies#type',
@@ -166,7 +168,7 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
 
         if (parsedType === DGTSecurityPolicyType.ALLOW_PURPOSE) {
             res = {
-                uri: triple.object.value,
+                uri: triple.subject.value,
                 holder: holder ? holder.object.value : null,
                 purpose: purpose ? purpose.object.value : null,
                 type: parsedType,
@@ -175,7 +177,7 @@ export class DGTSecurityPolicyTransformerService implements DGTLDTransformer<DGT
             } as DGTSecurityPolicyAllowPurpose;
         } else if (parsedType === DGTSecurityPolicyType.ADMIN) {
             res = {
-                uri: triple.object.value,
+                uri: triple.subject.value,
                 holder: holder ? holder.object.value : null,
                 type: parsedType,
                 triples: [...resourceTriples, triple],

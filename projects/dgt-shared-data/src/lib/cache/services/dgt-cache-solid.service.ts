@@ -134,43 +134,47 @@ export class DGTCacheSolidService extends DGTCacheService {
             'Content-Type': 'application/x-www-form-urlencoded',
         };
 
-        // TODO this query doesnt delete for instance an mssql source's mapping
-
-        const query = (resource: T) => (`
-        DELETE {
-            GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p ?o.
-            }
-        }
-        WHERE {
-            GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p ?o {
-                    SELECT DISTINCT ?s ?p ?o
-                    WHERE {
-                        { ?s ?p ?o FILTER regex(?o, '${resource.uri}$') }
-                        UNION
-                        { ?s ?p ?o FILTER regex(?s, '${resource.uri}$') }
-                        UNION
-                        {
-                            ?ss ?pp ?s FILTER regex(?ss, '${resource.uri}$').
-                            ?s ?p ?o
-                        }
-                    }
-                }
-            }
-        }
-        `);
-
-        const uri = this.config.get(config => config.cache.sparqlEndpoint);
-
-        return of({ resources, headers, uri }).pipe(
-            switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
-                .pipe(map(() => resource)),
-            )).pipe(map(res => ({ ...data, deleted: res }))), // TODO filter resources for which http status code was not 200 OK? throw errors?
-            ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', { deleted: data.deleted, data })),
-            map(data => data.deleted),
+        return of({headers, resources}).pipe(
+            switchMap(data => forkJoin(data.resources.map(res => this.http.delete<string>(res.uri, data.headers))).pipe(
+                map(responses => ({ ...data, responses })),
+            )),
+            map(data => data.resources),
         );
+        // const query = (resource: T) => (`
+        // DELETE {
+        //     GRAPH <${resource.uri.split('#')[0]}> {
+        //         ?s ?p ?o.
+        //     }
+        // }
+        // WHERE {
+        //     GRAPH <${resource.uri.split('#')[0]}> {
+        //         ?s ?p ?o {
+        //             SELECT DISTINCT ?s ?p ?o
+        //             WHERE {
+        //                 { ?s ?p ?o FILTER regex(?o, '${resource.uri}$') }
+        //                 UNION
+        //                 { ?s ?p ?o FILTER regex(?s, '${resource.uri}$') }
+        //                 UNION
+        //                 {
+        //                     ?ss ?pp ?s FILTER regex(?ss, '${resource.uri}$').
+        //                     ?s ?p ?o
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // `);
+
+        // const uri = this.config.get(config => config.cache.sparqlEndpoint);
+
+        // return of({ resources, headers, uri }).pipe(
+        //     switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
+        //         .pipe(map(() => resource)),
+        //     )).pipe(map(res => ({ ...data, deleted: res }))), // TODO filter resources for which http status code was not 200 OK? throw errors?
+        //     ),
+        //     tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', { deleted: data.deleted, data })),
+        //     map(data => data.deleted),
+        // );
 
     }
 
