@@ -13,4 +13,5 @@ export abstract class DGTConnectionService implements DGTLDResourceService<DGTCo
     public abstract getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]>;
     public abstract getConnectionForInvite(inviteId: string, sourceId: string): Observable<any>;
     public abstract sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T>;
+    public abstract getConnectionsForHolder(holderUri: string): Observable<DGTConnection<any>[]>;
 }

@@ -1,9 +1,10 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTExchange } from '../models/dgt-exchange.model';
 import { DGTExchangeTransformerService } from './dgt-exchange-transformer.service';
@@ -17,6 +18,7 @@ export class DGTExchangeCacheService extends DGTExchangeService {
         private cache: DGTCacheService,
         private transformer: DGTExchangeTransformerService,
         private uri: DGTUriFactoryService,
+        private config: DGTConfigurationService<DGTConfigurationBaseApi>,
     ) {
         super();
     }
@@ -68,6 +70,14 @@ export class DGTExchangeCacheService extends DGTExchangeService {
 
         return of({ resource })
             .pipe(
+                // DELETE THE DATA KEPT IN STORAGE FOR THIS EXCHANGE
+                switchMap(data => this.cache.delete(this.transformer, [{
+                    uri: this.config.get(c => c.cache.uri) + 'data/' + encodeURIComponent(data.resource.uri),
+                    exchange: null, triples: null,
+                } as DGTLDResource]).pipe(
+                    map(() => data),
+                )),
+                // DELETE THE EXCHANGE ITSELF
                 switchMap(data => this.cache.delete(this.transformer, [data.resource])
                     .pipe(map(resources => ({ ...data, resources })))),
                 map(data => _.head(data.resources)),

@@ -101,4 +101,8 @@ export class DGTConnectionMockService extends DGTConnectionService {
   public sendTokensForInvite<T extends DGTConnection<any>>(inviteId: string, fragvalue: string): Observable<T> {
     throw new DGTErrorNotImplemented();
   }
+
+  public getConnectionsForHolder<T extends DGTConnection<any>>(holderUri: string): Observable<T[]> {
+    return of(this.resources.filter(res => res.holder === holderUri));
+  }
 }

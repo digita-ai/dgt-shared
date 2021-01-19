@@ -45,13 +45,13 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         let res: DGTPurpose[] = null;
 
         if (resource && resource.triples) {
-            const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/purposes#purpose' &&
-                value.subject.value.endsWith('purpose#'),
+            const purposeValues = resource.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/purposes#purpose',
             );
 
-            if (resourceSubjectValues) {
-                res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
+            if (purposeValues) {
+                res = purposeValues.map(purposeValue => this.transformOne(purposeValue, resource));
             }
         }
 
@@ -80,9 +80,13 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/purposes#purpose',
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/purposes#purpose',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/purposes#icon',
@@ -167,7 +171,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const icon = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/purposes#icon',
@@ -186,7 +190,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         );
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             triples: null,
             exchange: null,
             icon: icon ? icon.object.value : null,
