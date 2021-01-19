@@ -10,6 +10,8 @@ import { DGTDataInterfaceFactoryService } from './lib/data/services/dgt-data-int
 import { DGTDataInterfaceResolverMockService } from './lib/data/services/dgt-data-interface-resolver-mock.service';
 import { DGTDataInterfaceResolverService } from './lib/data/services/dgt-data-interface-resolver.service';
 import { declarations, imports, providers } from './lib/dgt-shared-web.module';
+import { DGTLDResourceRemoteService } from './lib/resources/services/dgt-ld-resource-remote.service';
+import { DGTStateStoreService } from './lib/state/services/dgt-state-store.service';
 
 @NgModule({
     declarations: [],
@@ -34,6 +36,8 @@ export const configuration: DGTTestConfiguration = {
         providers: [
             ...providers,
             DGTDataInterfaceFactoryService,
+            DGTLDResourceRemoteService,
+            DGTStateStoreService,
             {
                 provide: DGTDataInterfaceResolverService,
                 useClass: DGTDataInterfaceResolverMockService,

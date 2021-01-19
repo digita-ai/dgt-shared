@@ -83,6 +83,7 @@ import { DGTSectionSummaryComponent } from './interface/components/dgt-section-s
 import { DGTSectionTitleComponent } from './interface/components/dgt-section-title/dgt-section-title.component';
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
 import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-supported.guard';
+import { DGTLDResourceRemoteService } from './resources/services/dgt-ld-resource-remote.service';
 import { DGTTimelineEventGroupComponent } from './timeline/components/timeline-event-group/timeline-event-group.component';
 import { DGTTimelineEventSummaryComponent } from './timeline/components/timeline-event-summary/timeline-event-summary.component';
 import { DGTTimelinePageComponent } from './timeline/components/timeline-page/timeline-page.component';

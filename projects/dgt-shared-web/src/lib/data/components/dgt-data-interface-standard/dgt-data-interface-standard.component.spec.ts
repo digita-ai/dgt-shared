@@ -1,7 +1,7 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
-import { mockCategoryName, mockValueName } from '../../../../test.mock-data';
+import { mockCategoryName, mockResourceName } from '../../../../test.mock-data';
 import { DGTDataInterfaceStandardComponent } from './dgt-data-interface-standard.component';
 
 describe('DGTDataInterfaceStandardComponent', () => {
@@ -12,7 +12,7 @@ describe('DGTDataInterfaceStandardComponent', () => {
     beforeEach(() => {
         hostElement = testService.fixture.nativeElement;
         testService.component.category = mockCategoryName;
-        testService.component.values = [mockValueName];
+        testService.component.resources = [mockResourceName];
         testService.fixture.detectChanges();
     });
 
@@ -29,7 +29,7 @@ describe('DGTDataInterfaceStandardComponent', () => {
 
     describe('onResourceUpdated function', () => {
         it('should emit resourceUpdated with correct val', () => {
-            const payload = {value: mockValueName, newObject: 'test'};
+            const payload = {resource: mockResourceName, newObject: 'test'};
             spyOn(testService.component.resourceUpdated, 'emit');
             testService.component.onResourceUpdated(payload);
             expect(testService.component.resourceUpdated.emit).toHaveBeenCalledWith(payload);

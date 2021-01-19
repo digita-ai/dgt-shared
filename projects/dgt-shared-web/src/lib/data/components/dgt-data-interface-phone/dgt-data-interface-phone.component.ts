@@ -58,7 +58,7 @@ export class DGTDataInterfacePhoneComponent implements OnInit, DGTDataInterface 
         this.logger.debug(DGTDataInterfacePhoneComponent.name, 'Update received', { values, category });
         this.paramChecker.checkParametersNotNull({ values, category });
 
-        const triples = _.flatten(values.map((resource) => resource.triples));
+        const triples: DGTLDTriple[] = _.flatten(values.map((resource) => resource.triples));
 
         const phoneReferences = triples.filter(
             (value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasTelephone',

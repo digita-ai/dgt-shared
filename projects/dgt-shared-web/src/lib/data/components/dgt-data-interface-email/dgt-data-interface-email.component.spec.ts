@@ -1,7 +1,7 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
-import { mockCategoryEmail, mockReferenceEmail, mockTypeWork, mockValueEmail } from '../../../../test.mock-data';
+import { mockCategoryEmail, mockReferenceEmail, mockTypeWork, mockResourceEmail } from '../../../../test.mock-data';
 import { DGTDataInterfaceEmailComponent } from './dgt-data-interface-email.component';
 
 describe('DataInterfaceEmailComponent', () => {
@@ -11,7 +11,7 @@ describe('DataInterfaceEmailComponent', () => {
 
     beforeEach(() => {
         testService.component.category = mockCategoryEmail;
-        testService.component.values = [mockValueEmail, mockReferenceEmail, mockTypeWork];
+        testService.component.resources = [mockResourceEmail, mockReferenceEmail, mockTypeWork];
         testService.fixture.detectChanges();
         hostElement = testService.fixture.nativeElement;
     });
@@ -23,7 +23,7 @@ describe('DataInterfaceEmailComponent', () => {
     describe('onResourceUpdated function', () => {
         it('should emit resourceUpdated with correct val', () => {
             spyOn(testService.component.resourceUpdated, 'emit');
-            testService.component.onResourceUpdated({value: mockValueEmail, newObject: 'test'});
+            testService.component.onResourceUpdated({resource: mockResourceEmail, newObject: 'test'});
             expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
         });
         it('should throw DGTErrorArgument if val is null', () => {

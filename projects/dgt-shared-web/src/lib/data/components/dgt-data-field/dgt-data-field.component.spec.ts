@@ -1,7 +1,7 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
-import { mockValueName } from '../../../../test.mock-data';
+import { mockResourceName } from '../../../../test.mock-data';
 import { DGTDataFieldComponent } from './dgt-data-field.component';
 
 describe('DGTDataFieldComponent', () => {
@@ -18,7 +18,7 @@ describe('DGTDataFieldComponent', () => {
         //     'http://xmlns.com/foaf/0.1/name'
         // ],
         // } as DGTCategoryField;
-        testService.component.value = mockValueName;
+        testService.component.resource = mockResourceName;
         testService.fixture.detectChanges();
     });
 
@@ -33,19 +33,19 @@ describe('DGTDataFieldComponent', () => {
 
         it('should emit resourceUpdated when on keypress', () => {
             spyOn(testService.component.resourceUpdated, 'emit');
-            testService.component.onResourceUpdated(mockValueName, 'test-name', keypressA);
-            expect(testService.component.resourceUpdated.emit).toHaveBeenCalledWith({value: mockValueName, newObject: 'test-name'});
+            testService.component.onResourceUpdated(mockResourceName, 'test-name', keypressA);
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalledWith({resource: mockResourceName, newObject: 'test-name'});
         });
         it('should emit submit when keypress is enter', () => {
             spyOn(testService.component.submit, 'emit');
-            testService.component.onResourceUpdated(mockValueName, 'test-name', keypressEnter);
+            testService.component.onResourceUpdated(mockResourceName, 'test-name', keypressEnter);
             expect(testService.component.submit.emit).toHaveBeenCalled();
         });
         it('should throw DGTErrorArgument when value is null', () => {
             expect(() => { testService.component.onResourceUpdated(null, 'test', keypressA) }).toThrowError(DGTErrorArgument);
         });
         it('should throw DGTErrorArgument when newObject is null', () => {
-            expect(() => { testService.component.onResourceUpdated(mockValueName, null, keypressA) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(mockResourceName, null, keypressA) }).toThrowError(DGTErrorArgument);
         });
     });
 
@@ -54,7 +54,7 @@ describe('DGTDataFieldComponent', () => {
         describe('input field', () => {
 
             it('should contain correct value', () => {
-                expect(testService.component.formGroup.get('desc').value).toEqual(mockValueName.object.value);
+                expect(testService.component.formGroup.get('desc').value).toEqual(mockResourceName.triples[0].object.value);
             });
         })
     });

@@ -35,7 +35,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
         }
     }
 
-    public emails: DGTMap<DGTLDResource, { email: string; type: string }>;
+    public emails: DGTMap<DGTLDTriple, { email: string; type: string }>;
 
     private emailValues: DGTLDTriple[];
 
@@ -58,14 +58,14 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
         this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
         this.paramChecker.checkParametersNotNull({ values, category });
 
-        const triples = _.flatten(values.map((resource) => resource.triples));
+        const triples: DGTLDTriple[] = _.flatten(values.map((resource) => resource.triples));
 
         const emailsReferencesWithValues = values.map((resource) => {
             const emailReferences = triples.filter(
                 (value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail',
             );
             const emailValues = triples.filter((value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
-            // this.emailValues = emailValues;
+            this.emailValues = emailValues;
             const emailTypes = triples.filter(
                 (value) => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
             );
@@ -78,7 +78,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
             let res = [];
 
             if (emailReferences && emailValues && emailTypes) {
-                res = emailReferences.map<{ key: DGTLDResource; value: { email: string; type: string } }>(
+                res = emailReferences.map<{ key: DGTLDTriple; value: { email: string; type: string } }>(
                     (emailReference) => {
                         const emailReferenceObject = emailReference.object.value;
 
@@ -90,7 +90,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
                                 : null;
 
                         return {
-                            key: resource,
+                            key: emailReference,
                             value,
                         };
                     },
@@ -104,7 +104,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
             return res;
         });
 
-        this.emails = new DGTMap<DGTLDResource, { email: string; type: string }>(_.flatten(emailsReferencesWithValues));
+        this.emails = new DGTMap<DGTLDTriple, { email: string; type: string }>(_.flatten(emailsReferencesWithValues));
         this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
     }
 

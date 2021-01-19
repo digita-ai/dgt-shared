@@ -1,6 +1,6 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { configuration } from '../../../../test.configuration';
-import { mockCategoryName, mockGroupIdentiy, mockValueName, mockValues } from '../../../../test.mock-data';
+import { mockCategoryName, mockGroupIdentiy, mockResourceName, mockResources } from '../../../../test.mock-data';
 import { DGTDataGroupComponent } from './dgt-data-group.component';
 
 describe('DGTBrowserDataGroupComponent', () => {
@@ -11,18 +11,18 @@ describe('DGTBrowserDataGroupComponent', () => {
 
   beforeEach(() => {
     hostElement = testService.fixture.nativeElement;
-    testService.component.values = [mockValues[0]];
+    testService.component.resources = [mockResources[0]];
     testService.component.categories = [mockCategoryName];
     testService.component.group = mockGroupIdentiy;
     testService.fixture.detectChanges();
   });
 
-  describe('function: onValueChanged', () => {
-    it('should emit valuedChanged when parameters are valid', () => {
+  describe('function: onResourceUpdated', () => {
+    it('should emit resourceUpdated when parameters are valid', () => {
       spyOn(testService.component.resourceUpdated, 'emit');
       testService.component.onResourceUpdated({
-        value: mockValueName,
-        newObject: mockValueName.object.value,
+        resource: mockResourceName,
+        newObject: mockResourceName.triples[0].object.value,
       });
       expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
     });
