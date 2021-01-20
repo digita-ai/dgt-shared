@@ -2,7 +2,7 @@ import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
 import { mockResourceName, mockResourceRole } from '../../../../test.mock-data';
-import { DGTLDResourceComponent } from './dgt-data-value.component';
+import { DGTLDResourceComponent } from './dgt-data-resource.component';
 
 describe('DGTBrowserDataResourceComponent', () => {
     const testService = new DGTTestRunnerComponent<DGTLDResourceComponent>(configuration);

@@ -30,7 +30,7 @@ import { DGTDataInterfacePhoneValueComponent } from './data/components/dgt-data-
 import { DGTDataInterfacePhoneComponent } from './data/components/dgt-data-interface-phone/dgt-data-interface-phone.component';
 import { DGTDataInterfaceStandardComponent } from './data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 import { DGTDataInterfaceSurveysComponent } from './data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
-import { DGTLDResourceComponent } from './data/components/dgt-data-value/dgt-data-value.component';
+import { DGTLDResourceComponent } from './data/components/dgt-data-resource/dgt-data-resource.component';
 import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 import { DGTFormControlComponent } from './form/components/dgt-form-control/dgt-form-control.component';
 import { DGTFormDateComponent } from './form/components/dgt-form-date/dgt-form-date.component';

@@ -4,9 +4,9 @@ import { DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 
 @Component({
-    selector: 'dgt-data-value',
-    templateUrl: './dgt-data-value.component.html',
-    styleUrls: ['./dgt-data-value.component.scss'],
+    selector: 'dgt-data-resource',
+    templateUrl: './dgt-data-resource.component.html',
+    styleUrls: ['./dgt-data-resource.component.scss'],
 })
 /** The Data Value component is a detailed view of a single Data Value */
 export class DGTLDResourceComponent implements OnInit {

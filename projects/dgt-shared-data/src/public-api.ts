@@ -69,9 +69,9 @@ export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.mod
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
-export { DGTDataGroup } from './lib/data-value/models/data-group.model';
-export { DGTDataInterface } from './lib/data-value/models/data-category-interface.model';
-export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-interface-host.directive';
+export { DGTDataGroup } from './lib/data-resource/models/data-group.model';
+export { DGTDataInterface } from './lib/data-resource/models/data-category-interface.model';
+export { DGTDataInterfaceHostDirective } from './lib/data-resource/directives/data-interface-host.directive';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
 export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model';
 export { DGTEvent } from './lib/events/models/dgt-event.model';

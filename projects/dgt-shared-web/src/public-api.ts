@@ -85,7 +85,7 @@ export { DGTDataInterfacePhoneComponent } from './lib/data/components/dgt-data-i
 export { DGTDataInterfacePhoneValueComponent } from './lib/data/components/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
 export { DGTDataInterfaceStandardComponent } from './lib/data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 export { DGTDataInterfaceSurveysComponent } from './lib/data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
-export { DGTLDResourceComponent } from './lib/data/components/dgt-data-value/dgt-data-value.component';
+export { DGTLDResourceComponent } from './lib/data/components/dgt-data-resource/dgt-data-resource.component';
 export { DGTDataCategoryComponent } from './lib/data/components/dgt-data-category/dgt-data-category.component';
 export { DGTDataGroupComponent } from './lib/data/components/dgt-data-group/dgt-data-group.component';
 export { DGTStateEffectsBaseWebService } from './lib/state/services/dgt-state-effects-base-web.service';
