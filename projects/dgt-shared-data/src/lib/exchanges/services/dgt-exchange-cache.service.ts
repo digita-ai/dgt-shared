@@ -1,4 +1,10 @@
-import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import {
+    DGTConfigurationBaseApi,
+    DGTConfigurationService,
+    DGTErrorArgument,
+    DGTInjectable,
+    DGTLoggerService,
+} from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -12,7 +18,6 @@ import { DGTExchangeService } from './dgt-exchange.service';
 
 @DGTInjectable()
 export class DGTExchangeCacheService extends DGTExchangeService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -47,18 +52,17 @@ export class DGTExchangeCacheService extends DGTExchangeService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'exchange');
-                }
-
-                return resource
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(savedResources => savedResources))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'exchange')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTExchange[] }))),
+            ),
+            switchMap((data) =>
+                this.cache.save(this.transformer, data.resources).pipe(map((savedResources) => savedResources)),
+            ),
+        );
     }
 
     public delete(resource: DGTExchange): Observable<DGTExchange> {
@@ -68,19 +72,24 @@ export class DGTExchangeCacheService extends DGTExchangeService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                // DELETE THE DATA KEPT IN STORAGE FOR THIS EXCHANGE
-                switchMap(data => this.cache.delete(this.transformer, [{
-                    uri: this.config.get(c => c.cache.uri) + 'data/' + encodeURIComponent(data.resource.uri),
-                    exchange: null, triples: null,
-                } as DGTLDResource]).pipe(
-                    map(() => data),
-                )),
-                // DELETE THE EXCHANGE ITSELF
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            // DELETE THE DATA KEPT IN STORAGE FOR THIS EXCHANGE
+            switchMap((data) =>
+                this.cache
+                    .delete(this.transformer, [
+                        {
+                            uri: this.config.get((c) => c.cache.uri) + 'data/' + encodeURIComponent(data.resource.uri),
+                            exchange: null,
+                            triples: null,
+                        } as DGTLDResource,
+                    ])
+                    .pipe(map(() => data)),
+            ),
+            // DELETE THE EXCHANGE ITSELF
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 }

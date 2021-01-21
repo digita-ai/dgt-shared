@@ -194,6 +194,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         );
 
         return {
+            shape: 'http://digita.ai/voc/events#event',
             uri: eventSubjectValue.object.value,
             date: date ? new Date(date.object.value) : null,
             description: description ? description.object.value : null,

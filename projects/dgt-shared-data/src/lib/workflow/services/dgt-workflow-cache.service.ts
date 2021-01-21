@@ -1,4 +1,9 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import {
+    DGTErrorArgument,
+    DGTInjectable,
+    DGTLoggerService,
+    DGTParameterCheckerService,
+} from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -14,7 +19,6 @@ import { DGTWorkflowService } from './dgt-workflow.service';
 
 @DGTInjectable()
 export class DGTWorkflowCacheService extends DGTWorkflowService {
-
     constructor(
         private cache: DGTCacheService,
         private transformer: DGTWorkflowTransformerService,
@@ -52,18 +56,17 @@ export class DGTWorkflowCacheService extends DGTWorkflowService {
         }
 
         return of({
-            workflows: workflows.map(workflow => {
-                if (!workflow.uri) {
-                    workflow.uri = this.uri.generate(workflow, 'workflow');
-                }
-
-                return workflow;
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, data.workflows)
-                    .pipe(map(savedResources => savedResources))),
-            );
+            workflows,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.workflows, 'workflow')
+                    .pipe(map((updatedResources) => ({ ...data, workflows: updatedResources as T[] }))),
+            ),
+            switchMap((data) =>
+                this.cache.save<T>(this.transformer, data.workflows).pipe(map((savedResources) => savedResources)),
+            ),
+        );
     }
 
     public delete(workflow: DGTWorkflow): Observable<DGTWorkflow> {
@@ -73,11 +76,11 @@ export class DGTWorkflowCacheService extends DGTWorkflowService {
             throw new DGTErrorArgument('Argument workflow should be set.', workflow);
         }
 
-        return of({ workflow })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.workflow])
-                    .pipe(map(workflows => ({ ...data, workflows })))),
-                map(data => _.head(data.workflows)),
-            );
+        return of({ workflow }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.workflow]).pipe(map((workflows) => ({ ...data, workflows }))),
+            ),
+            map((data) => _.head(data.workflows)),
+        );
     }
 }

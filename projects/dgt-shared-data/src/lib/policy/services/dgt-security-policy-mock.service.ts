@@ -13,22 +13,23 @@ export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
     private resources: DGTSecurityPolicy[] = [];
 
     constructor(
-        private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService,
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private uri: DGTUriFactoryService,
     ) {
         super();
     }
 
     public get(uri: string): Observable<DGTSecurityPolicy> {
-        return of(this.resources.find(e => e.uri === uri));
+        return of(this.resources.find((e) => e.uri === uri));
     }
 
     public query<T extends DGTSecurityPolicy>(filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTSecurityPolicyMockService.name, 'Starting to query policies', filter);
 
-        return of({ filter, resources: this.resources as T[] })
-            .pipe(
-                switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.resources) : of(data.resources)),
-            );
+        return of({ filter, resources: this.resources as T[] }).pipe(
+            switchMap((data) => (data.filter ? this.filters.run<T>(data.filter, data.resources) : of(data.resources))),
+        );
     }
 
     public save<T extends DGTSecurityPolicy>(resources: T[]): Observable<T[]> {
@@ -38,19 +39,20 @@ export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
             throw new DGTErrorArgument('Argument policy should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'policy');
-                    }
-
-                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+        return of({ resources }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'policy')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            map((data) =>
+                data.resources.map((resource) => {
+                    this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri), resource];
 
                     return resource;
                 }),
-                ),
-            );
+            ),
+        );
     }
 
     public delete(resource: DGTSecurityPolicy): Observable<DGTSecurityPolicy> {
@@ -60,7 +62,7 @@ export class DGTSecurityPolicyMockService extends DGTSecurityPolicyService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
+        this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri)];
 
         return of(resource);
     }

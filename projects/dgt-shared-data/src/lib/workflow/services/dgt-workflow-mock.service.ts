@@ -1,4 +1,9 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import {
+    DGTErrorArgument,
+    DGTInjectable,
+    DGTLoggerService,
+    DGTParameterCheckerService,
+} from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -26,16 +31,15 @@ export class DGTWorkflowMockService extends DGTWorkflowService {
     }
 
     public get(workflowUri: string): Observable<DGTWorkflow> {
-        return of(this.workflows.find(e => e.uri === workflowUri));
+        return of(this.workflows.find((e) => e.uri === workflowUri));
     }
 
     public query<T extends DGTWorkflow>(filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTWorkflowMockService.name, 'Starting to query workflows', filter);
 
-        return of({ filter, workflows: this.workflows as T[] })
-            .pipe(
-                switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.workflows) : of(data.workflows)),
-            );
+        return of({ filter, workflows: this.workflows as T[] }).pipe(
+            switchMap((data) => (data.filter ? this.filters.run<T>(data.filter, data.workflows) : of(data.workflows))),
+        );
     }
 
     public save<T extends DGTWorkflow>(workflows: T[]): Observable<T[]> {
@@ -45,19 +49,20 @@ export class DGTWorkflowMockService extends DGTWorkflowService {
             throw new DGTErrorArgument('Argument connection should be set.', workflows);
         }
 
-        return of({ workflows })
-            .pipe(
-                map(data => data.workflows.map(workflow => {
-                    if (!workflow.uri) {
-                        workflow.uri = this.uri.generate(workflow, 'workflow');
-                    }
-
-                    this.workflows = [...this.workflows.filter(c => c && c.uri !== workflow.uri), workflow];
+        return of({ workflows }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.workflows, 'connectortype')
+                    .pipe(map((updatedResources) => ({ ...data, workflows: updatedResources as T[] }))),
+            ),
+            map((data) =>
+                data.workflows.map((workflow) => {
+                    this.workflows = [...this.workflows.filter((c) => c && c.uri !== workflow.uri), workflow];
 
                     return workflow;
                 }),
-                ),
-            );
+            ),
+        );
     }
 
     public delete(workflow: DGTWorkflow): Observable<DGTWorkflow> {
@@ -67,7 +72,7 @@ export class DGTWorkflowMockService extends DGTWorkflowService {
             throw new DGTErrorArgument('Argument workflow should be set.', workflow);
         }
 
-        this.workflows = [...this.workflows.filter(c => c && c.uri !== workflow.uri)];
+        this.workflows = [...this.workflows.filter((c) => c && c.uri !== workflow.uri)];
 
         return of(workflow);
     }

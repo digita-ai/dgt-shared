@@ -34,9 +34,9 @@ export class DGTConnectorMSSQL extends DGTConnector<DGTSourceMSSQLConfiguration,
                 switchMap(data => from(data.pool.request().query(data.query))
                     .pipe(map(result => ({ ...data, result })))),
                 tap(data => data.pool.close()),
-                // tap(data => this.logger.debug(DGTSourceMSSQLConnector.name, 'Finished query')),
                 map(data => this.convertResult(data.result, data.exchange, data.source.configuration.mapping)),
-                map(resource => ({ ...resource, uri: this.uris.generate(resource, 'data') })),
+                switchMap(resource => this.uris.generate([resource], 'data')
+                    .pipe(map(resources => _.head(resources)))),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
                 catchError((error) => {
                     this.logger.error(DGTConnectorMSSQL.name, 'Error while querying MSSQL', error);

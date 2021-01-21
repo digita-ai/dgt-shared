@@ -12,21 +12,26 @@ import { DGTHolderService } from './dgt-holder-abstract.service';
 export class DGTHolderMockService extends DGTHolderService {
     public resources: DGTHolder[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private uri: DGTUriFactoryService,
+    ) {
         super();
     }
 
     public get(uri: string): Observable<DGTHolder> {
-        return of(this.resources.find(e => e.uri === uri));
+        return of(this.resources.find((e) => e.uri === uri));
     }
 
     public query(filter?: DGTLDFilter): Observable<DGTHolder[]> {
         this.logger.debug(DGTHolderMockService.name, 'Starting to query holders', filter);
 
-        return of({ filter, resources: this.resources })
-            .pipe(
-                switchMap(data => data.filter ? this.filters.run<DGTHolder>(data.filter, data.resources) : of(data.resources)),
-            )
+        return of({ filter, resources: this.resources }).pipe(
+            switchMap((data) =>
+                data.filter ? this.filters.run<DGTHolder>(data.filter, data.resources) : of(data.resources),
+            ),
+        );
     }
 
     public save(resources: DGTHolder[]): Observable<DGTHolder[]> {
@@ -36,19 +41,20 @@ export class DGTHolderMockService extends DGTHolderService {
             throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'holder');
-                    }
-
-                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+        return of({ resources }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'holder')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTHolder[] }))),
+            ),
+            map((data) =>
+                data.resources.map((resource) => {
+                    this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri), resource];
 
                     return resource;
                 }),
-                ),
-            );
+            ),
+        );
     }
 
     public delete(resource: DGTHolder): Observable<DGTHolder> {
@@ -58,7 +64,7 @@ export class DGTHolderMockService extends DGTHolderService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
+        this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri)];
 
         return of(resource);
     }

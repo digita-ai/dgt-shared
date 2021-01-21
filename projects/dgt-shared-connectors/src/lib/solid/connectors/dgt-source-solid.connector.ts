@@ -216,13 +216,12 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                 transformer.toDomain([data.resource]).pipe(
                     map((resources) => ({
                         ...data,
-                        resources: resources.map((resource) => ({
-                            ...resource,
-                            uri: this.uris.generate(resource, 'data'),
-                        })),
+                        resources,
                     })),
                 ),
             ),
+            switchMap(data => this.uris.generate(data.resources, 'data')
+                .pipe(map(updatedResources => ({...data, resources: updatedResources as T[]})))),
             tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources', { data })),
             map((data) => data.resources),
         );
