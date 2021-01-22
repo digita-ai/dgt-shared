@@ -3,8 +3,10 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
 import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTUriFactorySolidService } from '../../uri/services/dgt-uri-factory-solid.service';
 import { DGTEvent } from '../models/dgt-event.model';
@@ -21,6 +23,8 @@ export class DGTEventSolidService extends DGTEventService {
         private logger: DGTLoggerService,
         private paramChecker: DGTParameterCheckerService,
         private uri: DGTUriFactorySolidService,
+        private exchanges: DGTExchangeService,
+        private connections: DGTConnectionService,
     ) {
         super();
     }
@@ -58,9 +62,15 @@ export class DGTEventSolidService extends DGTEventService {
         this.paramChecker.checkParametersNotNull({ resources });
 
         return of({ resources }).pipe(
+            switchMap((data) => this.exchanges.get(resources[0].exchange).pipe(
+                map(exchange => ({ ...data, exchange })),
+            )),
+            switchMap((data) => this.connections.get(data.exchange.connection).pipe(
+                map(connection => ({ ...data, connection })),
+            )),
             switchMap((data) =>
                 this.uri
-                    .generate(data.resources, 'event')
+                    .generate(data.resources, 'event', data.connection)
                     .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTEvent[] }))),
             ),
             tap((data) => this.logger.debug(DGTEventService.name, 'Updated uris.', { resources })),

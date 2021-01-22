@@ -141,7 +141,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     ),
                 ).pipe(map((resourcesOfResources) => ({ ...data, resources: _.flatten(resourcesOfResources) }))),
             ),
-            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources', { data })),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources EEEEEE', { data })),
             map((data) => data.resources),
         );
     }
@@ -220,11 +220,11 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     })),
                 ),
             ),
-            switchMap(data => this.uris.generate(data.resources, 'data')
+            switchMap(data => this.uris.generate(data.resources, 'data', data.connection)
                 .pipe(map(updatedResources => ({...data, resources: updatedResources as T[]})))),
             tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources', { data })),
             map((data) => data.resources),
-        );
+        ) as Observable<T[]>;
     }
 
     public delete<T extends DGTLDResource>(domainEntities: T[], transformer: DGTLDTransformer<T>): Observable<T[]> {
@@ -551,6 +551,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     })),
                 ),
             ),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Loaded TypeIndexes.', { data })),
             switchMap((data) =>
                 this.loadTypeRegistrations(data.connection, data.source, data.exchange).pipe(
                     map((typeRegistrations) => ({
@@ -562,6 +563,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     })),
                 ),
             ),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Loaded TypeRegistrations.', { data })),
             map((data) => data.connection),
         );
     }
