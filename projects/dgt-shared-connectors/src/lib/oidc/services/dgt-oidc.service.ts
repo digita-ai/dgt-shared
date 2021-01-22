@@ -12,7 +12,7 @@ export class DGTOIDCService {
         private logger: DGTLoggerService,
         private connections: DGTConnectionService,
     ) {
-        this.manager = new SessionManager({ secureStorage: this.storage });
+        this.manager = new SessionManager();
     }
 
     public getSession(sessionId: string): Observable<Session> {
@@ -32,7 +32,7 @@ export class DGTOIDCService {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        const session = new Session({ secureStorage: this.storage });
+        const session = new Session();
 
         this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING, configuration: { ...connection.configuration, sessionInfo: session.info } }]);
 

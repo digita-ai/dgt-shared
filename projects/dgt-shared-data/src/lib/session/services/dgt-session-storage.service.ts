@@ -34,8 +34,8 @@ export class DGTSessionStorageService extends EventEmitter implements IStorage {
         ).toPromise();
     }
 
-    public delete(key: string): Promise<void> {
-        return this.connections.get(key).pipe(
+    public delete(sessionId: string): Promise<void> {
+        return this.connections.getConnectionBySessionId(sessionId).pipe(
             map(connection => this.connections.delete(connection)),
             map(() => { })
         ).toPromise();

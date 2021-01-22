@@ -95,6 +95,7 @@ export class DGTConnectorSolidWeb extends DGTConnector<DGTSourceSolidConfigurati
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved source', data)),
                 switchMap(data => this.oidc.getSession(data.connection.configuration.sessionInfo.sessionId)
                     .pipe(map(session => ({ ...data, session, headers: { 'Accept': 'text/turtle' }, uri: data.uri ? data.uri : session.info.webId })))),
+                tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Retrieved session', data)),
                 switchMap(data => this.http.get<string>(data.uri, data.headers, true, data.session)
                     .pipe(map(response => ({ ...data, response, triples: response.data ? this.triples.createFromString(response.data, data.uri) : [] })))),
                 tap(data => this.logger.debug(DGTConnectorSolidWeb.name, 'Request completed', data)),

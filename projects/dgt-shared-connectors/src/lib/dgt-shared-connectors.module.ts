@@ -17,7 +17,7 @@ export const providers = [
   DGTConnectorGravatar,
   DGTSourceSolidTrustedAppTransformerService,
   DGTSessionStorageService,
-  DGTConnectorSolidWeb
+  DGTConnectorSolidWeb,
 ];
 
 @NgModule({
