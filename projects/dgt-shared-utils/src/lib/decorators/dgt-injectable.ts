@@ -9,9 +9,10 @@ let res;
 export function DGTInjectable() {
     if (!res) {
         try {
-            res = require('@angular/core').Injectable;
-        } catch (e) {
             res = require('@nestjs/common').Injectable;
+        } catch (e) {
+            res = require('@angular/core').Injectable;
+
         }
     }
     return res();

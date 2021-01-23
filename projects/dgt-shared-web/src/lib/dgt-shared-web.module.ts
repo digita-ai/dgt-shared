@@ -30,7 +30,7 @@ import { DGTDataInterfacePhoneValueComponent } from './data/components/dgt-data-
 import { DGTDataInterfacePhoneComponent } from './data/components/dgt-data-interface-phone/dgt-data-interface-phone.component';
 import { DGTDataInterfaceStandardComponent } from './data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 import { DGTDataInterfaceSurveysComponent } from './data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
-import { DGTDataValueComponent } from './data/components/dgt-data-value/dgt-data-value.component';
+import { DGTLDResourceComponent } from './data/components/dgt-data-resource/dgt-data-resource.component';
 import { DGTDateToLabelService } from './date/services/dgt-date-to-label.service';
 import { DGTFormControlComponent } from './form/components/dgt-form-control/dgt-form-control.component';
 import { DGTFormDateComponent } from './form/components/dgt-form-date/dgt-form-date.component';
@@ -83,6 +83,7 @@ import { DGTSectionSummaryComponent } from './interface/components/dgt-section-s
 import { DGTSectionTitleComponent } from './interface/components/dgt-section-title/dgt-section-title.component';
 import { DGTSectionComponent } from './interface/components/dgt-section/dgt-section.component';
 import { DGTBrowserIsSupportedGuard } from './interface/guards/dgt-browser-is-supported.guard';
+import { DGTLDResourceRemoteService } from './resources/services/dgt-ld-resource-remote.service';
 import { DGTTimelineEventGroupComponent } from './timeline/components/timeline-event-group/timeline-event-group.component';
 import { DGTTimelineEventSummaryComponent } from './timeline/components/timeline-event-summary/timeline-event-summary.component';
 import { DGTTimelinePageComponent } from './timeline/components/timeline-page/timeline-page.component';
@@ -144,7 +145,7 @@ export const declarations = [
   DGTPageHeaderLogoComponent,
   DGTPageHeaderControlsComponent,
   DGTPageHeaderTitleComponent,
-  DGTDataValueComponent,
+  DGTLDResourceComponent,
   DGTDataInterfaceSurveysComponent,
   DGTDataInterfaceStandardComponent,
   DGTDataInterfacePhoneValueComponent,

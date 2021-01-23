@@ -12,21 +12,24 @@ import { DGTConnectorTypeService } from './dgt-connector-type.service';
 export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
     public resources: DGTConnectorType[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private uri: DGTUriFactoryService,
+    ) {
         super();
     }
 
     public get(connectortypeUri: string): Observable<DGTConnectorType> {
-        return of(this.resources.find(e => e.uri === connectortypeUri));
+        return of(this.resources.find((e) => e.uri === connectortypeUri));
     }
 
     public query<T extends DGTConnectorType>(filter?: DGTLDFilter): Observable<T[]> {
         this.logger.debug(DGTConnectorTypeMockService.name, 'Starting to query connectortypes', filter);
 
-        return of({ filter, resources: this.resources as T[] })
-            .pipe(
-                switchMap(data => data.filter ? this.filters.run<T>(data.filter, data.resources) : of(data.resources)),
-            );
+        return of({ filter, resources: this.resources as T[] }).pipe(
+            switchMap((data) => (data.filter ? this.filters.run<T>(data.filter, data.resources) : of(data.resources))),
+        );
     }
 
     public save<T extends DGTConnectorType>(resources: T[]): Observable<T[]> {
@@ -36,19 +39,20 @@ export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
             throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'connectortype');
-                    }
-
-                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+        return of({ resources }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'connectortype')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            map((data) =>
+                data.resources.map((resource) => {
+                    this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri), resource];
 
                     return resource;
                 }),
-                ),
-            );
+            ),
+        );
     }
 
     public delete(resource: DGTConnectorType): Observable<DGTConnectorType> {
@@ -58,7 +62,7 @@ export class DGTConnectorTypeMockService extends DGTConnectorTypeService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
+        this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri)];
 
         return of(resource);
     }

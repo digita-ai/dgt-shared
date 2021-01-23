@@ -85,7 +85,7 @@ export { DGTDataInterfacePhoneComponent } from './lib/data/components/dgt-data-i
 export { DGTDataInterfacePhoneValueComponent } from './lib/data/components/dgt-data-interface-phone-value/dgt-data-interface-phone-value.component';
 export { DGTDataInterfaceStandardComponent } from './lib/data/components/dgt-data-interface-standard/dgt-data-interface-standard.component';
 export { DGTDataInterfaceSurveysComponent } from './lib/data/components/dgt-data-interface-surveys/dgt-data-interface-surveys.component';
-export { DGTDataValueComponent } from './lib/data/components/dgt-data-value/dgt-data-value.component';
+export { DGTLDResourceComponent } from './lib/data/components/dgt-data-resource/dgt-data-resource.component';
 export { DGTDataCategoryComponent } from './lib/data/components/dgt-data-category/dgt-data-category.component';
 export { DGTDataGroupComponent } from './lib/data/components/dgt-data-group/dgt-data-group.component';
 export { DGTStateEffectsBaseWebService } from './lib/state/services/dgt-state-effects-base-web.service';
@@ -98,7 +98,6 @@ export { DGTCategoryRemoteService } from './lib/categories/services/dgt-category
 export { DGTConnectionRemoteService } from './lib/connection/services/dgt-connection-remote.service';
 export { DGTExchangeRemoteService } from './lib/exchanges/services/dgt-exchange-remote.service';
 export { DGTHolderRemoteService } from './lib/holders/services/dgt-holder-remote.service';
-export { DGTValueRemoteService } from './lib/values/services/dgt-value-remote.service';
 export { DGTMenuComponent } from './lib/interface/components/dgt-menu/dgt-menu.component';
 export { DGTExchangeStateService } from './lib/exchanges/services/dgt-exchange-state.service';
 export { DGTConnectionStateService } from './lib/connection/services/dgt-connection-state.service';
@@ -107,6 +106,7 @@ export { DGTInviteRemoteService } from './lib/invites/services/dgt-invite-remote
 export { DGTDataInterfaceResolverMockService } from './lib/data/services/dgt-data-interface-resolver-mock.service';
 export { DGTConnectorTypeRemoteService } from './lib/connectors/services/connector-type-remote.service';
 export { DGTSparqlRemoteService } from './lib/sparql/services/dgt-sparql-remote.service';
+export { DGTLDResourceRemoteService } from './lib/resources/services/dgt-ld-resource-remote.service';
 export { DGTWorkflowRemoteService } from './lib/workflows/services/dgt-workflow-remote.service';
 export { DGTTimelinePageComponent } from './lib/timeline/components/timeline-page/timeline-page.component';
 export { DGTTimelineEventGroupComponent } from './lib/timeline/components/timeline-event-group/timeline-event-group.component';

@@ -56,7 +56,7 @@ export class DGTSourceSolidTrustedAppTransformerService implements DGTLDTransfor
             }
         }
 
-        this.logger.debug(DGTSourceSolidTrustedAppTransformerService.name, 'Transformed values to trusted apps', { entity, res });
+        this.logger.debug(DGTSourceSolidTrustedAppTransformerService.name, 'Transformed resources to trusted apps', { entity, res });
 
         return of(res);
     }

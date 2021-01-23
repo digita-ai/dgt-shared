@@ -2,7 +2,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { values } from 'lodash';
 import { map } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
@@ -195,6 +194,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
         );
 
         return {
+            shape: 'http://digita.ai/voc/events#event',
             uri: eventSubjectValue.object.value,
             date: date ? new Date(date.object.value) : null,
             description: description ? description.object.value : null,

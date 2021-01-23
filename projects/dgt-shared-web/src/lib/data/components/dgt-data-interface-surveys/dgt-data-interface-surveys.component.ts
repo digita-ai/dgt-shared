@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataInterface, DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTLoggerService, DGTMap } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 
@@ -18,52 +17,52 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
-  public surveys: DGTMap<DGTDataValue, string>;
+  public surveys: DGTMap<DGTLDResource[], string>;
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{value: DGTDataValue, newObject: any}>;
+  resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   @Output()
   submit: EventEmitter<any>;
 
   constructor(private logger: DGTLoggerService) {
-    this.valueUpdated = new EventEmitter();
+    this.resourceUpdated = new EventEmitter();
     this.submit = new EventEmitter();
   }
 
   ngOnInit() {
   }
 
-  private updateReceived(values: DGTDataValue[], category: DGTCategory) {
-    this.logger.debug(DGTDataInterfaceSurveysComponent.name, 'Update received', { values, category });
+  private updateReceived(resources: DGTLDResource[], category: DGTCategory) {
+    this.logger.debug(DGTDataInterfaceSurveysComponent.name, 'Update received', { resources, category });
 
-    if (!values) {
-      throw new DGTErrorArgument('Argument values should be set.', values);
+    if (!resources) {
+      throw new DGTErrorArgument('Argument resources should be set.', resources);
     }
 
     if (!category) {
       throw new DGTErrorArgument('Argument category should be set.', category);
     }
 
-    const surveyReferences = values.filter(value => value.predicate === 'http://digita.ai/voc/health#survey');
+    const surveyReferences = _.flatten(resources.map(resource => resource.triples)).filter(triple => triple.predicate === 'http://digita.ai/voc/health#survey');
 
     surveyReferences.map(surveyReference => {
 
@@ -74,7 +73,7 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
     // this.logger.debug(DGTBrowserDataInterfaceEmailComponent.name, 'Filtered email values and references', { emailReferences, emailValues });
 
     // if (emailReferences && emailValues && emailTypes) {
-    //   const emailsReferencesWithValues = emailReferences.map<{ key: DGTDataValue; value: { email: string, type: string }; }>(emailReference => {
+    //   const emailsReferencesWithValues = emailReferences.map<{ key: DGTLDResource[]; value: { email: string, type: string }; }>(emailReference => {
     //     const emailReferenceObject = emailReference.object.value;
 
     //     const emailValue = emailValues.find(val => val.subject.value === emailReferenceObject);
@@ -89,7 +88,7 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
 
     //   this.logger.debug(DGTBrowserDataInterfaceEmailComponent.name, 'Combined email references with values', { emailsReferencesWithValues });
 
-    //   this.emails = new DGTMap<DGTDataValue, { email: string, type: string }>(emailsReferencesWithValues);
+    //   this.emails = new DGTMap<DGTLDResource[], { email: string, type: string }>(emailsReferencesWithValues);
 
     //   this.logger.debug(DGTBrowserDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
     // }
@@ -100,10 +99,10 @@ export class DGTDataInterfaceSurveysComponent implements OnInit, DGTDataInterfac
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: {value: DGTDataValue, newObject: any}): void {
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
     if (!val) {
       throw new DGTErrorArgument('Argument value should be set.', val);
     }
-    this.valueUpdated.emit(val);
+    this.resourceUpdated.emit(val);
   }
 }

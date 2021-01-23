@@ -11,7 +11,6 @@ import { DGTSecurityPolicyService } from './dgt-security-policy.service';
 
 @DGTInjectable()
 export class DGTSecurityPolicyCacheService extends DGTSecurityPolicyService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -45,18 +44,17 @@ export class DGTSecurityPolicyCacheService extends DGTSecurityPolicyService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'policy');
-                }
-
-                return resource;
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
-                    .pipe(map(savedResources => savedResources))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'policy')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            switchMap((data) =>
+                this.cache.save<T>(this.transformer, data.resources).pipe(map((savedResources) => savedResources)),
+            ),
+        );
     }
 
     public delete(resource: DGTSecurityPolicy): Observable<DGTSecurityPolicy> {
@@ -66,11 +64,11 @@ export class DGTSecurityPolicyCacheService extends DGTSecurityPolicyService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 }

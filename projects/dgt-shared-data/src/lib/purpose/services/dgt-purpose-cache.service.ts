@@ -11,7 +11,6 @@ import { DGTPurposeService } from './dgt-purpose.service';
 
 @DGTInjectable()
 export class DGTPurposeCacheService extends DGTPurposeService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -45,17 +44,15 @@ export class DGTPurposeCacheService extends DGTPurposeService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'purpose');
-                }
-
-                return resource
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save(this.transformer, data.resources)),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'purpose')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTPurpose[] }))),
+            ),
+            switchMap((data) => this.cache.save(this.transformer, data.resources)),
+        );
     }
 
     public delete(resource: DGTPurpose): Observable<DGTPurpose> {
@@ -65,12 +62,11 @@ export class DGTPurposeCacheService extends DGTPurposeService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
-
 }

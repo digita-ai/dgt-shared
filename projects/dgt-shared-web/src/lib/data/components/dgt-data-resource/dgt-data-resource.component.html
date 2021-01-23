@@ -1,9 +1,9 @@
-<dgt-section [showContent]="true" [showIcon]="true" [showSubtitle]="false" *ngIf="value">
+<dgt-section [showContent]="true" [showIcon]="true" [showSubtitle]="false" *ngIf="resource">
   <dgt-section-icon>
     <i class="fas fa-info-circle"></i>
   </dgt-section-icon>
   <dgt-section-title>
-    {{value.predicate}}
+    {{resource.triples[0].predicate}}
   </dgt-section-title>
   <dgt-section-content>
     <dgt-form [formGroup]="formGroup">
@@ -23,13 +23,13 @@
               type="text"
               formControlName="object"
               >
-              <!-- (keyup.enter)="onValueUpdated(value, object.value)" -->
+              <!-- (keyup.enter)="onResourceUpdated(resource, object.resource)" -->
           </mat-form-field>
         </dgt-form-control>
       </dgt-form-element>
     </dgt-form>
     <dgt-button
-      (called)="onValueUpdated(value, object.value)"
+      (called)="onResourceUpdated(resource, object.value)"
       type="submit"
       color="accent"
       *ngIf="formGroup.dirty">

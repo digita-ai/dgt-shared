@@ -20,7 +20,6 @@ export { DGTQueryCondition } from './lib/metadata/models/dgt-query-condition.mod
 export { DGTQueryConditionOperator } from './lib/metadata/models/dgt-query-condition-operator.model';
 export { DGTQueryService } from './lib/metadata/services/dgt-query.service';
 export { DGTQueryPagination } from './lib/metadata/models/dgt-query-pagination.model';
-export { DGTMockDatabase } from './lib/metadata/models/dgt-mock-database.model';
 export { DGTLogicService } from './lib/logic/services/dgt-logic.service';
 export { DGTCacheService } from './lib/cache/services/dgt-cache.service';
 export { DGTCategory } from './lib/categories/models/dgt-category.model';
@@ -70,12 +69,9 @@ export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.mod
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
-export { DGTDataValue } from './lib/data-value/models/data-value.model';
-export { DGTDataGroup } from './lib/data-value/models/data-group.model';
-export { DGTDataInterface } from './lib/data-value/models/data-category-interface.model';
-export { DGTDataValueTransformerService } from './lib/data-value/services/data-transformer-value.service';
-export { DGTDataInterfaceHostDirective } from './lib/data-value/directives/data-interface-host.directive';
-export { DGTDataValueService } from './lib/data-value/services/data-value.service';
+export { DGTDataGroup } from './lib/data-resource/models/data-group.model';
+export { DGTDataInterface } from './lib/data-resource/models/data-category-interface.model';
+export { DGTDataInterfaceHostDirective } from './lib/data-resource/directives/data-interface-host.directive';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
 export { DGTLDFilterByCombinationType } from './lib/linked-data/models/dgt-ld-filter-combination-type.model';
 export { DGTEvent } from './lib/events/models/dgt-event.model';
@@ -154,7 +150,6 @@ export { DGTCategoryTransformerService } from './lib/categories/services/dgt-cat
 export { DGTSecurityPassportStrategySolidService } from './lib/security/services/dgt-security-passport-strategy-solid.service';
 export { DGTSecurityPassportStrategySolidJWTExtractorService } from './lib/security/services/dgt-security-passport-strategy-solid-jwt-extractor.service';
 export { DGTProfileMockService } from './lib/profile/services/dgt-profile-mock.service';
-export { DGTDataValueMockService } from './lib/data-value/services/data-value-mock.service';
 export { DGTSecurityService } from './lib/security/services/dgt-security.service';
 export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-cache.service';
 export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';

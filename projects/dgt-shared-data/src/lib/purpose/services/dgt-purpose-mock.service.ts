@@ -38,11 +38,12 @@ export class DGTPurposeMockService extends DGTPurposeService {
 
         return of({ resources })
             .pipe(
+                switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'purpose')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTPurpose[] }))),
+            ),
                 map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'purpose');
-                    }
-
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 
                     return resource;

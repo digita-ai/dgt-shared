@@ -11,7 +11,6 @@ import { DGTSecurityCredentialService } from './dgt-security-credential.service'
 
 @DGTInjectable()
 export class DGTSecurityCredentialCacheService extends DGTSecurityCredentialService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -45,18 +44,17 @@ export class DGTSecurityCredentialCacheService extends DGTSecurityCredentialServ
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'credential');
-                }
-
-                return resource;
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
-                    .pipe(map(savedResources => savedResources))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'credential')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            switchMap((data) =>
+                this.cache.save<T>(this.transformer, data.resources).pipe(map((savedResources) => savedResources)),
+            ),
+        );
     }
 
     public delete(resource: DGTSecurityCredential): Observable<DGTSecurityCredential> {
@@ -66,11 +64,11 @@ export class DGTSecurityCredentialCacheService extends DGTSecurityCredentialServ
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 }
