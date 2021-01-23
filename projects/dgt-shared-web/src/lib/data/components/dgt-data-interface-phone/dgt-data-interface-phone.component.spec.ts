@@ -1,7 +1,7 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
 import { configuration } from '../../../../test.configuration';
-import { mockCategoryPhone, mockReferencePhone, mockTypeWork, mockResourcePhone } from '../../../../test.mock-data';
+import { mockCategoryPhone, mockReferencePhone, mockResourcePhone, mockTypeWork } from '../../../../test.mock-data';
 import { DGTDataInterfacePhoneComponent } from './dgt-data-interface-phone.component';
 
 describe('DataInterfaceEmailComponent', () => {
