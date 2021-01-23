@@ -220,8 +220,11 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     })),
                 ),
             ),
-            switchMap(data => this.uris.generate(data.resources, 'data', data.connection)
-                .pipe(map(updatedResources => ({...data, resources: updatedResources as T[]})))),
+            switchMap((data) =>
+                this.uris
+                    .generate(data.resources, 'data', data.connection)
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
             tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed resources', { data })),
             map((data) => data.resources),
         ) as Observable<T[]>;
@@ -236,7 +239,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
             throw new DGTErrorArgument('transformer should be set.', transformer);
         }
 
-        this.logger.debug(DGTSparqlQueryService.name, 'Starting to delete entity', { domainEntities });
+        this.logger.debug(DGTConnectorSolid.name, 'Starting to delete entity', { domainEntities });
 
         return of(domainEntities).pipe(
             map((entities) => ({
@@ -253,7 +256,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     .pipe(map((connection: DGTConnectionSolid) => ({ ...data, connection }))),
             ),
             switchMap((data) => this.sources.get(data.exchange.source).pipe(map((source) => ({ ...data, source })))),
-            tap((data) => this.logger.debug(DGTSparqlQueryService.name, 'Prepared entities', data)),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Prepared entities', data)),
             switchMap((data) =>
                 forkJoin(
                     Object.keys(data.groupedEntities).map((uri) => {
@@ -277,18 +280,23 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
     }
 
     public save<R extends DGTLDResource>(resources: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
-        return of({ resources, transformer }).pipe(
+        this.logger.debug(DGTConnectorSolid.name, 'Starting to save resources', { resources, transformer });
+
+        return of({
+            resources,
+            transformer,
+            updated: resources.filter((r) => r.uri !== null),
+            added: resources.filter((r) => r.uri === null),
+        }).pipe(
             switchMap((data) =>
-                this.update(
-                    resources.filter((r) => r.uri !== null),
-                    data.transformer,
-                ).pipe(map((updated) => ({ ...data, updated }))),
+                data.updated && data.updated.length > 0
+                    ? this.update(data.updated, data.transformer).pipe(map((updated) => ({ ...data, updated })))
+                    : of(data),
             ),
             switchMap((data) =>
-                this.add(
-                    resources.filter((r) => r.uri === null),
-                    data.transformer,
-                ).pipe(map((added) => ({ ...data, added }))),
+                data.added && data.added.length > 0
+                    ? this.add(data.added, data.transformer).pipe(map((added) => ({ ...data, added })))
+                    : of(data),
             ),
             map((data) => [...data.added, ...data.updated]),
         );
@@ -303,7 +311,8 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
         }
 
-        this.logger.debug(DGTSparqlQueryService.name, 'Starting to update entity', { resources, transformer });
+        this.logger.debug(DGTConnectorSolid.name, 'Starting to update resources', { resources, transformer });
+
         return of({ resources, transformer }).pipe(
             switchMap((data) =>
                 forkJoin(
@@ -318,7 +327,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     ),
                 ),
             ),
-            tap((data) => this.logger.debug(DGTSparqlQueryService.name, 'Transformed updated', data)),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed updated', data)),
             map((updates) =>
                 updates.map((update) => ({
                     ...update,
@@ -343,7 +352,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     },
                 })),
             ),
-            tap((data) => this.logger.debug(DGTSparqlQueryService.name, 'Prepared to update entities', data)),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Prepared to update entities', data)),
             switchMap((updates) =>
                 this.exchanges.get(_.head(resources).exchange).pipe(map((exchange) => ({ updates, exchange }))),
             ),
@@ -409,7 +418,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
             throw new DGTErrorArgument('transformer should be set.', transformer);
         }
 
-        this.logger.debug(DGTSparqlQueryService.name, 'Starting to update entity', { domainEntities, transformer });
+        this.logger.debug(DGTConnectorSolid.name, 'Starting to update entity', { domainEntities, transformer });
         return forkJoin(
             domainEntities.map((update) =>
                 transformer.toTriples([update.original]).pipe(
@@ -422,7 +431,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                 ),
             ),
         ).pipe(
-            tap((data) => this.logger.debug(DGTSparqlQueryService.name, 'Transformed updated', data)),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Transformed updated', data)),
             map((updates) =>
                 updates.map((update) => ({
                     ...update,
@@ -446,7 +455,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
                     },
                 })),
             ),
-            tap((data) => this.logger.debug(DGTSparqlQueryService.name, 'Prepared to update entities', data)),
+            tap((data) => this.logger.debug(DGTConnectorSolid.name, 'Prepared to update entities', data)),
             switchMap((updates) =>
                 this.exchanges
                     .get(_.head(domainEntities).original.exchange)
