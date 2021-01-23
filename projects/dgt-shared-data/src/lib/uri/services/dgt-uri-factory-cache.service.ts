@@ -26,7 +26,7 @@ export class DGTUriFactoryCacheService implements DGTUriFactoryService {
             throw new DGTErrorArgument('Argument prefix should be set.', prefix);
         }
 
-        return of(resources.map((resource) => ({ ...resource, uri: this.generateOne(resource, prefix) })));
+        return of(resources.map((resource) => ({ ...resource, uri: resource.uri ? resource.uri : this.generateOne(resource, prefix) })));
     }
 
     private generateOne(resource: DGTLDResource, prefix: string): string {
