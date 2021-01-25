@@ -115,6 +115,33 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                         value: resource.purpose,
                     },
                 },
+                {
+                    predicate: 'http://digita.ai/voc/invites#created',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.created,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/invites#expires',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.expires,
+                    },
+                },
+                {
+                    predicate: 'http://digita.ai/voc/invites#accepted',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.accepted,
+                    },
+                },
             ];
 
             if (resource.connection) {
@@ -167,6 +194,15 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
         const connection = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/invites#connection',
         );
+        const created = resourceTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/invites#created',
+        );
+        const expires = resourceTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/invites#expires',
+        );
+        const accepted = resourceTriples.find(value =>
+            value.predicate === 'http://digita.ai/voc/invites#accepted',
+        );
 
         return {
             uri: triple.subject.value,
@@ -176,6 +212,9 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
             state: state ? state.object.value : null,
             purpose: purpose ? purpose.object.value : null,
             connection: connection ? connection.object.value : null,
+            created: created ? created.object.value : null,
+            expires: expires ? expires.object.value : null,
+            accepted: accepted ? accepted.object.value : null,
         };
     }
 }
