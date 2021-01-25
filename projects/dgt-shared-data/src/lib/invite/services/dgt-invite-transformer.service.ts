@@ -119,30 +119,36 @@ export class DGTInviteTransformerService implements DGTLDTransformer<DGTInvite> 
                     predicate: 'http://digita.ai/voc/invites#created',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.created,
                     },
                 },
-                {
-                    predicate: 'http://digita.ai/voc/invites#expires',
-                    subject: resourceSubject,
-                    object: {
-                        termType: DGTLDTermType.REFERENCE,
-                        dataType: DGTLDDataType.STRING,
-                        value: resource.expires,
-                    },
-                },
-                {
+            ];
+
+            if (resource.accepted) {
+                newTriples.push({
                     predicate: 'http://digita.ai/voc/invites#accepted',
                     subject: resourceSubject,
                     object: {
-                        termType: DGTLDTermType.REFERENCE,
+                        termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
                         value: resource.accepted,
                     },
-                },
-            ];
+                });
+            }
+
+            if (resource.expires) {
+                newTriples.push({
+                    predicate: 'http://digita.ai/voc/invites#expires',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.expires,
+                    },
+                });
+            }
 
             if (resource.connection) {
                 newTriples.push({
