@@ -8,6 +8,8 @@ import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {
@@ -76,5 +78,11 @@ export class DGTInviteCacheService extends DGTInviteService {
 
     public verify(inviteId: string): Observable<DGTInvite> {
         throw new DGTErrorNotImplemented();
+    }
+    public getInvitesForHolder(holderUri: string): Observable<DGTInvite[]> {
+        if (!holderUri) {
+          throw new DGTErrorArgument('Argument holderUri should be set.', holderUri);
+        }
+        return this.query({ type: DGTLDFilterType.PARTIAL, partial: { holder: holderUri } } as DGTLDFilterPartial);
     }
 }

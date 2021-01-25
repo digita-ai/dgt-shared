@@ -86,4 +86,16 @@ export class DGTInviteRemoteService extends DGTInviteService {
       map(response => response.data),
     );
   }
+
+  public getInvitesForHolder(holderUri: string): Observable<DGTInvite[]> {
+    if (!holderUri) {
+      throw new DGTErrorArgument('Parameter holderUri should be set', holderUri);
+    }
+    return of({holderUri}).pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holderUri)}/invites` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.get<DGTInvite[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      map(response => response.data),
+    );
+  }
 }
