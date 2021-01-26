@@ -1,25 +1,24 @@
-import { DGTCategoryField } from '@digita-ai/dgt-shared-data';
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { configuration } from 'test.configuration';
-import { mockValueName } from 'test.data.mock-data';
-import { DGTBrowserDataFieldComponent } from './data-field.component';
+import { configuration } from '../../../../test.configuration';
+import { mockResourceName } from '../../../../test.mock-data';
+import { DGTDataFieldComponent } from './dgt-data-field.component';
 
-describe('DGTBrowserDataFieldComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataFieldComponent>(configuration);
-    testService.setup(DGTBrowserDataFieldComponent);
+describe('DGTDataFieldComponent', () => {
+    const testService = new DGTTestRunnerComponent<DGTDataFieldComponent>(configuration);
+    testService.setup(DGTDataFieldComponent);
     let hostElement: HTMLElement;
 
     beforeEach(() => {
         hostElement = testService.fixture.nativeElement;
-        testService.component.field = {
-          description: 'Full name',
-          fields: [
-            'http://www.w3.org/2006/vcard/ns#fn',
-            'http://xmlns.com/foaf/0.1/name',
-        ],
-        } as DGTCategoryField;
-        testService.component.value = [mockValueName];
+        // testService.component.field = {
+        //   description: 'Full name',
+        //   fields: [
+        //     'http://www.w3.org/2006/vcard/ns#fn',
+        //     'http://xmlns.com/foaf/0.1/name'
+        // ],
+        // } as DGTCategoryField;
+        testService.component.resource = mockResourceName;
         testService.fixture.detectChanges();
     });
 
@@ -27,26 +26,26 @@ describe('DGTBrowserDataFieldComponent', () => {
         expect(testService.component).toBeTruthy();
     });
 
-    describe('onValueUpdated function', () => {
+    describe('onResourceUpdated function', () => {
 
         const keypressA = new KeyboardEvent('test', {key: 'A'});
         const keypressEnter = new KeyboardEvent('test', {key: 'Enter'});
 
-        it('should emit valueUpdated when on keypress', () => {
-            spyOn(testService.component.valueUpdated, 'emit');
-            testService.component.onValueUpdated(mockValueName, 'test-name', keypressA);
-            expect(testService.component.valueUpdated.emit).toHaveBeenCalledWith({value: mockValueName, newObject: 'test-name'});
+        it('should emit resourceUpdated when on keypress', () => {
+            spyOn(testService.component.resourceUpdated, 'emit');
+            testService.component.onResourceUpdated(mockResourceName, 'test-name', keypressA);
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalledWith({resource: mockResourceName, newObject: 'test-name'});
         });
         it('should emit submit when keypress is enter', () => {
             spyOn(testService.component.submit, 'emit');
-            testService.component.onValueUpdated(mockValueName, 'test-name', keypressEnter);
+            testService.component.onResourceUpdated(mockResourceName, 'test-name', keypressEnter);
             expect(testService.component.submit.emit).toHaveBeenCalled();
         });
         it('should throw DGTErrorArgument when value is null', () => {
-            expect(() => { testService.component.onValueUpdated(null, 'test', keypressA) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(null, 'test', keypressA) }).toThrowError(DGTErrorArgument);
         });
         it('should throw DGTErrorArgument when newObject is null', () => {
-            expect(() => { testService.component.onValueUpdated(mockValueName, null, keypressA) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(mockResourceName, null, keypressA) }).toThrowError(DGTErrorArgument);
         });
     });
 
@@ -55,7 +54,7 @@ describe('DGTBrowserDataFieldComponent', () => {
         describe('input field', () => {
 
             it('should contain correct value', () => {
-                expect(testService.component.formGroup.get('desc').value).toEqual(mockValueName.object.value);
+                expect(testService.component.formGroup.get('desc').value).toEqual(mockResourceName.triples[0].object.value);
             });
         })
     });

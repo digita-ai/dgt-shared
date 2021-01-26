@@ -1,8 +1,8 @@
-import { DGTConnection, DGTConnectionService, DGTConnectionState, DGTExchange, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import { DGTConnection, DGTConnectionService, DGTConnectionState, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTHttpService, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
 import { DGTStateStoreService } from '../../state/services/dgt-state-store.service';
@@ -52,7 +52,18 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
   }
 
   public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
-    throw new DGTErrorNotImplemented();
+    this.logger.debug(DGTConnectionRemoteService.name, 'Starting to delete', { resource });
+
+    if (!resource) {
+        throw new DGTErrorArgument('Argument resource should be set.', resource);
+    }
+
+    return of({ resource }).pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}connection/${encodeURIComponent(data.resource.uri)}` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.delete<T>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      map(response => response.data),
+    );
   }
 
   public query<T extends DGTConnection<any>>(filter?: DGTLDFilter): Observable<T[]> {
@@ -126,5 +137,14 @@ export class DGTConnectionRemoteService extends DGTConnectionService {
 
   getConnectionBySessionId(sessionId: string): Observable<DGTConnection<any>> {
     throw new Error('Method not implemented.');
+  }
+  
+  public getConnectionsForHolder<T extends DGTConnection<any>>(holderUri: string): Observable<T[]> {
+    return of({holderUri}).pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}holder/${encodeURIComponent(data.holderUri)}/connections` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.get<T[]>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      map(response => response.data),
+    );
   }
 }

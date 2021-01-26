@@ -22,6 +22,7 @@
     ],
     "types": [
       "node",
+      "jasmine",
     ],
     "lib": [
       "es2018",

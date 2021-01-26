@@ -11,7 +11,6 @@ import { DGTHolderTransformerService } from './dgt-holder-transformer.service';
 
 @DGTInjectable()
 export class DGTHolderCacheService extends DGTHolderService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -45,18 +44,15 @@ export class DGTHolderCacheService extends DGTHolderService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'holder');
-                }
-
-                return resource;
-            }),
-        })
-            .pipe(
-                concatMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(res => res))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'holder')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTHolder[] }))),
+            ),
+            concatMap((data) => this.cache.save(this.transformer, data.resources).pipe(map((res) => res))),
+        );
     }
 
     public delete(resource: DGTHolder): Observable<DGTHolder> {
@@ -66,11 +62,11 @@ export class DGTHolderCacheService extends DGTHolderService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 }

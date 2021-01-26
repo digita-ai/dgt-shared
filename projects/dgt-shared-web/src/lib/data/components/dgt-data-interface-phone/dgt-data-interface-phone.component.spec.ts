@@ -1,17 +1,17 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
 import { DGTErrorArgument } from '@digita-ai/dgt-shared-utils';
-import { configuration } from 'test.configuration';
-import { mockCategoryPhone, mockReferencePhone, mockTypeWork, mockValuePhone } from 'test.data.mock-data';
-import { DGTBrowserDataInterfacePhoneComponent } from './data-interface-phone.component';
+import { configuration } from '../../../../test.configuration';
+import { mockCategoryPhone, mockReferencePhone, mockResourcePhone, mockTypeWork } from '../../../../test.mock-data';
+import { DGTDataInterfacePhoneComponent } from './dgt-data-interface-phone.component';
 
 describe('DataInterfaceEmailComponent', () => {
-    const testService = new DGTTestRunnerComponent<DGTBrowserDataInterfacePhoneComponent>(configuration);
-    testService.setup(DGTBrowserDataInterfacePhoneComponent, false);
+    const testService = new DGTTestRunnerComponent<DGTDataInterfacePhoneComponent>(configuration);
+    testService.setup(DGTDataInterfacePhoneComponent, false);
     let hostElement: HTMLElement;
 
     beforeEach(() => {
         testService.component.category = mockCategoryPhone;
-        testService.component.values = [mockValuePhone, mockReferencePhone, mockTypeWork];
+        testService.component.resources = [mockResourcePhone, mockReferencePhone, mockTypeWork];
         testService.fixture.detectChanges();
         hostElement = testService.fixture.nativeElement;
     })
@@ -20,14 +20,14 @@ describe('DataInterfaceEmailComponent', () => {
         expect(testService.component).toBeTruthy();
     });
 
-    describe('onValueUpdated function', () => {
-        it('should emit valueUpdated with correct val', () => {
-            spyOn(testService.component.valueUpdated, 'emit');
-            testService.component.onValueUpdated({value: mockValuePhone, newObject: 'test'});
-            expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
+    describe('onResourceUpdated function', () => {
+        it('should emit resourceUpdated with correct val', () => {
+            spyOn(testService.component.resourceUpdated, 'emit');
+            testService.component.onResourceUpdated({resource: mockResourcePhone, newObject: 'test'});
+            expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
         });
         it('should throw DGTErrorArgument if val is null', () => {
-            expect(() => { testService.component.onValueUpdated(null) }).toThrowError(DGTErrorArgument);
+            expect(() => { testService.component.onResourceUpdated(null) }).toThrowError(DGTErrorArgument);
         });
     });
 

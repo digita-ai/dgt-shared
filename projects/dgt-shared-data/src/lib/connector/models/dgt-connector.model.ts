@@ -9,8 +9,8 @@ import { DGTSource } from '../../source/models/dgt-source.model';
 
 @DGTInjectable()
 export abstract class DGTConnector<T, S> {
-    public abstract add<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]>;
-    public abstract query<R extends DGTLDResource>(holderUri: string, exchange: DGTExchange, transformer: DGTLDTransformer<R>): Observable<R[]>;
+    public abstract save<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]>;
+    public abstract connect(purpose: DGTPurpose, exchange: DGTExchange, connection: DGTConnection<S>, source: DGTSource<T>): Observable<DGTConnection<S>>;
+    public abstract query<R extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<R>): Observable<R[]>;
     public abstract delete<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]>;
-    public abstract update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], transformer: DGTLDTransformer<R>): Observable<R[]>;
 }

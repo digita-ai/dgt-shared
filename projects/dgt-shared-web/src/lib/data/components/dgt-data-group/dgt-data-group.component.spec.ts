@@ -1,7 +1,7 @@
 import { DGTTestRunnerComponent } from '@digita-ai/dgt-shared-test';
-import { configuration } from 'test.configuration';
-import { mockCategoryName, mockGroupIdentiy, mockValueName, mockValues } from 'test.data.mock-data';
-import { DGTDataGroupComponent } from './data-group.component';
+import { configuration } from '../../../../test.configuration';
+import { mockCategoryName, mockGroupIdentiy, mockResourceName, mockResources } from '../../../../test.mock-data';
+import { DGTDataGroupComponent } from './dgt-data-group.component';
 
 describe('DGTBrowserDataGroupComponent', () => {
 
@@ -11,24 +11,24 @@ describe('DGTBrowserDataGroupComponent', () => {
 
   beforeEach(() => {
     hostElement = testService.fixture.nativeElement;
-    testService.component.values = [mockValues[0]];
+    testService.component.resources = [mockResources[0]];
     testService.component.categories = [mockCategoryName];
     testService.component.group = mockGroupIdentiy;
     testService.fixture.detectChanges();
   });
 
-  describe('function: onValueChanged', () => {
-    it('should emit valuedChanged when parameters are valid', () => {
-      spyOn(testService.component.valueUpdated, 'emit');
-      testService.component.onValueUpdated({
-        value: mockValueName,
-        newObject: mockValueName.object.value,
+  describe('function: onResourceUpdated', () => {
+    it('should emit resourceUpdated when parameters are valid', () => {
+      spyOn(testService.component.resourceUpdated, 'emit');
+      testService.component.onResourceUpdated({
+        resource: mockResourceName,
+        newObject: mockResourceName.triples[0].object.value,
       });
-      expect(testService.component.valueUpdated.emit).toHaveBeenCalled();
+      expect(testService.component.resourceUpdated.emit).toHaveBeenCalled();
     });
     it('should throw error when val is null', () => {
       expect(() =>
-        testService.component.onValueUpdated(null),
+        testService.component.onResourceUpdated(null),
       ).toThrow();
     });
   });
@@ -36,7 +36,7 @@ describe('DGTBrowserDataGroupComponent', () => {
   describe('html view', () => {
     it('should render correct group title', () => {
       const title: HTMLElement = hostElement.querySelector('dgt-page-content-group-header');
-      expect(title.innerHTML).toEqual(mockGroupIdentiy.description);
+      expect(title.innerHTML).toEqual(`common.data.groups.${mockGroupIdentiy.id}`);
     })
 
     it('should contain dgt-data-category elements', () => {

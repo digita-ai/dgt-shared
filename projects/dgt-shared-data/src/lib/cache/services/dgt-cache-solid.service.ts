@@ -2,6 +2,7 @@ import { DGTConfigurationBaseApi, DGTConfigurationService, DGTErrorArgument, DGT
 import * as _ from 'lodash';
 import { concat, forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../../linked-data/models/dgt-ld-transformer.model';
@@ -65,7 +66,11 @@ export class DGTCacheSolidService extends DGTCacheService {
      * @param transformer The transformer for this type of DGTLDResource
      * @param filter The filter to run on the retrieved list of DGTLDResources
      */
-    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter: DGTLDFilter): Observable<T[]> {
+    public query<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, filter?: DGTLDFilter): Observable<T[]> {
+
+        if (!transformer) {
+            throw new DGTErrorArgument('Argument transformer should be set.', transformer);
+        }
 
         const headers = {
             'Accept': 'application/sparql-results+json',
@@ -80,11 +85,36 @@ export class DGTCacheSolidService extends DGTCacheService {
             switchMap(data => this.http.post<DGTSparqlResult>(data.uri, {}, data.headers)
                 .pipe(map(response => ({ ...data, response }))),
             ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', data.response.data.results)),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Got response from cache', {results: data.response.data.results})),
             switchMap(data => this.toTurtle.deserializeResultSet<T>(data.response.data, transformer)
                 .pipe(map(resources => ({ ...data, resources })))),
             tap(data => this.logger.debug(DGTCacheSolidService.name, 'Transformed response to resources', { resources: data.resources, transformer })),
             map(data => data.resources),
+        );
+    }
+
+    /**
+     * Runs a sparql query on the solid cache
+     * @param query The query to execute
+     */
+    public querySparql(query: string): Observable<DGTSparqlResult> {
+
+        if (!query) {
+            throw new DGTErrorArgument('Argument query should be set.', query);
+        }
+
+        const headers = {
+            'Accept': 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        };
+
+        return of({ body: query }).pipe(
+            map(data => ({ ...data, uri: `${this.config.get(conf => conf.cache.sparqlEndpoint)}?query=${encodeURIComponent(data.body)}` })),
+            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Created URI, starting to perform query', { body: data.uri })),
+            switchMap(data => this.http.post<DGTSparqlResult>(data.uri, null, headers)
+                .pipe(map(response => ({ ...data, response })))),
+            map(data => data.response.data),
+            tap(response => this.logger.debug(DGTCacheSolidService.name, 'Got response', { response })),
         );
     }
 
@@ -104,38 +134,47 @@ export class DGTCacheSolidService extends DGTCacheService {
             'Content-Type': 'application/x-www-form-urlencoded',
         };
 
-        // TODO this query doesnt delete for instance an mssql source's mapping
-
-        const query = (resource: T) => (`
-        DELETE {
-            GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p  ?o.
-            }
-        }
-        WHERE {
-            GRAPH <${resource.uri.split('#')[0]}> {
-                ?s ?p ?o {
-                    select distinct ?s ?p ?o
-                    where {
-                        { ?s ?p ?o filter regex(?s, '${resource.uri}') }
-                        UNION
-                        { ?s ?p ?o filter regex(?o, '${resource.uri}') }
-                    }
-                }
-            }
-        }
-        `);
-
-        const uri = this.config.get(config => config.cache.sparqlEndpoint);
-
-        return of({ resources, headers, uri }).pipe(
-            switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
-                .pipe(map(() => resource)),
-            )).pipe(map(res => ({ ...data, deleted: res }))), // TODO filter resources for which http status code was not 200 OK? throw errors?
-            ),
-            tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', { deleted: data.deleted, data })),
-            map(data => data.deleted),
+        return of({headers, resources}).pipe(
+            switchMap(data => forkJoin(data.resources.map(res => this.http.delete<string>(res.uri, data.headers))).pipe(
+                map(responses => ({ ...data, responses })),
+            )),
+            map(data => data.resources),
         );
+        // const query = (resource: T) => (`
+        // DELETE {
+        //     GRAPH <${resource.uri.split('#')[0]}> {
+        //         ?s ?p ?o.
+        //     }
+        // }
+        // WHERE {
+        //     GRAPH <${resource.uri.split('#')[0]}> {
+        //         ?s ?p ?o {
+        //             SELECT DISTINCT ?s ?p ?o
+        //             WHERE {
+        //                 { ?s ?p ?o FILTER regex(?o, '${resource.uri}$') }
+        //                 UNION
+        //                 { ?s ?p ?o FILTER regex(?s, '${resource.uri}$') }
+        //                 UNION
+        //                 {
+        //                     ?ss ?pp ?s FILTER regex(?ss, '${resource.uri}$').
+        //                     ?s ?p ?o
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // `);
+
+        // const uri = this.config.get(config => config.cache.sparqlEndpoint);
+
+        // return of({ resources, headers, uri }).pipe(
+        //     switchMap(data => forkJoin(data.resources.map(resource => this.http.post<DGTSparqlResult>(data.uri + `?query=${encodeURIComponent(query(resource))}`, {}, data.headers)
+        //         .pipe(map(() => resource)),
+        //     )).pipe(map(res => ({ ...data, deleted: res }))), // TODO filter resources for which http status code was not 200 OK? throw errors?
+        //     ),
+        //     tap(data => this.logger.debug(DGTCacheSolidService.name, 'Deleted resources from cache', { deleted: data.deleted, data })),
+        //     map(data => data.deleted),
+        // );
 
     }
 
@@ -166,6 +205,12 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Saves (update/add) a single DDGTLDResource
+     * Update or add depends on whether the resource already exists (file to save to exists)
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to save
+     */
     private saveOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<T> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to save one', { transformer, resource });
 
@@ -179,6 +224,8 @@ export class DGTCacheSolidService extends DGTCacheService {
 
         return of({ transformer, resource, headers: { 'Accept': 'text/turtle' }, uri: resource.uri.split('#')[0] })
             .pipe(
+                // First delete existing values for this resource
+                switchMap(data => this.delete(transformer, [resource]).pipe(map(() => data))),
                 switchMap(data => this.http.head(data.uri, data.headers)
                     .pipe(map(headResponse => ({ ...data, exists: headResponse.success, headResponse })))),
                 tap(data => this.logger.debug(DGTCacheSolidService.name, 'Checked if resource exists', data)),
@@ -189,6 +236,11 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Creates a single DGTLDResource
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to create
+     */
     private createOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to create one', { transformer, resource });
 
@@ -210,6 +262,11 @@ export class DGTCacheSolidService extends DGTCacheService {
             );
     }
 
+    /**
+     * Updates a single DGTLDResource
+     * @param transformer The transformer used to transform DGTLDResources
+     * @param resource The resource to add
+     */
     private appendOne<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resource: T): Observable<DGTHttpResponse<any>> {
         this.logger.debug(DGTCacheSolidService.name, 'Starting to append one', { transformer, resource });
 
@@ -229,5 +286,9 @@ export class DGTCacheSolidService extends DGTCacheService {
                     .pipe(map(response => ({ ...data, response })))),
                 map(data => data.response),
             );
+    }
+
+    public isStaleForExchange(exchange: DGTExchange): Observable<boolean> {
+        return of(true);
     }
 }

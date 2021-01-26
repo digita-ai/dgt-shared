@@ -48,8 +48,8 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
         if (resource && resource.triples) {
             const connectortypesubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/connectortypes#connectortype' &&
-                value.subject.value.endsWith('connectortype#'),
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/connectortypes#connectortype',
             );
 
             if (connectortypesubjectValues) {
@@ -82,9 +82,13 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
 
             const newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/connectortypes#connectortype',
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/connectortypes#connectortype',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/connectortypes#description',
@@ -151,7 +155,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
         this.paramChecker.checkParametersNotNull({ triple, entity: resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const description = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/connectortypes#description',
@@ -170,7 +174,7 @@ export class DGTConnectorTypeTransformerService implements DGTLDTransformer<DGTC
         );
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             description: description ? description.object.value : null,
             exchange: null,
             group: group ? group.object.value : null,

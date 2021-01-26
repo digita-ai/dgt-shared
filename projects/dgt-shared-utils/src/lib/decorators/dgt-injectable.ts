@@ -12,6 +12,7 @@ export function DGTInjectable() {
             res = require('@nestjs/common').Injectable;
         } catch (e) {
             res = require('@angular/core').Injectable;
+
         }
     }
     return res();

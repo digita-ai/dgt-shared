@@ -1,28 +1,61 @@
+import { HttpClientModule } from '@angular/common/http';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DGTDataService, DGTMockDatabase, DGTMockDataService, DGTQueryService } from '@digita-ai/dgt-shared-data';
+import { DGTCacheInMemoryService, DGTCacheService, DGTConnectionMockService, DGTConnectionService, DGTExchangeMockService, DGTExchangeService, DGTLDTypeRegistrationTransformerService, DGTProfileMockService, DGTProfileService, DGTPurposeMockService, DGTPurposeService, DGTSourceMockService, DGTSourceService, DGTUriFactoryService, DGTUriFactorySolidService } from '@digita-ai/dgt-shared-data';
 import { DGTTestConfiguration } from '@digita-ai/dgt-shared-test';
-import { DGTHttpService } from '@digita-ai/dgt-shared-utils';
+import { DGTConfigurationMockService, DGTConfigurationService, DGTCryptoBrowserService, DGTCryptoService } from '@digita-ai/dgt-shared-utils';
 import { declarations, imports, providers } from './lib/dgt-shared-connectors.module';
 
 export const configuration: DGTTestConfiguration = {
     module: {
-        declarations,
+        declarations: [
+            ...declarations,
+        ],
         imports: [
             RouterTestingModule,
+            NoopAnimationsModule,
+            HttpClientModule,
             ...imports,
         ],
         providers: [
             ...providers,
             {
-                provide: DGTMockDatabase,
-                useValue: new DGTMockDatabase([]),
+                provide: DGTCacheService,
+                useClass: DGTCacheInMemoryService,
             },
             {
-                provide: DGTDataService,
-                useClass: DGTMockDataService,
+                provide: DGTExchangeService,
+                useClass: DGTExchangeMockService,
             },
-            DGTQueryService,
-            DGTHttpService,
+            {
+                provide: DGTConfigurationService,
+                useClass: DGTConfigurationMockService,
+            },
+            {
+                provide: DGTSourceService,
+                useClass: DGTSourceMockService,
+            },
+            {
+                provide: DGTUriFactoryService,
+                useClass: DGTUriFactorySolidService,
+            },
+            {
+                provide: DGTConnectionService,
+                useClass: DGTConnectionMockService,
+            },
+            {
+                provide: DGTPurposeService,
+                useClass: DGTPurposeMockService,
+            },
+            {
+                provide: DGTProfileService,
+                useClass: DGTProfileMockService,
+            },
+            {
+                provide: DGTCryptoService,
+                useClass: DGTCryptoBrowserService,
+            },
+            DGTLDTypeRegistrationTransformerService,
         ],
     },
 };

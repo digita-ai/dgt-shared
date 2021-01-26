@@ -12,21 +12,26 @@ import { DGTCategoryService } from './dgt-category.service';
 export class DGTCategoryMockService extends DGTCategoryService {
     public resources: DGTCategory[] = [];
 
-    constructor(private logger: DGTLoggerService, private filters: DGTLDFilterService, private uri: DGTUriFactoryService) {
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private uri: DGTUriFactoryService,
+    ) {
         super();
     }
 
     public get(categoryUri: string): Observable<DGTCategory> {
-        return of(this.resources.find(e => e.uri === categoryUri));
+        return of(this.resources.find((e) => e.uri === categoryUri));
     }
 
     public query(filter?: DGTLDFilter): Observable<DGTCategory[]> {
         this.logger.debug(DGTCategoryMockService.name, 'Starting to query categories', filter);
 
-        return of({ filter, resources: this.resources })
-        .pipe(
-            switchMap(data => data.filter ? this.filters.run<DGTCategory>(data.filter, data.resources) : of(data.resources)),
-        )
+        return of({ filter, resources: this.resources }).pipe(
+            switchMap((data) =>
+                data.filter ? this.filters.run<DGTCategory>(data.filter, data.resources) : of(data.resources),
+            ),
+        );
     }
 
     public save<T extends DGTCategory>(resources: T[]): Observable<T[]> {
@@ -36,19 +41,20 @@ export class DGTCategoryMockService extends DGTCategoryService {
             throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'category');
-                    }
-
-                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+        return of({ resources }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'category')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            map((data) =>
+                data.resources.map((resource) => {
+                    this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri), resource];
 
                     return resource;
                 }),
-                ),
-            );
+            ),
+        );
     }
 
     public delete(resource: DGTCategory): Observable<DGTCategory> {
@@ -58,7 +64,7 @@ export class DGTCategoryMockService extends DGTCategoryService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
+        this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri)];
 
         return of(resource);
     }

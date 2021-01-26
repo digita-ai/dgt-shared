@@ -1,10 +1,11 @@
+import { DGTConnectorSolidWeb } from '@digita-ai/dgt-shared-connectors';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTConnectionSolidConfiguration } from '../../connection/models/dgt-connection-solid-configuration.model';
 import { DGTConnector } from '../../connector/models/dgt-connector.model';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
-import { DGTLDTypeRegistrationService } from '../../linked-data/services/dgt-ld-type-registration.service';
+import { DGTSourceSolidConfiguration } from '../../source/models/dgt-source-solid-configuration.model';
 import { DGTProfile } from '../models/dgt-profile.model';
 import { DGTProfileTransformerService } from './dgt-profile-transformer.service';
 import { DGTProfileService } from './dgt-profile.service';
@@ -13,12 +14,10 @@ import { DGTProfileService } from './dgt-profile.service';
 /** Service used for retrieving and updating a user's profile */
 export class DGTProfileSolidService extends DGTProfileService {
   constructor(
-    private connector: DGTConnector<any, any>,
+    private connector: DGTConnector<DGTSourceSolidConfiguration, DGTConnectionSolidConfiguration>,
     private transformer: DGTProfileTransformerService,
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
-    private typeRegistrations: DGTLDTypeRegistrationService,
-    private connections: DGTConnectionService,
   ) {
     super();
   }
@@ -35,16 +34,11 @@ export class DGTProfileSolidService extends DGTProfileService {
 
     return of({ exchange })
       .pipe(
-        switchMap(data => this.connections.get(exchange.connection)
-          .pipe(map(connection => ({ ...data, connection })))),
-        tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved connection', { data })),
-        switchMap(data => this.connector.query<DGTProfile>(null, data.exchange, this.transformer)
-          .pipe(map(profiles => ({ ...data, profile: profiles[0] })))),
+        switchMap(data => this.connector.query<DGTProfile>(data.exchange, this.transformer)
+          .pipe(map(profiles => ({ ...data, profiles })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
-        switchMap(data => this.typeRegistrations.all(data.profile)
-          .pipe(map(typeRegistrations => ({ ...data, typeRegistrations, profile: ({ ...data.profile, typeRegistrations }) })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved type registrations for profile', data)),
-        map(data => data.profile),
+        map(data => data.profiles[0]),
       );
   }
 
@@ -55,12 +49,12 @@ export class DGTProfileSolidService extends DGTProfileService {
    * @param connection connection to retrieve the profile information from
    * @param source source to retrieve the profile information from
    */
-  public update(originalProfile: DGTProfile, updatedProfile: DGTProfile): Observable<DGTProfile> {
-    this.paramChecker.checkParametersNotNull({ originalProfile, updatedProfile });
+  public update(resource: DGTProfile): Observable<DGTProfile> {
+    this.paramChecker.checkParametersNotNull({ resource });
 
-    return of({ originalProfile, updatedProfile })
+    return of({ resource })
       .pipe(
-        switchMap(data => this.connector.update([{ original: data.originalProfile, updated: data.updatedProfile }], this.transformer)
+        switchMap(data => this.connector.save([data.resource], this.transformer)
           .pipe(map(updates => updates[0])),
         ),
       );

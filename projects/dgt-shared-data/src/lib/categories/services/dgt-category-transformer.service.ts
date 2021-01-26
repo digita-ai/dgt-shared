@@ -51,13 +51,13 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         let res: DGTCategory[] = null;
 
         if (resource && resource.triples) {
-            const categoriesubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/categories#category' &&
-                value.subject.value.endsWith('category#'),
+            const categoryValues = resource.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/categories#category',
             );
 
-            if (categoriesubjectValues) {
-                res = categoriesubjectValues.map(categoriesubjectValue => this.transformOne(categoriesubjectValue, resource));
+            if (categoryValues) {
+                res = categoryValues.map(categoryValue => this.transformOne<T>(categoryValue, resource));
             }
         }
 
@@ -86,9 +86,13 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    predicate: 'http://digita.ai/voc/categories#category',
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/categories#category',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/categories#description',
@@ -163,7 +167,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         this.paramChecker.checkParametersNotNull({ triple, entity: resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value);
+            value.subject.value === triple.subject.value);
 
         const description = resourceTriples.find(value =>
             value.predicate === 'http://digita.ai/voc/categories#description',
@@ -184,7 +188,7 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         const filter = this.filterToDomain(triple, resource);
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             description: description ? description.object.value : null,
             exchange: null,
             groupId: groupId ? groupId.object.value : null,
@@ -258,12 +262,12 @@ export class DGTCategoryTransformerService implements DGTLDTransformer<DGTCatego
         }
 
         const type = resource.triples.find(value =>
-            value.subject.value === triple.object.value &&
+            value.subject.value === triple.subject.value &&
             value.predicate === 'http://digita.ai/voc/categoryfilter#type',
         );
 
         const predicates: string[] = resource.triples.filter(value =>
-            value.subject.value === triple.object.value &&
+            value.subject.value === triple.subject.value &&
             value.predicate === 'http://digita.ai/voc/categoryfilter#predicates',
         ).map(predicate => predicate.object.value);
 

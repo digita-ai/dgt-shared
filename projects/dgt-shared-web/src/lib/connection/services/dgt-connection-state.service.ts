@@ -85,4 +85,19 @@ export class DGTConnectionStateService extends DGTConnectionService {
         take(1),
       );
   }
+
+  public getConnectionsForHolder<T extends DGTConnection<any>>(holderUri: string): Observable<T[]> {
+
+    if (!holderUri) {
+      throw new DGTErrorArgument('Argument holderUri should be set.', holderUri);
+    }
+
+    return of({ holderUri })
+      .pipe(
+        switchMap(data => this.store.select<DGTConnection<any>[]>(state => state.app.connections)
+          .pipe(map((connections: T[]) => ({ ...data, connections })))),
+        take(1),
+        map(data => data.connections ? _.cloneDeep(data.connections.filter(c => c.holder === data.holderUri)) : null),
+      );
+  }
 }

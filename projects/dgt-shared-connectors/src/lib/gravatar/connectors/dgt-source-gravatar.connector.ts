@@ -15,8 +15,8 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
         return of(null);
     }
 
-    public query<T extends DGTLDResource>(holderUri: string, exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
-        this.logger.debug(DGTConnectorGravatar.name, 'Starting query', { exchange, holderUri });
+    public query<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
+        this.logger.debug(DGTConnectorGravatar.name, 'Starting query', { exchange });
 
         if (!exchange) {
             throw new DGTErrorArgument('Argument exchange should be set.', exchange);
@@ -24,7 +24,7 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
 
         let res = null;
 
-        res = of({ holderUri, exchange, transformer })
+        res = of({ exchange, transformer })
             .pipe(
                 switchMap(data => this.connections.get(exchange.connection)
                     .pipe(map(connection => ({ ...data, connection, uri: `https://www.gravatar.com/${Md5.hashStr(connection.configuration.email)}.json` })))),
@@ -33,7 +33,7 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
                 switchMap(data => this.http.get<DGTSourceGravatarResponse>(data.uri)
                     .pipe(map(response => ({ ...data, response })))),
                 tap(data => this.logger.debug(DGTConnectorGravatar.name, 'Received response from Gravatar', { data })),
-                map(data => this.convertResponse(data.holderUri, data.response, exchange, data.source, data.connection)),
+                map(data => this.convertResponse(data.response, exchange, data.source, data.connection)),
                 tap(data => this.logger.debug(DGTConnectorGravatar.name, 'Converted response from Gravatar', { data })),
                 switchMap((entity: DGTLDResource) => transformer.toDomain([entity])),
             );
@@ -41,7 +41,7 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
         return res;
     }
 
-    private convertResponse(holderUri: string, httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResource {
+    private convertResponse(httpResponse: DGTHttpResponse<DGTSourceGravatarResponse>, exchange: DGTExchange, source: DGTSource<DGTSourceGravatarConfiguration>, connection: DGTConnection<DGTConnectionGravatarConfiguration>): DGTLDResource {
         const triples: DGTLDTriple[] = [];
 
         this.logger.debug(DGTConnectorGravatar.name, 'Starting conversion of Gravatar response', { httpResponse, exchange, source, connection });
@@ -84,12 +84,26 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
 
         return {
             triples,
-            uri: holderUri,
+            uri: null,
             exchange: exchange.uri,
         };
     }
 
-    public update<R extends DGTLDResource>(domainEntities: { original: R, updated: R }[], transformer: DGTLDTransformer<R>): Observable<R[]> {
+    public save<R extends DGTLDResource>(
+        resources: R[],
+        transformer: DGTLDTransformer<R>,
+    ): Observable<R[]> {
+        return of({ resources, transformer })
+            .pipe(
+                switchMap(data => this.update(resources.filter(r => r.uri !== null), data.transformer)
+                    .pipe(map(updated => ({ ...data, updated })))),
+                switchMap(data => this.add(resources.filter(r => r.uri === null), data.transformer)
+                    .pipe(map(added => ({ ...data, added })))),
+                map(data => [...data.added, ...data.updated]),
+            )
+    }
+
+    private update<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
 
@@ -97,7 +111,7 @@ export class DGTConnectorGravatar extends DGTConnector<DGTSourceGravatarConfigur
         throw new DGTErrorNotImplemented();
     }
 
-    public add<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
+    private add<R extends DGTLDResource>(domainEntities: R[], transformer: DGTLDTransformer<R>): Observable<R[]> {
         throw new DGTErrorNotImplemented();
     }
 }

@@ -2,7 +2,6 @@ import { Observable, of } from 'rxjs';
 
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { DGTConnectionSolid } from '../../connection/models/dgt-connection-solid.model';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
@@ -50,7 +49,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             let triples = profile.triples;
             const uri = profile.uri;
             const accountUri = uri.split('/profile/card#me')[0];
-            const profileUri = `${accountUri}/profile`;
             const documentSubject = {
                 value: '#me',
                 termType: DGTLDTermType.REFERENCE,
@@ -72,7 +70,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.avatar ? `${profileUri}/${profile.avatar}` : null,
+                        value: profile.avatar ? profile.avatar : null,
                     },
                 },
                 {
@@ -120,7 +118,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
     private transformOne(resource: DGTLDResource): DGTProfile {
         this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { resource });
         this.paramChecker.checkParametersNotNull({ entity: resource });
-
         const uri = resource.uri;
         const accountUri = uri.split('/profile/card#me')[0];
         const profileUri = `${accountUri}/profile`;
@@ -150,9 +147,8 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             fullName: fullName ? fullName.object.value : null,
             privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
-            avatar: avatar ? `${profileUri}/${avatar.object.value}` : null,
+            avatar: avatar ? avatar.object.value : null,
             triples: resource.triples,
-            typeRegistrations: [],
             exchange: resource.exchange,
         };
     }

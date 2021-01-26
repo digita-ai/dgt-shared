@@ -1,0 +1,39 @@
+<dgt-section [showContent]="true" [showIcon]="true" [showSubtitle]="false" *ngIf="resource">
+  <dgt-section-icon>
+    <i class="fas fa-info-circle"></i>
+  </dgt-section-icon>
+  <dgt-section-title>
+    {{resource.triples[0].predicate}}
+  </dgt-section-title>
+  <dgt-section-content>
+    <dgt-form [formGroup]="formGroup">
+      <dgt-form-element [controlName]="'desc'">
+        <dgt-form-control>
+          <mat-form-field id="subject" appearance="outline">
+            <mat-label>Subject</mat-label>
+            <input matInput 
+              [readonly]="true"
+              type="text"
+              formControlName="subject">
+          </mat-form-field>
+          <mat-form-field id="object" appearance="outline">
+            <mat-label>Object</mat-label>
+            <input matInput #object
+              [readonly]="true"
+              type="text"
+              formControlName="object"
+              >
+              <!-- (keyup.enter)="onResourceUpdated(resource, object.resource)" -->
+          </mat-form-field>
+        </dgt-form-control>
+      </dgt-form-element>
+    </dgt-form>
+    <dgt-button
+      (called)="onResourceUpdated(resource, object.value)"
+      type="submit"
+      color="accent"
+      *ngIf="formGroup.dirty">
+      Save Changes
+    </dgt-button>
+  </dgt-section-content>
+</dgt-section>

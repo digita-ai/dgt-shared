@@ -13,7 +13,7 @@ export abstract class DGTEventService {
      * @param source Source to retrieve the events from
      * @returns Observable of events
      */
-    public abstract getAll(profile: DGTProfile): Observable<DGTEvent[]>;
+    public abstract getAll(exchange: DGTExchange): Observable<DGTEvent[]>;
 
     /**
      * Registers/adds an event to the SOLID-pod
@@ -22,7 +22,7 @@ export abstract class DGTEventService {
      * @param source Source object to add the event to
      * @returns Observable
      */
-    public abstract register(profile: DGTProfile, events: DGTEvent[]): Observable<DGTEvent[]>
+    public abstract register(events: DGTEvent[]): Observable<DGTEvent[]>
 
     /**
      * Removes events from the SOLID-pod

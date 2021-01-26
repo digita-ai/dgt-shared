@@ -28,7 +28,7 @@ export { DGTInjectable } from './lib/decorators/dgt-injectable';
 export { DGTOriginService } from './lib/origin/services/dgt-origin.service';
 export { DGTOriginConfigService } from './lib/origin/services/dgt-origin-config.service';
 export { DGTParameterCheckerService } from './lib/parameters/services/parameter-checker.service';
-export { DGTSourceSolidToken } from './lib/tokens/solid/dgt-source-solid-token.model';
 export { DGTHttpResponse } from './lib/http/models/dgt-http-response.model';
 export { DGTHttpSessionService } from './lib/http/services/dgt-http-session.service';
+export { DGTConfigurationMockService } from './lib/configuration/services/dgt-configuration-mock.service';
 export { DGTCacheType } from './lib/cache/models/dgt-cache-type.model';

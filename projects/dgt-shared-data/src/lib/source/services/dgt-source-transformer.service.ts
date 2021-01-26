@@ -50,13 +50,13 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         let res: DGTSource<any>[] = null;
 
         if (resource && resource.triples) {
-            const resourceSubjects = resource.triples.filter(value =>
-                value.predicate === 'http://digita.ai/voc/sources#source' &&
-                value.subject.value.endsWith('source#'),
+            const sourceValues = resource.triples.filter(value =>
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                value.object.value === 'http://digita.ai/voc/sources#source',
             );
 
-            if (resourceSubjects) {
-                res = resourceSubjects.map(triple => this.transformOne(triple, resource));
+            if (sourceValues) {
+                res = sourceValues.map(triple => this.transformOne(triple, resource));
             }
         }
 
@@ -85,9 +85,13 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
             let newTriples: DGTLDTriple[] = [
                 {
-                    subject: { value: `${resource.uri.split('#')[0]}#`, termType: DGTLDTermType.REFERENCE },
-                    predicate: 'http://digita.ai/voc/sources#source',
-                    object: resourceSubject,
+                    predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.REFERENCE,
+                        dataType: DGTLDDataType.STRING,
+                        value: 'http://digita.ai/voc/sources#source',
+                    },
                 },
                 {
                     predicate: 'http://digita.ai/voc/sources#icon',
@@ -158,7 +162,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         this.paramChecker.checkParametersNotNull({ triple, resource });
 
         const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.object.value,
+            value.subject.value === triple.subject.value,
         );
 
         const icon = resourceTriples.find(value =>
@@ -176,7 +180,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
         const configuration = this.configToDomain(triple, resource, type.object.value);
 
         return {
-            uri: triple.object.value,
+            uri: triple.subject.value,
             triples: null,
             exchange: null,
             icon: icon ? icon.object.value : null,
@@ -745,7 +749,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     },
                 },
             ];
-            config.mapping.toArray().forEach(entry => {
+            Object.keys(config.mapping).forEach(key => {
                 const subject = {
                     value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE,
@@ -761,7 +765,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: entry.key,
+                        value: key,
                     },
                 });
                 res.push({
@@ -770,7 +774,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                     object: {
                         termType: DGTLDTermType.LITERAL,
                         dataType: DGTLDDataType.STRING,
-                        value: entry.value,
+                        value: config.mapping[key],
                     },
                 });
             });
@@ -807,173 +811,173 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
 
         if (type.endsWith('solid')) {
             const issuer = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#issuer',
             );
             const authorizationEndpoint = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#authorizationendpoint',
             );
             const tokenEndpoint = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpoint',
             );
             const userinfoEndpoint = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#userinfoendpoint',
             );
             const jwksUri = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#jwksuri',
             );
             const registrationEndpoint = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationendpoint',
             );
             const claimsParameterSupported = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimsparametersuppoerted',
             );
             const requestParameterSupported = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requestparametersupported',
             );
             const requestUriParameterSupported = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requesturiparametersupported',
             );
             const requireRequestUriRegistration = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#requirerequesturiregistration',
             );
             const checkSessionIframe = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#checksessioniframe',
             );
             const endSessionEndpoint = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#endsessionendpoint',
             );
             const callbackUri = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#callbackuri',
             );
             const clientId = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientid',
             );
             const clientsecret = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientsecret',
             );
             const applicationType = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#applicationtype',
             );
             const clientName = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientname',
             );
             const logoUri = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#logouri',
             );
             const clientUri = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clienturi',
             );
             const idTokenSignedResponseAlg = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#idtokensignedresponsealg',
             );
             const tokenEndpointAuthMethod = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethod',
             );
             const defaultMaxAge = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#defaultmaxage',
             );
             const frontchannelLogoutSessionRequired = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#frontchannellogoutsessionrequired',
             );
             const registrationAccessToken = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationaccesstoken',
             );
             const registrationClientUri = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#registrationclienturi',
             );
             const clientIdIssuedAt = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientidissuedat',
             );
             const clientSecretExpiresAt = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#clientsecretexpiresat',
             );
 
             const responseTypesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypessupported',
             ).map(t => t.object.value);
             const responseModesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsemodessupported',
             ).map(t => t.object.value);
             const grantTypesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypessupported',
             ).map(t => t.object.value);
             const subjectTypesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#subjecttypessupported',
             ).map(t => t.object.value);
             const idTokenSigningAlgValuesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#idtokensigningalgvaluessupported',
             ).map(t => t.object.value);
             const tokenEndpointAuthMethodsSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthmethodssupported',
             ).map(t => t.object.value);
             const tokenEndpointAuthSigningAlgValuesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#tokenendpointauthsigningalgvaluessupported',
             ).map(t => t.object.value);
             const displayValuesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#displayvaluessupported',
             ).map(t => t.object.value);
             const claimTypesSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimtypessupported',
             ).map(t => t.object.value);
             const claimsSupported = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#claimssupported',
             ).map(t => t.object.value);
             const redirectUris = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#redirecturis',
             ).map(t => t.object.value);
             const responseTypes = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#responsetypes',
             ).map(t => t.object.value);
             const grantTypes = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#granttypes',
             ).map(t => t.object.value);
             const postLogoutRedirectUris = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#postlogoutredirecturis',
             ).map(t => t.object.value);
 
             const keys = resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcesolidconfig#keys',
             ).map(key => {
                 const kid = resource.triples.find(value =>
@@ -1064,40 +1068,40 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             } as DGTSourceSolidConfiguration;
         } else if (type.endsWith('mssql')) {
             const user = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#user',
             );
             const password = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#password',
             );
             const server = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#server',
             );
             const database = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#database',
             );
             const selectCommand = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-select',
             );
             const insertCommand = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-insert',
             );
             const updateCommand = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-update',
             );
             const deleteCommand = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#command-delete',
             );
-            const mappingMap = new DGTMap<string, string>();
+            let mappingMap = {};
             resource.triples.filter(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcemssqlconfig#mapping',
             )?.forEach(mapping => {
 
@@ -1113,7 +1117,7 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
                 this.logger.debug(DGTSourceTransformerService.name, 'Converting mapping', { mapping, key, value, resmap: mappingMap });
 
                 if (key && value) {
-                    mappingMap.set(key.object.value, value.object.value);
+                    mappingMap = { ...mappingMap, [key.object.value]: value.object.value}
                 }
             });
 
@@ -1132,11 +1136,11 @@ export class DGTSourceTransformerService implements DGTLDTransformer<DGTSource<a
             };
         } else if (type.endsWith('gravatar')) {
             const usernameField = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcegravatarconfig#usernamefield',
             );
             const thumbnailField = resource.triples.find(value =>
-                value.subject.value === triple.object.value &&
+                value.subject.value === triple.subject.value &&
                 value.predicate === 'http://digita.ai/voc/sourcegravatarconfig#thumbnailfield',
             );
             res = {

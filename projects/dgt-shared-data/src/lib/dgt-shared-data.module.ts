@@ -8,8 +8,7 @@ import { DGTConnectionTransformerService } from './connection/services/dgt-conne
 import { DGTConnectorService } from './connector/services/dgt-connector.service';
 import { DGTSecurityCredentialMockService } from './credential/services/dgt-security-credential-mock.service';
 import { DGTSecurityCredentialTransformerService } from './credential/services/dgt-security-credential-transformer.service';
-import { DGTDataInterfaceHostDirective } from './data-value/directives/data-interface-host.directive';
-import { DGTDataValueTransformerService } from './data-value/services/data-transformer-value.service';
+import { DGTDataInterfaceHostDirective } from './data-resource/directives/data-interface-host.directive';
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTExchangeTransformerService } from './exchanges/services/dgt-exchange-transformer.service';
 import { DGTHolderTransformerService } from './holder/services/dgt-holder-transformer.service';
@@ -18,6 +17,7 @@ import { DGTLDFilterRunnerBGPService } from './linked-data/services/dgt-ld-filte
 import { DGTLDFilterService } from './linked-data/services/dgt-ld-filter.service';
 import { DGTLDRepresentationSparqlDeleteFactory } from './linked-data/services/dgt-ld-representation-sparql-delete-factory';
 import { DGTLDRepresentationSparqlInsertFactory } from './linked-data/services/dgt-ld-representation-sparql-insert-factory';
+import { DGTLDResourceTransformerService } from './linked-data/services/dgt-ld-resource-transformer.service';
 import { DGTLDTripleFactoryService } from './linked-data/services/dgt-ld-triple-factory.service';
 import { DGTLDTypeRegistrationTransformerService } from './linked-data/services/dgt-ld-type-registration-transformer.service';
 import { DGTLDUtils } from './linked-data/services/dgt-ld-utils.service';
@@ -28,10 +28,13 @@ import { DGTSecurityPolicyTransformerService } from './policy/services/dgt-secur
 import { DGTProfileTransformerService } from './profile/services/dgt-profile-transformer.service';
 import { DGTPurposeTransformerService } from './purpose/services/dgt-purpose-transformer.service';
 import { DGTSourceTransformerService } from './source/services/dgt-source-transformer.service';
+import { DGTSparqlCommunicaService } from './sparql/services/dgt-sparql-communica.service';
 import { DGTSparqlQueryService } from './sparql/services/dgt-sparql-query.service';
 import { DGTUriFactoryCacheService } from './uri/services/dgt-uri-factory-cache.service';
 import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.service';
-import { DGTWorkflowService } from './workflow/services/dgt-workflow.service';
+import { DGTWorkflowCacheService } from './workflow/services/dgt-workflow-cache.service';
+import { DGTWorkflowMockService } from './workflow/services/dgt-workflow-mock.service';
+import { DGTWorkflowTransformerService } from './workflow/services/dgt-workflow-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective,
@@ -45,13 +48,13 @@ export const providers = [
   DGTLDFilterService,
   DGTLDFilterRunnerBGPService,
   DGTQueryService,
-  // DGTMockDataService,
   DGTCacheInMemoryService,
   DGTCacheSolidService,
-  DGTWorkflowService,
+  DGTWorkflowTransformerService,
+  DGTWorkflowCacheService,
+  DGTWorkflowMockService,
   DGTLDTripleFactoryService,
   DGTLDTypeRegistrationTransformerService,
-  DGTDataValueTransformerService,
   DGTProfileTransformerService,
   DGTEventTransformerService,
   DGTConnectorService,
@@ -72,6 +75,9 @@ export const providers = [
   DGTCategoryTransformerService,
   DGTLDRepresentationSparqlInsertFactory,
   DGTLDRepresentationSparqlDeleteFactory,
+  DGTLDResourceTransformerService,
+  DGTSparqlCommunicaService,
+  DGTLDTypeRegistrationTransformerService,
 ];
 
 @NgModule({
