@@ -1,10 +1,9 @@
 
-import { DGTConnectionSolid, DGTExchange, DGTExchangeService, DGTLDResource, DGTLDTypeRegistration, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTProfile } from '@digita-ai/dgt-shared-data';
-import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTConnectionSolidConfiguration, DGTConnector, DGTExchange, DGTLDResource, DGTLDTypeRegistration, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTSourceSolidConfiguration } from '@digita-ai/dgt-shared-data';
+import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTConnectorSolidWeb } from '../../solid/connectors/dgt-source-solid-web.connector';
 
 /** Service for managing typeRegistrations in Solid. */
 @DGTInjectable()
@@ -16,10 +15,7 @@ export class DGTLDTypeRegistrationSolidService {
     private paramChecker: DGTParameterCheckerService,
     private utils: DGTLDUtils,
     private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
-    private exchanges: DGTExchangeService,
-  ) {
-    super();
-  }
+  ) {  }
 
   /**
    * Get all typeRegistrations from multiple files.
@@ -39,7 +35,7 @@ export class DGTLDTypeRegistrationSolidService {
    * @throws DGTErrorArgument when arguments are incorrect.
    * @returns Observable of registered typeRegistration.
    */
-  public registerForResources(predicate: string, resource: DGTLDResource, exchange: DGTExchange): Observable<DGTLDTypeRegistration[]> {
+  public registerForResources(typeRegistrations: DGTLDTypeRegistration[], predicate: string, resource: DGTLDResource, exchange: DGTExchange): Observable<DGTLDTypeRegistration[]> {
     this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Preparing to register typeRegistration.', { typeRegistrations, predicate, resource, exchange });
 
     let res = of(null);
@@ -66,7 +62,6 @@ export class DGTLDTypeRegistrationSolidService {
 
       res = of({ typeRegistrationsToBeAdded, exchange })
         .pipe(
-          switchMap(data => this.con)
           switchMap(data => this.connector.save<DGTLDTypeRegistration>([data.typeRegistrationsToBeAdded], this.transformer)
             .pipe(map(addedTypeRegistrations => ({
               ...data, addedTypeRegistrations,

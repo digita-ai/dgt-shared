@@ -16,9 +16,7 @@ export class DGTOIDCService {
     }
 
     public getSession(sessionId: string): Observable<Session> {
-        return from(this.manager.hasSession(sessionId)).pipe(mergeMap(exists => {
-            return exists ? this.manager.getSession(sessionId) : of(null);
-        }));
+        return from(this.manager.getSession(sessionId));
     }
 
     public connect(source: DGTSourceSolid, connection: DGTConnectionSolid): void {

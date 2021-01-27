@@ -38,7 +38,7 @@ export class DGTProfileSolidService extends DGTProfileService {
           .pipe(map(profiles => ({ ...data, profiles })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved type registrations for profile', data)),
-        map(data => data.profiles[0]),
+        map(data => data.profiles.filter(profile => profile.privateTypeIndex)[0]),
       );
   }
 
