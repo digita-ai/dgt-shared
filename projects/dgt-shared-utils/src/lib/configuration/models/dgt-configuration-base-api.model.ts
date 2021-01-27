@@ -6,11 +6,12 @@ export interface DGTConfigurationBaseApi extends DGTConfigurationBase {
     production: boolean;
     baseURI: string;
     enableLocalStorage: boolean;
+    platformPublicUrl: string;
     cache: {
         type: DGTCacheType;
-        uri: string,
-        prefix: string
-        sparqlEndpoint: string
+        uri: string;
+        prefix: string;
+        sparqlEndpoint: string;
     };
     jwt: {
         expiration: string;

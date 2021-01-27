@@ -98,4 +98,12 @@ export class DGTInviteRemoteService extends DGTInviteService {
       map(response => response.data),
     );
   }
+  public getPlatformPublicInviteLink(inviteUri: string): Observable<string> {
+    return of({inviteUri}).pipe(
+      map(data => ({ ...data, uri: `${this.config.get(c => c.server.uri)}invite/${encodeURIComponent(data.inviteUri)}/link` })),
+      switchMap(data => this.store.select(state => state.app.accessToken).pipe(map(accessToken => ({ ...data, accessToken })))),
+      switchMap(data => this.http.get<{inviteLink: string}>(data.uri, { Authorization: `Bearer ${data.accessToken}` })),
+      map(response => response.data.inviteLink),
+    );
+  }
 }

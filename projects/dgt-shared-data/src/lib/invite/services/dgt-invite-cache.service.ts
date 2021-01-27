@@ -85,4 +85,7 @@ export class DGTInviteCacheService extends DGTInviteService {
         }
         return this.query({ type: DGTLDFilterType.PARTIAL, partial: { holder: holderUri } } as DGTLDFilterPartial);
     }
+    public getPlatformPublicInviteLink(inviteUri: string): Observable<string> {
+        throw new DGTErrorNotImplemented();
+    }
 }

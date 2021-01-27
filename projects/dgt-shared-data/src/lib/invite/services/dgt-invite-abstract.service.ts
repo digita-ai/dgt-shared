@@ -12,4 +12,5 @@ export abstract class DGTInviteService implements DGTLDResourceService<DGTInvite
   public abstract save(resources: DGTInvite[]): Observable<DGTInvite[]>;
   public abstract delete(resource: DGTInvite): Observable<DGTInvite>;
   public abstract getInvitesForHolder(holderUri: string): Observable<DGTInvite[]>;
+  public abstract getPlatformPublicInviteLink(inviteUri: string): Observable<string>;
 }
