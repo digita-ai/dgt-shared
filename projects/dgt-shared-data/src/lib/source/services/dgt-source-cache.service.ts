@@ -11,7 +11,6 @@ import { DGTSourceService } from './dgt-source.service';
 
 @DGTInjectable()
 export class DGTSourceCacheService extends DGTSourceService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -45,18 +44,15 @@ export class DGTSourceCacheService extends DGTSourceService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'source');
-                }
-
-                return resource;
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(res => res))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'source')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTSource<any>[] }))),
+            ),
+            switchMap((data) => this.cache.save(this.transformer, data.resources).pipe(map((res) => res))),
+        );
     }
 
     public delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
@@ -66,11 +62,11 @@ export class DGTSourceCacheService extends DGTSourceService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 }

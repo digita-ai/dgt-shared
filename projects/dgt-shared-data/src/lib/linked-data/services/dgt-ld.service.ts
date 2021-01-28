@@ -11,7 +11,6 @@ import { DGTWorkflowService } from '../../workflow/services/dgt-workflow.service
 import { DGTLDFilter } from '../models/dgt-ld-filter.model';
 import { DGTLDResource } from '../models/dgt-ld-resource.model';
 import { DGTLDTransformer } from '../models/dgt-ld-transformer.model';
-import { DGTLDResourceTransformerService } from './dgt-ld-resource-transformer.service';
 
 /**
  * The service exists to retrieve all data from Solid pods
@@ -24,7 +23,6 @@ export class DGTLDService {
         private exchanges: DGTExchangeService,
         private connectors: DGTConnectorService,
         private workflows: DGTWorkflowService,
-        private transformer: DGTLDResourceTransformerService,
     ) {}
 
     /**
@@ -41,11 +39,6 @@ export class DGTLDService {
 
         return of({ filter, transformer }).pipe(
             switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
-            switchMap((data) =>
-                this.refreshForExchanges(data.exchanges, data.transformer).pipe(
-                    map((refreshedResources) => ({ ...data, refreshedResources })),
-                ),
-            ),
             switchMap((data) => this.cache.query<T>(transformer, filter)),
         );
     }
@@ -59,16 +52,11 @@ export class DGTLDService {
 
         return of({ query }).pipe(
             switchMap((data) => this.exchanges.query().pipe(map((exchanges) => ({ ...data, exchanges })))),
-            switchMap((data) =>
-                this.refreshForExchanges(data.exchanges, this.transformer).pipe(
-                    map((refreshedResources) => ({ ...data, refreshedResources })),
-                ),
-            ),
             switchMap((data) => this.cache.querySparql(data.query)),
         );
     }
 
-    private refreshForExchanges<T extends DGTLDResource>(
+    public refreshForExchanges<T extends DGTLDResource>(
         exchanges: DGTExchange[],
         transformer: DGTLDTransformer<T>,
     ): Observable<T[]> {

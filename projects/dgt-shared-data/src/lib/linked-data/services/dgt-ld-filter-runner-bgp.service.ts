@@ -15,7 +15,7 @@ export class DGTLDFilterRunnerBGPService implements DGTLDFilterRunnerService<DGT
         }
 
         if (!resources) {
-            throw new DGTErrorArgument('Argument triresourcesples should be set.', resources);
+            throw new DGTErrorArgument('Argument resources should be set.', resources);
         }
 
         return of(resources.map(resource => this.runOne<R>(filter, resource)));

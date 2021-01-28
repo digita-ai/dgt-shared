@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DGTCategory, DGTDataGroup, DGTDataValue, DGTDataValueService } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataGroup, DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
+import { DGTLDResourceRemoteService } from '../../../resources/services/dgt-ld-resource-remote.service';
 
 @Component({
   selector: 'dgt-data-group',
@@ -14,14 +15,14 @@ export class DGTDataGroupComponent implements OnInit {
   /** Group of this component */
   @Input() public group: DGTDataGroup;
 
-  /** Data values that belong under this group */
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  /** Resources that belong under this group */
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
-    this.updateReceived(values, this.categories);
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
+    this.updateReceived(resources, this.categories);
   }
 
   /** Categories of this group */
@@ -31,56 +32,56 @@ export class DGTDataGroupComponent implements OnInit {
   }
   @Input() public set categories(categories: DGTCategory[]) {
     this._categories = categories;
-    this.updateReceived(this.values, categories);
+    this.updateReceived(this.resources, categories);
   }
 
   /** Used to emit feedbackEvent events */
   @Output()
-  public valueUpdated: EventEmitter<{ value: DGTDataValue, newObject: any }>;
+  public resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   /** Used to emit infoClicked events */
   @Output()
   infoClicked: EventEmitter<DGTCategory>;
 
-  /** Data values grouped by category uri */
-  public groupedValues;
+  /** resource grouped by category uri */
+  public groupedResources;
   /** Categories grouped by category uri */
   public groupedCategories;
 
   constructor(
-    private datavalueService: DGTDataValueService,
+    private resourcesService: DGTLDResourceRemoteService,
     private paramChecker: DGTParameterCheckerService,
     private logger: DGTLoggerService,
   ) {
-    this.groupedValues = new Map();
-    this.valueUpdated = new EventEmitter();
+    this.groupedResources = new Map();
+    this.resourceUpdated = new EventEmitter();
     this.infoClicked = new EventEmitter();
   }
 
   ngOnInit() { }
 
   /**
-   * This function will be called when values or categories get updated
-   * It groups the categories and values by category uri
-   * @param values values to group
+   * This function will be called when resources or categories get updated
+   * It groups the categories and resources by category uri
+   * @param resources resources to group
    * @param categories categories to group
    */
-  public updateReceived(values: DGTDataValue[], categories: DGTCategory[]) {
-    this.logger.debug(DGTDataGroupComponent.name, 'Received update', { values, categories });
+  public updateReceived(resources: DGTLDResource[], categories: DGTCategory[]) {
+    this.logger.debug(DGTDataGroupComponent.name, 'Received update', { resources, categories });
 
-    if (values && categories) {
-      // Categories for which a value exists
+    if (resources && categories) {
+      // Categories for which a resource exists
       if (this.categories.length > 0) {
         this.groupedCategories = _.groupBy(categories, category => category.uri);
 
-        // grouping values by category
+        // grouping resources by category
         this.categories.forEach(category => {
           if (category.uri) {
-            this.datavalueService.getValuesOfCategories([category], values)
-              .subscribe(valuesOfCategory => {
-                this.groupedValues.set(
+            this.resourcesService.getResourcesOfCategories([category], resources)
+              .subscribe(resourcesOfCategory => {
+                this.groupedResources.set(
                   category.uri,
-                  valuesOfCategory,
+                  resourcesOfCategory,
                 );
               });
           }
@@ -90,13 +91,13 @@ export class DGTDataGroupComponent implements OnInit {
   }
 
   /**
-   * @param value Value to update
-   * @throws DGTErrorArgument when value is not set
+   * @param resource resource to update
+   * @throws DGTErrorArgument when resource is not set
    * @emits
   */
-  public onValueUpdated(val: { value: DGTDataValue, newObject: any }): void {
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
     this.paramChecker.checkParametersNotNull({ val }, 1);
-    this.valueUpdated.emit(val);
+    this.resourceUpdated.emit(val);
   }
 
   /**

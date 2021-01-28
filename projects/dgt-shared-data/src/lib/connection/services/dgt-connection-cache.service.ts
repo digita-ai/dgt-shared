@@ -14,7 +14,6 @@ import { DGTConnectionTransformerService } from './dgt-connection-transformer.se
 
 @DGTInjectable()
 export class DGTConnectionCacheService extends DGTConnectionService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -49,18 +48,15 @@ export class DGTConnectionCacheService extends DGTConnectionService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'connection');
-                }
-
-                return resource;
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save<T>(this.transformer, data.resources)
-                    .pipe(map(res => res))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'connection')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
+            switchMap((data) => this.cache.save<T>(this.transformer, data.resources).pipe(map((res) => res))),
+        );
     }
     public delete<T extends DGTConnection<any>>(resource: T): Observable<T> {
         this.logger.debug(DGTConnectionCacheService.name, 'Starting to delete resource', { resource });
@@ -71,25 +67,34 @@ export class DGTConnectionCacheService extends DGTConnectionService {
 
         return of({ resource }).pipe(
             // GET ALL EXCHANGES CONNECTED TO THIS CONNECTION
-            switchMap(data => this.exchanges.query({
-                type: DGTLDFilterType.PARTIAL,
-                partial: { connection: data.resource.uri },
-            } as DGTLDFilterPartial).pipe(
-                map(exchanges => ({ ...data, exchanges })),
-            )),
+            switchMap((data) =>
+                this.exchanges
+                    .query({
+                        type: DGTLDFilterType.PARTIAL,
+                        partial: { connection: data.resource.uri },
+                    } as DGTLDFilterPartial)
+                    .pipe(map((exchanges) => ({ ...data, exchanges }))),
+            ),
             // DELETE ALL EXCHANGES CONNECTED TO THIS CONNECTION
-            switchMap(data => data.exchanges.length > 0 ? forkJoin(data.exchanges.map(ex => this.exchanges.delete(ex))).pipe(
-                map(deletedExchanges => data),
-            ) : of(data)),
+            switchMap((data) =>
+                data.exchanges.length > 0
+                    ? forkJoin(data.exchanges.map((ex) => this.exchanges.delete(ex))).pipe(
+                          map((deletedExchanges) => data),
+                      )
+                    : of(data),
+            ),
             // DELETE THE CONNECTION ITSELF
-            switchMap(data => this.cache.delete<T>(this.transformer, [data.resource])
-                .pipe(map(resources => ({ ...data, resources })))),
-            map(data => _.head(data.resources)),
+            switchMap((data) =>
+                this.cache
+                    .delete<T>(this.transformer, [data.resource])
+                    .pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
         );
     }
     public getConnectionsWithWebId<T extends DGTConnection<any>>(webId: string): Observable<T[]> {
         return this.query<T>().pipe(
-            map(connections => connections.filter(connection => connection.configuration.webId === webId)),
+            map((connections) => connections.filter((connection) => connection.configuration.webId === webId)),
         );
     }
     public getConnectionForInvite<T extends DGTConnection<any>>(inviteId: string, sourceId: string): Observable<any> {

@@ -10,61 +10,62 @@ import { DGTSourceService } from './dgt-source.service';
 
 @DGTInjectable()
 export class DGTSourceMockService extends DGTSourceService {
+    public resources: DGTSource<any>[] = [];
 
-  public resources: DGTSource<any>[] = [];
+    constructor(
+        private logger: DGTLoggerService,
+        private filters: DGTLDFilterService,
+        private uri: DGTUriFactoryService,
+    ) {
+        super();
+    }
 
-  constructor(
-    private logger: DGTLoggerService,
-    private filters: DGTLDFilterService,
-    private uri: DGTUriFactoryService,
-  ) {
-    super();
-  }
+    public get(uri: string): Observable<DGTSource<any>> {
+        return of(this.resources.find((e) => e.uri === uri));
+    }
 
-  public get(uri: string): Observable<DGTSource<any>> {
-    return of(this.resources.find(e => e.uri === uri));
-  }
+    public query(filter?: DGTLDFilter): Observable<DGTSource<any>[]> {
+        this.logger.debug(DGTSourceMockService.name, 'Starting to query sources', filter);
 
-  public query(filter?: DGTLDFilter): Observable<DGTSource<any>[]> {
-    this.logger.debug(DGTSourceMockService.name, 'Starting to query sources', filter);
+        return of({ filter, resources: this.resources }).pipe(
+            switchMap((data) =>
+                data.filter ? this.filters.run<DGTSource<any>>(data.filter, data.resources) : of(data.resources),
+            ),
+        );
+    }
 
-    return of({ filter, resources: this.resources })
-      .pipe(
-        switchMap(data => data.filter ? this.filters.run<DGTSource<any>>(data.filter, data.resources) : of(data.resources)),
-      );
-  }
-
-  public save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]> {
-    this.logger.debug(DGTSourceMockService.name, 'Starting to save resources', { resources });
+    public save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]> {
+        this.logger.debug(DGTSourceMockService.name, 'Starting to save resources', { resources });
 
         if (!resources) {
             throw new DGTErrorArgument('Argument connection should be set.', resources);
         }
 
-        return of({ resources })
-            .pipe(
-                map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'source');
-                    }
-
-                    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
+        return of({ resources }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'source')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTSource<any>[] }))),
+            ),
+            map((data) =>
+                data.resources.map((resource) => {
+                    this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri), resource];
 
                     return resource;
                 }),
-                ),
-            );
-  }
-
-  public delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
-    this.logger.debug(DGTSourceMockService.name, 'Starting to delete resource', { resource });
-
-    if (!resource) {
-      throw new DGTErrorArgument('Argument resource should be set.', resource);
+            ),
+        );
     }
 
-    this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri)];
+    public delete(resource: DGTSource<any>): Observable<DGTSource<any>> {
+        this.logger.debug(DGTSourceMockService.name, 'Starting to delete resource', { resource });
 
-    return of(resource);
-  }
+        if (!resource) {
+            throw new DGTErrorArgument('Argument resource should be set.', resource);
+        }
+
+        this.resources = [...this.resources.filter((c) => c && c.uri !== resource.uri)];
+
+        return of(resource);
+    }
 }

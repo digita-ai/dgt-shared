@@ -40,10 +40,12 @@ export class DGTSecurityCredentialMockService extends DGTSecurityCredentialServi
 
         return of({ resources })
             .pipe(
+                switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'credential')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as T[] }))),
+            ),
                 map(data => data.resources.map(resource => {
-                    if (!resource.uri) {
-                        resource.uri = this.uri.generate(resource, 'credential');
-                    }
 
                     this.resources = [...this.resources.filter(c => c && c.uri !== resource.uri), resource];
 

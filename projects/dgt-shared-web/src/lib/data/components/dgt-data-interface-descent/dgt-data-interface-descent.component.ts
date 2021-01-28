@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DGTCategory } from '@digita-ai/dgt-shared-data';
-import { DGTDataInterface, DGTDataValue } from '@digita-ai/dgt-shared-data';
+import { DGTCategory, DGTDataInterface, DGTLDResource } from '@digita-ai/dgt-shared-data';
 import { DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 
@@ -23,21 +22,21 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
   @Input() public set category(category: DGTCategory) {
     this._category = category;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
   /** values needed to display descent data */
-  private _values: DGTDataValue[];
-  public get values(): DGTDataValue[] {
-    return this._values;
+  private _resources: DGTLDResource[];
+  public get resources(): DGTLDResource[] {
+    return this._resources;
   }
-  @Input() public set values(values: DGTDataValue[]) {
-    this._values = values;
+  @Input() public set resources(resources: DGTLDResource[]) {
+    this._resources = resources;
 
-    if (this.values && this.category) {
-      this.updateReceived(this.values, this.category);
+    if (this.resources && this.category) {
+      this.updateReceived(this.resources, this.category);
     }
   }
 
@@ -47,7 +46,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
 
   /** Used to emit feedbackEvent events */
   @Output()
-  valueUpdated: EventEmitter<{ value: DGTDataValue, newObject: any }>;
+  resourceUpdated: EventEmitter<{ resource: DGTLDResource, newObject: any }>;
 
   /** Used to emit submit events */
   @Output()
@@ -57,28 +56,30 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     private logger: DGTLoggerService,
     private paramChecker: DGTParameterCheckerService,
   ) {
-    this.valueUpdated = new EventEmitter();
+    this.resourceUpdated = new EventEmitter();
     this.submit = new EventEmitter();
 
     this.formGroup = new FormGroup({
       gender: new FormControl(),
       dateOfBirth: new FormControl(),
       placeOfBirth: new FormControl(),
-  });
+    });
   }
 
   ngOnInit() {
   }
 
-  private updateReceived(values: DGTDataValue[], category: DGTCategory) {
+  private updateReceived(values: DGTLDResource[], category: DGTCategory) {
     this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Update received', { values, category });
-    this.paramChecker.checkParametersNotNull({values, category});
+    this.paramChecker.checkParametersNotNull({ values, category });
 
-    const genderReferences = values.filter(genderReference => {
+    const triples = _.flatten(values.map(resource => resource.triples));
+
+    const genderReferences = triples.filter(genderReference => {
       const genderReferenceObject = genderReference.object.value;
       const isHasGender = genderReference.predicate === 'http://www.w3.org/2006/vcard/ns#hasGender';
-      const hasGenderType = values.find(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
-      const hasGenderValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject) ? true : false;
+      const hasGenderType = triples.find(value => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' && value.object.value === 'http://www.w3.org/2006/vcard/ns#Gender' && value.subject.value === genderReferenceObject) ? true : false;
+      const hasGenderValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject) ? true : false;
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Checking gender reference', { genderReference, isHasGender, hasGenderType, hasGenderValue });
       return isHasGender && hasGenderType && hasGenderValue;
@@ -89,7 +90,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
     if (genderReferences && genderReferences.length > 0) {
       const genderReference = genderReferences[0];
       const genderReferenceObject = genderReference.object.value;
-      const genderValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject);
+      const genderValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#value' && value.subject.value === genderReferenceObject);
 
       this.logger.debug(DGTDataInterfaceDescentComponent.name, 'Retrieved gender value for first gender reference', { genderReference, genderValue });
 
@@ -98,13 +99,13 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
       }
     }
 
-    const dateOfBirthValue = values.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#bday');
+    const dateOfBirthValue = triples.find(value => value.predicate === 'http://www.w3.org/2006/vcard/ns#bday');
 
     if (dateOfBirthValue) {
       this.dateOfBirth = dateOfBirthValue.object.value;
     }
 
-    const placeOfBirthValue = values.find(value => value.predicate === 'https://www.w3.org/ns/person#placeOfBirth');
+    const placeOfBirthValue = triples.find(value => value.predicate === 'https://www.w3.org/ns/person#placeOfBirth');
 
     if (placeOfBirthValue) {
       this.placeOfBirth = placeOfBirthValue.object.value;
@@ -114,7 +115,7 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
       gender: this.gender,
       dateOfBirth: this.dateOfBirth,
       placeOfBirth: this.placeOfBirth,
-  });
+    });
   }
 
   /**
@@ -122,9 +123,9 @@ export class DGTDataInterfaceDescentComponent implements OnInit, DGTDataInterfac
    * @throws DGTErrorArgument when value is not set
    * @emits
    */
-  public onValueUpdated(val: { value: DGTDataValue, newObject: any }): void {
-    this.paramChecker.checkParametersNotNull({val}, 1);
-    this.valueUpdated.emit(val);
+  public onResourceUpdated(val: { resource: DGTLDResource, newObject: any }): void {
+    this.paramChecker.checkParametersNotNull({ val }, 1);
+    this.resourceUpdated.emit(val);
   }
 
   /**

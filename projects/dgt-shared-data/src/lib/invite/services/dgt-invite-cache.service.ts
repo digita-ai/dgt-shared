@@ -13,7 +13,6 @@ import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.mod
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {
-
     constructor(
         private logger: DGTLoggerService,
         private cache: DGTCacheService,
@@ -47,18 +46,17 @@ export class DGTInviteCacheService extends DGTInviteService {
         }
 
         return of({
-            resources: resources.map(resource => {
-                if (!resource.uri) {
-                    resource.uri = this.uri.generate(resource, 'invite');
-                }
-
-                return resource
-            }),
-        })
-            .pipe(
-                switchMap(data => this.cache.save(this.transformer, data.resources)
-                    .pipe(map(savedResources => savedResources))),
-            );
+            resources,
+        }).pipe(
+            switchMap((data) =>
+                this.uri
+                    .generate(data.resources, 'invite')
+                    .pipe(map((updatedResources) => ({ ...data, resources: updatedResources as DGTInvite[] }))),
+            ),
+            switchMap((data) =>
+                this.cache.save(this.transformer, data.resources).pipe(map((savedResources) => savedResources)),
+            ),
+        );
     }
 
     public delete(resource: DGTInvite): Observable<DGTInvite> {
@@ -68,12 +66,12 @@ export class DGTInviteCacheService extends DGTInviteService {
             throw new DGTErrorArgument('Argument resource should be set.', resource);
         }
 
-        return of({ resource })
-            .pipe(
-                switchMap(data => this.cache.delete(this.transformer, [data.resource])
-                    .pipe(map(resources => ({ ...data, resources })))),
-                map(data => _.head(data.resources)),
-            );
+        return of({ resource }).pipe(
+            switchMap((data) =>
+                this.cache.delete(this.transformer, [data.resource]).pipe(map((resources) => ({ ...data, resources }))),
+            ),
+            map((data) => _.head(data.resources)),
+        );
     }
 
     public verify(inviteId: string): Observable<DGTInvite> {

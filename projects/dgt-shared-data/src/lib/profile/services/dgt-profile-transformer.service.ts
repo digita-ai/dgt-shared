@@ -49,7 +49,6 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             let triples = profile.triples;
             const uri = profile.uri;
             const accountUri = uri.split('/profile/card#me')[0];
-            const profileUri = `${accountUri}/profile`;
             const documentSubject = {
                 value: '#me',
                 termType: DGTLDTermType.REFERENCE,
@@ -71,7 +70,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                     object: {
                         termType: DGTLDTermType.REFERENCE,
                         dataType: DGTLDDataType.STRING,
-                        value: profile.avatar ? `${profileUri}/${profile.avatar}` : null,
+                        value: profile.avatar ? profile.avatar : null,
                     },
                 },
                 {
@@ -148,7 +147,7 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
             fullName: fullName ? fullName.object.value : null,
             privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
             publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
-            avatar: avatar ? `${profileUri}/${avatar.object.value}` : null,
+            avatar: avatar ? avatar.object.value : null,
             triples: resource.triples,
             exchange: resource.exchange,
         };

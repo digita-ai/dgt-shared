@@ -1,11 +1,11 @@
-<ng-container *ngIf="category && values && phoneNumbers">
-  <ng-container *ngFor="let phone of values">
-    <dgt-data-interface-phone-value *ngIf="phone && phoneNumbers.get(phone)"
-      (valueUpdated)="onValueUpdated($event)"
+<ng-container *ngIf="category && resources && phoneNumbers">
+  <ng-container *ngFor="let phone of resources">
+    <dgt-data-interface-phone-value *ngIf="phone && phoneNumbers.get(phone.triples[0])"
+      (resourceUpdated)="onResourceUpdated($event)"
       (submit)="onSubmit()"
-      [value]="phone"
-      [phone]="phoneNumbers.get(phone).phone"
-      [type]="phoneNumbers.get(phone).type">
+      [resource]="phone"
+      [phone]="phoneNumbers.get(phone.triples[0]).phone"
+      [type]="phoneNumbers.get(phone.triples[0]).type">
     </dgt-data-interface-phone-value>
   </ng-container>
 </ng-container>

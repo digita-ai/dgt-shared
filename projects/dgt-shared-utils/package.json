@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-shared-utils",
-  "version": "0.2.17",
+  "version": "0.2.19",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -18,7 +18,7 @@
     "@types/node": "~11.9.5"
   },
   "devDependencies": {
-    "@digita-ai/dgt-shared-test": "0.2.17",
+    "@digita-ai/dgt-shared-test": "0.2.19",
     "@types/jasmine": "~2.8.8"
   },
   "publishConfig": { "registry": "https://npm.pkg.github.com" },
