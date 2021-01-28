@@ -9,7 +9,13 @@ import { DGTStateStoreService } from '../../state/services/dgt-state-store.servi
 
 @DGTInjectable()
 export class DGTHolderRemoteService extends DGTHolderService {
-    constructor(private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>, private http: DGTHttpService, private logger: DGTLoggerService, private config: DGTConfigurationService<DGTConfigurationBaseWeb>, private filters: DGTLDFilterService) {
+    constructor(
+        private store: DGTStateStoreService<DGTBaseRootState<DGTBaseAppState>>,
+        private http: DGTHttpService,
+        private logger: DGTLoggerService,
+        private config: DGTConfigurationService<DGTConfigurationBaseWeb>,
+        private filters: DGTLDFilterService,
+    ) {
         super();
     }
 

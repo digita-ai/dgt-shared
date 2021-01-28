@@ -6,4 +6,7 @@ export interface DGTInvite extends DGTLDResource {
     purpose: string;
     state: DGTInviteState;
     connection?: string;
+    created: string;
+    expires: string;
+    accepted: string;
 }
