@@ -3,13 +3,13 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTInvite } from '../models/dgt-invite.model';
 import { DGTInviteService } from './dgt-invite-abstract.service';
 import { DGTInviteTransformerService } from './dgt-invite-transformer.service';
-import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 
 @DGTInjectable()
 export class DGTInviteCacheService extends DGTInviteService {
@@ -77,7 +77,7 @@ export class DGTInviteCacheService extends DGTInviteService {
     public verify(inviteId: string): Observable<DGTInvite> {
         throw new DGTErrorNotImplemented();
     }
-    
+
     public getLink(inviteUri: string): Observable<string> {
         throw new DGTErrorNotImplemented();
     }

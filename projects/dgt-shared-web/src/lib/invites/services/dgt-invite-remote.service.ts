@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DGTInvite, DGTInviteService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorArgument, DGTHttpService, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
-import { Observable, of, forkJoin } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { DGTBaseAppState } from '../../state/models/dgt-base-app-state.model';
 import { DGTBaseRootState } from '../../state/models/dgt-base-root-state.model';
