@@ -6,7 +6,7 @@ export interface DGTConfigurationBaseApi extends DGTConfigurationBase {
     production: boolean;
     baseURI: string;
     enableLocalStorage: boolean;
-    platformPublicUrl: string;
+    publicURI: string;
     cache: {
         type: DGTCacheType;
         uri: string;
