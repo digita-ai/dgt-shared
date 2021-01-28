@@ -74,13 +74,8 @@ export class DGTInviteMockService extends DGTInviteService {
   public verify(inviteId: string): Observable<DGTInvite> {
     throw new DGTErrorNotImplemented();
   }
-  public getInvitesForHolder(holderUri: string): Observable<DGTInvite[]> {
-    if (!holderUri) {
-      throw new DGTErrorArgument('Argument holderUri should be set.', holderUri);
-    }
-    return this.query({ type: DGTLDFilterType.PARTIAL, partial: { holder: holderUri } } as DGTLDFilterPartial);
-  }
-  public getPlatformPublicInviteLink(inviteUri: string): Observable<string> {
+  
+  public getLink(inviteUri: string): Observable<string> {
     throw new DGTErrorNotImplemented();
   }
 }
