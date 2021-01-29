@@ -69,7 +69,7 @@ export { DGTWorkflowAction } from './lib/workflow/models/dgt-workflow-action.mod
 export { DGTWorkflowActionType } from './lib/workflow/models/dgt-workflow-action-type.model';
 export { DGTInviteState } from './lib/invite/models/dgt-invite-state.model';
 export { DGTSourceState } from './lib/source/models/dgt-source-state.model';
-export { DGTDataGroup } from './lib/data-resource/models/data-group.model';
+export { DGTDataGroup } from './lib/group/models/data-group.model';
 export { DGTDataInterface } from './lib/data-resource/models/data-category-interface.model';
 export { DGTDataInterfaceHostDirective } from './lib/data-resource/directives/data-interface-host.directive';
 export { DGTLDFilterCombination } from './lib/linked-data/models/dgt-ld-filter-combination.model';
@@ -155,3 +155,7 @@ export { DGTWorkflowCacheService } from './lib/workflow/services/dgt-workflow-ca
 export { DGTWorkflowMockService } from './lib/workflow/services/dgt-workflow-mock.service';
 export { DGTWorkflowTransformerService } from './lib/workflow/services/dgt-workflow-transformer.service';
 export { DGTWorkflowService } from './lib/workflow/services/dgt-workflow.service';
+export { DGTGroupService } from './lib/group/services/dgt-group.service';
+export { DGTGroupMockService } from './lib/group/services/dgt-group-mock.service';
+export { DGTGroupCacheService } from './lib/group/services/dgt-group-cache.service';
+export { DGTGroupTransformerService } from './lib/group/services/dgt-group-transformer.service';

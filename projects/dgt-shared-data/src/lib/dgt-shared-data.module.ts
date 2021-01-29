@@ -35,6 +35,9 @@ import { DGTUriFactorySolidService } from './uri/services/dgt-uri-factory-solid.
 import { DGTWorkflowCacheService } from './workflow/services/dgt-workflow-cache.service';
 import { DGTWorkflowMockService } from './workflow/services/dgt-workflow-mock.service';
 import { DGTWorkflowTransformerService } from './workflow/services/dgt-workflow-transformer.service';
+import { DGTGroupCacheService } from './group/services/dgt-group-cache.service';
+import { DGTGroupMockService } from './group/services/dgt-group-mock.service';
+import { DGTGroupTransformerService } from './group/services/dgt-group-transformer.service';
 
 export const declarations = [
   DGTDataInterfaceHostDirective,
@@ -78,6 +81,9 @@ export const providers = [
   DGTLDResourceTransformerService,
   DGTSparqlCommunicaService,
   DGTLDTypeRegistrationTransformerService,
+  DGTGroupCacheService,
+  DGTGroupMockService,
+  DGTGroupTransformerService,
 ];
 
 @NgModule({

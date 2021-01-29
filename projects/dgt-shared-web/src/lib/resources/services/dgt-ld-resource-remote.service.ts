@@ -194,7 +194,7 @@ export class DGTLDResourceRemoteService {
 
         return this.getCategoriesWithResources(categories, triples).pipe(
             map((data) =>
-                groups.filter((group) => data.filter((category) => category.groupId === group.id).length > 0),
+                groups.filter((group) => data.filter((category) => category.groupId === group.uri).length > 0),
             ),
         );
     }
