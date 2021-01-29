@@ -6,7 +6,7 @@ Email
         <mat-label>{{ 'common.data.terms.' + type | translate}}</mat-label>
         <input matInput
         (keyup)="onResourceUpdated(resource, formGroup.get('email').value, $event)"
-        readonly="false"
+        readonly="true"
         type="text"
         id="email"
         formControlName="email">

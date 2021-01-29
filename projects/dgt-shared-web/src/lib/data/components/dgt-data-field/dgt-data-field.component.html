@@ -3,7 +3,7 @@
     <dgt-form-control>
       <mat-form-field appearance="outline">
         <mat-label>{{'common.data.terms.' + resource.triples[0].predicate | translate}}</mat-label>
-        <input matInput (keyup)="onResourceUpdated(resource, formGroup.get('desc').value, $event)" type="text" class="desc"
+        <input matInput [readonly]="true" (keyup)="onResourceUpdated(resource, formGroup.get('desc').value, $event)" type="text" class="desc"
           formControlName="desc">
       </mat-form-field>
     </dgt-form-control>

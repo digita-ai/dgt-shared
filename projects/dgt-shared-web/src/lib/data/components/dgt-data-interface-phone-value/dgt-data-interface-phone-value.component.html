@@ -6,7 +6,7 @@
         <input matInput
         (keyup)="onResourceUpdated(resource, formGroup.get('phone').value)"
         (keyup.enter)="onSubmit()"
-        readonly="false"
+        readonly="true"
         type="tel"
         class="phone"
         formControlName="phone">
