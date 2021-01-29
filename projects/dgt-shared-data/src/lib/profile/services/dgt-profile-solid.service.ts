@@ -1,4 +1,3 @@
-import { DGTConnectorSolidWeb } from '@digita-ai/dgt-shared-connectors';
 import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -37,8 +36,7 @@ export class DGTProfileSolidService extends DGTProfileService {
         switchMap(data => this.connector.query<DGTProfile>(data.exchange, this.transformer)
           .pipe(map(profiles => ({ ...data, profiles })))),
         tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved profile data', data)),
-        tap(data => this.logger.debug(DGTProfileSolidService.name, 'Retrieved type registrations for profile', data)),
-        map(data => data.profiles.filter(profile => profile.privateTypeIndex)[0]),
+        map(data => data.profiles[0]),
       );
   }
 

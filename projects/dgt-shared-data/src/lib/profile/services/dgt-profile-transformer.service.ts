@@ -11,10 +11,7 @@ import { DGTProfile } from '../models/dgt-profile.model';
 @DGTInjectable()
 /** Transforms profiles to linked data and vice-versa */
 export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile> {
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) { }
+    constructor(private logger: DGTLoggerService, private paramChecker: DGTParameterCheckerService) {}
 
     /**
      * Converts linked data to profiles.
@@ -24,13 +21,18 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
      */
     public toDomain(resources: DGTLDResource[]): Observable<DGTProfile[]> {
         this.paramChecker.checkParametersNotNull({ entities: resources });
-        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform entity to domain', { entities: resources });
+        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform entity to domain', {
+            entities: resources,
+        });
 
         let res: DGTProfile[] = null;
 
-        res = resources.map(entity => this.transformOne(entity));
+        res = resources.map((entity) => this.transformOne(entity)).filter((resource) => resource !== null);
 
-        this.logger.debug(DGTProfileTransformerService.name, 'Transformed values to profiles', { entities: resources, res });
+        this.logger.debug(DGTProfileTransformerService.name, 'Transformed values to profiles', {
+            entities: resources,
+            res,
+        });
         return of(res);
     }
 
@@ -42,10 +44,12 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
      * @returns Observable of linked data entities.
      */
     public toTriples(profiles: DGTProfile[]): Observable<DGTLDResource[]> {
-        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform to linked data', { events: profiles });
+        this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform to linked data', {
+            events: profiles,
+        });
         this.paramChecker.checkParametersNotNull({ profiles });
 
-        const entities = profiles.map<DGTLDResource>(profile => {
+        const entities = profiles.map<DGTLDResource>((profile) => {
             let triples = profile.triples;
             const uri = profile.uri;
             const accountUri = uri.split('/profile/card#me')[0];
@@ -99,12 +103,18 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
                 triples: [...triples],
             };
 
-            this.logger.debug(DGTProfileTransformerService.name, 'Transformed profile to linked data', { newEntity: newResource, event: profile });
+            this.logger.debug(DGTProfileTransformerService.name, 'Transformed profile to linked data', {
+                newEntity: newResource,
+                event: profile,
+            });
 
             return newResource;
         });
 
-        this.logger.debug(DGTProfileTransformerService.name, 'Transformed profiles to linked data', { entities, events: profiles });
+        this.logger.debug(DGTProfileTransformerService.name, 'Transformed profiles to linked data', {
+            entities,
+            events: profiles,
+        });
 
         return of(entities);
     }
@@ -119,37 +129,50 @@ export class DGTProfileTransformerService implements DGTLDTransformer<DGTProfile
         this.logger.debug(DGTProfileTransformerService.name, 'Starting to transform one entity', { resource });
         this.paramChecker.checkParametersNotNull({ entity: resource });
         const uri = resource.uri;
-        const accountUri = uri.split('/profile/card#me')[0];
-        const profileUri = `${accountUri}/profile`;
 
-        const fullName = resource.triples.find(value =>
-            value.subject.value === uri &&
-            (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' || value.predicate === 'http://xmlns.com/foaf/0.1/name'),
+        const isPerson = resource.triples.find(
+            (value) =>
+                value.subject.value === uri &&
+                value.object.value === 'http://xmlns.com/foaf/0.1/Person' &&
+                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
         );
 
-        const avatar = resource.triples.find(value =>
-            value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto',
-        );
+        if (isPerson) {
+            const fullName = resource.triples.find(
+                (value) =>
+                    value.subject.value === uri &&
+                    (value.predicate === 'http://www.w3.org/2006/vcard/ns#fn' ||
+                        value.predicate === 'http://xmlns.com/foaf/0.1/name'),
+            );
 
-        const publicTypeIndex = resource.triples.find(value =>
-            value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex',
-        );
+            const avatar = resource.triples.find(
+                (value) =>
+                    value.subject.value === uri && value.predicate === 'http://www.w3.org/2006/vcard/ns#hasPhoto',
+            );
 
-        const privateTypeIndex = resource.triples.find(value =>
-            value.subject.value === uri &&
-            value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex',
-        );
+            const publicTypeIndex = resource.triples.find(
+                (value) =>
+                    value.subject.value === uri &&
+                    value.predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex',
+            );
 
-        return {
-            uri,
-            fullName: fullName ? fullName.object.value : null,
-            privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
-            publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
-            avatar: avatar ? avatar.object.value : null,
-            triples: resource.triples,
-            exchange: resource.exchange,
-        };
+            const privateTypeIndex = resource.triples.find(
+                (value) =>
+                    value.subject.value === uri &&
+                    value.predicate === 'http://www.w3.org/ns/solid/terms#privateTypeIndex',
+            );
+
+            return {
+                uri,
+                fullName: fullName ? fullName.object.value : null,
+                privateTypeIndex: privateTypeIndex ? privateTypeIndex.object.value : null,
+                publicTypeIndex: publicTypeIndex ? publicTypeIndex.object.value : null,
+                avatar: avatar ? avatar.object.value : null,
+                triples: resource.triples,
+                exchange: resource.exchange,
+            };
+        } else {
+            return null;
+        }
     }
 }
