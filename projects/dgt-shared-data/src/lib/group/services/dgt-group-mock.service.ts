@@ -5,8 +5,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
-import { DGTGroupService } from './dgt-group.service';
 import { DGTDataGroup } from '../models/data-group.model';
+import { DGTGroupService } from './dgt-group.service';
 
 @DGTInjectable()
 export class DGTGroupMockService extends DGTGroupService {

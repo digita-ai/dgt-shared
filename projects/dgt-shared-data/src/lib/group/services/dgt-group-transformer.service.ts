@@ -60,7 +60,7 @@ export class DGTGroupTransformerService implements DGTLDTransformer<DGTDataGroup
                 termType: DGTLDTermType.REFERENCE,
             } as DGTLDNode;
 
-            let newTriples: DGTLDTriple[] = [
+            const newTriples: DGTLDTriple[] = [
                 {
                     predicate: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
                     subject: resourceSubject,

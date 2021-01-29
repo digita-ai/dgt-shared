@@ -5,9 +5,9 @@ import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
+import { DGTDataGroup } from '../models/data-group.model';
 import { DGTGroupTransformerService } from './dgt-group-transformer.service';
 import { DGTGroupService } from './dgt-group.service';
-import { DGTDataGroup } from '../models/data-group.model';
 
 @DGTInjectable()
 export class DGTGroupCacheService extends DGTGroupService {
