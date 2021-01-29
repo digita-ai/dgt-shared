@@ -15,3 +15,5 @@ export * from './lib/solid/models/dgt-source-solid-login.model';
 export * from './lib/solid/models/dgt-source-solid-token.model';
 export * from './lib/solid/services/dgt-solid.service';
 export * from './lib/oidc/services/dgt-oidc.service';
+export * from './lib/type-registrations/services/dgt-ld-type-registration-solid.service';
+

@@ -148,8 +148,6 @@ export class DGTStateEffectsBaseWebService {
         mergeMap((action: DGTProfileLoad) => this.profiles.get(action.payload.exchange)
             .pipe(map(profile => ({ profile, action })))),
         tap(data => this.logger.debug(DGTProfileLoad.name, 'Retrieved profile for exchange', data)),
-        tap(data => this.logger.debug(DGTProfileLoad.name, 'Registered missing type registrations', data)),
-        // add typeRegistrations to the profile
         map(data => ({ ...data, profile: { ...data.profile } })),
         switchMap(data => {
             return [

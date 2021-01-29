@@ -79,8 +79,7 @@ export class DGTEventTransformerService implements DGTLDTransformer<DGTEvent> {
                 value: '#',
                 termType: DGTLDTermType.REFERENCE,
             };
-            const eventId = v4();
-            const eventSubjectUri = `${uri}#${eventId}`;
+            const eventSubjectUri = `${uri}`;
             const eventSubject = {
                 value: eventSubjectUri,
                 termType: DGTLDTermType.REFERENCE,

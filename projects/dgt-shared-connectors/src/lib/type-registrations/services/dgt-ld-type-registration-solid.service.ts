@@ -1,5 +1,5 @@
 
-import { DGTConnectionSolidConfiguration, DGTConnector, DGTExchange, DGTLDResource, DGTLDTypeRegistration, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTSourceSolidConfiguration } from '@digita-ai/dgt-shared-data';
+import { DGTConnectionSolidConfiguration, DGTConnector, DGTExchange, DGTLDResource, DGTLDTypeRegistration, DGTLDTypeRegistrationTransformerService, DGTLDUtils, DGTProfile, DGTSourceSolidConfiguration } from '@digita-ai/dgt-shared-data';
 import { DGTConfigurationBaseWeb, DGTConfigurationService, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
@@ -85,10 +85,10 @@ export class DGTLDTypeRegistrationSolidService {
     return res;
   }
 
-  public registerMissingTypeRegistrations(typeRegistrations: DGTLDTypeRegistration[], exchange: DGTExchange): Observable<DGTLDTypeRegistration[]> {
+  public registerMissingTypeRegistrations(typeRegistrations: DGTLDTypeRegistration[], exchange: DGTExchange, profile: DGTProfile): Observable<DGTLDTypeRegistration[]> {
     this.logger.debug(DGTLDTypeRegistrationSolidService.name, 'Starting to add missing typeRegistration.', { typeRegistrations, exchange });
 
-    return of({ typeRegistrations, exchange })
+    return of({ typeRegistrations, exchange, profile })
       .pipe(
         map(data => {
           const typeRegistrationsInConfig = this.config.get(c => c.typeRegistrations);
@@ -103,7 +103,7 @@ export class DGTLDTypeRegistrationSolidService {
             const typeRegistrationsToBeAdded: DGTLDTypeRegistration = {
               forClass: predicate,
               instance: typeRegistrationsInConfig[key],
-              uri: null,
+              uri: data.profile.privateTypeIndex,
               triples: null,
               exchange: exchange.uri,
             };
