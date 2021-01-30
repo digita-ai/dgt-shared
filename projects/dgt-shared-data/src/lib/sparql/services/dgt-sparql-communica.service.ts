@@ -31,7 +31,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptions
      * @param query the query to run
      */
     public query(query: string, options: DGTSparqlOptionsComunica): Observable<DGTSparqlResult> {
-        this.logger.info(DGTSparqlCommunicaService.name, 'Starting to run query', { query, options, triples: options.dataset.triples });
+        this.logger.debug(DGTSparqlCommunicaService.name, 'Starting to run query', { query, options, triples: options.dataset.triples });
 
         if (!options) {
             throw new DGTErrorArgument('Argument options should be set.', options);
@@ -39,7 +39,7 @@ export class DGTSparqlCommunicaService extends DGTSparqlService<DGTSparqlOptions
 
         const store = this.toStore(options.dataset.triples);
 
-        this.logger.info(DGTSparqlCommunicaService.name, 'Converted triples to n3 store', { store });
+        this.logger.debug(DGTSparqlCommunicaService.name, 'Converted triples to n3 store', { store });
 
         return of({ query, store, options }).pipe(
             switchMap((data) =>
