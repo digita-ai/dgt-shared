@@ -1,4 +1,4 @@
-import { DGTErrorConfig, DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorConfig, DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,11 +18,7 @@ import { DGTConnectionType } from '../models/dgt-connection-type.model';
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
 export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConnection<any>> {
-
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) { }
+    constructor(private paramChecker: DGTParameterCheckerService) {}
 
     /**
      * Transforms multiple linked data resources to resources.
@@ -33,10 +29,9 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     public toDomain<T extends DGTConnection<any>>(resources: DGTLDResource[]): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ resources });
 
-        return forkJoin(resources.map(resource => this.toDomainOne<T>(resource)))
-            .pipe(
-                map(resourcesRes => _.flatten(resourcesRes)),
-            );
+        return forkJoin(resources.map((resource) => this.toDomainOne<T>(resource))).pipe(
+            map((resourcesRes) => _.flatten(resourcesRes)),
+        );
     }
 
     /**
@@ -51,17 +46,18 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
         let res: T[] = null;
 
         if (resource && resource.triples) {
-            const resourceSubjectValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/connections#connection',
+            const resourceSubjectValues = resource.triples.filter(
+                (value) =>
+                    value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                    value.object.value === 'http://digita.ai/voc/connections#connection',
             );
 
             if (resourceSubjectValues) {
-                res = resourceSubjectValues.map(resourceSubjectValue => this.transformOne(resourceSubjectValue, resource));
+                res = resourceSubjectValues.map((resourceSubjectValue) =>
+                    this.transformOne(resourceSubjectValue, resource),
+                );
             }
         }
-
-        this.logger.debug(DGTConnectionTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -75,10 +71,8 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
      */
     public toTriples<T extends DGTConnection<any>>(resources: T[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ resources });
-        this.logger.debug(DGTConnectionTransformerService.name, 'Starting to transform to linked data', { resources });
 
-        const transformedResources = resources.map<DGTLDResource>(resource => {
-
+        const transformedResources = resources.map<DGTLDResource>((resource) => {
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE,
@@ -134,7 +128,9 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
 
             newTriples = newTriples.concat(this.configToTriples(resource, resourceSubject));
 
-            newTriples = newTriples.filter(triple => triple.object.value !== null && triple.object.value !== undefined);
+            newTriples = newTriples.filter(
+                (triple) => triple.object.value !== null && triple.object.value !== undefined,
+            );
 
             return {
                 ...resource,
@@ -143,8 +139,6 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 triples: newTriples,
             };
         });
-
-        this.logger.debug(DGTConnectionTransformerService.name, 'Transformed resources to linked data', transformedResources);
 
         return of(transformedResources);
     }
@@ -159,21 +153,12 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
     private transformOne<T extends DGTConnection<any>>(triple: DGTLDTriple, resource: DGTLDResource): T {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.subject.value);
+        const resourceTriples = resource.triples.filter((value) => value.subject.value === triple.subject.value);
 
-        const holder = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connections#holder',
-        );
-        const source = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connections#source',
-        );
-        const state = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connections#state',
-        );
-        const type = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/connections#type',
-        );
+        const holder = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/connections#holder');
+        const source = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/connections#source');
+        const state = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/connections#state');
+        const type = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/connections#type');
 
         const config = this.configToDomain(triple, resource);
 
@@ -280,7 +265,7 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     },
                 },
             ];
-            Object.keys(config.requestHistory).forEach(key => {
+            Object.keys(config.requestHistory).forEach((key) => {
                 const subject = {
                     value: `${resource.uri.split('#')[0]}#` + uuid(),
                     termType: DGTLDTermType.REFERENCE,
@@ -309,105 +294,118 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                     },
                 });
             });
-
         } else if (resource.type === DGTConnectionType.MSSQL) {
             // MSSQL connection
-            res = [{
-                predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
-                subject: resourceSubject,
-                object: {
-                    termType: DGTLDTermType.LITERAL,
-                    dataType: DGTLDDataType.STRING,
-                    value: resource.configuration.personId,
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/connectionmssqlconfig#personid',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.configuration.personId,
+                    },
                 },
-            }];
-
+            ];
         } else if (resource.type === DGTConnectionType.GRAVATAR) {
             // Gravatar connection
-            res = [{
-                predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
-                subject: resourceSubject,
-                object: {
-                    termType: DGTLDTermType.LITERAL,
-                    dataType: DGTLDDataType.STRING,
-                    value: resource.configuration.email,
+            res = [
+                {
+                    predicate: 'http://digita.ai/voc/connectiongravatarconfig#email',
+                    subject: resourceSubject,
+                    object: {
+                        termType: DGTLDTermType.LITERAL,
+                        dataType: DGTLDDataType.STRING,
+                        value: resource.configuration.email,
+                    },
                 },
-            }];
+            ];
         } else {
             // NOT A KNOWN CONNECTION TYPE
             res = [];
-            throw new DGTErrorConfig('Error converting to triples: the connection configuration is not know', { resource });
+            throw new DGTErrorConfig('Error converting to triples: the connection configuration is not know', {
+                resource,
+            });
         }
 
         return res;
     }
     private configToDomain(triple: DGTLDTriple, resource: DGTLDResource) {
-
         let config = null;
 
-        const type = resource.triples.find(value =>
-            value.subject.value === triple.subject.value &&
-            value.predicate === 'http://digita.ai/voc/connections#type',
+        const type = resource.triples.find(
+            (value) =>
+                value.subject.value === triple.subject.value &&
+                value.predicate === 'http://digita.ai/voc/connections#type',
         );
 
         if (type && type.object.value === DGTConnectionType.SOLID) {
             // solid connection
-            const webId = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#webid',
+            const webId = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#webid',
             );
-            const accessToken = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
+            const accessToken = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accesstoken',
             );
-            const expiresIn = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#expiresin',
+            const expiresIn = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#expiresin',
             );
-            const idToken = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#idtoken',
+            const idToken = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#idtoken',
             );
-            const configstate = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#state',
+            const configstate = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#state',
             );
-            const privateKey = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#privatekey',
+            const privateKey = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#privatekey',
             );
-            const loginUri = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#loginuri',
+            const loginUri = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#loginuri',
             );
-            const accountId = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accountid',
+            const accountId = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#accountid',
             );
-            const protocol = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#protocol',
+            const protocol = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#protocol',
             );
-            const requestHistory = resource.triples.filter(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionsolidconfig#requesthistory',
+            const requestHistory = resource.triples.filter(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#requesthistory',
             );
 
             const requestHistoryObj = {};
-            requestHistory.forEach(req => {
-                const requestHistorykey = resource.triples.find(value =>
-                    value.subject.value === req.object.value &&
-                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#mapkey',
+            requestHistory.forEach((req) => {
+                const requestHistorykey = resource.triples.find(
+                    (value) =>
+                        value.subject.value === req.object.value &&
+                        value.predicate === 'http://digita.ai/voc/connectionsolidconfig#mapkey',
                 );
-                const requestHistoryvalue = resource.triples.find(value =>
-                    value.subject.value === req.object.value &&
-                    value.predicate === 'http://digita.ai/voc/connectionsolidconfig#mapvalue',
+                const requestHistoryvalue = resource.triples.find(
+                    (value) =>
+                        value.subject.value === req.object.value &&
+                        value.predicate === 'http://digita.ai/voc/connectionsolidconfig#mapvalue',
                 );
                 if (requestHistorykey && requestHistoryvalue) {
-                    requestHistoryObj[requestHistorykey.object.value] =
-                        requestHistoryvalue.object.value;
-                } else {
-                    this.logger.debug(DGTConnectionTransformerService.name, 'Problem reading in requestHistory', { req });
+                    requestHistoryObj[requestHistorykey.object.value] = requestHistoryvalue.object.value;
                 }
             });
 
@@ -424,17 +422,19 @@ export class DGTConnectionTransformerService implements DGTLDTransformer<DGTConn
                 requestHistory: requestHistoryObj ? requestHistoryObj : null,
             } as DGTConnectionSolidConfiguration;
         } else if (type && type.object.value === DGTConnectionType.MSSQL) {
-            const personId = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectionmssqlconfig#personid',
+            const personId = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectionmssqlconfig#personid',
             );
             config = {
                 personId: personId ? personId.object.value : null,
             } as DGTConnectionMSSQLConfiguration;
         } else if (type && type.object.value === DGTConnectionType.GRAVATAR) {
-            const email = resource.triples.find(value =>
-                value.subject.value === triple.subject.value &&
-                value.predicate === 'http://digita.ai/voc/connectiongravatarconfig#email',
+            const email = resource.triples.find(
+                (value) =>
+                    value.subject.value === triple.subject.value &&
+                    value.predicate === 'http://digita.ai/voc/connectiongravatarconfig#email',
             );
 
             config = {
