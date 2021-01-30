@@ -128,7 +128,7 @@ export class DGTHolderRemoteService extends DGTHolderService {
                     .pipe(map((accessToken) => ({ ...data, accessToken }))),
             ),
             switchMap((data) =>
-                this.http.post<DGTHolder>(data.uri, data.otherHolders, { Authorization: `Bearer ${data.accessToken}` }),
+                this.http.post<DGTHolder>(data.uri, data.otherHolders.map(holder => holder.uri), { Authorization: `Bearer ${data.accessToken}` }),
             ),
             map((response) => response.data),
         );
