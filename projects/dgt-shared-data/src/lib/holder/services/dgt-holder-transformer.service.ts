@@ -1,4 +1,4 @@
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,11 +12,7 @@ import { DGTHolder } from '../models/dgt-holder.model';
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
 export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> {
-
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) { }
+    constructor(private paramChecker: DGTParameterCheckerService) {}
 
     /**
      * Transforms multiple linked data resources to resources.
@@ -27,10 +23,9 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
     public toDomain(resources: DGTLDResource[]): Observable<DGTHolder[]> {
         this.paramChecker.checkParametersNotNull({ resources });
 
-        return forkJoin(resources.map(resource => this.toDomainOne(resource)))
-            .pipe(
-                map(resourcesRes => _.flatten(resourcesRes)),
-            );
+        return forkJoin(resources.map((resource) => this.toDomainOne(resource))).pipe(
+            map((resourcesRes) => _.flatten(resourcesRes)),
+        );
     }
 
     /**
@@ -45,17 +40,16 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
         let res: DGTHolder[] = null;
 
         if (resource && resource.triples) {
-            const holderValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/holders#holder',
+            const holderValues = resource.triples.filter(
+                (value) =>
+                    value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                    value.object.value === 'http://digita.ai/voc/holders#holder',
             );
 
             if (holderValues) {
-                res = holderValues.map(holderValue => this.transformOne(holderValue, resource));
+                res = holderValues.map((holderValue) => this.transformOne(holderValue, resource));
             }
         }
-
-        this.logger.debug(DGTHolderTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -69,9 +63,8 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
      */
     public toTriples(resources: DGTHolder[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ resources });
-        this.logger.debug(DGTHolderTransformerService.name, 'Starting to transform to linked data', { resources });
 
-        const transformedResources = resources.map<DGTLDResource>(resource => {
+        const transformedResources = resources.map<DGTLDResource>((resource) => {
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE,
@@ -104,8 +97,6 @@ export class DGTHolderTransformerService implements DGTLDTransformer<DGTHolder> 
                 triples,
             };
         });
-
-        this.logger.debug(DGTHolderTransformerService.name, 'Transformed resources to linked data', { resources });
 
         return of(transformedResources);
     }

@@ -65,8 +65,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
             }
         }
 
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Transformed values to workflows', { entity: workflow, res });
-
         return of(res as T[]);
     }
 
@@ -79,7 +77,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
      */
     public toTriples<T extends DGTWorkflow>(workflows: DGTWorkflow[]): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ workflows });
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Starting to transform to linked data', { workflows });
 
         const transformedworkflows = workflows.map<DGTWorkflow>(workflow => {
 
@@ -161,8 +158,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                 triples: newTriples,
             };
         });
-
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Transformed workflows to linked data', transformedworkflows);
 
         return of(transformedworkflows as T[]);
     }
