@@ -1,9 +1,10 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTSource } from '../models/dgt-source.model';
 import { DGTSourceTransformerService } from './dgt-source-transformer.service';
@@ -68,5 +69,9 @@ export class DGTSourceCacheService extends DGTSourceService {
             ),
             map((data) => _.head(data.resources)),
         );
+    }
+
+    public refresh(source: DGTSource<any>): Observable<DGTLDResource[]> {
+        throw new DGTErrorNotImplemented();
     }
 }

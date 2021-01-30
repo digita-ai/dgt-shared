@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDFilterService } from '../../linked-data/services/dgt-ld-filter.service';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTHolder } from '../models/dgt-holder.model';
@@ -70,6 +71,10 @@ export class DGTHolderMockService extends DGTHolderService {
     }
 
     public merge(mainHolder: DGTHolder, otherHolders: DGTHolder[]): Observable<DGTHolder> {
+        throw new DGTErrorNotImplemented();
+    }
+
+    public refresh(holder: DGTHolder): Observable<DGTLDResource[]> {
         throw new DGTErrorNotImplemented();
     }
 }

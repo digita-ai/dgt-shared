@@ -1,4 +1,4 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, switchMap } from 'rxjs/operators';
@@ -9,6 +9,7 @@ import { DGTInviteService } from '../../invite/services/dgt-invite-abstract.serv
 import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
 import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTHolderService } from './dgt-holder-abstract.service';
@@ -82,11 +83,11 @@ export class DGTHolderCacheService extends DGTHolderService {
         this.logger.debug(DGTHolderCacheService.name, 'Starting to merge holders', { mainHolder, otherHolders });
 
         if (!mainHolder) {
-          throw new DGTErrorArgument('Argument mainHolder should be set.', mainHolder);
+            throw new DGTErrorArgument('Argument mainHolder should be set.', mainHolder);
         }
 
         if (!otherHolders) {
-          throw new DGTErrorArgument('Argument otherHolders should be set.', otherHolders);
+            throw new DGTErrorArgument('Argument otherHolders should be set.', otherHolders);
         }
 
         return of({ mainHolder, otherHolders }).pipe(
@@ -161,5 +162,9 @@ export class DGTHolderCacheService extends DGTHolderService {
             ),
             map((data) => data.mainHolder),
         );
+    }
+
+    public refresh(holder: DGTHolder): Observable<DGTLDResource[]> {
+        throw new DGTErrorNotImplemented();
     }
 }
