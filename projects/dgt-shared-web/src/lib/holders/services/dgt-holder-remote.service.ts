@@ -1,4 +1,10 @@
-import { DGTHolder, DGTHolderService, DGTLDFilter, DGTLDFilterService } from '@digita-ai/dgt-shared-data';
+import {
+    DGTHolder,
+    DGTHolderService,
+    DGTLDFilter,
+    DGTLDFilterService,
+    DGTLDResource,
+} from '@digita-ai/dgt-shared-data';
 import {
     DGTConfigurationBaseWeb,
     DGTConfigurationService,
@@ -128,7 +134,35 @@ export class DGTHolderRemoteService extends DGTHolderService {
                     .pipe(map((accessToken) => ({ ...data, accessToken }))),
             ),
             switchMap((data) =>
-                this.http.post<DGTHolder>(data.uri, data.otherHolders.map(holder => holder.uri), { Authorization: `Bearer ${data.accessToken}` }),
+                this.http.post<DGTHolder>(
+                    data.uri,
+                    data.otherHolders.map((holder) => holder.uri),
+                    { Authorization: `Bearer ${data.accessToken}` },
+                ),
+            ),
+            map((response) => response.data),
+        );
+    }
+
+    public refresh(holder: DGTHolder): Observable<DGTLDResource[]> {
+        this.logger.debug(DGTHolderRemoteService.name, 'Refreshing resources for holder');
+
+        if (!holder) {
+            throw new DGTErrorArgument('Argument holder should be set.', holder);
+        }
+
+        return of({ holder }).pipe(
+            map((data) => ({
+                ...data,
+                uri: `${this.config.get((c) => c.server.uri)}holder/${encodeURIComponent(data.holder.uri)}/refresh`,
+            })),
+            switchMap((data) =>
+                this.store
+                    .select((state) => state.app.accessToken)
+                    .pipe(map((accessToken) => ({ ...data, accessToken }))),
+            ),
+            switchMap((data) =>
+                this.http.post<DGTLDResource[]>(data.uri, {}, { Authorization: `Bearer ${data.accessToken}` }),
             ),
             map((response) => response.data),
         );

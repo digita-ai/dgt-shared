@@ -2,6 +2,7 @@ import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dg
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDResourceService } from '../../linked-data/services/dgt-ld-resource.service';
 import { DGTSource } from '../models/dgt-source.model';
 
@@ -14,6 +15,7 @@ export abstract class DGTSourceService implements DGTLDResourceService<DGTSource
   public abstract query(filter?: DGTLDFilter): Observable<DGTSource<any>[]>;
   public abstract save(resources: DGTSource<any>[]): Observable<DGTSource<any>[]>;
   public abstract delete(resource: DGTSource<any>): Observable<DGTSource<any>>;
+  public abstract refresh(source: DGTSource<any>): Observable<DGTLDResource[]>;
 
   /**
    * Returns a list of sources matching query
