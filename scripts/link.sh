@@ -1,13 +1,13 @@
 #bin/bash
 cd ../projects/dgt-shared-test;
-npm link;
+yarn link;
 cd ../dgt-shared-utils
-npm link;
+yarn link;
 cd ../dgt-shared-data;
-npm link;
+yarn link;
 cd ../dgt-shared-connectors;
-npm link;
+yarn link;
 cd ../dgt-shared-web;
-npm link;
+yarn link;
 cd ../../scripts;
 # ./build.sh;
