@@ -239,7 +239,7 @@ export const mockTypeWork = {
     ],
 } as DGTLDResource;
 export const mockGroupIdentiy = {
-    id: 'test-group-identity',
+    uri: 'test-group-identity',
     description: 'Test Group Identity',
 } as DGTDataGroup;
 

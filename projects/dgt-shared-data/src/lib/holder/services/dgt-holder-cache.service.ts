@@ -1,9 +1,15 @@
-import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
+import { DGTErrorArgument, DGTErrorNotImplemented, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { concatMap, map, switchMap } from 'rxjs/operators';
 import { DGTCacheService } from '../../cache/services/dgt-cache.service';
+import { DGTConnectionService } from '../../connection/services/dgt-connection-abstract.service';
+import { DGTExchangeService } from '../../exchanges/services/dgt-exchange.service';
+import { DGTInviteService } from '../../invite/services/dgt-invite-abstract.service';
+import { DGTLDFilterPartial } from '../../linked-data/models/dgt-ld-filter-partial.model';
+import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
 import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
+import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTUriFactoryService } from '../../uri/services/dgt-uri-factory.service';
 import { DGTHolder } from '../models/dgt-holder.model';
 import { DGTHolderService } from './dgt-holder-abstract.service';
@@ -16,6 +22,9 @@ export class DGTHolderCacheService extends DGTHolderService {
         private cache: DGTCacheService,
         private transformer: DGTHolderTransformerService,
         private uri: DGTUriFactoryService,
+        private exchanges: DGTExchangeService,
+        private connections: DGTConnectionService,
+        private invites: DGTInviteService,
     ) {
         super();
     }
@@ -68,5 +77,94 @@ export class DGTHolderCacheService extends DGTHolderService {
             ),
             map((data) => _.head(data.resources)),
         );
+    }
+
+    public merge(mainHolder: DGTHolder, otherHolders: DGTHolder[]): Observable<DGTHolder> {
+        this.logger.debug(DGTHolderCacheService.name, 'Starting to merge holders', { mainHolder, otherHolders });
+
+        if (!mainHolder) {
+            throw new DGTErrorArgument('Argument mainHolder should be set.', mainHolder);
+        }
+
+        if (!otherHolders) {
+            throw new DGTErrorArgument('Argument otherHolders should be set.', otherHolders);
+        }
+
+        return of({ mainHolder, otherHolders }).pipe(
+            // Get exchanges
+            switchMap((data) =>
+                forkJoin(
+                    data.otherHolders.map((holder) =>
+                        this.exchanges.query({
+                            type: DGTLDFilterType.PARTIAL,
+                            partial: { holder: holder.uri },
+                        } as DGTLDFilterPartial),
+                    ),
+                ).pipe(
+                    map((exchanges) => ({
+                        ...data,
+                        exchanges: _.flatten(exchanges).map((exchange) => ({
+                            ...exchange,
+                            holder: data.mainHolder.uri,
+                        })),
+                    })),
+                ),
+            ),
+            // Get connections
+            switchMap((data) =>
+                forkJoin(
+                    data.otherHolders.map((holder) =>
+                        this.connections.query({
+                            type: DGTLDFilterType.PARTIAL,
+                            partial: { holder: holder.uri },
+                        } as DGTLDFilterPartial),
+                    ),
+                ).pipe(
+                    map((connections) => ({
+                        ...data,
+                        connections: _.flatten(connections).map((connection) => ({
+                            ...connection,
+                            holder: data.mainHolder.uri,
+                        })),
+                    })),
+                ),
+            ),
+            // Get invites
+            switchMap((data) =>
+                forkJoin(
+                    data.otherHolders.map((holder) =>
+                        this.invites.query({
+                            type: DGTLDFilterType.PARTIAL,
+                            partial: { holder: holder.uri },
+                        } as DGTLDFilterPartial),
+                    ),
+                ).pipe(
+                    map((invites) => ({
+                        ...data,
+                        invites: _.flatten(invites).map((invite) => ({
+                            ...invite,
+                            holder: data.mainHolder.uri,
+                        })),
+                    })),
+                ),
+            ),
+            // Update exchanges
+            switchMap((data) => this.exchanges.save(data.exchanges).pipe(map((exchanges) => ({ ...data, exchanges })))),
+            // Update connections
+            switchMap((data) =>
+                this.connections.save(data.connections).pipe(map((connections) => ({ ...data, connections }))),
+            ),
+            // Delete holders
+            switchMap((data) =>
+                forkJoin(data.otherHolders.map((holder) => this.delete(holder))).pipe(
+                    map((deletedHolders) => ({ ...data, deletedHolders })),
+                ),
+            ),
+            map((data) => data.mainHolder),
+        );
+    }
+
+    public refresh(holder: DGTHolder): Observable<DGTLDResource[]> {
+        throw new DGTErrorNotImplemented();
     }
 }

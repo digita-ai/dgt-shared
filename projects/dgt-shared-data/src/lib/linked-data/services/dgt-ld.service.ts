@@ -60,7 +60,7 @@ export class DGTLDService {
         exchanges: DGTExchange[],
         transformer: DGTLDTransformer<T>,
     ): Observable<T[]> {
-        this.logger.info(DGTLDService.name, 'Refreshing cache for exchanges', { exchanges, transformer });
+        this.logger.debug(DGTLDService.name, 'Refreshing cache for exchanges', { exchanges, transformer });
 
         return of({ exchanges, transformer }).pipe(
             switchMap((data) =>

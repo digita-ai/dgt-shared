@@ -99,7 +99,7 @@ export class DGTConnectorService {
             switchMap((data) =>
                 data.connector.query<T>(exchange, transformer).pipe(map((resources) => ({ ...data, resources }))),
             ),
-            tap((data) => this.logger.info(DGTConnectorService.name, 'Queried resources for exchange', data)),
+            tap((data) => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
             switchMap((data) => this.purposes.get(data.exchange.purpose).pipe(
                 map(purpose => ({ ...data, purpose})),
             )),
