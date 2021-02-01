@@ -69,7 +69,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
     }
 
     public save<T extends DGTLDResource>(transformer: DGTLDTransformer<T>, resources: T[]): Observable<T[]> {
-        this.logger.info(DGTCacheInMemoryService.name, 'Starting to save', { transformer, resources });
+        this.logger.debug(DGTCacheInMemoryService.name, 'Starting to save', { transformer, resources });
 
         if (!transformer) {
             throw new DGTErrorArgument('Argument transformer should be set.', transformer);
@@ -83,7 +83,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
             switchMap((data) =>
                 transformer.toTriples(data.resources).pipe(map((transformed) => ({ ...data, transformed }))),
             ),
-            tap((data) => this.logger.info(DGTCacheInMemoryService.name, 'Transformed before save', data)),
+            tap((data) => this.logger.debug(DGTCacheInMemoryService.name, 'Transformed before save', data)),
             tap(
                 (data) =>
                     (this.cache = [
@@ -91,7 +91,7 @@ export class DGTCacheInMemoryService extends DGTCacheService {
                         ...data.transformed,
                     ]),
             ),
-            tap(() => this.logger.info(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
+            tap(() => this.logger.debug(DGTCacheInMemoryService.name, 'Cache after save', { cache: this.cache })),
             map((data) => data.resources),
         );
     }

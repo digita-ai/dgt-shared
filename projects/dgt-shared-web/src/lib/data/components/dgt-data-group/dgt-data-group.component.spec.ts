@@ -36,7 +36,7 @@ describe('DGTBrowserDataGroupComponent', () => {
   describe('html view', () => {
     it('should render correct group title', () => {
       const title: HTMLElement = hostElement.querySelector('dgt-page-content-group-header');
-      expect(title.innerHTML).toEqual(`common.data.groups.${mockGroupIdentiy.id}`);
+      expect(title.innerHTML).toEqual(`common.data.groups.${mockGroupIdentiy.uri}`);
     })
 
     it('should contain dgt-data-category elements', () => {
