@@ -1,15 +1,11 @@
 <ng-container *ngIf="category && resources && emails">
-    <ng-container *ngFor="let email of resources">
-        <ng-container *ngIf="email && emails.get(email.triples[0])">
-            Emails
-            <dgt-data-interface-email-value
-                (resourceUpdated)="onResourceUpdated($event)"
-                (submit)="onSubmit()"
-                [resource]="email"
-                [email]="emails.get(email.triples[0]).email"
-                [type]="emails.get(email.triples[0]).type"
-            >
-            </dgt-data-interface-email-value>
-        </ng-container>
-    </ng-container>
+  <ng-container *ngFor="let email of emails">
+    <dgt-data-interface-email-value
+        (resourceUpdated)="onResourceUpdated($event)"
+        (submit)="onSubmit()"
+        [email]="email.email"
+        [type]="email.type"
+    >
+    </dgt-data-interface-email-value>
+  </ng-container>
 </ng-container>

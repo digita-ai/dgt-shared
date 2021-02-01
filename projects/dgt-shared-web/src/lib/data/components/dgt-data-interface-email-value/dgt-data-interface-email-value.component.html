@@ -1,4 +1,3 @@
-Email
 <dgt-form *ngIf="emailCleaned && type" [formGroup]="formGroup">
   <dgt-form-element [controlName]="'email'">
     <dgt-form-control>
@@ -6,7 +5,7 @@ Email
         <mat-label>{{ 'common.data.terms.' + type | translate}}</mat-label>
         <input matInput
         (keyup)="onResourceUpdated(resource, formGroup.get('email').value, $event)"
-        readonly="false"
+        readonly="true"
         type="text"
         id="email"
         formControlName="email">

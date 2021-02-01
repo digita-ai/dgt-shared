@@ -35,7 +35,7 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
         }
     }
 
-    public emails: DGTMap<DGTLDTriple, { email: string; type: string }>;
+    public emails: { email: string; type: string }[];
 
     private emailValues: DGTLDTriple[];
 
@@ -48,64 +48,48 @@ export class DGTDataInterfaceEmailComponent implements OnInit, DGTDataInterface 
     submit: EventEmitter<any>;
 
     constructor(private logger: DGTLoggerService, private paramChecker: DGTParameterCheckerService) {
-        this.resourceUpdated = new EventEmitter();
-        this.submit = new EventEmitter();
+      this.resourceUpdated = new EventEmitter();
+      this.submit = new EventEmitter();
     }
 
     ngOnInit() {}
 
     private updateReceived(values: DGTLDResource[], category: DGTCategory) {
-        this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
-        this.paramChecker.checkParametersNotNull({ values, category });
+      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Update received', { values, category });
+      this.paramChecker.checkParametersNotNull({ values, category });
 
-        const triples: DGTLDTriple[] = _.flatten(values.map((resource) => resource.triples));
+      const triples: DGTLDTriple[] = _.flatten(values.map((resource) => resource.triples));
 
-        const emailsReferencesWithValues = values.map((resource) => {
-            const emailReferences = triples.filter(
-                (value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail',
-            );
-            const emailValues = triples.filter((value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
-            this.emailValues = emailValues;
-            const emailTypes = triples.filter(
-                (value) => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-            );
+      const emailReferences = triples.filter(
+        (value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#hasEmail',
+      );
+      const emailValues = triples.filter((value) => value.predicate === 'http://www.w3.org/2006/vcard/ns#value');
+      this.emailValues = emailValues;
+      const emailTypes = triples.filter(
+        (value) => value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+      );
 
-            this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email values and references', {
-                emailReferences,
-                emailValues,
-            });
+      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered email values and references', {
+        emailReferences,
+        emailValues,
+        emailTypes,
+      });
 
-            let res = [];
+      this.emails = [];
 
-            if (emailReferences && emailValues && emailTypes) {
-                res = emailReferences.map<{ key: DGTLDTriple; value: { email: string; type: string } }>(
-                    (emailReference) => {
-                        const emailReferenceObject = emailReference.object.value;
+      if (emailReferences && emailValues && emailTypes) {
+        emailReferences.forEach(emailReference => {
+          const emailReferenceObject = emailReference.object.value;
+          const emailValue = emailValues.find((val) => val.subject.value === emailReferenceObject);
+          const emailType = emailTypes.find((type) => type.subject.value === emailReferenceObject);
 
-                        const emailValue = emailValues.find((val) => val.subject.value === emailReferenceObject);
-                        const emailType = emailTypes.find((type) => type.subject.value === emailReferenceObject);
-                        const value =
-                            emailValue && emailType
-                                ? { email: emailValue.object.value, type: emailType.object.value }
-                                : null;
-
-                        return {
-                            key: emailReference,
-                            value,
-                        };
-                    },
-                );
-
-                this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Combined email references with values', {
-                    emailsReferencesWithValues,
-                });
-            }
-
-            return res;
+          this.emails.push({
+            email: emailValue.object.value,
+            type: emailType.object.value
+          });
         });
-
-        this.emails = new DGTMap<DGTLDTriple, { email: string; type: string }>(_.flatten(emailsReferencesWithValues));
-        this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
+      }
+      this.logger.debug(DGTDataInterfaceEmailComponent.name, 'Filtered emails', { emails: this.emails });
     }
 
     /**
