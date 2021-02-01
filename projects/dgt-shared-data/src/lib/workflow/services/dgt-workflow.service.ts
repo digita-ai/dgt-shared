@@ -1,6 +1,6 @@
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
-import { forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of, zip } from 'rxjs';
 import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { DGTConnectorService } from '../../connector/services/dgt-connector.service';
 import { DGTExchange } from '../../exchanges/models/dgt-exchange.model';
@@ -159,9 +159,12 @@ export abstract class DGTWorkflowService implements DGTLDResourceService<DGTWork
                     } as DGTLDFilterPartial)
                     .pipe(map((exchanges) => ({ ...data, exchanges }))),
             ),
-            tap((data) => this.logger.debug(DGTWorkflowService.name, 'Retrieved exchanges', data)),
+            tap((data) => this.logger.info(DGTWorkflowService.name, 'Retrieved exchanges', data)),
             // map(exchanges => ({ ...data, exchange: exchanges[0], updatedResources: data.updatedResources.map(tr => ({ ...tr, exchange: exchanges[0].uri })) })),
-            switchMap((data) => this.connectors.save<T>(data.exchange, data.resources, data.transformer)),
+            switchMap((data) => data.exchanges ? this.connectors.save<T>(data.exchanges[0], data.resources, data.transformer)
+                .pipe(map((exchanges) => (_.flatten(exchanges)))) : of(data),
+            ),
+            tap((data) => this.logger.info(DGTWorkflowService.name, 'Saved resources to destination', data)),
         );
     }
     // /**
