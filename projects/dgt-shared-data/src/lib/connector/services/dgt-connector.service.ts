@@ -55,8 +55,6 @@ export class DGTConnectorService {
     ): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ exchange, resources });
 
-        console.log('eeeeeeeee', exchange)
-
         return of({ exchange, resources, transformer }).pipe(
             tap(data => this.logger.info(DGTConnectorService.name, 'Starting to save to connector', data)),
             switchMap((data) =>
@@ -69,7 +67,7 @@ export class DGTConnectorService {
             ),
             mergeMap((data) => this.purposes.get(exchange.purpose).pipe(map((purpose) => ({ ...data, purpose })))),
             mergeMap((data) =>
-                this.get(data.source.type)
+                data.connector
                     .save<T>(data.resources, data.transformer)
                     .pipe(map((savedResources) => ({ ...data, resources: savedResources }))),
             ),
