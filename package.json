@@ -1,6 +1,6 @@
 {
   "name": "dgt-shared",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -13,7 +13,7 @@
     "build:connectors": "ng build dgt-shared-connectors",
     "publish:utils": "npm publish dist/dgt-shared-utils",
     "publish:web": "npm publish dist/dgt-shared-web",
-    "reinstall": "rm -rf node_modules yarn.lock && yarn install && ./scripts/linkAndBuild.sh;",
+    "reinstall": "rm -rf node_modules && yarn install && ./scripts/linkAndBuild.sh;",
     "test": "ng test",
     "test:headless": "./scripts/test-headless.sh",
     "lint": "ng lint",
