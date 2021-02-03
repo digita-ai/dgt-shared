@@ -13,4 +13,5 @@ export abstract class DGTHolderService implements DGTLDResourceService<DGTHolder
     public abstract delete(resource: DGTHolder): Observable<DGTHolder>;
     public abstract merge(mainHolder: DGTHolder, otherHolders: DGTHolder[]): Observable<DGTHolder>;
     public abstract refresh(holder: DGTHolder): Observable<DGTLDResource[]>;
+    public abstract generateNewHolder(): Observable<DGTHolder>;
 }

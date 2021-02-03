@@ -167,4 +167,7 @@ export class DGTHolderCacheService extends DGTHolderService {
     public refresh(holder: DGTHolder): Observable<DGTLDResource[]> {
         throw new DGTErrorNotImplemented();
     }
+    public generateNewHolder(): Observable<DGTHolder> {
+      throw new DGTErrorNotImplemented();
+    }
 }
