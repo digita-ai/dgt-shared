@@ -2,7 +2,7 @@ import { DGTConnectionService, DGTConnectionSolid, DGTConnectionState, DGTSessio
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { ISessionInfo, Session, SessionManager } from '@inrupt/solid-client-authn-browser';
 import { from, Observable, of } from 'rxjs';
-import { mergeMap, take, tap } from 'rxjs/operators';
+import { map, mergeMap, take, tap } from 'rxjs/operators';
 
 @DGTInjectable()
 export class DGTOIDCService {
@@ -53,5 +53,16 @@ export class DGTOIDCService {
                 throw new DGTErrorArgument('Session not found.', session);
             }
         }));
+    }
+
+    public disconnect(connection: DGTConnectionSolid): void{
+        if (!connection) {
+            throw new DGTErrorArgument('Argument connection should be set.', connection);
+        }
+
+        this.getSession(connection.configuration.sessionInfo.sessionId).subscribe(session => {
+            session.logout();
+            this.logger.debug(DGTOIDCService.name, 'Disconnected session', session);
+        });
     }
 }
