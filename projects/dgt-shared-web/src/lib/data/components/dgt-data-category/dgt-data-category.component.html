@@ -15,9 +15,9 @@
   <dgt-section-content>
     <div dgtDataInterfaceHost (resourceUpdated)="onResourceUpdated($event)" (submit)="updateResources(resourcesToUpdate)">
     </div>
-    <dgt-button (called)="updateResources(resourcesToUpdate)" type="submit" color="accent" *ngIf="resourcesToUpdate.size > 0">
+    <!-- <dgt-button (called)="updateResources(resourcesToUpdate)" type="submit" color="accent" *ngIf="resourcesToUpdate.size > 0">
       Save Changes
-    </dgt-button>
+    </dgt-button> -->
   </dgt-section-content>
 
   <dgt-section-action id="info-section-action">
