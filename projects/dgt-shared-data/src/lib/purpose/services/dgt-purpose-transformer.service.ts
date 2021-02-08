@@ -1,4 +1,4 @@
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,11 +12,7 @@ import { DGTPurpose } from '../models/dgt-purpose.model';
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
 export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose> {
-
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) { }
+    constructor(private paramChecker: DGTParameterCheckerService) {}
 
     /**
      * Transforms multiple linked data resources to resources.
@@ -27,10 +23,9 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
     public toDomain(resources: DGTLDResource[]): Observable<DGTPurpose[]> {
         this.paramChecker.checkParametersNotNull({ resources });
 
-        return forkJoin(resources.map(resource => this.toDomainOne(resource)))
-            .pipe(
-                map(resourcesRes => _.flatten(resourcesRes)),
-            );
+        return forkJoin(resources.map((resource) => this.toDomainOne(resource))).pipe(
+            map((resourcesRes) => _.flatten(resourcesRes)),
+        );
     }
 
     /**
@@ -45,17 +40,16 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
         let res: DGTPurpose[] = null;
 
         if (resource && resource.triples) {
-            const purposeValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/purposes#purpose',
+            const purposeValues = resource.triples.filter(
+                (value) =>
+                    value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                    value.object.value === 'http://digita.ai/voc/purposes#purpose',
             );
 
             if (purposeValues) {
-                res = purposeValues.map(purposeValue => this.transformOne(purposeValue, resource));
+                res = purposeValues.map((purposeValue) => this.transformOne(purposeValue, resource));
             }
         }
-
-        this.logger.debug(DGTPurposeTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -69,10 +63,8 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
      */
     public toTriples(resources: DGTPurpose[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ resources });
-        this.logger.debug(DGTPurposeTransformerService.name, 'Starting to transform to linked data', { resources });
 
-        const transformedResources = resources.map<DGTLDResource>(resource => {
-
+        const transformedResources = resources.map<DGTLDResource>((resource) => {
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE,
@@ -109,7 +101,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
             ];
 
             // add predicates array
-            resource.predicates.forEach(predicate => {
+            resource.predicates.forEach((predicate) => {
                 newTriples.push({
                     predicate: 'http://digita.ai/voc/purposes#predicate',
                     subject: resourceSubject,
@@ -134,7 +126,7 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
                 });
             }
             if (resource.aclNeeded && resource.aclNeeded.length > 0) {
-                resource.aclNeeded.forEach(acl => {
+                resource.aclNeeded.forEach((acl) => {
                     newTriples.push({
                         predicate: 'http://digita.ai/voc/purposes#aclneeded',
                         subject: resourceSubject,
@@ -155,8 +147,6 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
             };
         });
 
-        this.logger.debug(DGTPurposeTransformerService.name, 'Transformed resources to linked data', transformedResources);
-
         return of(transformedResources);
     }
 
@@ -170,23 +160,18 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTPurpose {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.subject.value);
+        const resourceTriples = resource.triples.filter((value) => value.subject.value === triple.subject.value);
 
-        const icon = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#icon',
+        const icon = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/purposes#icon');
+        const description = resourceTriples.find(
+            (value) => value.predicate === 'http://digita.ai/voc/purposes#description',
         );
-        const description = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#description',
+        const label = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/purposes#label');
+        const predicates = resourceTriples.filter(
+            (value) => value.predicate === 'http://digita.ai/voc/purposes#predicate',
         );
-        const label = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#label',
-        );
-        const predicates = resourceTriples.filter(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#predicate',
-        );
-        const aclNeeded = resourceTriples.filter(value =>
-            value.predicate === 'http://digita.ai/voc/purposes#aclneeded',
+        const aclNeeded = resourceTriples.filter(
+            (value) => value.predicate === 'http://digita.ai/voc/purposes#aclneeded',
         );
 
         return {
@@ -196,8 +181,8 @@ export class DGTPurposeTransformerService implements DGTLDTransformer<DGTPurpose
             icon: icon ? icon.object.value : null,
             description: description ? description.object.value : null,
             label: label ? label.object.value : null,
-            predicates: predicates && predicates.length > 0 ? predicates.map(p => p.object.value) : null,
-            aclNeeded: aclNeeded && aclNeeded.length > 0 ? aclNeeded.map(a => a.object.value) : null,
+            predicates: predicates && predicates.length > 0 ? predicates.map((p) => p.object.value) : null,
+            aclNeeded: aclNeeded && aclNeeded.length > 0 ? aclNeeded.map((a) => a.object.value) : null,
         };
     }
 }

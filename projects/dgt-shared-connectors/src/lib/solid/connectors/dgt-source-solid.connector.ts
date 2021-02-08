@@ -104,7 +104,7 @@ export class DGTConnectorSolid extends DGTConnector<DGTSourceSolidConfiguration,
     }
 
     public query<T extends DGTLDResource>(exchange: DGTExchange, transformer: DGTLDTransformer<T>): Observable<T[]> {
-        this.logger.info(DGTConnectorSolid.name, 'Starting to query linked data service', { exchange, transformer });
+        this.logger.debug(DGTConnectorSolid.name, 'Starting to query linked data service', { exchange, transformer });
 
         if (!exchange) {
             throw new DGTErrorArgument('Argument exchange should be set.', exchange);

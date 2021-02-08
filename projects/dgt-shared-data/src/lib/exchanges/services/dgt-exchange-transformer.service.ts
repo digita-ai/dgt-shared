@@ -1,4 +1,4 @@
-import { DGTInjectable, DGTLoggerService, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
+import { DGTInjectable, DGTParameterCheckerService } from '@digita-ai/dgt-shared-utils';
 import * as _ from 'lodash';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,11 +12,7 @@ import { DGTExchange } from '../models/dgt-exchange.model';
 /** Transforms linked data to resources, and the other way around. */
 @DGTInjectable()
 export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchange> {
-
-    constructor(
-        private logger: DGTLoggerService,
-        private paramChecker: DGTParameterCheckerService,
-    ) { }
+    constructor(private paramChecker: DGTParameterCheckerService) {}
 
     /**
      * Transforms multiple linked data resources to resources.
@@ -27,10 +23,7 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
     public toDomain(resources: DGTLDResource[]): Observable<DGTExchange[]> {
         this.paramChecker.checkParametersNotNull({ resources });
 
-        return forkJoin(resources.map(resource => this.toDomainOne(resource)))
-            .pipe(
-                map(res => _.flatten(res)),
-            );
+        return forkJoin(resources.map((resource) => this.toDomainOne(resource))).pipe(map((res) => _.flatten(res)));
     }
 
     /**
@@ -45,17 +38,16 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
         let res: DGTExchange[] = null;
 
         if (resource && resource.triples) {
-            const exchangeValues = resource.triples.filter(value =>
-                value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
-                value.object.value === 'http://digita.ai/voc/exchanges#exchange',
+            const exchangeValues = resource.triples.filter(
+                (value) =>
+                    value.predicate === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' &&
+                    value.object.value === 'http://digita.ai/voc/exchanges#exchange',
             );
 
             if (exchangeValues) {
-                res = exchangeValues.map(exchangeValue => this.transformOne(exchangeValue, resource));
+                res = exchangeValues.map((exchangeValue) => this.transformOne(exchangeValue, resource));
             }
         }
-
-        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed values to resources', { resource, res });
 
         return of(res);
     }
@@ -69,10 +61,8 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
      */
     public toTriples(resources: DGTExchange[]): Observable<DGTLDResource[]> {
         this.paramChecker.checkParametersNotNull({ resources });
-        this.logger.debug(DGTExchangeTransformerService.name, 'Starting to transform to linked data', { resources });
 
-        const transformedResources = resources.map<DGTLDResource>(resource => {
-
+        const transformedResources = resources.map<DGTLDResource>((resource) => {
             const resourceSubject = {
                 value: resource.uri,
                 termType: DGTLDTermType.REFERENCE,
@@ -134,8 +124,6 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
             };
         });
 
-        this.logger.debug(DGTExchangeTransformerService.name, 'Transformed resources to linked data', transformedResources);
-
         return of(transformedResources);
     }
 
@@ -149,20 +137,13 @@ export class DGTExchangeTransformerService implements DGTLDTransformer<DGTExchan
     private transformOne(triple: DGTLDTriple, resource: DGTLDResource): DGTExchange {
         this.paramChecker.checkParametersNotNull({ resourceSubjectValue: triple, resource });
 
-        const resourceTriples = resource.triples.filter(value =>
-            value.subject.value === triple.subject.value);
+        const resourceTriples = resource.triples.filter((value) => value.subject.value === triple.subject.value);
 
-        const purpose = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/exchanges#purpose',
-        );
-        const holder = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/exchanges#holder',
-        );
-        const source = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/exchanges#source',
-        );
-        const connection = resourceTriples.find(value =>
-            value.predicate === 'http://digita.ai/voc/exchanges#connection',
+        const purpose = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/exchanges#purpose');
+        const holder = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/exchanges#holder');
+        const source = resourceTriples.find((value) => value.predicate === 'http://digita.ai/voc/exchanges#source');
+        const connection = resourceTriples.find(
+            (value) => value.predicate === 'http://digita.ai/voc/exchanges#connection',
         );
 
         return {

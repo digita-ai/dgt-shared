@@ -11,6 +11,9 @@ import { DGTSecurityCredentialTransformerService } from './credential/services/d
 import { DGTDataInterfaceHostDirective } from './data-resource/directives/data-interface-host.directive';
 import { DGTEventTransformerService } from './events/services/dgt-event-transformer.service';
 import { DGTExchangeTransformerService } from './exchanges/services/dgt-exchange-transformer.service';
+import { DGTGroupCacheService } from './group/services/dgt-group-cache.service';
+import { DGTGroupMockService } from './group/services/dgt-group-mock.service';
+import { DGTGroupTransformerService } from './group/services/dgt-group-transformer.service';
 import { DGTHolderTransformerService } from './holder/services/dgt-holder-transformer.service';
 import { DGTInviteTransformerService } from './invite/services/dgt-invite-transformer.service';
 import { DGTLDFilterRunnerBGPService } from './linked-data/services/dgt-ld-filter-runner-bgp.service';
@@ -78,6 +81,9 @@ export const providers = [
   DGTLDResourceTransformerService,
   DGTSparqlCommunicaService,
   DGTLDTypeRegistrationTransformerService,
+  DGTGroupCacheService,
+  DGTGroupMockService,
+  DGTGroupTransformerService,
 ];
 
 @NgModule({

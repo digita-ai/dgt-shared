@@ -5,9 +5,6 @@ import * as _ from 'lodash';
 import { map } from 'rxjs/operators';
 import { v4 } from 'uuid';
 import { DGTLDDataType } from '../../linked-data/models/dgt-ld-data-type.model';
-import { DGTLDFilterBGP } from '../../linked-data/models/dgt-ld-filter-bgp.model';
-import { DGTLDFilterType } from '../../linked-data/models/dgt-ld-filter-type.model';
-import { DGTLDFilter } from '../../linked-data/models/dgt-ld-filter.model';
 import { DGTLDNode } from '../../linked-data/models/dgt-ld-node.model';
 import { DGTLDResource } from '../../linked-data/models/dgt-ld-resource.model';
 import { DGTLDTermType } from '../../linked-data/models/dgt-ld-term-type.model';
@@ -65,8 +62,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
             }
         }
 
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Transformed values to workflows', { entity: workflow, res });
-
         return of(res as T[]);
     }
 
@@ -79,7 +74,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
      */
     public toTriples<T extends DGTWorkflow>(workflows: DGTWorkflow[]): Observable<T[]> {
         this.paramChecker.checkParametersNotNull({ workflows });
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Starting to transform to linked data', { workflows });
 
         const transformedworkflows = workflows.map<DGTWorkflow>(workflow => {
 
@@ -145,14 +139,12 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                 },
             ];
 
-            newTriples = newTriples.concat(this.filterToTriples(workflow, workflowSubject));
             newTriples = newTriples.concat(this.actionToTriples(workflow, workflowSubject));
 
             return {
                 ...workflow,
                 exchange: workflow.exchange,
                 uri: workflow.uri,
-                filter: workflow.filter,
                 source: workflow.source,
                 destination: workflow.destination,
                 description: workflow.description,
@@ -161,8 +153,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
                 triples: newTriples,
             };
         });
-
-        this.logger.debug(DGTWorkflowTransformerService.name, 'Transformed workflows to linked data', transformedworkflows);
 
         return of(transformedworkflows as T[]);
     }
@@ -180,7 +170,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
         const workflowTriples = workflow.triples.filter(value =>
             value.subject.value === triple.subject.value);
 
-        const filter = this.filterToDomain(triple, workflow);
         const actions = this.actionToDomain(triple, workflow)
 
         const source = workflowTriples.find(value =>
@@ -205,7 +194,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
 
         return {
             uri: triple.subject.value,
-            filter: filter,
             exchange: null,
             source: source ? source.object.value : null,
             destination: destination ? destination.object.value : null,
@@ -215,69 +203,6 @@ export class DGTWorkflowTransformerService implements DGTLDTransformer<DGTWorkfl
             actions,
             triples: null,
         } as T;
-    }
-
-    private filterToTriples(workflow: DGTWorkflow, workflowSubject: DGTLDNode): DGTLDTriple[] {
-        let res = [];
-
-        if (!workflow) {
-            throw new DGTErrorArgument('Argument workflow should be set.', workflow);
-        }
-
-        if (!workflowSubject) {
-            throw new DGTErrorArgument('Argument workflowSubject should be set.', workflowSubject);
-        }
-
-        if (!workflow.filter) {
-            throw new DGTErrorArgument('Argumentworkflow.filter should be set.', workflow.filter);
-        }
-
-        if (workflow.filter.type !== DGTLDFilterType.BGP) {
-            throw new DGTErrorArgument('Argument workflow filter type should be BGP.', workflow);
-        }
-
-        const filter: DGTLDFilterBGP = workflow.filter as any;
-
-        res = [];
-
-        filter.predicates?.forEach(predicate => {
-            res.push({
-                predicate: 'http://digita.ai/voc/workflowfilter#predicates',
-                subject: workflowSubject,
-                object: {
-                    termType: DGTLDTermType.REFERENCE,
-                    dataType: DGTLDDataType.STRING,
-                    value: predicate,
-                },
-            });
-        });
-
-        return res;
-    }
-
-    private filterToDomain(triple: DGTLDTriple, workflow: DGTLDResource): DGTLDFilter {
-
-        let filter: DGTLDFilter = null;
-
-        if (!triple) {
-            throw new DGTErrorArgument('Argument triple should be set.', triple);
-        }
-
-        if (!workflow) {
-            throw new DGTErrorArgument('Argument workflow should be set.', workflow);
-        }
-
-        const predicates: string[] = workflow.triples.filter(value =>
-            value.subject.value === triple.subject.value &&
-            value.predicate === 'http://digita.ai/voc/workflowfilter#predicates',
-        ).map(predicate => predicate.object.value);
-
-        filter = {
-            type: DGTLDFilterType.BGP,
-            predicates,
-        } as DGTLDFilterBGP;
-
-        return filter;
     }
 
     private actionToTriples(workflow: DGTWorkflow, workflowSubject: DGTLDNode): DGTLDTriple[] {

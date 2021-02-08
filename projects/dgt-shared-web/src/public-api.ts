@@ -113,3 +113,4 @@ export { DGTWorkflowRemoteService } from './lib/workflows/services/dgt-workflow-
 export { DGTTimelinePageComponent } from './lib/timeline/components/timeline-page/timeline-page.component';
 export { DGTTimelineEventGroupComponent } from './lib/timeline/components/timeline-event-group/timeline-event-group.component';
 export { DGTTimelineEventSummaryComponent } from './lib/timeline/components/timeline-event-summary/timeline-event-summary.component';
+export { DGTGroupRemoteService } from './lib/groups/services/dgt-group-remote.service';

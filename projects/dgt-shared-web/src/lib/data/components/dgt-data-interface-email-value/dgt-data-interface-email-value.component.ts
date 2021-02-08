@@ -44,7 +44,8 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
     public set email(v: string) {
         this._email = v;
 
-        if (this.resource && this.email) {
+        if ( /*this.resource && */this.email) {
+          console.log('=========', v);
             this.updateReceived(this.resource, this.email);
         }
     }
@@ -56,6 +57,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
     }
     @Input()
     public set type(v: string) {
+        console.log('=========', v);
         this._type = v;
     }
 
@@ -78,7 +80,7 @@ export class DGTDataInterfaceEmailValueComponent implements OnInit {
      */
     private updateReceived(resource: DGTLDResource, email: string) {
         this.logger.debug(DGTDataInterfaceEmailValueComponent.name, 'Update received', { resource, email });
-        this.paramChecker.checkParametersNotNull({ resource, email });
+        this.paramChecker.checkParametersNotNull({ email });
 
         const emailSplit = email.split('mailto:');
 

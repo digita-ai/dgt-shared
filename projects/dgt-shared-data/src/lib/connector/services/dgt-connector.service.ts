@@ -53,9 +53,10 @@ export class DGTConnectorService {
         resources: T[],
         transformer: DGTLDTransformer<T>,
     ): Observable<T[]> {
-        this.paramChecker.checkParametersNotNull({ exchange, triples: resources });
+        this.paramChecker.checkParametersNotNull({ exchange, resources });
 
         return of({ exchange, resources, transformer }).pipe(
+            tap(data => this.logger.info(DGTConnectorService.name, 'Starting to save to connector', data)),
             switchMap((data) =>
                 this.sources
                     .get(data.exchange.source)
@@ -66,7 +67,7 @@ export class DGTConnectorService {
             ),
             mergeMap((data) => this.purposes.get(exchange.purpose).pipe(map((purpose) => ({ ...data, purpose })))),
             mergeMap((data) =>
-                this.get(data.source.type)
+                data.connector
                     .save<T>(data.resources, data.transformer)
                     .pipe(map((savedResources) => ({ ...data, resources: savedResources }))),
             ),
@@ -96,7 +97,7 @@ export class DGTConnectorService {
             switchMap((data) =>
                 data.connector.query<T>(exchange, transformer).pipe(map((resources) => ({ ...data, resources }))),
             ),
-            tap((data) => this.logger.info(DGTConnectorService.name, 'Queried resources for exchange', data)),
+            tap((data) => this.logger.debug(DGTConnectorService.name, 'Queried resources for exchange', data)),
             switchMap((data) => this.purposes.get(data.exchange.purpose).pipe(
                 map(purpose => ({ ...data, purpose})),
             )),
