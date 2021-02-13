@@ -1,4 +1,10 @@
-import { DGTConnectionService, DGTConnectionSolid, DGTConnectionState, DGTSessionStorageService, DGTSourceSolid } from '@digita-ai/dgt-shared-data';
+import {
+    DGTConnectionService,
+    DGTConnectionSolid,
+    DGTConnectionState,
+    DGTSessionStorageService,
+    DGTSourceSolid,
+} from '@digita-ai/dgt-shared-data';
 import { DGTErrorArgument, DGTInjectable, DGTLoggerService } from '@digita-ai/dgt-shared-utils';
 import { ISessionInfo, Session, SessionManager } from '@inrupt/solid-client-authn-browser';
 import { from, Observable, of } from 'rxjs';
@@ -12,7 +18,10 @@ export class DGTOIDCService {
         private logger: DGTLoggerService,
         private connections: DGTConnectionService,
     ) {
-        this.manager = new SessionManager();
+        this.manager = new SessionManager({
+            secureStorage: this.storage,
+            insecureStorage: this.storage,
+        });
     }
 
     public getSession(sessionId: string): Observable<Session> {
@@ -32,7 +41,13 @@ export class DGTOIDCService {
 
         const session = new Session();
 
-        this.connections.save([{ ...connection, state: DGTConnectionState.CONNECTING, configuration: { ...connection.configuration, sessionInfo: session.info } }]);
+        this.connections.save([
+            {
+                ...connection,
+                state: DGTConnectionState.CONNECTING,
+                configuration: { ...connection.configuration, sessionInfo: session.info },
+            },
+        ]);
 
         if (!session.info.isLoggedIn) {
             session.login({ oidcIssuer: source.configuration.issuer, redirectUrl: source.configuration.callbackUri });
@@ -44,23 +59,28 @@ export class DGTOIDCService {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        return this.getSession(connection.configuration.sessionInfo.sessionId).pipe(mergeMap(session => {
-            if (session) {
-                return from(session.handleIncomingRedirect(window.location.href)).pipe(tap(sessionInfo => {
-                    this.logger.debug(DGTOIDCService.name, 'Retrieved sessionInfo', sessionInfo);
-                }), take(1));
-            } else {
-                throw new DGTErrorArgument('Session not found.', session);
-            }
-        }));
+        return this.getSession(connection.configuration.sessionInfo.sessionId).pipe(
+            mergeMap((session) => {
+                if (session) {
+                    return from(session.handleIncomingRedirect(window.location.href)).pipe(
+                        tap((sessionInfo) => {
+                            this.logger.debug(DGTOIDCService.name, 'Retrieved sessionInfo', sessionInfo);
+                        }),
+                        take(1),
+                    );
+                } else {
+                    throw new DGTErrorArgument('Session not found.', session);
+                }
+            }),
+        );
     }
 
-    public disconnect(connection: DGTConnectionSolid): void{
+    public disconnect(connection: DGTConnectionSolid): void {
         if (!connection) {
             throw new DGTErrorArgument('Argument connection should be set.', connection);
         }
 
-        this.getSession(connection.configuration.sessionInfo.sessionId).subscribe(session => {
+        this.getSession(connection.configuration.sessionInfo.sessionId).subscribe((session) => {
             session.logout();
             this.logger.debug(DGTOIDCService.name, 'Disconnected session', session);
         });
