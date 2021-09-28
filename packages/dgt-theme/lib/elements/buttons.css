@@ -1,0 +1,56 @@
+button,
+button.primary {
+  background-color: var(--colors-primary-dark);
+  border: 2px solid var(--colors-primary-dark);
+  text-transform: uppercase;
+  padding: var(--gap-small);
+  color: var(--colors-foreground-inverse);
+  cursor: pointer;
+  outline: none;
+}
+
+button.no-padding {
+  padding: 0;
+}
+
+button.primary.outline {
+  color: var(--colors-primary-dark);
+}
+
+button.accent {
+  background-color: var(--colors-accent-primary);
+  border-color: var(--colors-accent-primary);
+}
+
+button.accent.outline {
+  color: var(--colors-accent-primary);
+}
+
+button.outline {
+  background-color: transparent;
+  color: var(--colors-primary-dark);
+}
+
+button svg {
+  fill: var(--colors-foreground-inverse);
+  max-height: 100%;
+}
+
+button.inverse {
+  background-color: transparent;
+}
+
+button.inverse svg {
+  fill: var(--colors-primary-light);
+}
+
+button:disabled {
+  background-color: var(--colors-background-normal);
+  border-color: var(--colors-background-normal);
+  color: var(--colors-foreground-light);
+  cursor: inherit;
+}
+
+button:disabled svg {
+  fill: var(--colors-foreground-light);
+}

@@ -1,0 +1,33 @@
+:root {
+  /**
+        Primary colors
+    */
+  --colors-primary-light: #518df5;
+  --colors-primary-normal: #3e6bb5;
+  --colors-primary-dark: #2b4c7f;
+
+  /**
+        Foreground colors
+    */
+  --colors-foreground-inverse: #fff;
+  --colors-foreground-light: #8990a9;
+  --colors-foreground-normal: #001028;
+  --colors-foreground-dark: #001028;
+
+  /**
+        Background colors
+    */
+  --colors-background-light: #fff;
+  --colors-background-normal: #eee;
+  --colors-background-dark: #ddd;
+
+  /** Accent colors */
+  --colors-accent-primary: #8fbe00;
+
+  /**
+        Status colors
+    */
+  --colors-status-success: #62a420;
+  --colors-status-warning: #fcd228;
+  --colors-status-danger: #e62700;
+}

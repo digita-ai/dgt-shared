@@ -1,6 +1,0 @@
-<div class="alerts">
-  <dgt-notification *ngFor="let notification of notifications" [type]="notification.type"
-    (notificationDismissed)="onNotificationDismissed(notification)">
-    {{notification.message | translate}}
-  </dgt-notification>
-</div>

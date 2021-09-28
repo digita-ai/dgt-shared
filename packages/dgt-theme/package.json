@@ -1,0 +1,53 @@
+{
+  "name": "@digita-ai/dgt-theme",
+  "version": "0.5.0",
+  "description": "Theme for Digita projects.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "main": "./dist/dgt-theme.umd.js",
+  "license": "EUPL-1.2",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/dgt-theme.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/dgt-theme.es.js",
+      "require": "./dist/dgt-theme.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && vite build && tsc",
+    "lint": "stylelint \"lib/**/*.css\"",
+    "lint:fix": "stylelint \"lib/**/*.css\" --fix",
+    "lint:staged": "lint-staged"
+  },
+  "devDependencies": {
+    "@digita-ai/typescript-config": "^0.3.3",
+    "@types/node": "^15.0.2",
+    "normalize.css": "8.0.1",
+    "rimraf": "^3.0.2",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "vite": "2.2.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digita-ai/dgt-shared.git",
+    "directory": "packages/dgt-theme"
+  },
+  "bugs": {
+    "url": "https://github.com/digita-ai/dgt-shared/issues"
+  },
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "jest.config.ts",
+    "vite.config.ts"
+  ]
+}

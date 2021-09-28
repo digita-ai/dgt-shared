@@ -1,0 +1,38 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "dgt-components",
+      "path": "packages/dgt-components"
+    },
+    {
+      "name": "dgt-theme",
+      "path": "packages/dgt-theme"
+    },
+    {
+      "name": "dgt-utils",
+      "path": "packages/dgt-utils"
+    }
+  ],
+  "settings": {
+    "eslint.format.enable": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "files.eol": "\n",
+    "cSpell.words": [
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "folke.vscode-monorepo-workspace",
+      "humao.rest-client",
+    ]
+  }
+}

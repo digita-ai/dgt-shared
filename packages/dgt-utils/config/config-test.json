@@ -1,0 +1,17 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "files-dadu:config/presets/logger.json", 
+    "files-dadu:config/presets/crypto.json", 
+    "files-dadu:config/presets/parameters.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:dgt-utils:test:DGTOriginService",
+      "@type": "DGTOriginMockService",
+      "DGTOriginMockService:_origin": "https://mock.origin/"
+    }
+  ]
+}

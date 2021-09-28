@@ -1,0 +1,14 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:dgt-utils:test:DGTCryptoBrowserService",
+      "@type": "DGTCryptoBrowserService",
+      "DGTCryptoBrowserService:_logger": {
+        "@id": "urn:dgt-utils:test:DGTLoggerService"
+      }
+    }
+  ]
+}

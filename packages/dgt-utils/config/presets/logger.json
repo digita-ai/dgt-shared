@@ -1,0 +1,19 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:dgt-utils:test:DGTLoggerConsoleService",
+      "@type": "DGTLoggerConsoleService",
+      "DGTLoggerConsoleService:_minimumLevel": 6,
+      "DGTLoggerConsoleService:_minimumLevelPrintData": 4
+    },
+    {
+      "@id": "urn:dgt-utils:test:DGTLoggerService",
+      "@type": "DGTLoggerConsoleService",
+      "DGTLoggerConsoleService:_minimumLevel": 6,
+      "DGTLoggerConsoleService:_minimumLevelPrintData": 6
+    }
+  ]
+}

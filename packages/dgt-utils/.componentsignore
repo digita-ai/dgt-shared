@@ -1,0 +1,20 @@
+[
+  "Error",
+  "EventEmitter",
+  "DGTPlatformType",
+  "DGTConfigurationBase",
+  "DGTConfigurationBaseWeb",
+  "DGTLoggerLevel",
+  "DGTCryptoKey",
+  "DGTCryptoKeyPair",
+  "Injectable",
+  "DGTHttpResponse",
+  "DGTCacheType",
+  "TSUnionType",
+  "DGTMap",
+  "DGTErrorArgument",
+  "DGTErrorConfig",
+  "DGTErrorHttp",
+  "DGTErrorLaunchHandler",
+  "HttpClient"
+]
