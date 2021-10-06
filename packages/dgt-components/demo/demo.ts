@@ -6,9 +6,11 @@ import {ContentHeaderComponent} from '../lib/components/header/content-header.co
 import {CardComponent} from '../lib/components/cards/card.component';
 import { ProfileContactComponent } from '../lib/components/profile/profile-contact.component';
 import { ProfilePayslipComponent } from '../lib/components/profile/profile-payslip.component';
-import { WebIdComponent } from '../lib/components/authentication/webid.component';
+import { DemoAuthenticateComponent } from './demo-authenticate.component';
 
-customElements.define('webid-form', WebIdComponent);
+
+
+customElements.define('demo-auth', DemoAuthenticateComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-card', CardComponent);

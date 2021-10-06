@@ -147,6 +147,10 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
           actions: assign({ webId: (context, event) => event.webId }),
           target: AuthenticateStates.CHECKING_WEBID,
         },
+        [AuthenticateEvents.SELECTED_ISSUER]: {
+          actions: assign({ issuer: (context, event) => event.issuer }),
+          target: AuthenticateStates.AUTHENTICATING,
+        },
       },
     },
 
@@ -172,7 +176,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
 
     [AuthenticateStates.AUTHENTICATING]: {
       invoke: {
-        src: (context) => solid.loginWithIssuer(context.webId, context.issuer),
+        src: (context) => solid.loginWithIssuer(context.issuer),
         onError: {
           actions: send((context, event) => new LoginErrorEvent('Login failed')),
         },

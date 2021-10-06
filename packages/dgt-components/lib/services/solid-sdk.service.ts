@@ -174,13 +174,7 @@ export class SolidSDKService implements SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  async loginWithIssuer(webId: string, issuer: Issuer): Promise<void> {
-
-    if (!webId) {
-
-      throw new Error(`WebId should be set.: ${webId}`);
-
-    }
+  async loginWithIssuer(issuer: Issuer): Promise<void> {
 
     if (!issuer) {
 

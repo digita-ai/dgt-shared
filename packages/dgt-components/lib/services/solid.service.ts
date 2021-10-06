@@ -46,7 +46,7 @@ export interface SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  loginWithIssuer(webId: string, issuer: Issuer): Promise<void>;
+  loginWithIssuer(issuer: Issuer): Promise<void>;
 
   /**
    * Deauthenticates the user from their OIDC issuer
