@@ -1,11 +1,11 @@
-import { AlertComponent } from '../lib/alerts/alert.component';
-import { FormElementComponent } from '../lib/forms/form-element.component';
-import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.component';
-import { SidebarListComponent } from '../lib/sidebar/sidebar-list.component';
-import { ContentHeaderComponent } from '../lib/header/content-header.component';
-import { SidebarComponent } from '../lib/sidebar/sidebar.component';
-import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
-import { CardComponent } from '../lib/cards/card.component';
+import { AlertComponent } from '../lib/components/alerts/alert.component';
+import { FormElementComponent } from '../lib/components/forms/form-element.component';
+import { SidebarListItemComponent } from '../lib/components/sidebar/sidebar-list-item.component';
+import { SidebarListComponent } from '../lib/components/sidebar/sidebar-list.component';
+import { ContentHeaderComponent } from '../lib/components/header/content-header.component';
+import { SidebarComponent } from '../lib/components/sidebar/sidebar.component';
+import { SidebarItemComponent } from '../lib/components/sidebar/sidebar-item.component';
+import { CardComponent } from '../lib/components/cards/card.component';
 
 /**
  * Register tags for components.
