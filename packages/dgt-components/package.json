@@ -28,13 +28,14 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
+    "@digita-ai/ui-transfer-solid-client": "0.7.6",
     "@digita-ai/dgt-theme": "0.6.0",
     "@digita-ai/dgt-utils": "0.6.0",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
     "buffer": "6.0.3",
     "lit-element": "2.4.0",
-    "n3": "1.10.0",
+    "n3": "1.8.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
     "xstate": "^4.25.0"
@@ -45,7 +46,7 @@
     "@originjs/vite-plugin-commonjs": "^1.0.0-beta7",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@types/jest": "^26.0.23",
-    "@types/n3": "^1.8.0",
+    "@types/n3": "^1.10.3",
     "@types/node": "^14.14.44",
     "@types/rdf-js": "^4.0.1",
     "eslint": "^7.16.0",
