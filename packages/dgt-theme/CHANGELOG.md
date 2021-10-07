@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.2](https://github.com/digita-ai/dgt-shared/compare/v0.6.1...v0.6.2) (2021-10-07)
+
+
+### **Features**
+
+* add fixed issuers to authenticate component ([#62](https://github.com/digita-ai/dgt-shared/issues/62)) ([efcb2ee](https://github.com/digita-ai/dgt-shared/commit/efcb2ee26a0b1e193890f1f604510bd940bc9c74))
+
+
+
 ### [0.6.1](https://github.com/digita-ai/dgt-shared/compare/v0.6.0...v0.6.1) (2021-10-06)
 
 
