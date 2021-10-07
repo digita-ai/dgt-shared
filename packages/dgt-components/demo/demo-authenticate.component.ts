@@ -12,14 +12,8 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
   constructor() {
     super();
-    this.define('auth-flow', AuthenticateComponent);
+    customElements.define('auth-flow', AuthenticateComponent);
 
-  }
-
-  define(tag: string, module: CustomElementConstructor): void {
-
-    if (!customElements.get(tag)) customElements.define(tag, module);
-  
   }
   /**
    * Renders the component as HTML.

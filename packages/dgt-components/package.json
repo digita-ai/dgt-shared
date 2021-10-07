@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-components",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "Collection of Semantic Components.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-components.umd.js",
@@ -28,11 +28,11 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
-    "@digita-ai/ui-transfer-solid-client": "0.7.6",
-    "@digita-ai/dgt-theme": "0.6.1",
-    "@digita-ai/dgt-utils": "0.6.1",
+    "@digita-ai/dgt-theme": "0.6.3",
+    "@digita-ai/dgt-utils": "0.6.3",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
+    "@digita-ai/ui-transfer-solid-client": "0.7.6",
     "buffer": "6.0.3",
     "lit-element": "2.4.0",
     "n3": "1.8.0",
@@ -89,10 +89,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 25.75,
-        "functions": 25.71,
-        "lines": 26.05,
-        "statements": 26.47
+        "branches": 25.94,
+        "functions": 25.84,
+        "lines": 26.16,
+        "statements": 26.61
       }
     },
     "coveragePathIgnorePatterns": [
