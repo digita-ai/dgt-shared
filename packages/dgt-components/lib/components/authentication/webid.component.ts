@@ -2,7 +2,6 @@ import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from '
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { SolidSDKService } from '../../services/solid-sdk.service';
-
 export class WebIdComponent extends RxLitElement {
 
   @property() textEnterYourWebID = 'Enter your WebID';
