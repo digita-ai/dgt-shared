@@ -31,7 +31,7 @@ export class AuthenticateComponent extends RxLitElement {
 
   @property({ type: Boolean }) hideWebId = false;
 
-  @property({ type: Boolean }) hideIssuers = true;
+  @property({ type: Boolean }) hideIssuers = false;
 
   constructor() {
 
@@ -81,19 +81,13 @@ export class AuthenticateComponent extends RxLitElement {
 
     return html`
       ${ this.state?.matches(AuthenticateStates.AWAITING_WEBID) ? html`
-
-      ${ !this.hideIssuers ? html`      
-      <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.predifinedIssuers}"></provider-list>` : html``}
-
-      ${ !this.hideWebId && !this.hideIssuers ? html`
-      <separator-component>of</separator-component>` : html`` }
-
-      ${ !this.hideWebId ? html`
-      <webid-form @submit-webid="${this.onSubmit}" @create-webid="${this.onButtonCreateWebIDClick}"></webid-form> ` :
-    this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
-        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list> ` : html``}
-      ` : html` <loading-component></loading-component> `}
-    `;
+       ${ !this.hideIssuers ? html`<provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.predifinedIssuers}"></provider-list>` : html``}
+       ${ !this.hideWebId && !this.hideIssuers ? html`<separator-component>of</separator-component>` : html`` }
+       ${ !this.hideWebId ? html`<webid-form @submit-webid="${this.onSubmit}" @create-webid="${this.onButtonCreateWebIDClick}"></webid-form>` : html``}
+       ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
+        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list>`
+    : html`<loading-component></loading-component>` }
+    `}`;
 
   }
 
