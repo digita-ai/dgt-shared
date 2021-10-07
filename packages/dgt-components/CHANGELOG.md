@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.1](https://github.com/digita-ai/dgt-shared/compare/v0.6.0...v0.6.1) (2021-10-06)
+
+
+### **Features**
+
+* add list item component ([#63](https://github.com/digita-ai/dgt-shared/issues/63)) ([9801965](https://github.com/digita-ai/dgt-shared/commit/98019656a618b9fe42212ee80ef350646c58f173))
+
+
+
 ## 0.6.0 (2021-09-28)
 
 

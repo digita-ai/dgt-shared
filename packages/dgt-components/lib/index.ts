@@ -25,3 +25,4 @@ export * from './components/state/schema';
 export * from './components/state/state';
 export * from './components/header/content-header.component';
 export * from './components/separator/separator.component';
+export * from './components/list-item/list-item.component';

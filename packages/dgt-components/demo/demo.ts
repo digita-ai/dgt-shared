@@ -7,6 +7,7 @@ import {CardComponent} from '../lib/components/cards/card.component';
 import { ProfileContactComponent } from '../lib/components/profile/profile-contact.component';
 import { ProfilePayslipComponent } from '../lib/components/profile/profile-payslip.component';
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
+import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 
 
 
@@ -17,6 +18,7 @@ customElements.define('nde-card', CardComponent);
 customElements.define('profile-name-component', ProfileNameComponent);
 customElements.define('profile-contact-component', ProfileContactComponent);
 customElements.define('profile-payslip-component',  ProfilePayslipComponent);
+customElements.define('list-item', ListItemComponent);
 
 const parser = new Parser();
 

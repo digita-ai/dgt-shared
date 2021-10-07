@@ -6,6 +6,7 @@ import { ContentHeaderComponent } from '../lib/components/header/content-header.
 import { SidebarComponent } from '../lib/components/sidebar/sidebar.component';
 import { SidebarItemComponent } from '../lib/components/sidebar/sidebar-item.component';
 import { CardComponent } from '../lib/components/cards/card.component';
+import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 
 /**
  * Register tags for components.
@@ -18,3 +19,4 @@ customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-large-card', CardComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
+customElements.define('list-item', ListItemComponent);
