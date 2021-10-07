@@ -1,4 +1,5 @@
-import { DGTErrorArgument, MockTranslator } from '@digita-ai/dgt-utils';
+import { DGTErrorArgument } from '@digita-ai/dgt-utils';
+import { MockTranslator } from '../../services/i18n/mock-translator';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 
