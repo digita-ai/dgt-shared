@@ -28,6 +28,7 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
+    "@appnest/lit-translate": "^1.1.18",
     "@digita-ai/dgt-theme": "0.6.3",
     "@digita-ai/dgt-utils": "0.6.3",
     "@digita-ai/semcom-core": "0.4.1",
@@ -85,14 +86,14 @@
       "<rootDir>/tests/setup.ts"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(lit-element|lit-html|rx-lit)/)"
+      "node_modules/(?!(lit-element|lit-html|rx-lit|@appnest/lit-translate)/)"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 25.56,
-        "functions": 25.48,
-        "lines": 25.11,
-        "statements": 24.76
+        "branches": 26.94,
+        "functions": 29.86,
+        "lines": 29.79,
+        "statements": 29.99
       }
     },
     "coveragePathIgnorePatterns": [
