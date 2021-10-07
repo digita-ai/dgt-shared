@@ -12,6 +12,7 @@ export * from './forms/form-validator-result';
 export * from './forms/form-validator';
 export * from './forms/form.machine';
 export * from './forms/form.events';
+export * from './list-item/list-item.component';
 export * from './profile/profile-contact.component';
 export * from './profile/profile-name.component';
 export * from './profile/profile-payslip.component';
