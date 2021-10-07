@@ -1,13 +1,17 @@
 import { Parser } from 'n3';
 import { ComponentEventType, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
-import {ProfileNameComponent} from '../lib/profile/profile-name.component';
-import {FormElementComponent} from '../lib/forms/form-element.component';
-import {ContentHeaderComponent} from '../lib/header/content-header.component';
-import {CardComponent} from '../lib/cards/card.component';
-import { ProfileContactComponent } from '../lib/profile/profile-contact.component';
-import { ProfilePayslipComponent } from '../lib/profile/profile-payslip.component';
-import { ListItemComponent } from '../lib/list-item/list-item.component';
+import {ProfileNameComponent} from '../lib/components/profile/profile-name.component';
+import {FormElementComponent} from '../lib/components/forms/form-element.component';
+import {ContentHeaderComponent} from '../lib/components/header/content-header.component';
+import {CardComponent} from '../lib/components/cards/card.component';
+import { ProfileContactComponent } from '../lib/components/profile/profile-contact.component';
+import { ProfilePayslipComponent } from '../lib/components/profile/profile-payslip.component';
+import { DemoAuthenticateComponent } from './demo-authenticate.component';
+import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 
+
+
+customElements.define('demo-auth', DemoAuthenticateComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-card', CardComponent);

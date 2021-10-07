@@ -27,7 +27,7 @@ export default ({ command, mode }) => {
         },
         rollupOptions: {
           input: {
-            profileName: resolve(__dirname, 'lib/profile/profile-name.component.ts'),
+            profileName: resolve(__dirname, 'lib/components/profile/profile-name.component.ts'),
           },
           output: [
             {
