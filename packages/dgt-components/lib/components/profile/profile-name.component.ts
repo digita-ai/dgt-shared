@@ -133,7 +133,7 @@ export class ProfileNameComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card .hideImage="${ !this.image }">
+    <nde-card ?hideImage="${ !this.image }">
       <div slot="title">Names</div>
       <div slot="subtitle">Your names</div>
       <div slot="icon">
