@@ -1,4 +1,5 @@
-import { DGTErrorArgument, MemoryTranslator } from '@digita-ai/dgt-utils';
+import { DGTErrorArgument } from '@digita-ai/dgt-utils';
+import { MockTranslator } from '../../services/i18n/mock-translator';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 
@@ -47,14 +48,14 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator([ { key: 'foo', value:'bar', locale:'en-GB' } ], 'en-GB');
+    component.translator = new MockTranslator('en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
-    expect(message).toBe('bar');
+    expect(message).toBe(component.alert.message);
 
   });
 
@@ -65,7 +66,7 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator([ { key: 'lorem', value:'bar', locale:'en-GB' } ], 'en-GB');
+    component.translator = new MockTranslator('en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;

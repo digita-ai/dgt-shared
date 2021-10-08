@@ -47,3 +47,6 @@ export * from './models/source.model';
 export * from './models/triple.model';
 export * from './services/solid-sdk.service';
 export * from './services/solid.service';
+export * from './services/i18n/memory-translator';
+export * from './services/i18n/mock-translator';
+export * from './services/i18n/translator';

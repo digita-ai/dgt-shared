@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import { AlertComponent } from '../lib/components/alerts/alert.component';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { SidebarListItemComponent } from '../lib/components/sidebar/sidebar-list-item.component';
@@ -20,3 +21,8 @@ customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-large-card', CardComponent);
 customElements.define('card-header', ContentHeaderComponent);
 customElements.define('list-item', ListItemComponent);
+
+/**
+ * Enable mocks for fetch.
+ */
+fetchMock.enableMocks();
