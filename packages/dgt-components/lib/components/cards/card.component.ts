@@ -94,7 +94,7 @@ export class CardComponent extends LitElement {
 
         ${!this.hideContent
     ? html`
-          <div class="content $${classMap(classes)}">
+          <div class="content ${classMap(classes)}">
             <slot name="content"></slot>
           </div>
         `
