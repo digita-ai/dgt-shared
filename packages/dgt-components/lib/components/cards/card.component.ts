@@ -1,5 +1,6 @@
 import { Theme } from '@digita-ai/dgt-theme';
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map.js';
 import { ContentHeaderComponent } from '../header/content-header.component';
 
 /**
@@ -66,6 +67,8 @@ export class CardComponent extends LitElement {
 
   render() {
 
+    const classes = { 'reduced-top-padding': this.hideImage };
+
     return html`
       <div class="large-card">
 
@@ -91,7 +94,7 @@ export class CardComponent extends LitElement {
 
         ${!this.hideContent
     ? html`
-          <div class="content${this.hideImage ? ' reduced-top-padding' : ''}">
+          <div class="content $${classMap(classes)}">
             <slot name="content"></slot>
           </div>
         `
