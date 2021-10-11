@@ -2,7 +2,6 @@ import { Parser } from 'n3';
 import { ComponentEventType, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
 import {ProfileNameComponent} from '../lib/components/profile/profile-name.component';
 import {FormElementComponent} from '../lib/components/forms/form-element.component';
-import {ContentHeaderComponent} from '../lib/components/header/content-header.component';
 import {CardComponent} from '../lib/components/cards/card.component';
 import { ProfileContactComponent } from '../lib/components/profile/profile-contact.component';
 import { ProfilePayslipComponent } from '../lib/components/profile/profile-payslip.component';
@@ -13,7 +12,6 @@ import { ListItemComponent } from '../lib/components/list-item/list-item.compone
 
 customElements.define('demo-auth', DemoAuthenticateComponent);
 customElements.define('nde-form-element', FormElementComponent);
-customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('profile-name-component', ProfileNameComponent);
 customElements.define('profile-contact-component', ProfileContactComponent);
