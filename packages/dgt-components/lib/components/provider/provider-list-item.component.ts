@@ -40,7 +40,7 @@ export class ProviderListItemComponent extends RxLitElement {
         background: var(--colors-background-light);
         box-shadow: 0px 2px 4px rgba(26, 32, 44, 0.1);
         border-radius: var(--border-large);
-        margin: var(--gap-small) var(--gap-normal);
+        margin: var(--gap-small) 0;
         padding: var(--gap-small);
         height: var(--gap-large);
         cursor: pointer;

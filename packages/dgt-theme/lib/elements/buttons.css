@@ -2,7 +2,6 @@ button,
 button.primary {
   background-color: var(--colors-primary-dark);
   border: 2px solid var(--colors-primary-dark);
-  text-transform: uppercase;
   padding: var(--gap-small);
   color: var(--colors-foreground-inverse);
   cursor: pointer;
