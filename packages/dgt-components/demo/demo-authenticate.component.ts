@@ -44,6 +44,9 @@ export class DemoAuthenticateComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        auth-flow {
+          --webid-input-padding: var(--gap-small);
+        }
         h1[slot] {
           margin: var(--gap-large) var(--gap-normal);
           font-size: var(--font-size-header-normal);
