@@ -50,3 +50,5 @@ export * from './services/solid.service';
 export * from './services/i18n/memory-translator';
 export * from './services/i18n/mock-translator';
 export * from './services/i18n/translator';
+export * from './util/define';
+export * from './util/hydrate';
