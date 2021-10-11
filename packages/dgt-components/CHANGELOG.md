@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.7](https://github.com/digita-ai/dgt-shared/compare/v0.6.6...v0.6.7) (2021-10-11)
+
+
+### **Bug Fixes**
+
+* authenticate component improvements ([#68](https://github.com/digita-ai/dgt-shared/issues/68)) ([373c3a2](https://github.com/digita-ai/dgt-shared/commit/373c3a26879b8698a5ce2d38b67f84ab61735797))
+
+
+### **Features**
+
+* develop section component ([#61](https://github.com/digita-ai/dgt-shared/issues/61)) ([e1093ea](https://github.com/digita-ai/dgt-shared/commit/e1093eaec381ed0c1ca1bc16e1983a161d9f0dda))
+
+
+
 ### [0.6.6](https://github.com/digita-ai/dgt-shared/compare/v0.6.5...v0.6.6) (2021-10-11)
 
 
