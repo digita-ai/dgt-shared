@@ -3,8 +3,10 @@ import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { SolidSDKService } from '../lib/services/solid-sdk.service'
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
+import { hydrate } from '../lib/util/hydrate';
 
 export class DemoAuthenticateComponent extends RxLitElement {
+
   private solidService = new SolidSDKService('UI Transfer');
 
   onAuthenticated = (event: CustomEvent): void => {  };
@@ -13,7 +15,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
   constructor() {
     super();
-    customElements.define('auth-flow', AuthenticateComponent);
+    customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService));
 
   }
   /**
