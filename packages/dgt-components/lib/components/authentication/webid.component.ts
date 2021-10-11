@@ -1,7 +1,6 @@
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
-
 export class WebIdComponent extends RxLitElement {
 
   @property({ type: String }) textLabel = 'WebID';
