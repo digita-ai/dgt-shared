@@ -8,6 +8,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
   private solidService = new SolidSDKService('UI Transfer');
 
   onAuthenticated = (event: CustomEvent): void => {  };
+  onCreateWebId = (event: CustomEvent): void => { alert('This is a demo') };
 
 
   constructor() {
@@ -23,7 +24,14 @@ export class DemoAuthenticateComponent extends RxLitElement {
   render() {
 
     return html`
-        <auth-flow .solidService="${this.solidService}" @authenticated="${this.onAuthenticated}"></auth-flow>
+    <auth-flow
+      .solidService="${this.solidService}"
+      @authenticated="${this.onAuthenticated}"
+      @create-webid="${this.onCreateWebId}"
+    >
+      <h1 slot="beforeIssuers">Select an identity provider to log in</h1>
+      <h1 slot="beforeWebId">Enter your WebID</h1>
+    </auth-flow>
   `;
 
   }
@@ -35,7 +43,15 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
     return [
       unsafeCSS(Theme),
-      css``,
+      css`
+        h1[slot] {
+          margin: var(--gap-large) var(--gap-normal);
+          font-size: var(--font-size-header-normal);
+          font-style: normal;
+          font-weight: bold;
+          text-align: center;
+        }
+      `,
     ];
 
   }

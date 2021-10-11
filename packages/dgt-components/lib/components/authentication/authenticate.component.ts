@@ -34,6 +34,14 @@ export class AuthenticateComponent extends RxLitElement {
     { description: 'Inrupt', icon: 'https://inrupt.com/static/inrupt-social_0-372b94bf42bea86a81cc362e0c99d115.jpg', uri: 'https://inrupt.net/' },
   ];
 
+  @property({ type: String }) separatorText = 'or';
+
+  @property({ type: String }) webIdLabel = 'WebID';
+  @property({ type: String }) webIdPlaceholder: 'Please enter your WebID';
+  @property({ type: String }) noWebIdText: 'No WebID yet?';
+
+  @property({ type: String }) buttonText: 'Connect';
+
   constructor() {
 
     super();
@@ -82,9 +90,20 @@ export class AuthenticateComponent extends RxLitElement {
 
     return html`
       ${ this.state?.matches(AuthenticateStates.AWAITING_WEBID) ? html`
-       ${ !this.hideIssuers ? html`<provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.predifinedIssuers}"></provider-list>` : html``}
-       ${ !this.hideWebId && !this.hideIssuers ? html`<separator-component>of</separator-component>` : html`` }
-       ${ !this.hideWebId ? html`<webid-form @submit-webid="${this.onSubmit}" @create-webid="${this.onButtonCreateWebIDClick}"></webid-form>` : html``}
+
+        <provider-list ?hidden="${this.hideIssuers}" @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.predifinedIssuers}">
+          <slot name="beforeIssuers" slot="before"></slot>
+          <slot name="afterIssuers" slot="after"></slot>
+        </provider-list>
+
+        <separator-component ?hidden="${this.hideIssuers || this.hideWebId}">
+          ${this.separatorText}
+        </separator-component>
+
+        <webid-form ?hidden="${this.hideWebId}" @submit-webid="${this.onSubmit}" @create-webid="${this.onButtonCreateWebIDClick}">
+          <slot name="beforeWebId" slot="before"></slot>
+          <slot name="afterWebId" slot="after"></slot>
+        </webid-form>
        ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
         <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list>`
     : html`<loading-component></loading-component>` }

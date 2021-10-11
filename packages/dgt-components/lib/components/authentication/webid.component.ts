@@ -30,13 +30,14 @@ export class WebIdComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-    <h1>${this.textEnterYourWebID}</h1>
+    <slot name="before"></slot>
     <form @submit="${this.onSubmit}">
         <label for="webid">${this.textWebID}</label>
         <input type="text" id="webid" name="webid" placeholder="${this.textWebIDFieldPlaceholder}" />
-        <span @click="${this.onButtonCreateWebIDClick}">${this.textNoWebIDYet}</span>
+        <a @click="${this.onButtonCreateWebIDClick}">${this.textNoWebIDYet}</a>
         <button class="dark">${this.textConnect}</button>
     </form>
+    <slot name="after"></slot>
     `;
 
   }
@@ -57,15 +58,16 @@ export class WebIdComponent extends RxLitElement {
           padding: var(--gap-normal);
         }
 
-        span {
+        a {
           font-size: var(--font-size-small);
           padding: var(--gap-tiny);
           text-decoration: underline;
           color: var(--colors-primary-normal);
           text-align: right;
+          cursor: pointer;
         }
 
-        span:hover {
+        a:hover {
           color: var(--colors-primary-dark);
         }
 
