@@ -9,6 +9,7 @@ import { Issuer } from '../../models/issuer.model';
 import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
+import { define } from '../../util/define';
 import { WebIdComponent } from './webid.component';
 import { AuthenticateContext, AuthenticateEvent, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
 
@@ -38,10 +39,10 @@ export class AuthenticateComponent extends RxLitElement {
 
     super();
 
-    this.define('provider-list', ProviderListComponent);
-    this.define('webid-form', WebIdComponent);
-    this.define('separator-component', SeparatorComponent);
-    this.define('loading-component', LoadingComponent);
+    define('provider-list', ProviderListComponent);
+    define('webid-form', WebIdComponent);
+    define('separator-component', SeparatorComponent);
+    define('loading-component', LoadingComponent);
 
   }
 
@@ -92,11 +93,6 @@ export class AuthenticateComponent extends RxLitElement {
 
   }
 
-  define(tag: string, module: CustomElementConstructor): void {
-
-    if (!customElements.get(tag)) customElements.define(tag, module);
-
-  }
   static get styles(): CSSResultArray {
 
     return [
