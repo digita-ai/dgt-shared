@@ -8,6 +8,7 @@ import { SidebarComponent } from '../lib/components/sidebar/sidebar.component';
 import { SidebarItemComponent } from '../lib/components/sidebar/sidebar-item.component';
 import { CardComponent } from '../lib/components/cards/card.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
+import SeparatorComponent from '../lib/components/separator/separator.component';
 
 /**
  * Register tags for components.
@@ -21,6 +22,7 @@ customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-large-card', CardComponent);
 customElements.define('card-header', ContentHeaderComponent);
 customElements.define('list-item', ListItemComponent);
+customElements.define('separator-component', SeparatorComponent);
 
 /**
  * Enable mocks for fetch.
