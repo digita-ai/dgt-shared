@@ -35,6 +35,7 @@ export * from './components/state/schema';
 export * from './components/state/state';
 export * from './components/source/source-list.component';
 export * from './components/source/source.component';
+export * from './components/checkbox/checkbox.component';
 export * from './models/holder.model';
 export * from './models/invite.model';
 export * from './models/issuer.model';
@@ -52,3 +53,4 @@ export * from './services/i18n/mock-translator';
 export * from './services/i18n/translator';
 export * from './util/define';
 export * from './util/hydrate';
+

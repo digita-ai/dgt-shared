@@ -26,6 +26,7 @@ export { default as Podspaces } from './icons/Podspaces.svg?raw';
 export { default as Doccle } from './icons/Doccle.svg?raw';
 export { default as Vault } from './icons/vault.svg';
 export { default as Location } from './icons/Location.svg?raw';
+export { default as Checkbox } from './icons/Checkbox.svg?raw';
 
 /**
  * Export theme
