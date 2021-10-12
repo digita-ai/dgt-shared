@@ -5,6 +5,9 @@ import { Issuer } from '../models/issuer.model';
 import { Source } from '../models/source.model';
 import { SolidService } from './solid.service';
 
+/**
+ * Configuration options for this service
+ */
 const serviceOptions = {
   restorePreviousSession: true,
 };
