@@ -86,14 +86,14 @@
       "<rootDir>/tests/setup.ts"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(lit-element|lit-html|rx-lit|@appnest/lit-translate)/)"
+      "node_modules/(?!(lit-element|lit-html|rx-lit|@appnest/lit-translate|@digita-ai/ui-transfer-solid-client)/)"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 27.8,
-        "functions": 31.44,
-        "lines": 31.92,
-        "statements": 31.62
+        "branches": 28.08,
+        "functions": 31.88,
+        "lines": 32.41,
+        "statements": 32.14
       }
     },
     "coveragePathIgnorePatterns": [
