@@ -154,7 +154,7 @@ export class ProfileContactComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card .showImage="${false}">
+    <nde-card hideImage>
       <div slot="title">Contact information</div>
       <div slot="subtitle">Your email address and phone number</div>
       <div slot="icon">

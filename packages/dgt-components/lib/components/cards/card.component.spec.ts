@@ -30,49 +30,49 @@ describe('CardComponent', () => {
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
+    expect(largeCard.querySelector('card-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
   });
 
-  it('should not display header when showHeader is false', async () => {
+  it('should not display header when showHeader is true', async () => {
 
-    component.showHeader = false;
+    component.hideHeader = true;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('nde-content-header')).not.toBeTruthy();
+    expect(largeCard.querySelector('card-header')).not.toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
   });
 
-  it('should not display image when showImage is false', async () => {
+  it('should not display image when hideImage is true', async () => {
 
-    component.showImage = false;
+    component.hideImage = true;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
+    expect(largeCard.querySelector('card-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).not.toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
   });
 
-  it('should not display content when showContent is false', async () => {
+  it('should not display content when hideContent is true', async () => {
 
-    component.showContent = false;
+    component.hideContent = true;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
+    expect(largeCard.querySelector('card-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).not.toBeTruthy();
 

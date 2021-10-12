@@ -1,5 +1,7 @@
 import { Theme } from '@digita-ai/dgt-theme';
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map.js';
+import { ContentHeaderComponent } from '../header/content-header.component';
 
 /**
  * A large card component
@@ -8,15 +10,22 @@ export class CardComponent extends LitElement {
 
   /** Determine whether the header of the card should be shown */
   @property({ type: Boolean })
-  public showHeader = true;
+  public hideHeader = false;
 
   /** Determine whether the image of the card should be shown */
   @property({ type: Boolean })
-  public showImage = true;
+  public hideImage = false;
 
   /** Determine whether the content of the card should be shown */
   @property({ type: Boolean })
-  public showContent = true;
+  public hideContent = false;
+
+  constructor() {
+
+    super();
+    this.define('card-header', ContentHeaderComponent);
+
+  }
 
   /**
    * The styles associated with the component.
@@ -58,20 +67,23 @@ export class CardComponent extends LitElement {
 
   render() {
 
+    const classes = { 'reduced-top-padding': this.hideImage };
+
     return html`
       <div class="large-card">
 
-        ${this.showHeader
+        ${!this.hideHeader
     ? html`
-            <nde-content-header inverse>
+            <card-header inverse>
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>
-            </nde-content-header>
+              <slot name="actions" slot="actions"></slot>
+            </card-header>
           `
     : html``
 }
-        ${this.showImage
+        ${!this.hideImage
     ? html`
           <div class="image">
             <slot name="image"></slot>
@@ -80,9 +92,9 @@ export class CardComponent extends LitElement {
     : html``
 }
 
-        ${this.showContent
+        ${!this.hideContent
     ? html`
-          <div class="content${!this.showImage ? ' reduced-top-padding' : ''}">
+          <div class="content ${classMap(classes)}">
             <slot name="content"></slot>
           </div>
         `
@@ -91,6 +103,16 @@ export class CardComponent extends LitElement {
 
       </div>
     `;
+
+  }
+
+  define(tag: string, module: CustomElementConstructor): void {
+
+    if (!customElements.get(tag)) {
+
+      customElements.define(tag, module);
+
+    }
 
   }
 

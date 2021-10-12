@@ -6,7 +6,7 @@ describe('ContentHeaderComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-content-header') as ContentHeaderComponent;
+    component = window.document.createElement('card-header') as ContentHeaderComponent;
 
     const title = window.document.createElement('div');
     title.innerHTML = 'Foo';
@@ -37,10 +37,10 @@ describe('ContentHeaderComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const titleSlot = window.document.body.getElementsByTagName('nde-content-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="title"]');
+    const titleSlot = window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="title"]');
     expect(titleSlot.assignedElements()[0].innerHTML).toEqual('Foo');
 
-    const subtitleSlot = window.document.body.getElementsByTagName('nde-content-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="subtitle"]');
+    const subtitleSlot = window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="subtitle"]');
     expect(subtitleSlot.assignedElements()[0].innerHTML).toEqual('Bar');
 
   });
@@ -54,11 +54,11 @@ describe('ContentHeaderComponent', () => {
 
     if(inverse) {
 
-      expect(window.document.body.getElementsByTagName('nde-content-header')[0].shadowRoot.querySelector('.header.inverse')).toBeFalsy();
+      expect(window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector('.header.inverse')).toBeFalsy();
 
     } else {
 
-      expect(window.document.body.getElementsByTagName('nde-content-header')[0].shadowRoot.querySelector('.header.inverse')).toBeTruthy();
+      expect(window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector('.header.inverse')).toBeTruthy();
 
     }
 

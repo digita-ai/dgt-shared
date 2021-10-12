@@ -111,7 +111,7 @@ export class ProfilePayslipComponent extends BaseComponent {
 
     return this.payslips && this.payslips.length > 0 ? html`
         
-    <nde-card .showImage="${ false }">
+    <nde-card hideImage>
       <div slot="title">Payslips</div>
       <div slot="subtitle">Your payslips</div>
       <div slot="icon">

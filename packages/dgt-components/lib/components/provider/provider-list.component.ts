@@ -29,11 +29,13 @@ export class ProviderListComponent extends LitElement {
   render(): TemplateResult {
 
     return html`
-      <h1>Select an identity provider to log in</h1>
+      <slot name="before"></slot>
       <div class="providers">
-      ${ this.providers.map((provider) => html`
+        ${ this.providers.map((provider) => html`
         <provider-list-item @button-clicked="${this.onIssuerSelected(provider)}" .icon="${provider.icon}" .description="${provider.description}" ?buttonEnabled=${this.buttonsEnabled}></provider-list-item>
-        `)}</div>`;
+        `)}
+      </div>
+      <slot name="after"></slot>`;
 
   }
 
@@ -42,13 +44,6 @@ export class ProviderListComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
-      h1 {
-        margin: var(--gap-large) var(--gap-normal);
-        font-size: var(--font-size-header-normal);
-        font-style: normal;
-        font-weight: bold;
-        text-align: center;
-      }
       `,
     ];
 
