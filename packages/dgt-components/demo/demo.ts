@@ -8,6 +8,7 @@ import { ProfileContactComponent } from '../lib/components/profile/profile-cont
 import { ProfilePayslipComponent } from '../lib/components/profile/profile-payslip.component';
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
+import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component';
 
 
 
@@ -19,6 +20,7 @@ customElements.define('profile-name-component', ProfileNameComponent);
 customElements.define('profile-contact-component', ProfileContactComponent);
 customElements.define('profile-payslip-component',  ProfilePayslipComponent);
 customElements.define('list-item', ListItemComponent);
+customElements.define('checkbox-component', CheckboxComponent);
 
 const parser = new Parser();
 
