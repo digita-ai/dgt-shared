@@ -5,6 +5,10 @@ import { Issuer } from '../models/issuer.model';
 import { Source } from '../models/source.model';
 import { SolidService } from './solid.service';
 
+export const serviceOptions = {
+  restorePreviousSession: true,
+};
+
 /**
  * An implementation of the Solid service which uses Solid Client.
  */
@@ -13,7 +17,7 @@ export class SolidSDKService implements SolidService {
   /**
    * Instantiates a solid sdk service.
    */
-  constructor (private clientName: string) {}
+  constructor (private clientName: string, private options = serviceOptions) {}
 
   async validateIssuer(issuer: string): Promise<boolean> {
 
@@ -138,7 +142,7 @@ export class SolidSDKService implements SolidService {
    */
   async getSession(): Promise<Session> {
 
-    const session = await handleIncomingRedirect({ restorePreviousSession: true });
+    const session = await handleIncomingRedirect({ restorePreviousSession: this.options.restorePreviousSession });
 
     return session && session.isLoggedIn ? { webId: session.webId } : Promise.reject();
 
