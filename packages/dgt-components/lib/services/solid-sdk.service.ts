@@ -5,7 +5,7 @@ import { Issuer } from '../models/issuer.model';
 import { Source } from '../models/source.model';
 import { SolidService } from './solid.service';
 
-export const serviceOptions = {
+const serviceOptions = {
   restorePreviousSession: true,
 };
 
