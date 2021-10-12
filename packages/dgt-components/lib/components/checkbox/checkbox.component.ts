@@ -29,9 +29,9 @@ export class CheckboxComponent extends LitElement {
 
     return html`
     <label class="container">  
-        <slot></slot>
         <input type="checkbox">
         <span class="check">${unsafeSVG(Checkbox)}</span>
+        <slot></slot>
     </label>
   `;
 
@@ -46,13 +46,14 @@ export class CheckboxComponent extends LitElement {
       css`
         .container {
             position: relative;
-            padding-left: 35px;
             cursor: pointer;
-            font-size: 22px;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-normal);
         }
         
         .container input {
@@ -64,9 +65,6 @@ export class CheckboxComponent extends LitElement {
         }
         
         .check {
-            position: absolute;
-            top: 0;
-            left: 0;
             height: 23px;
             width: 23px;
             background-color: #eee;
