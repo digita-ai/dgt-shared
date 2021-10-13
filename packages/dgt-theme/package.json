@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-theme",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "description": "Theme for Digita projects.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-theme.umd.js",
