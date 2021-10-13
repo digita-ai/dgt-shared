@@ -77,7 +77,7 @@ export class CheckboxComponent extends LitElement {
         }
         
         .check {
-            height: 23px
+            height: 23px;
             width: 23px;
             min-height: 23px;
             min-width: 23px;
