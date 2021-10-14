@@ -25,6 +25,14 @@ export interface SolidService {
   getIssuers(webId: string): Promise<Issuer[]>;
 
   /**
+   * Adds a new oidcIssuer to the given WebID profile
+   *
+   * @param webId The WebID for which to retrieve the OIDC issuers
+   * @param issuers The issuers to add
+   */
+  addIssuers(webId: string, issuers: Issuer[]): Promise<Issuer[]>;
+
+  /**
    * Retrieves the value of the account triples from a profile document
    * for a given WebID
    *

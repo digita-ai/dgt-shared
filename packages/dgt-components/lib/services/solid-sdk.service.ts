@@ -107,26 +107,9 @@ export class SolidSDKService implements SolidService {
    */
   async addIssuers(webId: string, issuers: Issuer[]): Promise<Issuer[]> {
 
-    let profileDataset: SolidDataset;
-
-    try {
-
-      profileDataset = await getSolidDataset(webId);
-
-    } catch(e) {
-
-      throw new Error(`No profile for WebId: ${webId}`);
-
-    }
-
-    if(!profileDataset) {
-
-      throw new Error(`Could not read profile for WebId: ${webId}`);
-
-    }
-
     // update the profile with new issuers
     let profile = await this.getProfileThing(webId);
+    let profileDataset = await this.getProfileDataset(webId);
 
     issuers.forEach((issuer) => {
 
@@ -271,24 +254,7 @@ export class SolidSDKService implements SolidService {
 
   }
 
-  private async getProfileThing(webId: string): Promise<Thing> {
-
-    if (!webId) {
-
-      throw new Error(`WebId must be defined.`);
-
-    }
-
-    // Parse the user's WebID as a url.
-    try {
-
-      new URL(webId);
-
-    } catch {
-
-      throw new Error(`Invalid WebId: ${webId}`);
-
-    }
+  private async getProfileDataset(webId: string): Promise<SolidDataset> {
 
     let profileDataset;
 
@@ -308,6 +274,31 @@ export class SolidSDKService implements SolidService {
       throw new Error(`Could not read profile for WebId: ${webId}`);
 
     }
+
+    return profileDataset;
+
+  }
+
+  private async getProfileThing(webId: string): Promise<Thing> {
+
+    if (!webId) {
+
+      throw new Error(`WebId must be defined.`);
+
+    }
+
+    // Parse the user's WebID as a url.
+    try {
+
+      new URL(webId);
+
+    } catch {
+
+      throw new Error(`Invalid WebId: ${webId}`);
+
+    }
+
+    const profileDataset = await this.getProfileDataset(webId);
 
     // Parses the profile document.
     const profile = getThing(profileDataset, webId);

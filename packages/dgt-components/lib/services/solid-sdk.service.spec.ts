@@ -1,10 +1,11 @@
-import { addUrl, createThing } from '@inrupt/solid-client';
-import { SolidService } from './solid.service';
+import { addUrl, createSolidDataset, createThing, saveSolidDatasetAt } from '@inrupt/solid-client';
+import * as sdk from '@inrupt/solid-client';
+import { Issuer } from '../models/issuer.model';
 import { SolidSDKService } from './solid-sdk.service';
 
 describe('SolidSDKService', () => {
 
-  let service: SolidService;
+  let service: SolidSDKService;
 
   const mockWebId = 'https://pods.digita.ai/leapeeters/profile/card#me';
   const mockStorage = mockWebId.replace('profile/card#me', '');
@@ -23,14 +24,65 @@ describe('SolidSDKService', () => {
 
   });
 
-  it('getStorages', async () => {
+  describe('addIssuers', () => {
 
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    service['getProfileThing'] = jest.fn(async () => mockProfile);
+    it('should add issuer triples to profile', async () => {
 
-    const result = await service.getStorages(mockWebId);
-    expect(result.length).toEqual(1);
-    expect(result).toContain(mockStorage);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      service['getProfileThing'] = jest.fn(async () => mockProfile);
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      service['getProfileDataset'] = jest.fn(async () => createSolidDataset());
+      (saveSolidDatasetAt as any) = jest.fn(async () => createSolidDataset());
+
+      const newIssuers: Issuer[] = [ {
+        icon: '',
+        description: '',
+        uri: 'https://test.uri/',
+      } ];
+
+      const addUrlSpy = spyOn(sdk, 'addUrl');
+      const setThingSpy = spyOn(sdk, 'setThing');
+
+      const result = await service.addIssuers(mockWebId, newIssuers);
+      expect(result).toEqual(newIssuers);
+      expect(addUrlSpy).toHaveBeenCalledTimes(newIssuers.length);
+      expect(setThingSpy).toHaveBeenCalledTimes(1);
+      expect(sdk.saveSolidDatasetAt).toHaveBeenCalledTimes(1);
+
+    });
+
+  });
+
+  describe('getStorages', () => {
+
+    it('should return correct values', async () => {
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      service['getProfileThing'] = jest.fn(async () => mockProfile);
+
+      const result = await service.getStorages(mockWebId);
+      expect(result.length).toEqual(1);
+      expect(result).toContain(mockStorage);
+
+    });
+
+  });
+
+  describe('getProfileThing', () => {
+
+    it('should error when webId is undefined', async () => {
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      await expect(() => service['getProfileThing'](undefined)).rejects.toThrow();
+
+    });
+
+    it('should error when webId is invalid', async () => {
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      await expect(service['getProfileThing']('invalid-url')).rejects.toThrow();
+
+    });
 
   });
 
