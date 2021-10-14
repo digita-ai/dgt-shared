@@ -57,7 +57,7 @@ export class SolidSDKService implements SolidService {
 
     const poweredByHeader = responseHead.headers.get('X-Powered-By');
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     // Gets the issuers from the user's profile.
     const issuers: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
@@ -100,7 +100,7 @@ export class SolidSDKService implements SolidService {
 
   async getSources(webId: string): Promise<Source[]> {
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     // Gets the sources from the user's profile.
     const sources: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#account');
@@ -206,7 +206,7 @@ export class SolidSDKService implements SolidService {
    */
   async getProfile(webId: string): Promise<Profile> {
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
 
@@ -214,7 +214,20 @@ export class SolidSDKService implements SolidService {
 
   }
 
-  private async profileThing(webId: string): Promise<Thing> {
+  /**
+   * Retrieves values for the http://www.w3.org/ns/pim/space#storage predicate for a given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  async getStorages(webId: string): Promise<string[]> {
+
+    const profile = await this.getProfileThing(webId);
+
+    return getUrlAll(profile, 'http://www.w3.org/ns/pim/space#storage');
+
+  }
+
+  private async getProfileThing(webId: string): Promise<Thing> {
 
     if (!webId) {
 
