@@ -1,4 +1,6 @@
+import { stringify } from 'querystring';
 import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrlAll, logout, getStringNoLocale, Thing } from '@digita-ai/ui-transfer-solid-client';
+import { addUrl, saveSolidDatasetAt, setThing, SolidDataset } from '@inrupt/solid-client';
 import { Session } from '../models/session.model';
 import { Profile } from '../models/profile.model';
 import { Issuer } from '../models/issuer.model';
@@ -57,7 +59,7 @@ export class SolidSDKService implements SolidService {
 
     const poweredByHeader = responseHead.headers.get('X-Powered-By');
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     // Gets the issuers from the user's profile.
     const issuers: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
@@ -98,9 +100,52 @@ export class SolidSDKService implements SolidService {
 
   }
 
+  /**
+   * Adds a new oidcIssuer to the given WebID profile
+   *
+   * @param webId The WebID for which to retrieve the OIDC issuers
+   * @param issuers The issuers to add
+   */
+  async addIssuers(webId: string, issuers: Issuer[]): Promise<Issuer[]> {
+
+    let profileDataset: SolidDataset;
+
+    try {
+
+      profileDataset = await getSolidDataset(webId);
+
+    } catch(e) {
+
+      throw new Error(`No profile for WebId: ${webId}`);
+
+    }
+
+    if(!profileDataset) {
+
+      throw new Error(`Could not read profile for WebId: ${webId}`);
+
+    }
+
+    // update the profile with new issuers
+    let profile = await this.getProfileThing(webId);
+
+    issuers.forEach((issuer) => {
+
+      profile = addUrl(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer', issuer.uri);
+
+    });
+
+    // update and save the dataset
+    profileDataset = setThing(profileDataset, profile);
+    await saveSolidDatasetAt(webId, profileDataset);
+
+    return issuers;
+
+  }
+
   async getSources(webId: string): Promise<Source[]> {
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     // Gets the sources from the user's profile.
     const sources: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#account');
@@ -206,7 +251,7 @@ export class SolidSDKService implements SolidService {
    */
   async getProfile(webId: string): Promise<Profile> {
 
-    const profile = await this.profileThing(webId);
+    const profile = await this.getProfileThing(webId);
 
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
 
@@ -214,7 +259,7 @@ export class SolidSDKService implements SolidService {
 
   }
 
-  private async profileThing(webId: string): Promise<Thing> {
+  private async getProfileThing(webId: string): Promise<Thing> {
 
     if (!webId) {
 
