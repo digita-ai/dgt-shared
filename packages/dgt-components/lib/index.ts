@@ -36,6 +36,7 @@ export * from './components/state/state';
 export * from './components/source/source-list.component';
 export * from './components/source/source.component';
 export * from './components/checkbox/checkbox.component';
+export * from './components/radiobutton/radiobutton.component';
 export * from './models/holder.model';
 export * from './models/invite.model';
 export * from './models/issuer.model';
