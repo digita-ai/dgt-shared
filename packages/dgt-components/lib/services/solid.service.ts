@@ -60,4 +60,11 @@ export interface SolidService {
    */
   getProfile(webId: string): Promise<Profile>;
 
+  /**
+   * Retrieves values for the http://www.w3.org/ns/pim/space#storage predicate for a given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  getStorages(webId: string): Promise<string[]>;
+
 }

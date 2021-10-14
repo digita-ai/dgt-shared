@@ -1,4 +1,3 @@
-import { stringify } from 'querystring';
 import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrlAll, logout, getStringNoLocale, Thing } from '@digita-ai/ui-transfer-solid-client';
 import { addUrl, saveSolidDatasetAt, setThing, SolidDataset } from '@inrupt/solid-client';
 import { Session } from '../models/session.model';
@@ -256,6 +255,19 @@ export class SolidSDKService implements SolidService {
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
 
     return { uri: webId, name };
+
+  }
+
+  /**
+   * Retrieves values for the http://www.w3.org/ns/pim/space#storage predicate for a given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  async getStorages(webId: string): Promise<string[]> {
+
+    const profile = await this.getProfileThing(webId);
+
+    return getUrlAll(profile, 'http://www.w3.org/ns/pim/space#storage');
 
   }
 
