@@ -30,10 +30,10 @@ export class WebIdComponent extends RxLitElement {
     return html`
     <slot name="before"></slot>
     <form @submit="${this.onSubmit}">
-        <label for="webid">${this.textLabel}</label>
-        <input type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
-        <a ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
-        <button class="dark">${this.textButton}</button>
+        <label part="webid-label" for="webid">${this.textLabel}</label>
+        <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
+        <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
+        <button part="webid-button" class="dark">${this.textButton}</button>
     </form>
     <slot name="after"></slot>
     `;
@@ -54,7 +54,7 @@ export class WebIdComponent extends RxLitElement {
 
         input  {
           margin: var(--gap-small) 0;
-          padding: var(--input-padding);
+          padding: var(--gap-normal);
         }
 
         a {
@@ -62,7 +62,7 @@ export class WebIdComponent extends RxLitElement {
           padding: var(--gap-tiny);
           text-decoration: underline;
           color: var(--colors-primary-normal);
-          text-align: right;
+          align-self: flex-end;
           cursor: pointer;
         }
 

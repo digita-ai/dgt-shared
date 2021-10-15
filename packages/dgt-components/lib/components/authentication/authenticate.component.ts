@@ -77,6 +77,7 @@ export class AuthenticateComponent extends RxLitElement {
       ${ this.state?.matches(AuthenticateStates.AWAITING_WEBID) ? html`
 
         <provider-list
+          exportparts="provider"
           ?hidden="${this.hideIssuers}"
           @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}"
           .providers="${this.predefinedIssuers}"
@@ -85,11 +86,14 @@ export class AuthenticateComponent extends RxLitElement {
           <slot name="afterIssuers" slot="after"></slot>
         </provider-list>
 
-        <separator-component ?hidden="${this.hideIssuers || this.hideWebId}">
+        <separator-component
+          part="t"
+          ?hidden="${this.hideIssuers || this.hideWebId}">
           ${ this.textSeparator }
         </separator-component>
 
         <webid-form
+          exportparts="webid-label, webid-input, webid-create, webid-button"
           ?hidden="${this.hideWebId}"
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
           @submit-webid="${this.onSubmit}"
@@ -117,12 +121,6 @@ export class AuthenticateComponent extends RxLitElement {
       
       separator-component {
         margin: var(--gap-large) 0;
-      }
-
-      webid-form {
-        --input-padding: var(--webid-input-padding);
-        --border-large: var(--webid-border-large);
-        --button-height: var(--webid-button-height);
       }
       `,
     ];
