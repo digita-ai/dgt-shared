@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.9](https://github.com/digita-ai/dgt-shared/compare/v0.6.8...v0.6.9) (2021-10-15)
+
+
+### **Features**
+
+* added getStorages to solid sdk service ([#82](https://github.com/digita-ai/dgt-shared/issues/82)) ([8a7b51c](https://github.com/digita-ai/dgt-shared/commit/8a7b51c1b2aee787276378d67c737d20c7a28e61))
+
+
+
 ### [0.6.8](https://github.com/digita-ai/dgt-shared/compare/v0.6.7...v0.6.8) (2021-10-13)
 
 
