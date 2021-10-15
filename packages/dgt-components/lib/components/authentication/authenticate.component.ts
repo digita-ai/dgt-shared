@@ -87,9 +87,8 @@ export class AuthenticateComponent extends RxLitElement {
         </provider-list>
 
         <separator-component
-      
-        part="t"
-        ?hidden="${this.hideIssuers || this.hideWebId}">
+          part="t"
+          ?hidden="${this.hideIssuers || this.hideWebId}">
           ${ this.textSeparator }
         </separator-component>
 
