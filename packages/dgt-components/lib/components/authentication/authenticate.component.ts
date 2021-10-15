@@ -4,12 +4,12 @@ import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Theme } from '@digita-ai/dgt-theme';
+import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
-import { SolidService } from '../../services/solid.service';
 import { WebIdComponent } from './webid.component';
 import { AuthenticateContext, AuthenticateEvent, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
 

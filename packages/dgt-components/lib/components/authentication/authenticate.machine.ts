@@ -1,8 +1,8 @@
 import { EventObject, MachineConfig, StateSchema } from 'xstate';
 import { send, assign, log } from 'xstate/lib/actions';
+import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { Session } from '../../models/session.model';
-import { SolidService } from '../../services/solid.service';
 
 /* CONTEXT */
 
