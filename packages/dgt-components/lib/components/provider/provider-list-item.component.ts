@@ -4,14 +4,12 @@ import { Theme } from '@digita-ai/dgt-theme';
 
 export class ProviderListItemComponent extends RxLitElement {
 
-  @property({ type: String })
-  public icon: string;
-  @property({ type: String })
-  public description: string;
+  @property({ type: String }) icon: string;
+  @property({ type: String }) description: string;
 
-  @internalProperty()
-  buttonEnabled = true;
-  onButtonClick = (): void => {
+  @internalProperty() buttonEnabled = true;
+
+  onclick = (): void => {
 
     this.buttonEnabled = false;
     this.dispatchEvent(new Event('button-clicked'));
@@ -20,12 +18,10 @@ export class ProviderListItemComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-    <div class="card-container" @click="${this.onButtonClick}">
       <div class="logo">
         <img src="${this.icon}">
       </div>
       <h1>${ this.description }</h1>
-    </div>
  `;
 
   }
@@ -34,12 +30,10 @@ export class ProviderListItemComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
-      .card-container {
+      :host {
         display: flex;
         align-items: center;
         background: var(--colors-background-light);
-        box-shadow: 0px 2px 4px rgba(26, 32, 44, 0.1);
-        border-radius: var(--border-large);
         margin: var(--gap-small) 0;
         padding: var(--gap-small);
         height: var(--gap-large);

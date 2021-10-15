@@ -30,11 +30,11 @@ export class SeparatorComponent extends LitElement {
       }
       
       .separator:not(:empty)::before {
-        margin-right: .25em;
+        margin-right: var(--gap-small);
       }
       
       .separator:not(:empty)::after {
-        margin-left: .25em;
+        margin-left: var(--gap-small);
       }
       `,
     ];
