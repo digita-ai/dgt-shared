@@ -18,10 +18,12 @@ export class ProviderListItemComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
+    <div class="container" part=provider>
       <div class="logo">
         <img src="${this.icon}">
       </div>
       <h1>${ this.description }</h1>
+    </div>
  `;
 
   }
@@ -30,7 +32,7 @@ export class ProviderListItemComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
-      :host {
+      .container {
         display: flex;
         align-items: center;
         background: var(--colors-background-light);
