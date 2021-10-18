@@ -21,7 +21,7 @@ export class ProviderListItemComponent extends RxLitElement {
       <div class="logo">
         <img src="${this.icon}">
       </div>
-      <h1>${ this.description }</h1>
+      <p>${ this.description }</p>
  `;
 
   }
