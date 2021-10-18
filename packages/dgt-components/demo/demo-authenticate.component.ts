@@ -1,9 +1,9 @@
 import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
 import { hydrate } from '../lib/util/hydrate';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 
 export class DemoAuthenticateComponent extends RxLitElement {
 
@@ -56,6 +56,21 @@ export class DemoAuthenticateComponent extends RxLitElement {
           font-weight: bold;
           text-align: center;
         }
+        /* auth-flow::part(provider) {
+          background-color: green
+        }
+        auth-flow::part(webid-button) {
+          background-color: green
+        }
+        auth-flow::part(webid-create)  {
+          color: green
+        }
+        auth-flow::part(webid-label)  {
+          color: green
+        }
+        auth-flow::part(webid-input)  {
+          background-color: green
+        } */
       `,
     ];
 
