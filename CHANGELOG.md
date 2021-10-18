@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.10](https://github.com/digita-ai/dgt-shared/compare/v0.6.9...v0.6.10) (2021-10-18)
+
+
+### **Bug Fixes**
+
+* changed h1 to paragraph in list item content ([#87](https://github.com/digita-ai/dgt-shared/issues/87)) ([8c81159](https://github.com/digita-ai/dgt-shared/commit/8c81159a6f6e88533fd42f4aea6942974050469c))
+
+
+
 ### [0.6.9](https://github.com/digita-ai/dgt-shared/compare/v0.6.8...v0.6.9) (2021-10-15)
 
 
