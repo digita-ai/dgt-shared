@@ -21,7 +21,7 @@ export class ProviderListItemComponent extends RxLitElement {
       <div class="logo">
         <img src="${this.icon}">
       </div>
-      <h1>${ this.description }</h1>
+      <p>${ this.description }</p>
  `;
 
   }
@@ -38,13 +38,6 @@ export class ProviderListItemComponent extends RxLitElement {
         padding: var(--gap-small);
         height: var(--gap-large);
         cursor: pointer;
-      }
-
-      h1 { 
-        font-weight: bold;
-        font-style: normal;
-        font-size: var(--font-size-small);
-        width: 100%;
       }
 
       img {
