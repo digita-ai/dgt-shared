@@ -40,13 +40,6 @@ export class ProviderListItemComponent extends RxLitElement {
         cursor: pointer;
       }
 
-      h1 { 
-        font-weight: bold;
-        font-style: normal;
-        font-size: var(--font-size-small);
-        width: 100%;
-      }
-
       img {
         background-color: transparent;
         margin-right: var(--gap-small);
