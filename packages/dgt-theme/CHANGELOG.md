@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.11](https://github.com/digita-ai/dgt-shared/compare/v0.6.10...v0.6.11) (2021-10-19)
+
+**Note:** Version bump only for package @digita-ai/dgt-theme
+
+
+
+
+
 ### [0.6.10](https://github.com/digita-ai/dgt-shared/compare/v0.6.9...v0.6.10) (2021-10-18)
 
 **Note:** Version bump only for package @digita-ai/dgt-theme
