@@ -27,11 +27,13 @@ export class CheckboxComponent extends LitElement {
   @property({ type: String })
   public value: string;
 
-  toggle(): void{
+  private toggle = (event: Event): void => {
 
-    this.checked = !this.checked;
+    this.toggleAttribute('checked');
+    this.dispatchEvent(new Event('change', { ...event }));
 
-  }
+  };
+
   /**
    * Renders the component as HTML.
    *
