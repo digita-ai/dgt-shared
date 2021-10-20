@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.6.12](https://github.com/digita-ai/dgt-shared/compare/v0.6.11...v0.6.12) (2021-10-20)
+
+
+### **Bug Fixes**
+
+* checkbox now emits change event ([#88](https://github.com/digita-ai/dgt-shared/issues/88)) ([904c9b8](https://github.com/digita-ai/dgt-shared/commit/904c9b855eaeb24db7bb81b7f523e2933012cc9f))
+
+
+
 ### [0.6.11](https://github.com/digita-ai/dgt-shared/compare/v0.6.10...v0.6.11) (2021-10-19)
 
 **Note:** Version bump only for package root
