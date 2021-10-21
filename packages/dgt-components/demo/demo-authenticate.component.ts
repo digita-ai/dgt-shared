@@ -7,7 +7,7 @@ import { hydrate } from '../lib/util/hydrate';
 
 export class DemoAuthenticateComponent extends RxLitElement {
 
-  private solidService = new SolidSDKService({ clientName: 'UI Transfer' });
+  private solidService = new SolidSDKService({ clientName: 'DemoAuthenticateComponent'});
 
   onAuthenticated = (event: CustomEvent): void => {  };
   onCreateWebId = (event: CustomEvent): void => { alert('This is a demo') };
