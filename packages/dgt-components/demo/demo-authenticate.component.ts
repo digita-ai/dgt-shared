@@ -9,8 +9,8 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
   private solidService = new SolidSDKService({ clientName: 'DemoAuthenticateComponent'});
 
-  onAuthenticated = (event: CustomEvent): void => {  };
-  onCreateWebId = (event: CustomEvent): void => { alert('This is a demo') };
+  onAuthenticated = (): void => {  };
+  onCreateWebId = (): void => { alert('This is a demo') };
 
 
   constructor() {
