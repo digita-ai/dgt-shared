@@ -2,7 +2,7 @@
   "name": "@digita-ai/dgt-utils",
   "version": "0.6.12",
   "scripts": {
-    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc && npm run build:components",
+    "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
     "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore",
     "lint": "eslint .",
@@ -12,23 +12,17 @@
     "test:watch": "jest --watch --no-coverage",
     "e2e": "ng e2e"
   },
-  "main": "./dist/dgt-utils.umd.js",
-  "types": "./dist/public-api.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "module": "./dist/dgt-utils.es.js",
   "exports": {
     ".": {
       "import": "./dist/dgt-utils.es.js",
-      "require": "./dist/dgt-utils.umd.js"
+      "require": "./dist/index.js"
     }
   },
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
   "files": [
-    "dist",
-    "config",
-    ".componentsignore"
+    "dist"
   ],
   "dependencies": {
     "@angular/core": "~7.2.0",
