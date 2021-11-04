@@ -4,6 +4,24 @@
   ],
   "@graph": [
     {
+      "@id": "urn:dgt-utils:test:DGTLoggerWinstonService",
+      "@type": "DGTLoggerWinstonService",
+      "DGTLoggerWinstonService:_minimumLevel": 6,
+      "DGTLoggerWinstonService:_minimumLevelPrintData": 4
+    },
+    {
+      "@id": "urn:dgt-utils:test:DGTLoggerWinstonServiceInfoLevel",
+      "@type": "DGTLoggerWinstonService",
+      "DGTLoggerWinstonService:_minimumLevel": 2,
+      "DGTLoggerWinstonService:_minimumLevelPrintData": 2
+    },
+    {
+      "@id": "urn:dgt-utils:test:DGTLoggerWinstonServiceDebugLevel",
+      "@type": "DGTLoggerWinstonService",
+      "DGTLoggerWinstonService:_minimumLevel": 6,
+      "DGTLoggerWinstonService:_minimumLevelPrintData": 5
+    },
+    {
       "@id": "urn:dgt-utils:test:DGTLoggerConsoleService",
       "@type": "DGTLoggerConsoleService",
       "DGTLoggerConsoleService:_minimumLevel": 6,

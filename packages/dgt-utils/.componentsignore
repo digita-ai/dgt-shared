@@ -5,6 +5,7 @@
   "DGTConfigurationBase",
   "DGTConfigurationBaseWeb",
   "DGTLoggerLevel",
+  "DGTLoggerService",
   "DGTCryptoKey",
   "DGTCryptoKeyPair",
   "Injectable",
