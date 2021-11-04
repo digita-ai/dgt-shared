@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-utils",
-  "version": "0.6.12",
+  "version": "0.7.1",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",

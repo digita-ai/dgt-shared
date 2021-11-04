@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-components",
-  "version": "0.6.12",
+  "version": "0.7.1",
   "description": "Collection of Semantic Components.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-components.umd.js",
@@ -29,9 +29,9 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
-    "@digita-ai/dgt-theme": "0.6.12",
-    "@digita-ai/dgt-utils": "0.6.12",
-    "@digita-ai/inrupt-solid-service": "^0.8.0",
+    "@digita-ai/dgt-theme": "0.7.1",
+    "@digita-ai/dgt-utils": "0.7.1",
+    "@digita-ai/inrupt-solid-service": "^0.8.7",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
     "buffer": "6.0.3",
@@ -90,10 +90,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 27.8,
-        "functions": 32.17,
-        "lines": 32.5,
-        "statements": 32.14
+        "branches": 34.25,
+        "functions": 32.72,
+        "lines": 34.47,
+        "statements": 34.01
       }
     },
     "coveragePathIgnorePatterns": [
