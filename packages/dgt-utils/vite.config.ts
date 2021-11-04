@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
       target: 'es2015',
       lib: {
-          entry: path.resolve(__dirname, 'lib/public-api.ts'),
+          entry: path.resolve(__dirname, 'lib/index.ts'),
           name: '@digita-ai/dgt-utils'
       },
       outDir: '../dist'
