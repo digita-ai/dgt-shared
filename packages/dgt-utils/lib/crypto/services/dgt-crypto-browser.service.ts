@@ -1,11 +1,9 @@
 import { forkJoin, from, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
 import { DGTCryptoService } from './dgt-crypto.service';
 
-@Injectable()
 export class DGTCryptoBrowserService extends DGTCryptoService {
 
   constructor(private logger: DGTLoggerService) {
