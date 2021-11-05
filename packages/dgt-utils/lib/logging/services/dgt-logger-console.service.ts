@@ -1,6 +1,5 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { Injectable } from '@angular/core';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 import { DGTLoggerService } from './dgt-logger.service';
@@ -8,7 +7,6 @@ import { DGTLoggerService } from './dgt-logger.service';
 /**
  * JavaScript console-based logger service
  */
-@Injectable()
 export class DGTLoggerConsoleService extends DGTLoggerService {
 
   constructor(

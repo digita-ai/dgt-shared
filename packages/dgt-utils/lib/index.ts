@@ -16,7 +16,6 @@ export * from './errors/models/dgt-error-http.model';
 export * from './errors/models/dgt-error-not-implemented.model';
 export * from './errors/services/dgt-error.service';
 export * from './http/services/dgt-http.service';
-export * from './connectivity/services/dgt-connectivity.service';
 export * from './origin/services/dgt-origin.service';
 export * from './origin/services/dgt-origin-mock.service';
 export * from './parameters/services/parameter-checker.service';

@@ -4,7 +4,7 @@
     "baseUrl": "lib",
     "outDir": "dist",
     // Recommended by Lit Element
-    "module": "es2015",
+    "module": "commonjs",
     "target": "es2017",
     // Strict should actually be true
     "strict": false,

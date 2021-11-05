@@ -1,13 +1,11 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { Injectable } from '@angular/core';
 import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
 import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 
 /**
  * A logger service
  */
-@Injectable()
 export abstract class DGTLoggerService {
 
   constructor(
