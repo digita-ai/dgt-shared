@@ -23,7 +23,9 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "config",
+    ".componentsignore"
   ],
   "dependencies": {
     "rxjs": "6.3.3",
