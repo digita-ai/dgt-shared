@@ -145,7 +145,11 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
           target: AuthenticateStates.CHECKING_WEBID,
         },
         [AuthenticateEvents.SELECTED_ISSUER]: {
-          actions: assign({ issuer: (context, event) => event.issuer }),
+          actions: [
+            log('here'),
+            assign({ issuer: (context, event) => event.issuer }),
+            (context, event) => sessionStorage.setItem('issuer', event.issuer.uri),
+          ],
           target: AuthenticateStates.AUTHENTICATING,
         },
       },
@@ -172,7 +176,11 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     [AuthenticateStates.SELECTING_ISSUER]: {
       on: {
         [AuthenticateEvents.SELECTED_ISSUER]: {
-          actions: assign({ issuer: (context, event) => event.issuer }),
+          actions: [
+            log('here'),
+            assign({ issuer: (context, event) => event.issuer }),
+            (context, event) => sessionStorage.setItem('issuer', event.issuer.uri),
+          ],
           target: AuthenticateStates.AUTHENTICATING,
         },
       },
@@ -188,7 +196,10 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.AUTHENTICATED]: {
-      data: { session: (context: AuthenticateContext) => context.session },
+      data: {
+        session: (context: AuthenticateContext) => context.session,
+        issuer: () => sessionStorage.getItem('issuer'),
+      },
       type: 'final',
     },
 
