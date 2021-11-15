@@ -111,7 +111,7 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('should fire event when done', async (done) => {
+    it('should fire event when done', (done) => {
 
       service.addEventListener(TRANSLATIONS_LOADED, () => {
 
@@ -119,7 +119,7 @@ describe('MemoryTranslator', () => {
 
       });
 
-      await service.setLang('nl-BE');
+      service.setLang('nl-BE');
 
     });
 

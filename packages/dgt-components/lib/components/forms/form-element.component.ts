@@ -1,12 +1,12 @@
-import { css, html, internalProperty, property, PropertyValues, query, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DGTErrorArgument, Translator, debounce } from '@digita-ai/dgt-utils';
-import { SpawnedActorRef, State } from 'xstate';
+import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
-import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -91,12 +91,12 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>;
+  public actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
 
   /**
    * Hook called on every update after connection to the DOM.
    */
-  updated(changed: PropertyValues) {
+  updated(changed: PropertyValues): void {
 
     super.updated(changed);
 
@@ -146,10 +146,10 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   bindActorToInput(
     slot: HTMLSlotElement,
-    actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>,
+    actor: ActorRef<FormEvent, State<FormContext<T>, FormEvent, any, FormState<T>>>,
     field: keyof T,
     data: T,
-  ) {
+  ): void {
 
     if (!slot) {
 
@@ -212,7 +212,7 @@ export class FormElementComponent<T> extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="form-element">
@@ -248,7 +248,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

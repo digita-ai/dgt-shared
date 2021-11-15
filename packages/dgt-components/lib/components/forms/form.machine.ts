@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { createMachine, StateSchema } from 'xstate';
 import { map } from 'rxjs/operators';
 import { State } from '../state/state';
 import { FormValidatorResult } from './form-validator-result';
@@ -62,6 +62,17 @@ export enum FormValidationStates {
  * Union type of all valid states used in the form machine.
  */
 export type FormStates = FormRootStates | FormSubmissionStates | FormCleanlinessStates | FormValidationStates;
+
+export type FormStateSchema<T> = StateSchema<FormContext<T>> & {
+  states: {
+    [key in FormStates]: StateSchema<FormContext<T>>;
+  };
+};
+
+export interface FormState<T> {
+  value: any;
+  context: FormContext<T>;
+}
 
 /**
  * Function which generates a form machine.
