@@ -28,7 +28,7 @@
     ".componentsignore"
   ],
   "dependencies": {
-    "rxjs": "6.3.3",
+    "rxjs": "^6.6.7",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
