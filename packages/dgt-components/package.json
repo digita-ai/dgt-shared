@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "start": "npm run start:watch",
-    "start:watch": "vite",
+    "start:watch": "vite --port 4000",
     "build": "rimraf ./dist && vite build --mode semcom  && vite build --mode bundle && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -90,10 +90,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 34.25,
-        "functions": 32.72,
-        "lines": 34.47,
-        "statements": 34.01
+        "branches": 33.51,
+        "functions": 32.14,
+        "lines": 34.08,
+        "statements": 33.54
       }
     },
     "coveragePathIgnorePatterns": [

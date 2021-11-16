@@ -1,4 +1,4 @@
-import { EventObject, MachineConfig, StateSchema } from 'xstate';
+import { DoneInvokeEvent, EventObject, MachineConfig, StateSchema } from 'xstate';
 import { send, assign, log } from 'xstate/lib/actions';
 import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
@@ -9,6 +9,7 @@ import { Session } from '../../models/session.model';
 export interface AuthenticateContext {
   webId?: string;
   session?: Session;
+  trusted?: string[];
   issuers?: Issuer[];
   issuer?: Issuer;
 }
@@ -35,10 +36,11 @@ export enum AuthenticateStates {
   CHECKING_SESSION = '[AuthenticateState: Checking session]',
   AWAITING_WEBID   = '[AuthenticateState: Awaiting WebId]',
   CHECKING_WEBID   = '[AuthenticateState: Checking WebId]',
+  CHECKING_ISSUERS = '[AuthenticateState: Checking Issuers]',
   SELECTING_ISSUER = '[AuthenticateState: Selecting Issuer]',
   AUTHENTICATING   = '[AuthenticateState: Authenticating]',
   AUTHENTICATED    = '[AuthenticateState: Authenticated]',
-  REDIRECTING      = '[AuthenticateState: Redirecting]',
+  NO_TRUST         = '[AuthenticateState: No Trust]',
 }
 
 export interface AuthenticateStateSchema extends StateSchema<AuthenticateContext> {
@@ -51,7 +53,7 @@ export type AuthenticateState =
   { value: AuthenticateStates.CHECKING_SESSION | AuthenticateStates.AWAITING_WEBID;
     context: AuthenticateContext;
   } | {
-    value: AuthenticateStates.CHECKING_WEBID;
+    value: AuthenticateStates.CHECKING_WEBID | AuthenticateStates.NO_TRUST;
     context: AuthenticateContext & WithWebId;
   } | {
     value: AuthenticateStates.SELECTING_ISSUER;
@@ -109,12 +111,6 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
 
   initial: AuthenticateStates.CHECKING_SESSION,
 
-  context: {
-    webId: undefined,
-    session: undefined,
-    issuers: [],
-  },
-
   on: {
     [AuthenticateEvents.LOGIN_ERROR]: {
       actions: [
@@ -154,19 +150,31 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     [AuthenticateStates.CHECKING_WEBID]: {
       invoke: {
         src: (context) => solid.getIssuers(context.webId),
-        onDone: [
-          {
-            cond: (context, event) => event.data.length === 1,
-            actions: assign({ issuer: (context, event) => event.data[0] }),
-            target: AuthenticateStates.AUTHENTICATING,
-          },
-          {
-            actions: assign({ issuers: (context, event) => event.data.concat(context.issuers) }),
-            target: AuthenticateStates.SELECTING_ISSUER,
-          },
-        ],
+        onDone: {
+          actions: assign({ issuers: (context, event: DoneInvokeEvent<Issuer[]>) => context.trusted
+            ? event.data.filter((iss) => context.trusted.includes(iss.uri))
+            : event.data }),
+          target: AuthenticateStates.CHECKING_ISSUERS,
+        },
         onError: { actions: send((context, event) => new LoginErrorEvent('Invalid WebID')) },
       },
+    },
+
+    [AuthenticateStates.CHECKING_ISSUERS]: {
+      always: [
+        {
+          cond: (context) => context.issuers.length === 0,
+          target: AuthenticateStates.NO_TRUST,
+        },
+        {
+          cond: (context) => context.issuers.length === 1,
+          actions: assign({ issuer: (context, event) => context.issuers[0] }),
+          target: AuthenticateStates.AUTHENTICATING,
+        },
+        {
+          target: AuthenticateStates.SELECTING_ISSUER,
+        },
+      ],
     },
 
     [AuthenticateStates.SELECTING_ISSUER]: {
@@ -189,6 +197,11 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
 
     [AuthenticateStates.AUTHENTICATED]: {
       data: { session: (context: AuthenticateContext) => context.session },
+      type: 'final',
+    },
+
+    [AuthenticateStates.NO_TRUST]: {
+      data: { webId: (context: AuthenticateContext) => context.webId },
       type: 'final',
     },
 
