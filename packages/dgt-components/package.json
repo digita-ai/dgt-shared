@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "start": "npm run start:watch",
-    "start:watch": "vite",
+    "start:watch": "vite --port 4000",
     "build": "rimraf ./dist && vite build --mode semcom  && vite build --mode bundle && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",

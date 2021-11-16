@@ -8,14 +8,15 @@ import { hydrate } from '../lib/util/hydrate';
 export class DemoAuthenticateComponent extends RxLitElement {
 
   private solidService = new SolidSDKService('DemoAuthenticateComponent');
+  private trustedIssuers = [ 'https://inrupt.net/' ];
 
-  onAuthenticated = (): void => {  };
-  onCreateWebId = (): void => { alert('This is a demo') };
-
+  onAuthenticated = (): void => { alert('Demo event: authenticated') };
+  onNoTrust = (): void => { alert('Demo event: no trusted issuers') };
+  onCreateWebId = (): void => { alert('Demo event: create webid') };
 
   constructor() {
     super();
-    customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService));
+    customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService, this.trustedIssuers));
 
   }
   /**
@@ -27,8 +28,8 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
     return html`
     <auth-flow
-      .solidService="${this.solidService}"
       @authenticated="${this.onAuthenticated}"
+      @no-trust="${this.onNoTrust}"
       @create-webid="${this.onCreateWebId}"
     >
       <h1 slot="beforeIssuers">Select an identity provider to log in</h1>
