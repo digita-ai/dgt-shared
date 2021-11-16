@@ -27,6 +27,7 @@ export { default as Doccle } from './icons/Doccle.svg?raw';
 export { default as Vault } from './icons/vault.svg';
 export { default as Location } from './icons/Location.svg?raw';
 export { default as Checkbox } from './icons/Checkbox.svg?raw';
+export { default as Database } from './icons/Database.svg?raw';
 
 /**
  * Export theme
