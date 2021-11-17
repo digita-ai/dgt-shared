@@ -2,6 +2,9 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "clean": "npm run clean:locks && npm run clean:modules",
+    "clean:locks": "npm i --package-locks-only && lerna exec 'npm i --package-locks-only'",
+    "clean:modules": "lerna clean && shx rm -rf ./node_modules/",
     "start": "lerna run start --parallel --no-bail",
     "start:watch": "lerna run start:watch --parallel --no-bail",
     "postinstall": "husky install",
