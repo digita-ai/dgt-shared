@@ -38,7 +38,7 @@
     "lit-element": "2.4.0",
     "n3": "1.8.0",
     "rx-lit": "1.0.1",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.4.0",
     "xstate": "^4.25.0"
   },
   "devDependencies": {
