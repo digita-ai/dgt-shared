@@ -9,7 +9,6 @@ import { BaseComponent } from '../base/base.component';
 export class BarcodeComponent extends BaseComponent {
 
   @internalProperty() cardNumber?: string;
-  @internalProperty() program?: string;
 
   @query('#barcode') barcodeSvg?: HTMLOrSVGElement;
 
@@ -34,12 +33,7 @@ export class BarcodeComponent extends BaseComponent {
 
     const quad = store.getQuads(undefined, 'http://schema.org/membershipNumber', undefined, undefined)[0];
 
-    const program = store.getQuads(quad.subject, 'http://schema.org/programName', undefined, undefined)[0];
-
     this.cardNumber = quad.object.value;
-    this.program = program.object.value;
-
-    console.log(this.program);
 
   }
 
@@ -60,7 +54,6 @@ export class BarcodeComponent extends BaseComponent {
   render(): TemplateResult {
 
     return html`
-      ${this.program ? html`<p class="program">${this.program}</p>` : ''}
       <svg id="barcode"></svg>
     `;
 
