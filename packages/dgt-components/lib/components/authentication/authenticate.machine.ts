@@ -1,4 +1,4 @@
-import { DoneInvokeEvent, EventObject, MachineConfig, StateSchema } from 'xstate';
+import { DoneInvokeEvent, ErrorPlatformEvent, EventObject, MachineConfig, StateSchema } from 'xstate';
 import { send, assign, log } from 'xstate/lib/actions';
 import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
@@ -100,7 +100,7 @@ export class LoginSuccessEvent implements EventObject {
 export class LoginErrorEvent implements EventObject {
 
   public type: AuthenticateEvents.LOGIN_ERROR = AuthenticateEvents.LOGIN_ERROR;
-  constructor(public message: string) {}
+  constructor(public message: string, public results: string[] = []) {}
 
 }
 
@@ -171,12 +171,12 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
         onDone: [
           {
             cond: (c, event: DoneInvokeEvent<string[]>) => event.data?.length > 0,
-            actions: send((c, event) => new LoginErrorEvent(event.data[0])),
+            actions: send((c, event) => new LoginErrorEvent('WebID validation returned results', event.data)),
             target: AuthenticateStates.AWAITING_WEBID,
           },
           { target: AuthenticateStates.RETRIEVING_ISSUERS },
         ],
-        onError: { actions: send((c, event) => new LoginErrorEvent(event.data)) },
+        onError: { actions: send((c, event) => new LoginErrorEvent('Error while validating WebID', event.data)) },
       },
     },
 
@@ -189,7 +189,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
             : event.data }),
           target: AuthenticateStates.CHECKING_ISSUERS,
         },
-        onError: { actions: send((context, event) => new LoginErrorEvent('Invalid WebID')) },
+        onError: { actions: send((c, event: ErrorPlatformEvent) => new LoginErrorEvent(`Error retrieving issuers from WebID: ${event.data}`, [ 'common.webid-validation.no-issuer' ])) },
       },
     },
 

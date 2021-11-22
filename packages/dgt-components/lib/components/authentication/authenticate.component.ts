@@ -10,8 +10,9 @@ import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
+import { Translator } from '../../services/i18n/translator';
 import { WebIdComponent } from './webid.component';
-import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent, WebIdValidator } from './authenticate.machine';
 
 export class AuthenticateComponent extends RxLitElement {
 
@@ -27,6 +28,8 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: Boolean }) hideWebId = false;
   @property({ type: Boolean }) hideIssuers = false;
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property() webIdValidationResults: string[];
+  @property({ type: Translator }) translator?: Translator;
 
   @property({ type: Array }) trusted: string[];
 
@@ -41,7 +44,7 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
 
-  constructor(solidService: SolidService, trustedIssuers?: string[], webIdValidator?: AuthenticateContext['webIdValidator']) {
+  constructor(solidService: SolidService, trustedIssuers?: string[], webIdValidator?: WebIdValidator) {
 
     super();
 
@@ -62,16 +65,26 @@ export class AuthenticateComponent extends RxLitElement {
     this.subscribe('state', from(this.actor));
     this.subscribe('issuers', from(this.actor).pipe(map((state) => state.context.issuers)));
 
+    this.subscribe('webIdValidationResults', from(this.actor).pipe(map((state) => {
+
+      if (state.event.type === AuthenticateEvents.LOGIN_ERROR) {
+
+        this.dispatchEvent(new CustomEvent('authenticate-error', { detail: state.event.results }));
+
+        return state.event.results;
+
+      } else {
+
+        return this.webIdValidationResults;
+
+      }
+
+    })));
+
     this.actor.onDone((event: DoneEvent) => {
 
       if (event.data.session) this.dispatchEvent(new CustomEvent('authenticated', { detail: event.data.session }));
       if (event.data.webId) this.dispatchEvent(new CustomEvent('no-trust', { detail: event.data.webId }));
-
-    });
-
-    this.actor.onEvent((event: AuthenticateEvent) => {
-
-      if (event.type === AuthenticateEvents.LOGIN_ERROR) this.dispatchEvent(new CustomEvent('authenticate-error', { detail: event.message }));
 
     });
 
@@ -119,6 +132,8 @@ export class AuthenticateComponent extends RxLitElement {
           .textPlaceholder="${this.textWebIdPlaceholder}"
           .textNoWebId="${this.textNoWebId}"
           .textButton="${this.textButton}"
+          .validationResults="${this.webIdValidationResults}"
+          .translator="${this.translator}"
         >
           <slot name="beforeWebId" slot="before"></slot>
           <slot name="afterWebId" slot="after"></slot>

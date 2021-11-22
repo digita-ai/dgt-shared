@@ -5,11 +5,18 @@ import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
 import { hydrate } from '../lib/util/hydrate';
 import { WebIdValidator } from '../lib/components/authentication/authenticate.machine';
+import { Translator } from '../lib/services/i18n/translator';
 
 export class DemoAuthenticateComponent extends RxLitElement {
 
   private solidService = new SolidSDKService('DemoAuthenticateComponent');
   private trustedIssuers = [ 'https://inrupt.net/' ];
+  private translations = {
+    'common.webid-validation.invalid-uri': 'The URL of the entered WebID is invalid',
+  }
+  private translator: Translator = {
+    translate: (key: string) => this.translations[key],
+  } as any
 
   // example validator
   private webIdValidator: WebIdValidator = async (webId: string) => {
@@ -40,9 +47,11 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
     return html`
     <auth-flow
+      hideCreateNewWebId
       @authenticated="${this.onAuthenticated}"
       @no-trust="${this.onNoTrust}"
       @create-webid="${this.onCreateWebId}"
+      .translator="${this.translator}"
     >
       <h1 slot="beforeIssuers">Select an identity provider to log in</h1>
       <h1 slot="beforeWebId">Enter your WebID</h1>
