@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/digita-ai/dgt-shared/compare/v0.7.6...v0.8.0) (2021-11-22)
+
+
+### **Features**
+
+* improve webid validation ([#102](https://github.com/digita-ai/dgt-shared/issues/102)) ([170a649](https://github.com/digita-ai/dgt-shared/commit/170a6495d522ed61cacfabadbd11393b3e25568b))
+
+
+
 ### [0.7.6](https://github.com/digita-ai/dgt-shared/compare/v0.7.5...v0.7.6) (2021-11-16)
 
 
