@@ -101,6 +101,8 @@ export class AuthenticateComponent extends RxLitElement {
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true })); };
 
+  onAlertDismissed = (): void => { this.webIdValidationResults = []; };
+
   render(): TemplateResult {
 
     return html`
@@ -128,6 +130,7 @@ export class AuthenticateComponent extends RxLitElement {
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
           @submit-webid="${this.onSubmit}"
           @create-webid="${this.onButtonCreateWebIDClick}"
+          @dismiss="${this.onAlertDismissed}"
           .textLabel="${this.textWebIdLabel}"
           .textPlaceholder="${this.textWebIdPlaceholder}"
           .textNoWebId="${this.textNoWebId}"

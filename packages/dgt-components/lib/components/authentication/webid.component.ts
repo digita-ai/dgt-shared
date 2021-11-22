@@ -25,11 +25,20 @@ export class WebIdComponent extends RxLitElement {
   onSubmit = (event: Event & { target: HTMLFormElement }): void => {
 
     event.preventDefault();
-    this.dispatchEvent(new CustomEvent('submit-webid', { detail: event.target.querySelector<HTMLInputElement>('input[name=webid]').value }));
+
+    this.dispatchEvent(new CustomEvent('submit-webid', {
+      detail: event.target.querySelector<HTMLInputElement>('input[name=webid]').value,
+    }));
 
   };
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
+
+  onAlertDismissed = (event: CustomEvent): void => {
+
+    this.dispatchEvent(new CustomEvent(event.type, { detail: event.detail }));
+
+  };
 
   render(): TemplateResult {
 
@@ -37,7 +46,12 @@ export class WebIdComponent extends RxLitElement {
     <slot name="before"></slot>
     <form @submit="${this.onSubmit}">
       ${this.validationResults?.length > 0
-    ? html`<alert-component exportparts="validation-alert" .translator="${this.translator}" .alert="${{ message: this.validationResults[0], type: 'warning' }}"></alert-component>`
+    ? html`<alert-component
+        @dismiss="${this.onAlertDismissed}"
+        exportparts="validation-alert"
+        .translator="${this.translator}"
+        .alert="${{ message: this.validationResults[0], type: 'warning' }}">
+      </alert-component>`
     : ''}
       <label part="webid-label" for="webid">${this.textLabel}</label>
       <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
