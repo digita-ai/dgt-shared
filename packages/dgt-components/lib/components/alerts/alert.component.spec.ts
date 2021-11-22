@@ -9,7 +9,7 @@ describe('AlertComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-alert') as AlertComponent;
+    component = window.document.createElement('alert-component') as AlertComponent;
 
   });
 
@@ -35,7 +35,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
+    const message = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
     expect(message).toBe('Foo');
 
@@ -53,7 +53,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
+    const message = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
     expect(message).toBe(component.alert.message);
 
@@ -71,7 +71,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
+    const message = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
     expect(message.trim()).toBe(component.alert.message);
 
@@ -87,7 +87,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector(`.alert.${type}`);
+    const alert = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector(`.alert.${type}`);
 
     expect(alert).toBeTruthy();
 
@@ -103,7 +103,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.alert.warning');
+    const alert = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.alert.warning');
 
     expect(alert).toBeTruthy();
 
@@ -121,7 +121,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const dismiss = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
+    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
     dismiss.click();
 
     expect(component.dismiss).toHaveBeenCalledTimes(1);
@@ -140,7 +140,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const dismiss = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
+    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
     dismiss.click();
 
     expect(component.dispatchEvent).toHaveBeenCalledTimes(1);

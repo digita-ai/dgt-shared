@@ -90,10 +90,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 33.51,
-        "functions": 32.14,
-        "lines": 34.08,
-        "statements": 33.54
+        "branches": 34.61,
+        "functions": 35.04,
+        "lines": 39.46,
+        "statements": 39.57
       }
     },
     "coveragePathIgnorePatterns": [
@@ -101,8 +101,7 @@
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
-      "<rootDir>/lib/demo.ts",
-      "<rootDir>/lib/demo/"
+      "<rootDir>/demo/"
     ]
   }
 }
