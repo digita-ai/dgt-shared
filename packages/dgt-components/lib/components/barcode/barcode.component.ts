@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- is a web component */
 import { Store } from 'n3';
-import { css, CSSResult, html, internalProperty, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { Theme } from '@digita-ai/dgt-theme';
 import JsBarcode from 'jsbarcode';
@@ -9,6 +9,8 @@ import { BaseComponent } from '../base/base.component';
 export class BarcodeComponent extends BaseComponent {
 
   @internalProperty() cardNumber?: string;
+  @internalProperty() program?: string;
+  @property({ type: Boolean }) hideProgram = false;
 
   @query('#barcode') barcodeSvg?: HTMLOrSVGElement;
 
@@ -33,7 +35,10 @@ export class BarcodeComponent extends BaseComponent {
 
     const quad = store.getQuads(undefined, 'http://schema.org/membershipNumber', undefined, undefined)[0];
 
+    const program = store.getQuads(quad.subject, 'http://schema.org/programName', undefined, undefined)[0];
+
     this.cardNumber = quad.object.value;
+    this.program = program.object.value;
 
   }
 
@@ -54,6 +59,7 @@ export class BarcodeComponent extends BaseComponent {
   render(): TemplateResult {
 
     return html`
+      ${this.program && !this.hideProgram ? html`<p id="program">${this.program}</p>` : ''}
       <svg id="barcode"></svg>
     `;
 
@@ -70,10 +76,13 @@ export class BarcodeComponent extends BaseComponent {
           flex-direction: column;
         }
 
+        :host > * {
+          align-self: center;
+        }
+
         #barcode {
           width: 200px;
           height: 110px;
-          align-self: center;
         }
 
       `,
