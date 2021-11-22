@@ -36,12 +36,12 @@ export class WebIdComponent extends RxLitElement {
     return html`
     <slot name="before"></slot>
     <form @submit="${this.onSubmit}">
-      <label part="webid-label" for="webid">${this.textLabel}</label>
-      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
-      <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
       ${this.validationResults?.length > 0
     ? html`<alert-component exportparts="validation-alert" .translator="${this.translator}" .alert="${{ message: this.validationResults[0], type: 'warning' }}"></alert-component>`
     : ''}
+      <label part="webid-label" for="webid">${this.textLabel}</label>
+      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
+      <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
       <button part="webid-button" class="dark">${this.textButton}</button>
     </form>
     <slot name="after"></slot>
