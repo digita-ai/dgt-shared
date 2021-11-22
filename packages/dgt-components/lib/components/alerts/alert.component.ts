@@ -52,7 +52,7 @@ export class AlertComponent extends LitElement {
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
 
     return html`
-    <div class="alert ${ type }">
+    <div part="validation-alert" class="alert ${ type }">
       <div class="icon">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>
       <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
