@@ -11,7 +11,7 @@ import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
 import { WebIdComponent } from './webid.component';
-import { AuthenticateContext, AuthenticateEvent, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
 
 export class AuthenticateComponent extends RxLitElement {
 
@@ -41,7 +41,7 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
 
-  constructor(solidService: SolidService, trustedIssuers?: string[]) {
+  constructor(solidService: SolidService, trustedIssuers?: string[], webIdValidator?: AuthenticateContext['webIdValidator']) {
 
     super();
 
@@ -50,7 +50,11 @@ export class AuthenticateComponent extends RxLitElement {
     define('separator-component', SeparatorComponent);
     define('loading-component', LoadingComponent);
 
-    this.machine = createMachine(authenticateMachine(solidService)).withContext({ trusted: trustedIssuers });
+    this.machine = createMachine(authenticateMachine(solidService))
+      .withContext({
+        trusted: trustedIssuers,
+        webIdValidator,
+      });
 
     // eslint-disable-next-line no-console
     this.actor = interpret(this.machine, { devTools: true }).onTransition((state) => console.log(state.value));
@@ -62,6 +66,12 @@ export class AuthenticateComponent extends RxLitElement {
 
       if (event.data.session) this.dispatchEvent(new CustomEvent('authenticated', { detail: event.data.session }));
       if (event.data.webId) this.dispatchEvent(new CustomEvent('no-trust', { detail: event.data.webId }));
+
+    });
+
+    this.actor.onEvent((event: AuthenticateEvent) => {
+
+      if (event.type === AuthenticateEvents.LOGIN_ERROR) this.dispatchEvent(new CustomEvent('authenticate-error', { detail: event.message }));
 
     });
 

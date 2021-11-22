@@ -4,14 +4,22 @@ import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { Session } from '../../models/session.model';
 
-/* CONTEXT */
+/**
+ * Validator function for WebIDs
+ *
+ * @param webId The WebID to validate
+ * @returns A list of validation results. An empty list means validation has passed.
+ */
+export type WebIdValidator = (webId: string) => Promise<string[]>;
 
+/* CONTEXT */
 export interface AuthenticateContext {
   webId?: string;
   session?: Session;
   trusted?: string[];
   issuers?: Issuer[];
   issuer?: Issuer;
+  webIdValidator?: WebIdValidator;
 }
 
 export interface WithWebId extends AuthenticateContext {
@@ -36,6 +44,7 @@ export enum AuthenticateStates {
   CHECKING_SESSION = '[AuthenticateState: Checking session]',
   AWAITING_WEBID   = '[AuthenticateState: Awaiting WebId]',
   CHECKING_WEBID   = '[AuthenticateState: Checking WebId]',
+  RETRIEVING_ISSUERS = '[AuthenticateState: Retrieving Issuers]',
   CHECKING_ISSUERS = '[AuthenticateState: Checking Issuers]',
   SELECTING_ISSUER = '[AuthenticateState: Selecting Issuer]',
   AUTHENTICATING   = '[AuthenticateState: Authenticating]',
@@ -136,10 +145,19 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
 
     [AuthenticateStates.AWAITING_WEBID]: {
       on: {
-        [AuthenticateEvents.WEBID_ENTERED]: {
-          actions: assign({ webId: (context, event) => event.webId }),
-          target: AuthenticateStates.CHECKING_WEBID,
-        },
+        [AuthenticateEvents.WEBID_ENTERED]: [
+          {
+            // validate webId when validator is set
+            cond: (context) => context.webIdValidator !== undefined,
+            actions: assign({ webId: (c, event) => event.webId }),
+            target: AuthenticateStates.CHECKING_WEBID,
+          },
+          {
+            // otherwise, skip validation and go straight to retrieval of issuers
+            actions: assign({ webId: (c, event) => event.webId }),
+            target: AuthenticateStates.RETRIEVING_ISSUERS,
+          },
+        ],
         [AuthenticateEvents.SELECTED_ISSUER]: {
           actions: assign({ issuer: (context, event) => event.issuer }),
           target: AuthenticateStates.AUTHENTICATING,
@@ -148,6 +166,21 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.CHECKING_WEBID]: {
+      invoke: {
+        src: (context) => context.webIdValidator(context.webId),
+        onDone: [
+          {
+            cond: (c, event: DoneInvokeEvent<string[]>) => event.data?.length > 0,
+            actions: send((c, event) => new LoginErrorEvent(event.data[0])),
+            target: AuthenticateStates.AWAITING_WEBID,
+          },
+          { target: AuthenticateStates.RETRIEVING_ISSUERS },
+        ],
+        onError: { actions: send((c, event) => new LoginErrorEvent(event.data)) },
+      },
+    },
+
+    [AuthenticateStates.RETRIEVING_ISSUERS]: {
       invoke: {
         src: (context) => solid.getIssuers(context.webId),
         onDone: {

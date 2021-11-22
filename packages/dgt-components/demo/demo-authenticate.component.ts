@@ -4,11 +4,23 @@ import { Theme } from '@digita-ai/dgt-theme';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
 import { hydrate } from '../lib/util/hydrate';
+import { WebIdValidator } from '../lib/components/authentication/authenticate.machine';
 
 export class DemoAuthenticateComponent extends RxLitElement {
 
   private solidService = new SolidSDKService('DemoAuthenticateComponent');
   private trustedIssuers = [ 'https://inrupt.net/' ];
+
+  // example validator
+  private webIdValidator: WebIdValidator = async (webId: string) => {
+    let results: string[] = [];
+    try {
+      new URL(webId);
+    } catch {
+      results.push('common.webid-validation.invalid-uri');
+    }
+    return results;
+  }
 
   onAuthenticated = (): void => { alert('Demo event: authenticated') };
   onNoTrust = (): void => { alert('Demo event: no trusted issuers') };
@@ -16,7 +28,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
   constructor() {
     super();
-    customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService, this.trustedIssuers));
+    customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService, this.trustedIssuers, this.webIdValidator));
 
   }
   /**
