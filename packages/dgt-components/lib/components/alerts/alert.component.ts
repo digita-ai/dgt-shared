@@ -12,20 +12,54 @@ export class AlertComponent extends LitElement {
   /**
    * The component's logger.
    */
-  @property({ type: DGTLoggerService })
-  public logger: DGTLoggerService;
-
+  @property({ type: DGTLoggerService }) public logger: DGTLoggerService;
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
-  public translator: Translator;
+  @property({ type: Translator }) translator?: Translator;
 
   /**
    * The collection which will be rendered by the component.
    */
   @property({ type: Object })
   public alert: Alert;
+
+  /**
+   * Dispatches an event to dismiss the alert.
+   */
+  dismiss() {
+
+    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
+
+    if (!this.alert) {
+
+      throw new DGTErrorArgument('Argument this.alert should be set.', this.alert);
+
+    }
+
+    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
+
+  }
+
+  /**
+   * Renders the component as HTML.
+   *
+   * @returns The rendered HTML of the component.
+   */
+  render() {
+
+    const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
+    const type = this.alert && this.alert.type ? this.alert.type : 'warning';
+
+    return html`
+    <div part="validation-alert" class="alert ${ type }">
+      <div class="icon">${ unsafeSVG(Bell) }</div>
+      <div class="message">${ message }</div>
+      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
+    </div>
+  `;
+
+  }
 
   /**
    * The styles associated with the component.
@@ -80,43 +114,6 @@ export class AlertComponent extends LitElement {
         }
       `,
     ];
-
-  }
-
-  /**
-   * Dispatches an event to dismiss the alert.
-   */
-  dismiss() {
-
-    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
-
-    if (!this.alert) {
-
-      throw new DGTErrorArgument('Argument this.alert should be set.', this.alert);
-
-    }
-
-    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
-
-  }
-
-  /**
-   * Renders the component as HTML.
-   *
-   * @returns The rendered HTML of the component.
-   */
-  render() {
-
-    const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
-    const type = this.alert && this.alert.type ? this.alert.type : 'warning';
-
-    return html`
-    <div class="alert ${ type }">
-      <div class="icon">${ unsafeSVG(Bell) }</div>
-      <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
-    </div>
-  `;
 
   }
 
