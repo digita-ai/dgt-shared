@@ -35,13 +35,9 @@ document.addEventListener(ComponentEventType.READ, (event: ComponentReadEvent) =
   }
 
   fetch(event.detail.uri).then((response) => response.text().then((profileText) => {
-    console.log(response);
-    console.log('profileText', profileText);
     const quads = parser.parse(profileText);
     const store = new Store(quads);
     const filteredQuads = store.getQuads(event.detail.uri.split('#')[1] ? '#' + event.detail.uri.split('#')[1] : undefined , undefined, undefined, undefined);
-
-    console.log(filteredQuads);
 
     event.target?.dispatchEvent(new ComponentResponseEvent({
       detail: { uri: event.detail.uri, cause: event, data: filteredQuads, success: true },
