@@ -48,7 +48,9 @@ export class BarcodeComponent extends BaseComponent {
 
     if (this.barcodeSvg) {
 
-      JsBarcode(this.barcodeSvg, this.cardNumber);
+      JsBarcode(this.barcodeSvg, this.cardNumber, {
+        background: 'none',
+      });
 
     }
 
@@ -74,15 +76,21 @@ export class BarcodeComponent extends BaseComponent {
         :host {
           display: flex;
           flex-direction: column;
+          background-color: var(--colors-foreground-inverse);
+          padding: var(--gap-normal) 0;
         }
 
         :host > * {
           align-self: center;
         }
 
+        p {
+          margin: 0;
+        }
+
         #barcode {
           width: 200px;
-          height: 110px;
+          height: 110px;  
         }
 
       `,
