@@ -10,21 +10,24 @@ import { CardComponent } from '../lib/components/cards/card.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 import { SeparatorComponent } from '../lib/components/separator/separator.component';
 import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component';
+import { WebIdComponent } from '../lib/components/authentication/webid.component';
+import { define } from '../lib/util/define';
 
 /**
  * Register tags for components.
  */
-customElements.define('nde-alert', AlertComponent);
-customElements.define('nde-form-element', FormElementComponent);
-customElements.define('nde-sidebar-item', SidebarItemComponent);
-customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
-customElements.define('nde-sidebar-list', SidebarListComponent);
-customElements.define('nde-sidebar', SidebarComponent);
-customElements.define('nde-large-card', CardComponent);
-customElements.define('card-header', ContentHeaderComponent);
-customElements.define('list-item', ListItemComponent);
-customElements.define('separator-component', SeparatorComponent);
-customElements.define('checkbox-component', CheckboxComponent);
+define('alert-component', AlertComponent);
+define('nde-form-element', FormElementComponent);
+define('nde-sidebar-item', SidebarItemComponent);
+define('nde-sidebar-list-item', SidebarListItemComponent);
+define('nde-sidebar-list', SidebarListComponent);
+define('nde-sidebar', SidebarComponent);
+define('nde-large-card', CardComponent);
+define('card-header', ContentHeaderComponent);
+define('list-item', ListItemComponent);
+define('separator-component', SeparatorComponent);
+define('checkbox-component', CheckboxComponent);
+define('webid-form', WebIdComponent);
 
 /**
  * Enable mocks for fetch.
