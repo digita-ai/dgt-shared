@@ -126,7 +126,7 @@ export class ProfileNameComponent extends BaseComponent {
       quad(namedNode(this.entry), namedNode(`${this.foaf}name`), literal(this.formActor.state.context.data.fullName)),
       quad(namedNode(this.entry), namedNode(`${this.foaf}nick`), literal(this.formActor.state.context.data.nick)),
       quad(namedNode(this.entry), namedNode(`${this.n}honorific-prefix`), literal(this.formActor.state.context.data.honorific)),
-      quad(namedNode(this.entry), namedNode(`${this.n}hasPhoto`), literal(this.formActor.state.context.data.image)),
+      quad(namedNode(this.entry), namedNode(`${this.n}hasPhoto`), namedNode(this.formActor.state.context.data.image)),
     ]);
 
   }
