@@ -10,13 +10,12 @@
   schema:membershipNumber "121345687789" ;
   schema:programName "UiTPAS" .
 
-:barcode-test
-  schema:hostingOrganization <https://uitpas.be/> ;
+:barcode-mock-1
   schema:member <http://mijn.web.id/profile/card#me> ;
   schema:membershipNumber "9876543210" ;
   schema:programName "UiTPAS" .
 
-:barcode-mock
+:barcode-mock-2
   schema:hostingOrganization <https://uitpas.be/> ;
   schema:member <http://mijn.web.id/profile/card#me> ;
   schema:membershipNumber "012345543210" ;

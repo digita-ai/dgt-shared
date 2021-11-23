@@ -28,6 +28,8 @@ export { default as Vault } from './icons/vault.svg';
 export { default as Location } from './icons/Location.svg?raw';
 export { default as Checkbox } from './icons/Checkbox.svg?raw';
 export { default as Database } from './icons/Database.svg?raw';
+export { default as QR } from './icons/QR.svg?raw';
+export { default as Open } from './icons/Open.svg?raw';
 
 /**
  * Export theme

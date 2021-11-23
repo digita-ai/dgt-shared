@@ -1,3 +1,5 @@
+a.btn,
+a.btn.primary
 button,
 button.primary {
   background-color: var(--colors-primary-dark);
@@ -6,6 +8,7 @@ button.primary {
   color: var(--colors-foreground-inverse);
   cursor: pointer;
   outline: none;
+  text-decoration: none;
 }
 
 button.no-padding {
