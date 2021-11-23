@@ -2,8 +2,9 @@
 import { Store } from 'n3';
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme, Image } from '@digita-ai/dgt-theme';
 import JsBarcode from 'jsbarcode';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { BaseComponent } from '../base/base.component';
 
 export class BarcodeComponent extends BaseComponent {
@@ -61,8 +62,18 @@ export class BarcodeComponent extends BaseComponent {
   render(): TemplateResult {
 
     return html`
-      ${this.program && !this.hideProgram ? html`<p id="program">${this.program}</p>` : ''}
-      <svg id="barcode"></svg>
+      ${this.program && !this.hideProgram ? html`
+        <nde-card ?hideImage="${ true }">
+          <div slot="title">${this.program}</div>
+          <div slot="subtitle">This is your barcode</div>
+          <div slot="icon">
+            ${unsafeSVG(Image)}
+          </div>
+          <div slot="content">
+            <svg id="barcode"></svg>
+          </div>
+        </nde-card>
+      ` : ''}
     `;
 
   }
@@ -72,27 +83,16 @@ export class BarcodeComponent extends BaseComponent {
     return [
       unsafeCSS(Theme),
       css`
-      
-        :host {
+        div[slot="content"] {
           display: flex;
+          align-items: center;
           flex-direction: column;
-          background-color: var(--colors-foreground-inverse);
-          padding: var(--gap-normal) 0;
-        }
-
-        :host > * {
-          align-self: center;
-        }
-
-        p {
-          margin: 0;
         }
 
         #barcode {
           width: 200px;
           height: 110px;  
         }
-
       `,
     ];
 

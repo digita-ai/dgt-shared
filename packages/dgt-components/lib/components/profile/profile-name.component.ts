@@ -1,4 +1,4 @@
-import { Literal, NamedNode, Quad, Store, DataFactory } from 'n3';
+import { NamedNode, Store, DataFactory } from 'n3';
 import { css, html, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
