@@ -1,4 +1,4 @@
-import { Literal, NamedNode, Quad, Store } from 'n3';
+import { Literal, NamedNode, Quad, Store, DataFactory } from 'n3';
 import { css, html, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -120,11 +120,13 @@ export class ProfileNameComponent extends BaseComponent {
 
     this.formActor.send(FormEvents.FORM_SUBMITTED);
 
+    const { namedNode, literal, quad } = DataFactory;
+
     this.writeData(this.entry, [
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.foaf}name`), new Literal(this.formActor.state.context.data.fullName)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.foaf}nick`), new Literal(this.formActor.state.context.data.nick)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.n}honorific-prefix`), new Literal(this.formActor.state.context.data.honorific)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.n}hasPhoto`), new Literal(this.formActor.state.context.data.image)),
+      quad(namedNode(this.entry), namedNode(`${this.foaf}name`), literal(this.formActor.state.context.data.fullName)),
+      quad(namedNode(this.entry), namedNode(`${this.foaf}nick`), literal(this.formActor.state.context.data.nick)),
+      quad(namedNode(this.entry), namedNode(`${this.n}honorific-prefix`), literal(this.formActor.state.context.data.honorific)),
+      quad(namedNode(this.entry), namedNode(`${this.n}hasPhoto`), literal(this.formActor.state.context.data.image)),
     ]);
 
   }
