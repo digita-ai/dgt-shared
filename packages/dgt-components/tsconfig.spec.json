@@ -19,6 +19,12 @@
     "node_modules/vite/client.d.ts",
     "tests/setup.ts"
   ],
+  "types": [
+    "jest",
+    "n3",
+    "node",
+    "rdf",
+  ],
   "include": [ "lib" ],
   "exclude": [
     "dist",

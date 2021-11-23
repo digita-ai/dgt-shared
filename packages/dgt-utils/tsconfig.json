@@ -15,6 +15,7 @@
     "noImplicitReturns": true,
   },
   "files": [ "node_modules/vite/client.d.ts" ],
+  "types": [],
   "include": [ "lib" ],
   "exclude": [
     "**/*.spec.ts",

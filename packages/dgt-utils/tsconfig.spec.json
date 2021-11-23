@@ -17,6 +17,10 @@
     "node_modules/vite/client.d.ts",
     "tests/setup.ts"
   ],
+  "types": [
+    "jest",
+    "node",
+  ],
   "include": [ "lib" ],
   "exclude": [
     "dist",
