@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-utils",
-  "version": "0.7.6",
+  "version": "0.8.2",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
@@ -76,10 +76,10 @@
     "testEnvironment": "jsdom",
     "coverageThreshold": {
       "global": {
-        "branches": 20.83,
-        "functions": 11.27,
+        "branches": 22.85,
+        "functions": 11.26,
         "lines": 14.95,
-        "statements": 14.98
+        "statements": 14.97
       }
     },
     "coveragePathIgnorePatterns": [

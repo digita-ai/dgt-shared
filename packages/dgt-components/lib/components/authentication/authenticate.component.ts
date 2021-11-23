@@ -10,8 +10,9 @@ import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
+import { Translator } from '../../services/i18n/translator';
 import { WebIdComponent } from './webid.component';
-import { AuthenticateContext, AuthenticateEvent, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent, WebIdValidator } from './authenticate.machine';
 
 export class AuthenticateComponent extends RxLitElement {
 
@@ -27,6 +28,8 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: Boolean }) hideWebId = false;
   @property({ type: Boolean }) hideIssuers = false;
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property() webIdValidationResults: string[];
+  @property({ type: Translator }) translator?: Translator;
 
   @property({ type: Array }) trusted: string[];
 
@@ -41,7 +44,7 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
 
-  constructor(solidService: SolidService, trustedIssuers?: string[]) {
+  constructor(solidService: SolidService, trustedIssuers?: string[], webIdValidator?: WebIdValidator) {
 
     super();
 
@@ -50,13 +53,33 @@ export class AuthenticateComponent extends RxLitElement {
     define('separator-component', SeparatorComponent);
     define('loading-component', LoadingComponent);
 
-    this.machine = createMachine(authenticateMachine(solidService)).withContext({ trusted: trustedIssuers });
+    this.machine = createMachine(authenticateMachine(solidService))
+      .withContext({
+        trusted: trustedIssuers,
+        webIdValidator,
+      });
 
     // eslint-disable-next-line no-console
     this.actor = interpret(this.machine, { devTools: true }).onTransition((state) => console.log(state.value));
 
     this.subscribe('state', from(this.actor));
     this.subscribe('issuers', from(this.actor).pipe(map((state) => state.context.issuers)));
+
+    this.subscribe('webIdValidationResults', from(this.actor).pipe(map((state) => {
+
+      if (state.event.type === AuthenticateEvents.LOGIN_ERROR) {
+
+        this.dispatchEvent(new CustomEvent('authenticate-error', { detail: state.event.results }));
+
+        return state.event.results;
+
+      } else {
+
+        return this.webIdValidationResults;
+
+      }
+
+    })));
 
     this.actor.onDone((event: DoneEvent) => {
 
@@ -77,6 +100,8 @@ export class AuthenticateComponent extends RxLitElement {
   };
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true })); };
+
+  onAlertDismissed = (): void => { this.webIdValidationResults = []; };
 
   render(): TemplateResult {
 
@@ -100,15 +125,18 @@ export class AuthenticateComponent extends RxLitElement {
         </separator-component>
 
         <webid-form
-          exportparts="webid-label, webid-input, webid-create, webid-button"
+          exportparts="webid-label, webid-input, webid-create, webid-button, validation-alert"
           ?hidden="${this.hideWebId}"
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
           @submit-webid="${this.onSubmit}"
           @create-webid="${this.onButtonCreateWebIDClick}"
+          @dismiss="${this.onAlertDismissed}"
           .textLabel="${this.textWebIdLabel}"
           .textPlaceholder="${this.textWebIdPlaceholder}"
           .textNoWebId="${this.textNoWebId}"
           .textButton="${this.textButton}"
+          .validationResults="${this.webIdValidationResults}"
+          .translator="${this.translator}"
         >
           <slot name="beforeWebId" slot="before"></slot>
           <slot name="afterWebId" slot="after"></slot>
