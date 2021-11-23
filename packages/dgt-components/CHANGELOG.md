@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.2](https://github.com/digita-ai/dgt-shared/compare/v0.8.1...v0.8.2) (2021-11-23)
+
+
+### **Features**
+
+* barcode component ([#101](https://github.com/digita-ai/dgt-shared/issues/101)) ([2cbd4d6](https://github.com/digita-ai/dgt-shared/commit/2cbd4d6dee63bc6198f0ac0d15a188047869b9de))
+
+
+
 ### [0.8.1](https://github.com/digita-ai/dgt-shared/compare/v0.8.0...v0.8.1) (2021-11-22)
 
 
