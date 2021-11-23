@@ -23,7 +23,7 @@ export class ProfileNameComponent extends BaseComponent {
   readonly foaf = 'http://xmlns.com/foaf/0.1/';
   readonly n = 'http://www.w3.org/2006/vcard/ns#';
 
-  @property() image?: string;
+  @property() image?: URL;
   @property() formActor: Interpreter<FormContext<ProfileNameComponentForm>>;
   @property() canSave = false;
 
@@ -76,7 +76,16 @@ export class ProfileNameComponent extends BaseComponent {
     const nick = store.getQuads(null,  new NamedNode(`${this.foaf}nick`), null, null)[0]?.object.value;
     const honorific = store.getQuads(null, new NamedNode(`${this.n}honorific-prefix`), null, null)[0]?.object.value;
     const image = store.getQuads(null, new NamedNode(`${this.n}hasPhoto`), null, null)[0]?.object.value;
-    this.image = image;
+
+    this.image = undefined;
+
+    try {
+
+      this.image = new URL(image);
+
+    } catch {
+      // Do nothing
+    }
 
     this.formActor = interpret(formMachine<ProfileNameComponentForm>(
       /**
@@ -135,13 +144,13 @@ export class ProfileNameComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card ?hideImage="${ !this.image }">
+    <nde-card ?hideImage="${ this.image === undefined }">
       <div slot="title">Names</div>
       <div slot="subtitle">Your names</div>
       <div slot="icon">
         ${unsafeSVG(Image)}
       </div>
-      ${this.image ? html `<img slot="image" src="${this.image}">` : ''}
+      ${this.image ? html `<img slot="image" src="${this.image.toString()}">` : ''}
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" field="image">
           <label slot="label" for="image">
