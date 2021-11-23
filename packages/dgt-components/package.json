@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-components",
-  "version": "0.7.6",
+  "version": "0.8.2",
   "description": "Collection of Semantic Components.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-components.umd.js",
@@ -29,17 +29,18 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
-    "@digita-ai/dgt-theme": "0.7.6",
-    "@digita-ai/dgt-utils": "0.7.6",
+    "@digita-ai/dgt-theme": "0.8.2",
+    "@digita-ai/dgt-utils": "0.8.2",
     "@digita-ai/inrupt-solid-service": "^0.8.7",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
     "buffer": "6.0.3",
+    "jsbarcode": "^3.11.5",
     "lit-element": "2.4.0",
     "n3": "1.8.0",
     "rx-lit": "1.0.1",
     "rxjs": "^7.4.0",
-    "xstate": "^4.25.0"
+    "xstate": "^4.26.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
@@ -56,7 +57,7 @@
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
-    "vite": "2.4.0"
+    "vite": "^2.6.14"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
@@ -88,10 +89,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 33.51,
-        "functions": 32.14,
-        "lines": 34.08,
-        "statements": 33.54
+        "branches": 32.47,
+        "functions": 33.93,
+        "lines": 38.02,
+        "statements": 38.12
       }
     },
     "coveragePathIgnorePatterns": [
@@ -99,8 +100,7 @@
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
-      "<rootDir>/lib/demo.ts",
-      "<rootDir>/lib/demo/"
+      "<rootDir>/demo/"
     ]
   }
 }

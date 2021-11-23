@@ -1,4 +1,4 @@
-import { Parser } from 'n3';
+import { Parser, Store } from 'n3';
 import { ComponentEventType, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
 import {ProfileNameComponent} from '../lib/components/profile/profile-name.component';
 import {FormElementComponent} from '../lib/components/forms/form-element.component';
@@ -8,6 +8,7 @@ import { ProfilePayslipComponent } from '../lib/components/profile/profile-pays
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 import { DemoComponent } from './demo.component';
+import { BarcodeComponent } from '../lib/components/barcode/barcode.component'
 
 
 
@@ -19,6 +20,7 @@ customElements.define('profile-contact-component', ProfileContactComponent);
 customElements.define('profile-payslip-component',  ProfilePayslipComponent);
 customElements.define('list-item', ListItemComponent);
 customElements.define('demo-component', DemoComponent);
+customElements.define('barcode-component', BarcodeComponent);
 
 const parser = new Parser();
 
@@ -33,11 +35,12 @@ document.addEventListener(ComponentEventType.READ, (event: ComponentReadEvent) =
   }
 
   fetch(event.detail.uri).then((response) => response.text().then((profileText) => {
-
     const quads = parser.parse(profileText);
+    const store = new Store(quads);
+    const filteredQuads = store.getQuads(event.detail.uri.split('#')[1] ? '#' + event.detail.uri.split('#')[1] : undefined , undefined, undefined, undefined);
 
     event.target?.dispatchEvent(new ComponentResponseEvent({
-      detail: { uri: event.detail.uri, cause: event, data: quads, success: true },
+      detail: { uri: event.detail.uri, cause: event, data: filteredQuads, success: true },
     }));
 
   }));
