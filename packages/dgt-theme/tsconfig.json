@@ -6,7 +6,9 @@
     "emitDeclarationOnly": true,
     // Recommended by Lit Element
     "module": "es2015",
-    "target": "es2017"
+    "target": "es2017",
+    //
+    "types": []
   },
   "files": [ "node_modules/vite/client.d.ts" ],
   "include": [ "lib" ],

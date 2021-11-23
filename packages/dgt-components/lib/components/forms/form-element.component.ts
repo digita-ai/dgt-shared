@@ -1,12 +1,13 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DGTErrorArgument, Translator, debounce } from '@digita-ai/dgt-utils';
-import { ActorRef, Interpreter, State } from 'xstate';
+import { Interpreter, StateSchema } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
-import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { State } from '../state/state';
+import { FormContext, FormRootStates, FormStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -91,7 +92,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
+  public actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -146,7 +147,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   bindActorToInput(
     slot: HTMLSlotElement,
-    actor: ActorRef<FormEvent, State<FormContext<T>, FormEvent, any, FormState<T>>>,
+    actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>,
     field: keyof T,
     data: T,
   ): void {

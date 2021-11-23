@@ -6,7 +6,10 @@
     // Recommended by Lit Element
     "module": "commonjs",
     "target": "es2017",
-    // Strict should actually be true
+    //
+    "types": [
+      "node"
+    ],
     "strict": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,

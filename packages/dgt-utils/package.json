@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-utils",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
@@ -9,7 +9,8 @@
     "lint:fix": "eslint --fix .",
     "test": "jest",
     "test:ci": "jest --runInBand",
-    "test:watch": "jest --watch --no-coverage"
+    "test:watch": "jest --watch --no-coverage",
+    "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,13 +28,13 @@
     ".componentsignore"
   ],
   "dependencies": {
+    "@types/node": "^14.14.14",
     "rxjs": "^7.4.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
     "@types/jest": "^27.0.2",
-    "@types/node": "^14.14.14",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
     "componentsjs": "4.5.0",
@@ -41,6 +42,7 @@
     "eslint": "^7.16.0",
     "jest": "^27.3.1",
     "jsdom": "^18.1.0",
+    "jest-coverage-thresholds-bumper": "1.0.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "vite": "2.2.3"
@@ -74,10 +76,10 @@
     "testEnvironment": "jsdom",
     "coverageThreshold": {
       "global": {
-        "branches": 0,
-        "functions": 0,
-        "lines": 0,
-        "statements": 0
+        "branches": 20.83,
+        "functions": 11.27,
+        "lines": 14.95,
+        "statements": 14.98
       }
     },
     "coveragePathIgnorePatterns": [

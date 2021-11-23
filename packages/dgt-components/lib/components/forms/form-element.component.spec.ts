@@ -1,6 +1,6 @@
 import { DGTErrorArgument } from '@digita-ai/dgt-utils';
 import { Observable, of } from 'rxjs';
-import { interpret, Interpreter } from 'xstate';
+import { interpret, Interpreter, StateSchema } from 'xstate';
 import { State } from '../state/state';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
@@ -16,7 +16,14 @@ interface TData {
 describe('FormElementComponent', () => {
 
   let component: FormElementComponent<TData>;
-  let machine: Interpreter<FormContext<TData>, any, FormEvent, State<FormStates, FormContext<TData>>>;
+
+  let machine: Interpreter<
+  FormContext<TData>,
+  StateSchema<FormContext<TData>>,
+  FormEvent,
+  State<FormStates, FormContext<TData>>
+  >;
+
   let input;
 
   beforeEach(() => {

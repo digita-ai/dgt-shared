@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-components",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "Collection of Semantic Components.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-components.umd.js",
@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "start": "npm run start:watch",
-    "start:watch": "vite",
+    "start:watch": "vite --port 4000",
     "build": "rimraf ./dist && vite build --mode semcom  && vite build --mode bundle && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -29,9 +29,9 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
-    "@digita-ai/dgt-theme": "0.7.5",
-    "@digita-ai/dgt-utils": "0.7.5",
     "@digita-ai/inrupt-solid-service": "^0.9.2",
+    "@digita-ai/dgt-theme": "0.7.6",
+    "@digita-ai/dgt-utils": "0.7.6",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
     "buffer": "6.0.3",
@@ -51,8 +51,8 @@
     "@types/rdf-js": "^4.0.1",
     "eslint": "^7.16.0",
     "jest": "^27.3.1",
-    "jest-coverage-thresholds-bumper": "0.0.4",
     "jsdom": "^18.1.0",
+    "jest-coverage-thresholds-bumper": "1.0.1",
     "lint-staged": "^12.0.2",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
@@ -89,10 +89,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 34.25,
-        "functions": 32.72,
-        "lines": 34.47,
-        "statements": 34.01
+        "branches": 33.51,
+        "functions": 32.14,
+        "lines": 34.08,
+        "statements": 33.54
       }
     },
     "coveragePathIgnorePatterns": [

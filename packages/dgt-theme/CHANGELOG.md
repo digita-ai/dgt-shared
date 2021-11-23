@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.7.6](https://github.com/digita-ai/dgt-shared/compare/v0.7.5...v0.7.6) (2021-11-16)
+
+
+### **Features**
+
+* added database icon ([#97](https://github.com/digita-ai/dgt-shared/issues/97)) ([78ebfef](https://github.com/digita-ai/dgt-shared/commit/78ebfef1494ad89ef9604596613a1041342a907d))
+
+
+
 ### [0.7.5](https://github.com/digita-ai/dgt-shared/compare/v0.7.4...v0.7.5) (2021-11-15)
 
 **Note:** Version bump only for package @digita-ai/dgt-theme

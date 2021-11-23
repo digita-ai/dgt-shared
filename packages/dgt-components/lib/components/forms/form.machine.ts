@@ -1,4 +1,4 @@
-import { createMachine, StateSchema } from 'xstate';
+import { createMachine, StateMachine, StateSchema } from 'xstate';
 import { map } from 'rxjs/operators';
 import { State } from '../state/state';
 import { FormValidatorResult } from './form-validator-result';
@@ -84,159 +84,160 @@ export interface FormState<T> {
 export const formMachine = <T>(
   validator: FormValidator<T>,
   submitter: FormSubmitter<T> = async (context) => context.data,
-) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
-  {
-    id: FormActors.FORM_MACHINE,
-    initial: FormSubmissionStates.NOT_SUBMITTED,
-    states: {
+): StateMachine<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>> =>
+  createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
+    {
+      id: FormActors.FORM_MACHINE,
+      initial: FormSubmissionStates.NOT_SUBMITTED,
+      states: {
       /**
        * The form has not been submitted.
        */
-      [FormSubmissionStates.NOT_SUBMITTED]: {
-        type: 'parallel',
-        on: {
-          [FormEvents.FORM_SUBMITTED]: {
-            target: FormSubmissionStates.SUBMITTING,
+        [FormSubmissionStates.NOT_SUBMITTED]: {
+          type: 'parallel',
+          on: {
+            [FormEvents.FORM_SUBMITTED]: {
+              target: FormSubmissionStates.SUBMITTING,
+            },
           },
-        },
-        states: {
+          states: {
           /**
            * State which determines if form has changed.
            */
-          [FormRootStates.CLEANLINESS]: {
-            initial: FormCleanlinessStates.PRISTINE,
-            states: {
+            [FormRootStates.CLEANLINESS]: {
+              initial: FormCleanlinessStates.PRISTINE,
+              states: {
               /**
                * The form has not changed.
                */
-              [FormCleanlinessStates.PRISTINE]: {
-                on: {
-                  [FormEvents.FORM_UPDATED]: {
-                    target: FormCleanlinessStates.CHECKING_CLEANLINESS,
+                [FormCleanlinessStates.PRISTINE]: {
+                  on: {
+                    [FormEvents.FORM_UPDATED]: {
+                      target: FormCleanlinessStates.CHECKING_CLEANLINESS,
+                    },
                   },
                 },
-              },
-              /**
-               * Transient state while checking if form was changed.
-               */
-              [FormCleanlinessStates.CHECKING_CLEANLINESS]: {
-                entry: update,
-                always: [
-                  {
-                    target: FormCleanlinessStates.PRISTINE,
-                    cond: (context: FormContext<T>) =>
-                      JSON.stringify(context.data) === JSON.stringify(context.original),
-                  },
-                  {
-                    target: FormCleanlinessStates.DIRTY,
-                  },
-                ],
-              },
-              /**
-               * The form has been changed.
-               */
-              [FormCleanlinessStates.DIRTY]: {
-                on: {
-                  [FormEvents.FORM_UPDATED]: {
-                    target: FormCleanlinessStates.CHECKING_CLEANLINESS,
-                  },
-                },
-              },
-            },
-          },
-
-          /**
-           * State which determines if the form is validated.
-           */
-          [FormRootStates.VALIDATION]: {
-            initial: FormValidationStates.NOT_VALIDATED,
-            states: {
-              /**
-               * The form has not yet been validated.
-               */
-              [FormValidationStates.NOT_VALIDATED]: {
-                on: {
-                  [FormEvents.FORM_UPDATED]: {
-                    target: FormValidationStates.VALIDATING,
-                  },
-                  [FormEvents.FORM_SUBMITTED]: {
-                    target: FormValidationStates.VALIDATING,
-                  },
-                },
-              },
-              /**
-               * Transient state while validating.
-               */
-              [FormValidationStates.VALIDATING]: {
-                entry: update,
-                invoke: {
-                  src: (context, event) => validator(context, event).pipe(
-                    map((results) => ({ type: FormEvents.FORM_VALIDATED, results })),
-                  ),
-                },
-                on: {
-                  [FormEvents.FORM_VALIDATED]: [
+                /**
+                 * Transient state while checking if form was changed.
+                 */
+                [FormCleanlinessStates.CHECKING_CLEANLINESS]: {
+                  entry: update,
+                  always: [
                     {
-                      cond: (_, event: FormValidatedEvent) => !event.results || event.results.length === 0,
-                      actions: addValidationResults,
-                      target: FormValidationStates.VALID,
+                      target: FormCleanlinessStates.PRISTINE,
+                      cond: (context: FormContext<T>) =>
+                        JSON.stringify(context.data) === JSON.stringify(context.original),
                     },
                     {
-                      cond: (_, event: FormValidatedEvent) => event.results && event.results.length > 0,
-                      actions: addValidationResults,
-                      target: FormValidationStates.INVALID,
+                      target: FormCleanlinessStates.DIRTY,
                     },
                   ],
                 },
-              },
-              /**
-               * The form is valid, based on the provided validator function.
-               */
-              [FormValidationStates.VALID]: {
-                on: {
-                  [FormEvents.FORM_UPDATED]: {
-                    target: FormValidationStates.VALIDATING,
+                /**
+                 * The form has been changed.
+                 */
+                [FormCleanlinessStates.DIRTY]: {
+                  on: {
+                    [FormEvents.FORM_UPDATED]: {
+                      target: FormCleanlinessStates.CHECKING_CLEANLINESS,
+                    },
                   },
                 },
               },
+            },
+
+            /**
+             * State which determines if the form is validated.
+             */
+            [FormRootStates.VALIDATION]: {
+              initial: FormValidationStates.NOT_VALIDATED,
+              states: {
               /**
-               * The form is invalid, based on the provided validator function.
+               * The form has not yet been validated.
                */
-              [FormValidationStates.INVALID]: {
-                on: {
-                  [FormEvents.FORM_UPDATED]: {
-                    target: FormValidationStates.VALIDATING,
+                [FormValidationStates.NOT_VALIDATED]: {
+                  on: {
+                    [FormEvents.FORM_UPDATED]: {
+                      target: FormValidationStates.VALIDATING,
+                    },
+                    [FormEvents.FORM_SUBMITTED]: {
+                      target: FormValidationStates.VALIDATING,
+                    },
+                  },
+                },
+                /**
+                 * Transient state while validating.
+                 */
+                [FormValidationStates.VALIDATING]: {
+                  entry: update,
+                  invoke: {
+                    src: (context, event) => validator(context, event).pipe(
+                      map((results) => ({ type: FormEvents.FORM_VALIDATED, results })),
+                    ),
+                  },
+                  on: {
+                    [FormEvents.FORM_VALIDATED]: [
+                      {
+                        cond: (_, event: FormValidatedEvent) => !event.results || event.results.length === 0,
+                        actions: addValidationResults,
+                        target: FormValidationStates.VALID,
+                      },
+                      {
+                        cond: (_, event: FormValidatedEvent) => event.results && event.results.length > 0,
+                        actions: addValidationResults,
+                        target: FormValidationStates.INVALID,
+                      },
+                    ],
+                  },
+                },
+                /**
+                 * The form is valid, based on the provided validator function.
+                 */
+                [FormValidationStates.VALID]: {
+                  on: {
+                    [FormEvents.FORM_UPDATED]: {
+                      target: FormValidationStates.VALIDATING,
+                    },
+                  },
+                },
+                /**
+                 * The form is invalid, based on the provided validator function.
+                 */
+                [FormValidationStates.INVALID]: {
+                  on: {
+                    [FormEvents.FORM_UPDATED]: {
+                      target: FormValidationStates.VALIDATING,
+                    },
                   },
                 },
               },
             },
           },
         },
-      },
-      /**
-       * Transient state while submitting form. Invokes the machine's submitter.
-       */
-      [FormSubmissionStates.SUBMITTING]: {
-        entry: update,
-        invoke: {
-          src: (context, event) => submitter(context, event),
-          onDone: {
-            target: FormSubmissionStates.SUBMITTED,
-          },
-          onError: {
-            target: FormSubmissionStates.NOT_SUBMITTED,
+        /**
+         * Transient state while submitting form. Invokes the machine's submitter.
+         */
+        [FormSubmissionStates.SUBMITTING]: {
+          entry: update,
+          invoke: {
+            src: (context, event) => submitter(context, event),
+            onDone: {
+              target: FormSubmissionStates.SUBMITTED,
+            },
+            onError: {
+              target: FormSubmissionStates.NOT_SUBMITTED,
+            },
           },
         },
-      },
-      /**
-       * The form has been submitted.
-       */
-      [FormSubmissionStates.SUBMITTED]: {
-        data: {
-          data: (context: FormContext<T>) => context.data,
+        /**
+         * The form has been submitted.
+         */
+        [FormSubmissionStates.SUBMITTED]: {
+          data: {
+            data: (context: FormContext<T>) => context.data,
+          },
+          type: 'final',
         },
-        type: 'final',
       },
     },
-  },
-);
+  );
