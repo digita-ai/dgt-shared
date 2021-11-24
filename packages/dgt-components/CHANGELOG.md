@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.3](https://github.com/digita-ai/dgt-shared/compare/v0.8.2...v0.8.3) (2021-11-24)
+
+
+### **Bug Fixes**
+
+* correctly handle save in profile name component ([#105](https://github.com/digita-ai/dgt-shared/issues/105)) ([68d105c](https://github.com/digita-ai/dgt-shared/commit/68d105c7efa76eb9772857f6c61d1f063d1aaa3a))
+
+
+
 ### [0.8.2](https://github.com/digita-ai/dgt-shared/compare/v0.8.1...v0.8.2) (2021-11-23)
 
 
