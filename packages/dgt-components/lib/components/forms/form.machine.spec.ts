@@ -73,13 +73,15 @@ describe('FormMachine', () => {
 
   });
 
-  it('should submit when form is valid', async (done) => {
+  it('should submit when form is valid', (done) => {
 
     machine.start();
 
+    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'foo' });
+
     machine.onTransition((state) => {
 
-      if(state.matches(FormSubmissionStates.NOT_SUBMITTED)){
+      if (state.matches(FormSubmissionStates.NOT_SUBMITTED)){
 
         done();
 
@@ -87,7 +89,6 @@ describe('FormMachine', () => {
 
     });
 
-    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'foo' });
     machine.send(FormEvents.FORM_SUBMITTED);
 
   });
@@ -102,18 +103,18 @@ describe('FormMachine', () => {
 
   });
 
-  it('should not be submitted if form is invalid', async (done) => {
+  it('should not be submitted if form is invalid', (done) => {
 
     machine.start();
 
     machine.onTransition((state) => {
 
-      if(state.matches({
+      if (state.matches({
         [FormSubmissionStates.NOT_SUBMITTED]:{
           [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
           [FormRootStates.VALIDATION]: FormValidationStates.NOT_VALIDATED,
         },
-      })){
+      })) {
 
         done();
 
@@ -126,7 +127,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should run submitter when submitting', async (done) => {
+  it('should run submitter when submitting', (done) => {
 
     const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
 
@@ -146,7 +147,7 @@ describe('FormMachine', () => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(FormSubmissionStates.SUBMITTED)){
+      if (state.matches(FormSubmissionStates.SUBMITTED)){
 
         expect(submitter).toHaveBeenCalledTimes(1);
         done();

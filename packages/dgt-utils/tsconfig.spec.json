@@ -3,12 +3,23 @@
   "compilerOptions": {
     "baseUrl": "lib",
     "outDir": "dist",
+    //
+    "types": [
+      "jest",
+      "node"
+    ],
     "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
     "strict": false
   },
   "files": [ 
     "node_modules/vite/client.d.ts",
     "tests/setup.ts"
+  ],
+  "types": [
+    "jest",
+    "node",
   ],
   "include": [ "lib" ],
   "exclude": [
