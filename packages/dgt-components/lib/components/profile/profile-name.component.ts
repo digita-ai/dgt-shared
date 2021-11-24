@@ -1,4 +1,4 @@
-import { Literal, NamedNode, Quad, Store } from 'n3';
+import { NamedNode, Store, DataFactory } from 'n3';
 import { css, html, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -23,7 +23,7 @@ export class ProfileNameComponent extends BaseComponent {
   readonly foaf = 'http://xmlns.com/foaf/0.1/';
   readonly n = 'http://www.w3.org/2006/vcard/ns#';
 
-  @property() image?: string;
+  @property() image?: URL;
   @property() formActor: Interpreter<FormContext<ProfileNameComponentForm>>;
   @property() canSave = false;
 
@@ -76,7 +76,16 @@ export class ProfileNameComponent extends BaseComponent {
     const nick = store.getQuads(null,  new NamedNode(`${this.foaf}nick`), null, null)[0]?.object.value;
     const honorific = store.getQuads(null, new NamedNode(`${this.n}honorific-prefix`), null, null)[0]?.object.value;
     const image = store.getQuads(null, new NamedNode(`${this.n}hasPhoto`), null, null)[0]?.object.value;
-    this.image = image;
+
+    this.image = undefined;
+
+    try {
+
+      this.image = new URL(image);
+
+    } catch {
+      // Do nothing
+    }
 
     this.formActor = interpret(formMachine<ProfileNameComponentForm>(
       /**
@@ -120,11 +129,13 @@ export class ProfileNameComponent extends BaseComponent {
 
     this.formActor.send(FormEvents.FORM_SUBMITTED);
 
+    const { namedNode, literal, quad } = DataFactory;
+
     this.writeData(this.entry, [
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.foaf}name`), new Literal(this.formActor.state.context.data.fullName)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.foaf}nick`), new Literal(this.formActor.state.context.data.nick)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.n}honorific-prefix`), new Literal(this.formActor.state.context.data.honorific)),
-      new Quad(new NamedNode(this.entry), new NamedNode(`${this.n}hasPhoto`), new Literal(this.formActor.state.context.data.image)),
+      quad(namedNode(this.entry), namedNode(`${this.foaf}name`), literal(this.formActor.state.context.data.fullName)),
+      quad(namedNode(this.entry), namedNode(`${this.foaf}nick`), literal(this.formActor.state.context.data.nick)),
+      quad(namedNode(this.entry), namedNode(`${this.n}honorific-prefix`), literal(this.formActor.state.context.data.honorific)),
+      quad(namedNode(this.entry), namedNode(`${this.n}hasPhoto`), namedNode(this.formActor.state.context.data.image)),
     ]);
 
   }
@@ -133,13 +144,13 @@ export class ProfileNameComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card ?hideImage="${ !this.image }">
+    <nde-card ?hideImage="${ this.image === undefined }">
       <div slot="title">Names</div>
       <div slot="subtitle">Your names</div>
       <div slot="icon">
         ${unsafeSVG(Image)}
       </div>
-      ${this.image ? html `<img slot="image" src="${this.image}">` : ''}
+      ${this.image ? html `<img slot="image" src="${this.image.toString()}">` : ''}
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" field="image">
           <label slot="label" for="image">

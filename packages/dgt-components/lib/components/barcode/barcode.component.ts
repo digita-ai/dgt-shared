@@ -2,14 +2,16 @@
 import { Store } from 'n3';
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme, QR, Open } from '@digita-ai/dgt-theme';
 import JsBarcode from 'jsbarcode';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { BaseComponent } from '../base/base.component';
 
 export class BarcodeComponent extends BaseComponent {
 
   @internalProperty() cardNumber?: string;
   @internalProperty() program?: string;
+  @internalProperty() hostingOrganization?: string;
   @property({ type: Boolean }) hideProgram = false;
 
   @query('#barcode') barcodeSvg?: HTMLOrSVGElement;
@@ -36,9 +38,11 @@ export class BarcodeComponent extends BaseComponent {
     const quad = store.getQuads(undefined, 'http://schema.org/membershipNumber', undefined, undefined)[0];
 
     const program = store.getQuads(quad.subject, 'http://schema.org/programName', undefined, undefined)[0];
+    const hostingOrganization = store.getQuads(quad.subject, 'http://schema.org/hostingOrganization', undefined, undefined)[0];
 
     this.cardNumber = quad.object.value;
     this.program = program.object.value;
+    this.hostingOrganization = hostingOrganization.object.value;
 
   }
 
@@ -61,8 +65,21 @@ export class BarcodeComponent extends BaseComponent {
   render(): TemplateResult {
 
     return html`
-      ${this.program && !this.hideProgram ? html`<p id="program">${this.program}</p>` : ''}
-      <svg id="barcode"></svg>
+      ${this.program && !this.hideProgram ? html`
+        <nde-card ?hideImage="${ true }">
+          <div slot="title">${this.program}</div>
+          <div slot="subtitle">This is your barcode</div>
+          <div slot="icon">
+            ${unsafeSVG(QR)}
+          </div>
+          <div slot="content">
+            <div class="barcode-container">
+              <svg id="barcode"></svg>
+            </div>
+            ${this.hostingOrganization ? html`<a target="_blank" .href="${this.hostingOrganization}" class="btn primary">${unsafeSVG(Open)} <div>More information</div></a>` : ``}
+          </div>
+        </nde-card>
+      ` : ''}
     `;
 
   }
@@ -72,27 +89,39 @@ export class BarcodeComponent extends BaseComponent {
     return [
       unsafeCSS(Theme),
       css`
-      
-        :host {
+        div[slot="icon"] svg {
+          fill: var(--colors-foreground-normal);
+        }
+
+        div[slot="content"] {
           display: flex;
+          align-items: stretch;
           flex-direction: column;
-          background-color: var(--colors-foreground-inverse);
-          padding: var(--gap-normal) 0;
         }
 
-        :host > * {
-          align-self: center;
+        a.btn {
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          margin-top: var(--gap-large);
+          justify-content: center;
         }
 
-        p {
-          margin: 0;
+        a.btn svg {
+          fill: var(--colors-foreground-inverse);
+          margin-right: var(--gap-normal);
         }
 
-        #barcode {
+        .barcode-container {
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+        }
+
+        .barcode-container #barcode {
           width: 200px;
           height: 110px;  
         }
-
       `,
     ];
 

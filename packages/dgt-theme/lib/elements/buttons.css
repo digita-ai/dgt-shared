@@ -1,4 +1,13 @@
-button,
+
+button:disabled {
+  background-color: var(--colors-background-normal);
+  border-color: var(--colors-background-normal);
+  color: var(--colors-foreground-light);
+  cursor: inherit;
+}
+
+a.btn,
+a.btn.primary button,
 button.primary {
   background-color: var(--colors-primary-dark);
   border: 2px solid var(--colors-primary-dark);
@@ -6,6 +15,7 @@ button.primary {
   color: var(--colors-foreground-inverse);
   cursor: pointer;
   outline: none;
+  text-decoration: none;
 }
 
 button.no-padding {
@@ -41,13 +51,6 @@ button.inverse {
 
 button.inverse svg {
   fill: var(--colors-primary-light);
-}
-
-button:disabled {
-  background-color: var(--colors-background-normal);
-  border-color: var(--colors-background-normal);
-  color: var(--colors-foreground-light);
-  cursor: inherit;
 }
 
 button:disabled svg {
