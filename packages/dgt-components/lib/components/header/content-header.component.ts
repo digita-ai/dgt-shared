@@ -20,8 +20,6 @@ export class ContentHeaderComponent extends LitElement {
   render() {
 
     return html`
-    <div class="header ${this.inverse ? '' : 'inverse'}">
-
       <div class="icon">
         <slot name="icon"></slot>
       </div>
@@ -34,8 +32,6 @@ export class ContentHeaderComponent extends LitElement {
       <div class="actions">
         <slot name="actions"></slot>
       </div>
-
-    </div>
   `;
 
   }
@@ -49,17 +45,7 @@ export class ContentHeaderComponent extends LitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          display: block;
           height: 99px;
-          min-height: 99px;
-        }
-        .header.inverse {
-          background-color: var(--colors-primary-dark);
-          color: var(--colors-foreground-inverse);
-          fill: var(--colors-foreground-inverse);
-        }
-        .header {
-          height: 100%;
           padding: 0px var(--gap-large);
           background-color: var( --colors-background-light);
           color: var(--colors-foreground-normal);
@@ -69,43 +55,50 @@ export class ContentHeaderComponent extends LitElement {
           flex-direction: row;
           align-items: center;
         }
-        .header .icon {
-          font-size: 25px;
-        }
-        .header.inverse .icon ::slotted(svg) {
+
+
+        :host.inverse {
+          background-color: var(--colors-primary-dark);
+          color: var(--colors-foreground-inverse);
           fill: var(--colors-foreground-inverse);
         }
-        .header .icon ::slotted(*) {
+        .icon {
+          font-size: 25px;
+        }
+        inverse .icon ::slotted(svg) {
+          fill: var(--colors-foreground-inverse);
+        }
+        .icon ::slotted(*) {
           height: 25px;
           width: 25px;
         }
-        .header .content {
+        .content {
           flex: 1 0;
           margin: 0 var(--gap-normal);
         }
-        .header .content slot[name="title"]::slotted(*) {
+        .content slot[name="title"]::slotted(*) {
           overflow: hidden;
           font-weight: var(--font-weight-bold);
           font-size: var(--font-size-normal);
           height: var(--gap-normal);
           line-height: var(--gap-normal);
         }
-        .header .content slot[name="subtitle"]::slotted(*) {
+        .content slot[name="subtitle"]::slotted(*) {
           overflow: hidden;
           margin-top: var(--gap-tiny);
           font-size: var(--font-size-small);
           height: var(--gap-normal);
           line-height: var(--gap-normal);
         }
-        .header .actions {
+        .actions {
           margin-right: var(--gap-normal);
           display: flex;
           flex-direction: row;
         }
-        .header .actions:last-child {
+        .actions:last-child {
           margin-right: 0px;
         }
-        .header .actions ::slotted(*) {
+        .actions ::slotted(*) {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
           height: var(--gap-normal);
@@ -115,7 +108,7 @@ export class ContentHeaderComponent extends LitElement {
           cursor: pointer;
           margin-left: var(--gap-normal);
         }
-        .header.inverse .actions ::slotted(*) {
+        :host.inverse .actions ::slotted(*) {
           fill: var(--colors-foreground-inverse);
           color: var(--colors-foreground-inverse);
         }

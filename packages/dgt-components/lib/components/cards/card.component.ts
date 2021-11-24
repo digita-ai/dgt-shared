@@ -60,6 +60,9 @@ export class CardComponent extends LitElement {
         .reduced-top-padding {
           padding-top: var(--gap-normal);
         }
+        card-header {
+          border-bottom: none;
+        }
       `,
     ];
 
@@ -74,7 +77,7 @@ export class CardComponent extends LitElement {
 
         ${!this.hideHeader
     ? html`
-            <card-header inverse>
+            <card-header class="inverse">
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>
