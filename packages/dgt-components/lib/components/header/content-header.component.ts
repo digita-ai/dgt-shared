@@ -7,12 +7,6 @@ import { Theme } from '@digita-ai/dgt-theme';
 export class ContentHeaderComponent extends LitElement {
 
   /**
-   * Decides the color variant of this component (dark/light)
-   */
-  @property({ type: Boolean })
-  public inverse = false;
-
-  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
