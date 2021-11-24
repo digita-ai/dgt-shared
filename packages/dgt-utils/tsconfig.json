@@ -6,12 +6,16 @@
     // Recommended by Lit Element
     "module": "commonjs",
     "target": "es2017",
-    // Strict should actually be true
+    //
+    "types": [
+      "node"
+    ],
     "strict": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
   },
   "files": [ "node_modules/vite/client.d.ts" ],
+  "types": [],
   "include": [ "lib" ],
   "exclude": [
     "**/*.spec.ts",

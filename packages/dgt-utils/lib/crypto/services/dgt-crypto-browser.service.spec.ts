@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import * as path from 'path';
 import { ComponentsManager } from 'componentsjs';
 import { DGTCryptoBrowserService } from './dgt-crypto-browser.service';
