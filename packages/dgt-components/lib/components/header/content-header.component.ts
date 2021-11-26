@@ -44,7 +44,6 @@ export class ContentHeaderComponent extends LitElement {
           background-color: var( --colors-background-light);
           color: var(--colors-foreground-normal);
           fill: var(--colors-foreground-normal);
-          border-bottom: 1px solid var(--colors-primary-normal);
           display: flex;
           flex-direction: row;
           align-items: center;

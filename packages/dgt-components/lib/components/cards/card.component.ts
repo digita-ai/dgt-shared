@@ -60,9 +60,6 @@ export class CardComponent extends LitElement {
         .reduced-top-padding {
           padding-top: var(--gap-normal);
         }
-        card-header {
-          border-bottom: none;
-        }
       `,
     ];
 
