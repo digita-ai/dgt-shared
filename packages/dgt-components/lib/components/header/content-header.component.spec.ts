@@ -45,23 +45,4 @@ describe('ContentHeaderComponent', () => {
 
   });
 
-  it.each([ true, false ])('should show set inverse class', async (inverse) => {
-
-    component.inverse = inverse;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    if(inverse) {
-
-      expect(window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector('.header.inverse')).toBeFalsy();
-
-    } else {
-
-      expect(window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector('.header.inverse')).toBeTruthy();
-
-    }
-
-  });
-
 });
