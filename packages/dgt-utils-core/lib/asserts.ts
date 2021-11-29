@@ -18,12 +18,12 @@ export const isFunction: TypeCheck<Function> = (value: unknown): value is Functi
 
 export const assert: (
   condition: boolean,
-  messageOrCatch?: string | (() => void),
+  message?: string,
 ) => asserts condition = (
   condition: boolean,
-  messageOrCatch?: string | (() => void),
+  message?: string,
 ): asserts condition => {
 
-  if (!condition) if (isFunction(messageOrCatch)) messageOrCatch(); else throw new Error(messageOrCatch ?? `Assertion failed.`);
+  if (!condition) throw new Error(message ?? `Assertion failed.`);
 
 };
