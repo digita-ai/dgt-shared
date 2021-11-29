@@ -1,0 +1,25 @@
+{
+  "extends": "@digita-ai/typescript-config/tsconfig.spec.json",
+  "compilerOptions": {
+    "baseUrl": "lib",
+    "outDir": "dist",
+    //
+    "types": [
+      "jest",
+      "node"
+    ],
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
+    "strict": false
+  },
+  "files": [ 
+    "node_modules/vite/client.d.ts",
+    "tests/setup.ts"
+  ],
+  "include": [ "lib" ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "extends": "@digita-ai/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "lib",
+    "outDir": "dist",
+    // Recommended by Lit Element
+    "module": "commonjs",
+    "target": "es2017",
+    //
+    "types": [
+      "node"
+    ],
+    "strict": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+  },
+  "files": [ "node_modules/vite/client.d.ts" ],
+  "include": [ "lib" ],
+  "exclude": [
+    "**/*.spec.ts",
+    "node_modules",
+    "dist"
+  ]
+}
