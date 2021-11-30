@@ -103,4 +103,8 @@ jobs:
       - run: npm publish packages/dgt-utils
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  
+      - run: npm publish packages/dgt-utils-core
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
