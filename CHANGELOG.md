@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.4](https://github.com/digita-ai/dgt-shared/compare/v0.8.3...v0.8.4) (2021-11-30)
+
+
+### **Features**
+
+* assertion functions ([#107](https://github.com/digita-ai/dgt-shared/issues/107)) ([d54cb75](https://github.com/digita-ai/dgt-shared/commit/d54cb75caac32c58fa5c9ffdc05a51aca74bf80f))
+* dont show card header border ([#106](https://github.com/digita-ai/dgt-shared/issues/106)) ([9d4b23b](https://github.com/digita-ai/dgt-shared/commit/9d4b23bb5ce9c8cc9f33d48c562e157b9ba28d27))
+
+
+
 ### [0.8.3](https://github.com/digita-ai/dgt-shared/compare/v0.8.2...v0.8.3) (2021-11-24)
 
 
