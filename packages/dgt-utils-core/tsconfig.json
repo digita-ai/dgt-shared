@@ -3,16 +3,8 @@
   "compilerOptions": {
     "baseUrl": "lib",
     "outDir": "dist",
-    // Recommended by Lit Element
-    "module": "commonjs",
-    "target": "es2017",
-    //
-    "types": [
-      "node"
-    ],
-    "strict": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
+    "module": "es2020",
+    "target": "es2020",
   },
   "files": [ "node_modules/vite/client.d.ts" ],
   "include": [ "lib" ],
