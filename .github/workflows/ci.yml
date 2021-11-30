@@ -47,6 +47,8 @@ jobs:
           node-version: 14
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GA_TOKEN}}
 
       - run: npm run build:all
       
@@ -89,6 +91,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
   
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GA_TOKEN}}
   
       - run: npm run build:all
   
