@@ -7,6 +7,7 @@ import { from, Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { map } from 'rxjs/operators';
 import { DGTErrorNotImplemented } from '@digita-ai/dgt-utils';
+import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { BaseComponent } from '../base/base.component';
 import { FormValidatorResult } from '../forms/form-validator-result';
@@ -35,7 +36,7 @@ export class ProfileContactComponent extends BaseComponent {
 
     if (changed.has('entry') && this.entry) {
 
-      this.readData(this.entry);
+      this.readData(this.entry, 'quads');
 
     }
 
@@ -59,7 +60,7 @@ export class ProfileContactComponent extends BaseComponent {
    *
    * @param event The response event to handle.
    */
-  handleResponse(event: ComponentResponseEvent): void {
+  handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
     if (!event || !event.detail || !event.detail.data) {
 

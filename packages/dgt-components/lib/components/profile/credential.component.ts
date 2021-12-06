@@ -4,6 +4,7 @@ import { css, html, property, PropertyValues, TemplateResult, unsafeCSS } from '
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Image, Theme } from '@digita-ai/dgt-theme';
+import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { BaseComponent } from '../base/base.component';
 
 export interface Credential {
@@ -32,7 +33,7 @@ export class CredentialComponent extends BaseComponent {
 
     if (changed.has('entry') && this.entry) {
 
-      this.readData(this.entry);
+      this.readData(this.entry, 'quads');
 
     }
 
@@ -43,7 +44,7 @@ export class CredentialComponent extends BaseComponent {
    *
    * @param event The response event to handle.
    */
-  handleResponse(event: ComponentResponseEvent): void {
+  handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
     if (!event || !event.detail || !event.detail.data) {
 

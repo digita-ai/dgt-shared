@@ -5,6 +5,7 @@ import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { Theme, QR, Open } from '@digita-ai/dgt-theme';
 import JsBarcode from 'jsbarcode';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { BaseComponent } from '../base/base.component';
 
 export class BarcodeComponent extends BaseComponent {
@@ -23,7 +24,7 @@ export class BarcodeComponent extends BaseComponent {
    *
    * @param event The response event to handle.
    */
-  handleResponse(event: ComponentResponseEvent): void {
+  handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
     console.log('handleResponse');
 
@@ -42,13 +43,13 @@ export class BarcodeComponent extends BaseComponent {
 
     this.cardNumber = quad.object.value;
     this.program = program.object.value;
-    this.hostingOrganization = hostingOrganization.object.value;
+    this.hostingOrganization = hostingOrganization?.object?.value;
 
   }
 
   updated(changed: PropertyValues): void {
 
-    if (changed.has('entry') && this.entry) this.readData(this.entry);
+    if (changed.has('entry') && this.entry) this.readData(this.entry, 'quads');
 
     if (this.barcodeSvg) {
 

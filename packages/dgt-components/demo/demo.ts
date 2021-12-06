@@ -1,5 +1,5 @@
 import { Parser, Store } from 'n3';
-import { ComponentEventType, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
+import { addListener, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
 import {ProfileNameComponent} from '../lib/components/profile/profile-name.component';
 import {FormElementComponent} from '../lib/components/forms/form-element.component';
 import {CardComponent} from '../lib/components/cards/card.component';
@@ -24,7 +24,7 @@ customElements.define('barcode-component', BarcodeComponent);
 
 const parser = new Parser();
 
-document.addEventListener(ComponentEventType.READ, (event: ComponentReadEvent) => {
+addListener(ComponentEventTypes.READ, 'quads', document, async (event: ComponentReadEvent<'quads'>) => {
 
   console.log('reading', event);
 
@@ -34,20 +34,20 @@ document.addEventListener(ComponentEventType.READ, (event: ComponentReadEvent) =
 
   }
 
-  fetch(event.detail.uri).then((response) => response.text().then((profileText) => {
+  return fetch(event.detail.uri).then((response) => response.text().then((profileText) => {
     const quads = parser.parse(profileText);
     const store = new Store(quads);
     const filteredQuads = store.getQuads(event.detail.uri.split('#')[1] ? '#' + event.detail.uri.split('#')[1] : undefined , undefined, undefined, undefined);
 
-    event.target?.dispatchEvent(new ComponentResponseEvent({
-      detail: { uri: event.detail.uri, cause: event, data: filteredQuads, success: true },
-    }));
+    return new ComponentResponseEvent({
+      detail: { uri: event.detail.uri, cause: event, data: filteredQuads, success: true, type: 'quads' },
+    });
 
   }));
 
 });
 
-document.addEventListener(ComponentEventType.WRITE, (event: ComponentWriteEvent) => {
+addListener(ComponentEventTypes.WRITE, 'quads', document, async (event: ComponentWriteEvent<'quads'>) => {
 
   console.log('writing', event);
 
@@ -57,8 +57,10 @@ document.addEventListener(ComponentEventType.WRITE, (event: ComponentWriteEvent)
 
   }
 
-  setTimeout(() => event.target?.dispatchEvent(new ComponentResponseEvent({
-    detail: { ...event.detail, cause: event, success: true },
-  })), 2000);
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(new ComponentResponseEvent({
+      detail: { ...event.detail, cause: event, success: true },
+    })), 2000);
+  });
 
 });
