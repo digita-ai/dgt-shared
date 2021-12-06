@@ -32,8 +32,8 @@
     "@digita-ai/dgt-theme": "0.8.5",
     "@digita-ai/dgt-utils": "0.8.5",
     "@digita-ai/inrupt-solid-service": "^0.9.2",
-    "@digita-ai/semcom-core": "0.4.1",
-    "@digita-ai/semcom-sdk": "0.4.1",
+    "@digita-ai/semcom-core": "^0.9.5",
+    "@digita-ai/semcom-sdk": "^0.9.5",
     "buffer": "6.0.3",
     "jsbarcode": "^3.11.5",
     "lit-element": "2.4.0",
@@ -92,8 +92,8 @@
       "global": {
         "branches": 31.44,
         "functions": 33.63,
-        "lines": 37.55,
-        "statements": 37.62
+        "lines": 37.5,
+        "statements": 37.57
       }
     },
     "coveragePathIgnorePatterns": [

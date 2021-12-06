@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-import { Component } from '@digita-ai/semcom-core';
-import { ComponentAppendEvent, ComponentEventType, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
+import { Component, ComponentDataTypes } from '@digita-ai/semcom-core';
+import { ComponentAppendEvent, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
 import { property } from 'lit-element';
-import { Quad } from 'rdf-js';
 import { RxLitElement } from 'rx-lit';
 
 /**
@@ -19,7 +18,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
 
     super();
 
-    this.addEventListener(ComponentEventType.RESPONSE, this.handleResponse);
+    this.addEventListener(ComponentEventTypes.RESPONSE, this.handleResponse);
 
   }
 
@@ -27,15 +26,17 @@ export abstract class BaseComponent extends RxLitElement implements Component {
    * Handles a response event. Can be used to update the component's properties based on the data in the response.
    *
    * @param event The response event to handle.
+   * @param type The type of data to handle.
    */
-  abstract handleResponse(event: ComponentResponseEvent): void;
+  abstract handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void;
 
   /**
    * Send a `ComponentReadEvent` to the component's parent to request data of a given resource.
    *
    * @param uri The uri of the resource to read.
+   * @param type The type of data to read.
    */
-  readData(uri: string): void {
+  readData<D extends keyof ComponentDataTypes>(uri: string, type: D, mime?: string): void {
 
     if (!uri) {
 
@@ -44,9 +45,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
     }
 
     this.dispatchEvent(new ComponentReadEvent({
-      detail: { uri },
-      bubbles: true,
-      composed: true,
+      detail: { uri, type, mime },
     }));
 
   }
@@ -57,7 +56,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
    * @param uri The uri of the resource to read.
    * @param data The data which should be written to the resource.
    */
-  writeData(uri: string, data: Quad[]): void {
+  writeData<D extends keyof ComponentDataTypes>(uri: string, data: ComponentDataTypes[D], type: D): void {
 
     if (!uri) {
 
@@ -72,7 +71,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
     }
 
     this.dispatchEvent(new ComponentWriteEvent({
-      detail: { uri, data },
+      detail: { uri, data, type },
     }));
 
   }
@@ -83,7 +82,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
    * @param uri The uri of the resource to read.
    * @param data The data which should be appended to the resource.
    */
-  appendData(uri: string, data: Quad[]): void {
+  appendData<D extends keyof ComponentDataTypes>(uri: string, data: ComponentDataTypes[D], type: D): void {
 
     if (!uri) {
 
@@ -98,7 +97,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
     }
 
     this.dispatchEvent(new ComponentAppendEvent({
-      detail: { uri, data },
+      detail: { uri, data, type },
     }));
 
   }
@@ -140,3 +139,5 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   }
 
 }
+
+export default BaseComponent;
