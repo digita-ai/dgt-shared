@@ -13,7 +13,6 @@
   "TSUnionType",
   "DGTMap",
   "DGTErrorArgument",
-  "DGTErrorConfig",
   "DGTErrorHttp",
   "DGTErrorLaunchHandler",
   "HttpClient"

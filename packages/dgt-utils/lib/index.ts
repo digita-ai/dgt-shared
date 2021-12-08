@@ -11,7 +11,6 @@ export * from './crypto/models/dgt-crypto-key.model';
 export * from './crypto/models/dgt-crypto-key-pair.model';
 export * from './errors/models/dgt-error.model';
 export * from './errors/models/dgt-error-argument.model';
-export * from './errors/models/dgt-error-config.model';
 export * from './errors/models/dgt-error-http.model';
 export * from './errors/models/dgt-error-not-implemented.model';
 export * from './errors/services/dgt-error.service';
