@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../../errors/models/argument-error';
 import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 
 /**
@@ -24,13 +24,13 @@ export abstract class DGTLoggerService {
 
     if (!typeName) {
 
-      throw new DGTErrorArgument('Typename should be set', typeName);
+      throw new ArgumentError('Typename should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new DGTErrorArgument('Message should be set', message);
+      throw new ArgumentError('Message should be set', message);
 
     }
 
@@ -49,13 +49,13 @@ export abstract class DGTLoggerService {
 
     if (!typeName) {
 
-      throw new DGTErrorArgument('Typename should be set', typeName);
+      throw new ArgumentError('Typename should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new DGTErrorArgument('Message should be set', message);
+      throw new ArgumentError('Message should be set', message);
 
     }
 
@@ -74,13 +74,13 @@ export abstract class DGTLoggerService {
 
     if (!typeName) {
 
-      throw new DGTErrorArgument('Typename should be set', typeName);
+      throw new ArgumentError('Typename should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new DGTErrorArgument('Message should be set', message);
+      throw new ArgumentError('Message should be set', message);
 
     }
 
@@ -100,13 +100,13 @@ export abstract class DGTLoggerService {
 
     if (!typeName) {
 
-      throw new DGTErrorArgument('Typename should be set', typeName);
+      throw new ArgumentError('Typename should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new DGTErrorArgument('Message should be set', message);
+      throw new ArgumentError('Message should be set', message);
 
     }
 

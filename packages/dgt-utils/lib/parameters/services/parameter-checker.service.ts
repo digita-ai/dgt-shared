@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../../errors/models/argument-error';
 
 /** A service to check the validity of parameters */
 export class DGTParameterCheckerService {
@@ -10,7 +10,7 @@ export class DGTParameterCheckerService {
    * @param depth you only want to set this parameter if you want to test
    * an object containing an object. 'infinity' can be entered to check unlimited depth.
    * by default the function will not check objects inside of objects
-   * @throws DGTErrorArgument if null values are found
+   * @throws ArgumentError if null values are found
    */
   checkParametersNotNull(parameterList: any, depth = 0): void {
 
@@ -28,7 +28,7 @@ export class DGTParameterCheckerService {
 
         if (!value && value !== 0) {
 
-          throw new DGTErrorArgument(previous + key + ' should be set', value);
+          throw new ArgumentError(previous + key + ' should be set', value);
 
         }
 

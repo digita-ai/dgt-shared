@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '@digita-ai/dgt-utils';
+import { ArgumentError } from '@digita-ai/dgt-utils';
 import { Observable, of } from 'rxjs';
 import { interpret, Interpreter, StateSchema } from 'xstate';
 import { State } from '../state/state';
@@ -244,7 +244,7 @@ describe('FormElementComponent', () => {
 
       expect(() => component.bindActorToInput(
         undefined, actor, 'name', data,
-      )).toThrow(DGTErrorArgument);
+      )).toThrow(ArgumentError);
 
     });
 
@@ -252,7 +252,7 @@ describe('FormElementComponent', () => {
 
       expect(() => component.bindActorToInput(
         slot, undefined, 'name', data,
-      )).toThrow(DGTErrorArgument);
+      )).toThrow(ArgumentError);
 
     });
 
@@ -260,7 +260,7 @@ describe('FormElementComponent', () => {
 
       expect(() => component.bindActorToInput(
         slot, actor, undefined, data,
-      )).toThrow(DGTErrorArgument);
+      )).toThrow(ArgumentError);
 
     });
 
@@ -268,7 +268,7 @@ describe('FormElementComponent', () => {
 
       expect(() => component.bindActorToInput(
         slot, actor, 'name', undefined,
-      )).toThrow(DGTErrorArgument);
+      )).toThrow(ArgumentError);
 
     });
 

@@ -1,6 +1,6 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { DGTErrorArgument, Translator, debounce } from '@digita-ai/dgt-utils';
+import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
 import { Interpreter, StateSchema } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
@@ -154,25 +154,25 @@ export class FormElementComponent<T> extends RxLitElement {
 
     if (!slot) {
 
-      throw new DGTErrorArgument('Argument slot should be set.', slot);
+      throw new ArgumentError('Argument slot should be set.', slot);
 
     }
 
     if (!actor) {
 
-      throw new DGTErrorArgument('Argument actor should be set.', actor);
+      throw new ArgumentError('Argument actor should be set.', actor);
 
     }
 
     if (!field) {
 
-      throw new DGTErrorArgument('Argument field should be set.', field);
+      throw new ArgumentError('Argument field should be set.', field);
 
     }
 
     if (!data) {
 
-      throw new DGTErrorArgument('Argument data should be set.', data);
+      throw new ArgumentError('Argument data should be set.', data);
 
     }
 

@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '@digita-ai/dgt-utils';
+import { ArgumentError } from '@digita-ai/dgt-utils';
 import { MockTranslator } from '../../services/i18n/mock-translator';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
@@ -155,7 +155,7 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(() => component.dismiss()).toThrow(DGTErrorArgument);
+    expect(() => component.dismiss()).toThrow(ArgumentError);
 
   });
 

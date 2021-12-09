@@ -1,12 +1,12 @@
-import { DGTErrorArgument } from '../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../errors/models/argument-error';
 import { fulltextMatch } from './fulltext-match';
 
 describe('fulltextMatch()', () => {
 
   it('should throw error when no object or term is given', () => {
 
-    expect(() => fulltextMatch(null, 'foo')).toThrow(DGTErrorArgument);
-    expect(() => fulltextMatch({ foo: 'bar' }, null)).toThrow(DGTErrorArgument);
+    expect(() => fulltextMatch(null, 'foo')).toThrow(ArgumentError);
+    expect(() => fulltextMatch({ foo: 'bar' }, null)).toThrow(ArgumentError);
 
   });
 

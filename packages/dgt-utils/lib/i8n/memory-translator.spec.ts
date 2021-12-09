@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../errors/models/argument-error';
 import { MemoryTranslator } from './memory-translator';
 
 describe('MemoryTranslator', () => {
@@ -69,7 +69,7 @@ describe('MemoryTranslator', () => {
 
     it('Should throw error when key is null.', () => {
 
-      expect(()=>service.translate(null, 'bla')).toThrow(DGTErrorArgument);
+      expect(()=>service.translate(null, 'bla')).toThrow(ArgumentError);
 
     });
 
@@ -77,7 +77,7 @@ describe('MemoryTranslator', () => {
 
       service.defaultLocale = null;
 
-      expect(()=>service.translate('bla', null)).toThrow(DGTErrorArgument);
+      expect(()=>service.translate('bla', null)).toThrow(ArgumentError);
 
     });
 

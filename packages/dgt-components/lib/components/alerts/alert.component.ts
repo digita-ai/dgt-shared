@@ -1,5 +1,5 @@
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
-import { DGTErrorArgument, DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
+import { ArgumentError, DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
 import { Bell, Cross, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
@@ -33,7 +33,7 @@ export class AlertComponent extends LitElement {
 
     if (!this.alert) {
 
-      throw new DGTErrorArgument('Argument this.alert should be set.', this.alert);
+      throw new ArgumentError('Argument this.alert should be set.', this.alert);
 
     }
 
