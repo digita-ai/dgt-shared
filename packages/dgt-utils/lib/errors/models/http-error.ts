@@ -1,14 +1,14 @@
-import { DGTError } from './dgt-error.model';
+import { BaseError } from './base-error.model';
 
 /**
  * Thrown when an HTTP call fails.
  */
-export class DGTErrorHttp extends DGTError {
+export class HttpError extends BaseError {
 
   /**
-   * {@inheritDoc DGTError.name}
+   * {@inheritDoc BaseError.name}
    */
-  public readonly name = DGTErrorHttp.name;
+  public readonly name = HttpError.name;
 
   /**
    * Instantiates the error.
@@ -21,7 +21,7 @@ export class DGTErrorHttp extends DGTError {
 
     super(message, cause);
 
-    Object.setPrototypeOf(this, DGTErrorHttp.prototype);
+    Object.setPrototypeOf(this, HttpError.prototype);
 
   }
 

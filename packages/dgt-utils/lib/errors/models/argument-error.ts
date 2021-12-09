@@ -1,14 +1,14 @@
-import { DGTError } from './dgt-error.model';
+import { BaseError } from './base-error.model';
 
 /**
  * Thrown when a function's argument is incorrect.
  */
-export class DGTErrorArgument extends DGTError {
+export class ArgumentError extends BaseError {
 
   /**
-   * {@inheritDoc DGTError.name}
+   * {@inheritDoc BaseError.name}
    */
-  public readonly name = DGTErrorArgument.name;
+  public readonly name = ArgumentError.name;
 
   /**
    * Instantiates the error.
@@ -21,7 +21,7 @@ export class DGTErrorArgument extends DGTError {
 
     super(message, cause);
 
-    Object.setPrototypeOf(this, DGTErrorArgument.prototype);
+    Object.setPrototypeOf(this, ArgumentError.prototype);
 
   }
 

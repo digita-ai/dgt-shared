@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../errors/models/argument-error';
 import { Translation } from './translation';
 
 /**
@@ -28,13 +28,13 @@ export class MemoryTranslator {
 
     if (!key) {
 
-      throw new DGTErrorArgument('Argument key should be set.', key);
+      throw new ArgumentError('Argument key should be set.', key);
 
     }
 
     if (!locale && ! this.defaultLocale) {
 
-      throw new DGTErrorArgument('Argument locale should be set.', locale);
+      throw new ArgumentError('Argument locale should be set.', locale);
 
     }
 

@@ -6,7 +6,7 @@ import { Image, Theme } from '@digita-ai/dgt-theme';
 import { from, Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { map } from 'rxjs/operators';
-import { DGTErrorNotImplemented } from '@digita-ai/dgt-utils';
+import { NotImplementedError } from '@digita-ai/dgt-utils';
 import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { BaseComponent } from '../base/base.component';
@@ -139,7 +139,7 @@ export class ProfileContactComponent extends BaseComponent {
 
   private handleSave() {
 
-    throw new DGTErrorNotImplemented();
+    throw new NotImplementedError();
 
     // this.formActor.send(FormEvents.FORM_SUBMITTED);
     // this.writeData(this.entry, [

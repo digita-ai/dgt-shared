@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- this is a logger service */
 
-import { DGTErrorArgument } from '../../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../../errors/models/argument-error';
 import { DGTLoggerLevel } from '../models/dgt-logger-level.model';
 import { DGTLoggerService } from './dgt-logger.service';
 
@@ -22,19 +22,19 @@ export class DGTLoggerConsoleService extends DGTLoggerService {
 
     if (level === null || level === undefined) {
 
-      throw new DGTErrorArgument('Argument level should be set', typeName);
+      throw new ArgumentError('Argument level should be set', typeName);
 
     }
 
     if (!typeName) {
 
-      throw new DGTErrorArgument('Argument typeName should be set', typeName);
+      throw new ArgumentError('Argument typeName should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new DGTErrorArgument('Argument message should be set', message);
+      throw new ArgumentError('Argument message should be set', message);
 
     }
 

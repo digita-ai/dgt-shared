@@ -1,4 +1,4 @@
-import { DGTErrorArgument } from '../errors/models/dgt-error-argument.model';
+import { ArgumentError } from '../errors/models/argument-error';
 
 /**
  * Case-insensitive fulltext matching.
@@ -11,13 +11,13 @@ export const fulltextMatch = (obj: unknown, term: string): boolean => {
 
   if (!obj) {
 
-    throw new DGTErrorArgument('Argument obj should be set.', obj);
+    throw new ArgumentError('Argument obj should be set.', obj);
 
   }
 
   if (!term) {
 
-    throw new DGTErrorArgument('Argument term should be set.', term);
+    throw new ArgumentError('Argument term should be set.', term);
 
   }
 

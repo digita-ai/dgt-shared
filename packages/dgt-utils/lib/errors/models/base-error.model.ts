@@ -1,12 +1,12 @@
 /**
  * A generic error.
  */
-export class DGTError extends Error {
+export class BaseError extends Error {
 
   /**
    * Name of the error.
    */
-  public readonly name = DGTError.name;
+  public readonly name = BaseError.name;
 
   /**
    * Instantiates the error.
@@ -18,7 +18,7 @@ export class DGTError extends Error {
 
     super(messsage);
 
-    Object.setPrototypeOf(this, DGTError.prototype);
+    Object.setPrototypeOf(this, BaseError.prototype);
 
   }
 

@@ -12,8 +12,7 @@
   "DGTCacheType",
   "TSUnionType",
   "DGTMap",
-  "DGTErrorArgument",
-  "DGTErrorHttp",
-  "DGTErrorLaunchHandler",
+  "ArgumentError",
+  "HttpError",
   "HttpClient"
 ]
