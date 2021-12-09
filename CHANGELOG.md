@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/digita-ai/dgt-shared/compare/v0.8.6...v0.9.0) (2021-12-09)
+
+
+### **Features**
+
+* add optional cause to errors ([#110](https://github.com/digita-ai/dgt-shared/issues/110)) ([fae7482](https://github.com/digita-ai/dgt-shared/commit/fae7482a3f2a1d4f3260a95cac9a968c7812dd05))
+
+
+
 ### [0.8.6](https://github.com/digita-ai/dgt-shared/compare/v0.8.5...v0.8.6) (2021-12-06)
 
 **Note:** Version bump only for package root
