@@ -6,14 +6,14 @@
     {
       "@id": "urn:dgt-utils:test:DGTLoggerConsoleService",
       "@type": "DGTLoggerConsoleService",
-      "DGTLoggerConsoleService:_minimumLevel": 6,
-      "DGTLoggerConsoleService:_minimumLevelPrintData": 4
+      "minimumLevel": 6,
+      "minimumLevelPrintData": 4
     },
     {
       "@id": "urn:dgt-utils:test:DGTLoggerService",
       "@type": "DGTLoggerConsoleService",
-      "DGTLoggerConsoleService:_minimumLevel": 6,
-      "DGTLoggerConsoleService:_minimumLevelPrintData": 6
+      "minimumLevel": 6,
+      "minimumLevelPrintData": 6
     }
   ]
 }

@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
-    "build:components": "componentsjs-generator -s lib -c dist/components -i .componentsignore",
+    "build:components": "componentsjs-generator --typeScopedContexts -s lib -c dist/components -i .componentsignore",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest",
