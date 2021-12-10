@@ -8,7 +8,6 @@
   "DGTCryptoKey",
   "DGTCryptoKeyPair",
   "Injectable",
-  "DGTHttpResponse",
   "DGTCacheType",
   "TSUnionType",
   "DGTMap",
