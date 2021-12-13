@@ -12,7 +12,7 @@ import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
 import { Translator } from '../../services/i18n/translator';
 import { WebIdComponent } from './webid.component';
-import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, SelectedIssuerEvent, WebIdEnteredEvent, WebIdValidator } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, ClickedLoginEvent, SelectedIssuerEvent, WebIdEnteredEvent, WebIdValidator } from './authenticate.machine';
 
 export class AuthenticateComponent extends RxLitElement {
 
@@ -67,7 +67,11 @@ export class AuthenticateComponent extends RxLitElement {
 
     this.subscribe('webIdValidationResults', from(this.actor).pipe(map((state) => {
 
-      if (state.event.type === AuthenticateEvents.LOGIN_ERROR) {
+      if (state.matches(AuthenticateStates.AWAITING_LOGIN)) {
+
+        return [];
+
+      } else if (state.event.type === AuthenticateEvents.LOGIN_ERROR) {
 
         this.dispatchEvent(new CustomEvent('authenticate-error', { detail: state.event.results }));
 
@@ -95,6 +99,13 @@ export class AuthenticateComponent extends RxLitElement {
   onSubmit = (event: CustomEvent): void => {
 
     event.preventDefault();
+    this.actor.send(new ClickedLoginEvent(event.detail));
+
+  };
+
+  onWebIdChange = (event: CustomEvent): void => {
+
+    event.preventDefault();
     this.actor.send(new WebIdEnteredEvent(event.detail));
 
   };
@@ -106,7 +117,7 @@ export class AuthenticateComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      ${ this.state?.matches(AuthenticateStates.AWAITING_WEBID) ? html`
+      ${ !this.state?.hasTag('loading') ? html`
 
         <provider-list
           exportparts="provider"
@@ -119,15 +130,16 @@ export class AuthenticateComponent extends RxLitElement {
         </provider-list>
 
         <separator-component
-          part="t"
+          part="separator"
           ?hidden="${this.hideIssuers || this.hideWebId}">
           ${ this.textSeparator }
         </separator-component>
 
         <webid-form
-          exportparts="webid-label, webid-input, webid-create, webid-button, validation-alert"
+          exportparts="webid-label, webid-input, webid-create, webid-button, validation-alert, webid-form"
           ?hidden="${this.hideWebId}"
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
+          @change-webid="${this.onWebIdChange}"
           @submit-webid="${this.onSubmit}"
           @create-webid="${this.onButtonCreateWebIDClick}"
           @dismiss="${this.onAlertDismissed}"
@@ -143,7 +155,7 @@ export class AuthenticateComponent extends RxLitElement {
         </webid-form>
        ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
         <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list>`
-    : html`<loading-component></loading-component>` }
+    : html`<loading-component part="loading"></loading-component>` }
     `}`;
 
   }

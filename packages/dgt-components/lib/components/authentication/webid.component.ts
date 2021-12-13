@@ -32,6 +32,16 @@ export class WebIdComponent extends RxLitElement {
 
   };
 
+  onWebIdChange = (event: Event & { target: HTMLInputElement }): void => {
+
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('change-webid', {
+      detail: event.target.value,
+    }));
+
+  };
+
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
 
   onAlertDismissed = (event: CustomEvent): void => {
@@ -44,7 +54,7 @@ export class WebIdComponent extends RxLitElement {
 
     return html`
     <slot name="before"></slot>
-    <form @submit="${this.onSubmit}">
+    <form @submit="${this.onSubmit}" part="webid-form">
       ${this.validationResults?.length > 0
     ? html`<alert-component
         @dismiss="${this.onAlertDismissed}"
@@ -54,7 +64,7 @@ export class WebIdComponent extends RxLitElement {
       </alert-component>`
     : ''}
       <label part="webid-label" for="webid">${this.textLabel}</label>
-      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
+      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${this.onWebIdChange}"/>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
       <button part="webid-button" class="dark">${this.textButton}</button>
     </form>
