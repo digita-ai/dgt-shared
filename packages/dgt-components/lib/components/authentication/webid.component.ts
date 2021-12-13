@@ -64,7 +64,12 @@ export class WebIdComponent extends RxLitElement {
 
         <div class="webid-input-button-container">
           <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
-          <button part="webid-button" class="primary">${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}</button>
+          <button
+            part="webid-button"
+            class="primary"
+            ?disabled="${this.validationResults?.length > 0}">
+        ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
+          </button>
         </div>
 
         
