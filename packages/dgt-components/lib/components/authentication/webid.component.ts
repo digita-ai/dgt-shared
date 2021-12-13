@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
+import { debounce } from 'debounce';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { Translator } from '../../services/i18n/translator';
+import { Alert } from '../alerts/alert';
 export class WebIdComponent extends RxLitElement {
 
   @property({ type: String }) textLabel = 'WebID';
@@ -32,21 +35,19 @@ export class WebIdComponent extends RxLitElement {
 
   };
 
-  onWebIdChange = (event: Event & { target: HTMLInputElement }): void => {
-
-    event.preventDefault();
+  onWebIdChange = debounce((target: HTMLInputElement): void => {
 
     this.dispatchEvent(new CustomEvent('change-webid', {
-      detail: event.target.value,
+      detail: target.value,
     }));
 
-  };
+  }, 300);
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
 
-  onAlertDismissed = (event: CustomEvent): void => {
+  onAlertDismissed = (event: CustomEvent<Alert>): void => {
 
-    this.dispatchEvent(new CustomEvent(event.type, { detail: event.detail }));
+    this.dispatchEvent(new CustomEvent<Alert>(event.type, { detail: event.detail }));
 
   };
 
@@ -64,7 +65,7 @@ export class WebIdComponent extends RxLitElement {
       </alert-component>`
     : ''}
       <label part="webid-label" for="webid">${this.textLabel}</label>
-      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${this.onWebIdChange}"/>
+      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
       <button part="webid-button" class="dark">${this.textButton}</button>
     </form>

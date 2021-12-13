@@ -37,7 +37,7 @@ export class AlertComponent extends LitElement {
 
     }
 
-    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
+    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail: this.alert }));
 
   }
 

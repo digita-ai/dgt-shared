@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Alert } from '../alerts/alert';
 import { WebIdComponent } from './webid.component';
 
 describe('WebIdComponent', () => {
@@ -38,6 +39,8 @@ describe('WebIdComponent', () => {
 
     it('should dispatch change-webid CustomEvent', async () => {
 
+      jest.useFakeTimers();
+
       component.dispatchEvent = jest.fn();
 
       component.onWebIdChange({
@@ -45,10 +48,9 @@ describe('WebIdComponent', () => {
         target: input,
       } as any);
 
-      expect(component.dispatchEvent).toHaveBeenCalledWith(expect.any(CustomEvent));
+      jest.advanceTimersByTime(500);
 
-      expect(component.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({
-        type: 'change-webid',
+      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('change-webid', {
         detail: webId,
       }));
 
@@ -67,11 +69,29 @@ describe('WebIdComponent', () => {
         target: form,
       } as any);
 
-      expect(component.dispatchEvent).toHaveBeenCalledWith(expect.any(CustomEvent));
-
-      expect(component.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({
-        type: 'submit-webid',
+      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('submit-webid', {
         detail: webId,
+      }));
+
+    });
+
+  });
+
+  describe('onAlertDismissed', () => {
+
+    const alert: Alert = {
+      message: '',
+      type: 'success',
+    };
+
+    it('should dispatch new dismiss CustomEvent', async () => {
+
+      component.dispatchEvent = jest.fn();
+
+      component.onAlertDismissed(new CustomEvent<Alert>('dismiss', { detail: alert }));
+
+      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('dismiss', {
+        detail: alert,
       }));
 
     });
