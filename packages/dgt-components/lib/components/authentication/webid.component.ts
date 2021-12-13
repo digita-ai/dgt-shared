@@ -62,7 +62,11 @@ export class WebIdComponent extends RxLitElement {
       <label part="webid-label" for="webid">${this.textLabel}</label>
       <div class="webid-input-container" part="webid-input-container">
 
-        <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+        <div class="webid-input-button-container">
+          <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+          <button part="webid-button" class="primary">${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}</button>
+        </div>
+
         
         ${this.validationResults?.length > 0
     ? html`
@@ -78,7 +82,6 @@ export class WebIdComponent extends RxLitElement {
 
       </div>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
-      <button part="webid-button" class="dark">${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}</button>
 
     </form>
     <slot name="after"></slot>
@@ -108,6 +111,15 @@ export class WebIdComponent extends RxLitElement {
         }
         ::part(alert) {
           padding: var(--gap-small);
+        }
+        .webid-input-button-container {
+          display: flex;
+        }
+        .webid-input-button-container input {
+          flex: 1 1;
+        }
+        .webid-input-button-container button {
+          width: 75px;
         }
         input  {
           padding: var(--gap-normal);

@@ -1,6 +1,6 @@
 import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Checkbox, Theme } from '@digita-ai/dgt-theme';
+import { Checkbox, Login, Theme } from '@digita-ai/dgt-theme';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
 import { hydrate } from '../lib/util/hydrate';
@@ -52,7 +52,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
       @no-trust="${this.onNoTrust}"
       @create-webid="${this.onCreateWebId}"
       .translator="${this.translator}"
-      .textButton="${Checkbox}"
+      .textButton="${Login}"
     >
       <h1 slot="beforeIssuers">Select an identity provider to log in</h1>
       <h1 slot="beforeWebId">Enter your WebID</h1>
