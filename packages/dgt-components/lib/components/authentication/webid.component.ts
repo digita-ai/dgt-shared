@@ -3,10 +3,12 @@ import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from '
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { debounce } from 'debounce';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { Translator } from '../../services/i18n/translator';
 import { Alert } from '../alerts/alert';
+
 export class WebIdComponent extends RxLitElement {
 
   @property({ type: String }) textLabel = 'WebID';
@@ -58,25 +60,25 @@ export class WebIdComponent extends RxLitElement {
     <form @submit="${this.onSubmit}" part="webid-form">
 
       <label part="webid-label" for="webid">${this.textLabel}</label>
-      <div class="webid-input-container">
+      <div class="webid-input-container" part="webid-input-container">
 
         <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
         
         ${this.validationResults?.length > 0
     ? html`
         <alert-component
-        hideDismiss
-        hideIcon
-        @dismiss="${this.onAlertDismissed}"
-        exportparts="alert"
-        .translator="${this.translator}"
-        .alert="${{ message: this.validationResults[0], type: 'warning' }}">
-      </alert-component>`
+          hideDismiss
+          hideIcon
+          @dismiss="${this.onAlertDismissed}"
+          exportparts="alert"
+          .translator="${this.translator}"
+          .alert="${{ message: this.validationResults[0], type: 'warning' }}">
+        </alert-component>`
     : ''}
 
       </div>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
-      <button part="webid-button" class="dark">${this.textButton}</button>
+      <button part="webid-button" class="dark">${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}</button>
 
     </form>
     <slot name="after"></slot>

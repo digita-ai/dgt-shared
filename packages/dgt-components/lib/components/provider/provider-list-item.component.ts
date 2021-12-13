@@ -1,6 +1,7 @@
 import { html, internalProperty, property, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 export class ProviderListItemComponent extends RxLitElement {
 
@@ -19,7 +20,7 @@ export class ProviderListItemComponent extends RxLitElement {
 
     return html`
       <div class="logo">
-        <img src="${this.icon}">
+        ${this.icon.includes('<svg') ? unsafeSVG(this.icon) : html`<img src="${this.icon}">`}
       </div>
       <p>${ this.description }</p>
  `;
