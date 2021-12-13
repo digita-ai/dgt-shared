@@ -136,7 +136,7 @@ export class AuthenticateComponent extends RxLitElement {
         </separator-component>
 
         <webid-form
-          exportparts="webid-label, webid-input, webid-create, webid-button, validation-alert, webid-form"
+          exportparts="webid-label, webid-input, webid-create, webid-button, alert, webid-form"
           ?hidden="${this.hideWebId}"
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
           @change-webid="${this.onWebIdChange}"

@@ -1,4 +1,4 @@
-import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { ArgumentError, DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
 import { Bell, Cross, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -12,7 +12,7 @@ export class AlertComponent extends LitElement {
   /**
    * The component's logger.
    */
-  @property({ type: DGTLoggerService }) public logger: DGTLoggerService;
+  @property({ type: DGTLoggerService }) logger?: DGTLoggerService;
   /**
    * The component's translator.
    */
@@ -22,12 +22,24 @@ export class AlertComponent extends LitElement {
    * The collection which will be rendered by the component.
    */
   @property({ type: Object })
-  public alert: Alert;
+  alert: Alert;
+
+  /**
+   * Whether the icon should be hidden.
+   */
+  @property({ type: Boolean })
+  hideIcon = false;
+
+  /**
+   * Whether the dismiss icon should be hidden.
+   */
+  @property({ type: Boolean })
+  hideDismiss = false;
 
   /**
    * Dispatches an event to dismiss the alert.
    */
-  dismiss() {
+  dismiss(): void {
 
     this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
 
@@ -46,16 +58,16 @@ export class AlertComponent extends LitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
 
     return html`
-    <div part="validation-alert" class="alert ${ type }">
-      <div class="icon">${ unsafeSVG(Bell) }</div>
+    <div part="alert" class="alert ${ type }">
+      <div class="icon" ?hidden="${this.hideIcon}">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
+      <div class="dismiss" @click="${ this.dismiss }" ?hidden="${this.hideDismiss}">${ unsafeSVG(Cross) }</div>
     </div>
   `;
 
@@ -64,7 +76,7 @@ export class AlertComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -73,43 +85,43 @@ export class AlertComponent extends LitElement {
           display: block;
         }
         
-        .alert {
+        .alert{
           padding: var(--gap-normal) var(--gap-small);
           display: flex;
           align-items: center;
         }
-        .alert div {
+        .alert > div {
           margin: 0 var(--gap-small);
         }
-        .alert.success {
+        .success {
           background-color: var(--colors-status-success);
         }
-        .alert.warning {
+        .warning {
           background-color: var(--colors-status-warning);
         }
-        .alert.danger {
+        .danger {
           background-color: var(--colors-status-danger);
           color: var(--colors-foreground-inverse);
         }
-        .alert.danger svg {
+        .danger svg {
           fill: var(--colors-foreground-inverse);
         }
-        .alert .icon {
+        .icon {
           height: 25px;
         }
-        .alert .icon svg {
+        .icon svg {
           max-height: 25px;
           max-width: 25px;
         }
-        .alert .dismiss {
+        .dismiss {
           cursor: pointer;
           padding: 0px var(--gap-small);
         }
-        .alert .dismiss svg {
+        .dismiss svg {
           max-height: var(--gap-small);
           max-width: var(--gap-small);
         }
-        .alert .message {
+        .message {
           flex: 1 0;
         }
       `,

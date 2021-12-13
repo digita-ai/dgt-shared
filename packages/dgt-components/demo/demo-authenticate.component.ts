@@ -48,7 +48,6 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
     return html`
     <auth-flow
-      hideCreateNewWebId
       @authenticated="${this.onAuthenticated}"
       @no-trust="${this.onNoTrust}"
       @create-webid="${this.onCreateWebId}"

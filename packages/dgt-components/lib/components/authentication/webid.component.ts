@@ -56,18 +56,28 @@ export class WebIdComponent extends RxLitElement {
     return html`
     <slot name="before"></slot>
     <form @submit="${this.onSubmit}" part="webid-form">
-      ${this.validationResults?.length > 0
-    ? html`<alert-component
+
+      <label part="webid-label" for="webid">${this.textLabel}</label>
+      <div class="webid-input-container">
+
+        <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+        
+        ${this.validationResults?.length > 0
+    ? html`
+        <alert-component
+        hideDismiss
+        hideIcon
         @dismiss="${this.onAlertDismissed}"
-        exportparts="validation-alert"
+        exportparts="alert"
         .translator="${this.translator}"
         .alert="${{ message: this.validationResults[0], type: 'warning' }}">
       </alert-component>`
     : ''}
-      <label part="webid-label" for="webid">${this.textLabel}</label>
-      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+
+      </div>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
       <button part="webid-button" class="dark">${this.textButton}</button>
+
     </form>
     <slot name="after"></slot>
     `;
@@ -90,11 +100,16 @@ export class WebIdComponent extends RxLitElement {
           border-radius: var(--border-large);
           height: var(--button-height);
         }
-
+        .webid-input-container {
+          display: flex;
+          flex-direction: column;
+        }
+        ::part(alert) {
+          padding: var(--gap-small);
+        }
         input  {
           padding: var(--gap-normal);
         }
-
         a {
           font-size: var(--font-size-small);
           padding: var(--gap-tiny);
