@@ -54,7 +54,3 @@ button:disabled {
   color: var(--colors-foreground-inverse);
   cursor: unset;
 }
-
-/* button:disabled svg {
-  fill: var(--colors-foreground-light);
-} */
