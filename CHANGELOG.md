@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/digita-ai/dgt-shared/compare/v0.9.1...v0.10.0) (2021-12-14)
+
+
+### **Features**
+
+* improve webid validation in authenticate component ([#114](https://github.com/digita-ai/dgt-shared/issues/114)) ([fb72503](https://github.com/digita-ai/dgt-shared/commit/fb7250378316833eb10388a35c34bfa90db499f7))
+
+
+
 ### [0.9.1](https://github.com/digita-ai/dgt-shared/compare/v0.9.0...v0.9.1) (2021-12-09)
 
 **Note:** Version bump only for package root
