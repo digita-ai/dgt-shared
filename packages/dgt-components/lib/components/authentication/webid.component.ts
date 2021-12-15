@@ -14,8 +14,9 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: String }) textPlaceholder = 'Please enter your WebID ...';
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
-  @property({ type: Array }) validationResults: string[] = [];
+  @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property({ type: Boolean }) disableLogin = true; // disable button by default
   @property({ type: Translator }) translator?: Translator;
 
   constructor() {
@@ -61,7 +62,7 @@ export class WebIdComponent extends RxLitElement {
             part="webid-button"
             class="primary"
             disabled
-            ?disabled="${this.validationResults && this.validationResults?.length > 0}">
+            ?disabled="${this.disableLogin}">
         ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
           </button>
         </div>

@@ -137,6 +137,7 @@ export class AuthenticateComponent extends RxLitElement {
           exportparts="webid-label, webid-input, webid-create, webid-button, alert, webid-form, webid-input-container"
           ?hidden="${this.hideWebId}"
           ?hideCreateNewWebId="${this.hideCreateNewWebId}"
+          ?disableLogin="${!this.state.matches(AuthenticateStates.AWAITING_LOGIN)}"
           @change-webid="${this.onWebIdChange}"
           @submit-webid="${this.onSubmit}"
           @create-webid="${this.onButtonCreateWebIDClick}"
