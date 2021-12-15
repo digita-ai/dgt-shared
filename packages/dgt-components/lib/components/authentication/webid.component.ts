@@ -7,7 +7,6 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { Translator } from '../../services/i18n/translator';
-import { Alert } from '../alerts/alert';
 
 export class WebIdComponent extends RxLitElement {
 
@@ -47,12 +46,6 @@ export class WebIdComponent extends RxLitElement {
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
 
-  onAlertDismissed = (event: CustomEvent<Alert>): void => {
-
-    this.dispatchEvent(new CustomEvent<Alert>(event.type, { detail: event.detail }));
-
-  };
-
   render(): TemplateResult {
 
     return html`
@@ -67,7 +60,8 @@ export class WebIdComponent extends RxLitElement {
           <button
             part="webid-button"
             class="primary"
-            ?disabled="${this.validationResults?.length > 0}">
+            disabled
+            ?disabled="${this.validationResults && this.validationResults?.length > 0}">
         ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
           </button>
         </div>
@@ -78,7 +72,6 @@ export class WebIdComponent extends RxLitElement {
         <alert-component
           hideDismiss
           hideIcon
-          @dismiss="${this.onAlertDismissed}"
           exportparts="alert"
           .translator="${this.translator}"
           .alert="${{ message: this.validationResults[0], type: 'warning' }}">
