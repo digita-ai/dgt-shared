@@ -77,25 +77,4 @@ describe('WebIdComponent', () => {
 
   });
 
-  describe('onAlertDismissed', () => {
-
-    const alert: Alert = {
-      message: '',
-      type: 'success',
-    };
-
-    it('should dispatch new dismiss CustomEvent', async () => {
-
-      component.dispatchEvent = jest.fn();
-
-      component.onAlertDismissed(new CustomEvent<Alert>('dismiss', { detail: alert }));
-
-      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('dismiss', {
-        detail: alert,
-      }));
-
-    });
-
-  });
-
 });

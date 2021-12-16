@@ -7,7 +7,6 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { Translator } from '../../services/i18n/translator';
-import { Alert } from '../alerts/alert';
 
 export class WebIdComponent extends RxLitElement {
 
@@ -15,8 +14,9 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: String }) textPlaceholder = 'Please enter your WebID ...';
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
-  @property({ type: Array }) validationResults: string[] = [];
+  @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property({ type: Boolean }) disableLogin = true; // disable button by default
   @property({ type: Translator }) translator?: Translator;
 
   constructor() {
@@ -47,12 +47,6 @@ export class WebIdComponent extends RxLitElement {
 
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
 
-  onAlertDismissed = (event: CustomEvent<Alert>): void => {
-
-    this.dispatchEvent(new CustomEvent<Alert>(event.type, { detail: event.detail }));
-
-  };
-
   render(): TemplateResult {
 
     return html`
@@ -67,7 +61,8 @@ export class WebIdComponent extends RxLitElement {
           <button
             part="webid-button"
             class="primary"
-            ?disabled="${this.validationResults?.length > 0}">
+            disabled
+            ?disabled="${this.disableLogin}">
         ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
           </button>
         </div>
@@ -78,7 +73,6 @@ export class WebIdComponent extends RxLitElement {
         <alert-component
           hideDismiss
           hideIcon
-          @dismiss="${this.onAlertDismissed}"
           exportparts="alert"
           .translator="${this.translator}"
           .alert="${{ message: this.validationResults[0], type: 'warning' }}">
