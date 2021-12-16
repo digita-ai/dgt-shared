@@ -54,6 +54,7 @@ export class ProviderListItemComponent extends RxLitElement {
         object-fit: scale-down;
         flex: 1 1;
         max-width: 100%;
+        height: 100%;
       }
 
       p {
