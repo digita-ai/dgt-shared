@@ -120,7 +120,7 @@ export class AuthenticateComponent extends RxLitElement {
       ${ !this.state?.hasTag('loading') ? html`
 
         <provider-list
-          exportparts="provider"
+          exportparts="provider, provider-description, provider-logo"
           ?hidden="${this.hideIssuers}"
           @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}"
           .providers="${this.predefinedIssuers}"
