@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.2](https://github.com/digita-ai/dgt-shared/compare/v0.10.1...v0.10.2) (2021-12-16)
+
+
+### **Bug Fixes**
+
+* disable login button by default in AuthenticateComponent ([#118](https://github.com/digita-ai/dgt-shared/issues/118)) ([fe66d48](https://github.com/digita-ai/dgt-shared/commit/fe66d4816cca34c9d2a5f2f6ba293faa977b915f))
+
+
+
 ### [0.10.1](https://github.com/digita-ai/dgt-shared/compare/v0.10.0...v0.10.1) (2021-12-16)
 
 **Note:** Version bump only for package root
