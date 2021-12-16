@@ -32,7 +32,7 @@ export class ProviderListComponent extends LitElement {
       <slot name="before"></slot>
       <div class="providers">
         ${ this.providers.map((provider) => html`
-        <provider-list-item part="provider" @button-clicked="${this.onIssuerSelected(provider)}" .icon="${provider.icon}" .description="${provider.description}" ?buttonEnabled=${this.buttonsEnabled}></provider-list-item>
+        <provider-list-item part="provider" exportparts="provider-description, provider-logo" @button-clicked="${this.onIssuerSelected(provider)}" .icon="${provider.icon}" .description="${provider.description}" ?buttonEnabled=${this.buttonsEnabled}></provider-list-item>
         `)}
       </div>
       <slot name="after"></slot>`;
