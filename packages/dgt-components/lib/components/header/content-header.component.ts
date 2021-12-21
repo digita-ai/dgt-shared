@@ -50,7 +50,7 @@ export class ContentHeaderComponent extends LitElement {
         }
 
 
-        :host.inverse {
+        :host(.inverse) {
           background-color: var(--colors-primary-dark);
           color: var(--colors-foreground-inverse);
           fill: var(--colors-foreground-inverse);
