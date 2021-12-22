@@ -35,7 +35,13 @@ export class DemoAuthenticateComponent extends RxLitElement {
 
   constructor() {
     super();
+    // the most basic authenticate compnonent
+    // customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService));
+
+    // an authenticate component with trusted issuers and validator
     // customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService, this.trustedIssuers, this.webIdValidator));
+
+    // an authenticate component with only validator
     customElements.define('auth-flow', hydrate(AuthenticateComponent)(this.solidService, undefined, this.webIdValidator));
 
   }
