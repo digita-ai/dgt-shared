@@ -97,7 +97,7 @@ export class ProfilePayslipComponent extends BaseComponent {
 
         .payslip .employer {
           margin-left: 20px;
-          margin-right: é0px;
+          margin-right: 0px;
           flex: 1 1;
         }
         .payslip .amount {
