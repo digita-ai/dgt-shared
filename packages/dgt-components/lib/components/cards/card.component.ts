@@ -74,7 +74,7 @@ export class CardComponent extends LitElement {
 
         ${!this.hideHeader
     ? html`
-            <card-header class="inverse">
+            <card-header>
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>
