@@ -12,6 +12,7 @@ import { SeparatorComponent } from '../lib/components/separator/separator.compon
 import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component';
 import { WebIdComponent } from '../lib/components/authentication/webid.component';
 import { define } from '../lib/util/define';
+import { DocumentComponent } from '../lib/components/document/document.component';
 
 /**
  * Register tags for components.
@@ -28,7 +29,7 @@ define('list-item', ListItemComponent);
 define('separator-component', SeparatorComponent);
 define('checkbox-component', CheckboxComponent);
 define('webid-form', WebIdComponent);
-
+define('document-component', DocumentComponent);
 /**
  * Enable mocks for fetch.
  */
