@@ -168,9 +168,9 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
             target: AuthenticateStates.CHECKING_WEBID,
           },
           {
-            // otherwise, skip validation and go straight to retrieval of issuers
+            // otherwise, skip validation
             actions: assign({ webId: (c, event) => event.webId }),
-            target: AuthenticateStates.RETRIEVING_ISSUERS,
+            target: AuthenticateStates.AWAITING_LOGIN,
           },
         ],
         [AuthenticateEvents.SELECTED_ISSUER]: {
@@ -188,7 +188,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
         },
       },
       invoke: {
-        src: (context) => context.webIdValidator(context.webId),
+        src: (context) => context.webIdValidator ? context.webIdValidator(context.webId) : Promise.resolve([]),
         onDone: [
           {
             cond: (c, event: DoneInvokeEvent<string[]>) => event.data?.length > 0,
@@ -209,8 +209,10 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
           target: AuthenticateStates.RETRIEVING_ISSUERS,
         },
         [AuthenticateEvents.WEBID_ENTERED]: {
-          target: AuthenticateStates.CHECKING_WEBID,
+          // validate webId when validator is set
+          cond: (context) => context.webIdValidator !== undefined,
           actions: assign({ webId: (c, event) => event.webId }),
+          target: AuthenticateStates.CHECKING_WEBID,
         },
       },
 

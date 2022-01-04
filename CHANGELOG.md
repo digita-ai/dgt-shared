@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.3](https://github.com/digita-ai/dgt-shared/compare/v0.10.2...v0.10.3) (2021-12-22)
+
+
+### **Bug Fixes**
+
+* automatic submits in authenticate component ([#124](https://github.com/digita-ai/dgt-shared/issues/124)) ([c0a0f59](https://github.com/digita-ai/dgt-shared/commit/c0a0f595775d7940b6a292f1bdfdc26615e703d1))
+* inverse class on content header ([#123](https://github.com/digita-ai/dgt-shared/issues/123)) ([f1830b7](https://github.com/digita-ai/dgt-shared/commit/f1830b7c392fc7b2b279196ede4d7f4feb484c59))
+
+
+
 ### [0.10.2](https://github.com/digita-ai/dgt-shared/compare/v0.10.1...v0.10.2) (2021-12-16)
 
 
