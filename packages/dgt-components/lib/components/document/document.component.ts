@@ -2,7 +2,7 @@ import { NamedNode, Store } from 'n3';
 import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { css, CSSResult, html, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
-import { Document, Open, DigitaBlue, Theme } from '@digita-ai/dgt-theme';
+import { Document, Arrow, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { BaseComponent } from '../base/base.component';
 
@@ -71,6 +71,15 @@ export class DocumentComponent extends BaseComponent {
           margin-left: var(--gap-small);    
       }
 
+      .document .arrow {
+        display: flex;
+        align-items: center; 
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        margin-left: auto;
+      }
+
 
       `,
     ];
@@ -97,6 +106,7 @@ export class DocumentComponent extends BaseComponent {
                 <div class="filename">
                     <p>lorem ${this.fileName}</p>
                 </div>
+                <div class="arrow"> ${unsafeSVG(Arrow)} </div>
             </div>
         </a>
       </div>
