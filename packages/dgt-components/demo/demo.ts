@@ -8,7 +8,8 @@ import { ProfilePayslipComponent } from '../lib/components/profile/profile-pays
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 import { DemoComponent } from './demo.component';
-import { BarcodeComponent } from '../lib/components/barcode/barcode.component'
+import { BarcodeComponent } from '../lib/components/barcode/barcode.component';
+import { DocumentComponent } from '../lib/components/document/document.component';
 
 
 
@@ -21,6 +22,7 @@ customElements.define('profile-payslip-component',  ProfilePayslipComponent);
 customElements.define('list-item', ListItemComponent);
 customElements.define('demo-component', DemoComponent);
 customElements.define('barcode-component', BarcodeComponent);
+customElements.define('document-component', DocumentComponent);
 
 const parser = new Parser();
 

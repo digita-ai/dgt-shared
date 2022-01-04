@@ -10,6 +10,7 @@ export * from './components/authentication/authenticate.machine';
 export * from './components/authentication/webid.component';
 export * from './components/consent/consent-request.component';
 export * from './components/consent/consent-result.component';
+export * from './components/document/document.component';
 export * from './components/forms/form-element.component';
 export * from './components/forms/form-submitter';
 export * from './components/forms/form-validator-result';
