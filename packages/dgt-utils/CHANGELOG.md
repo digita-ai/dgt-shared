@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/digita-ai/dgt-shared/compare/v0.10.3...v0.11.0) (2022-01-06)
+
+
+### **Features**
+
+* add router to utils ([#129](https://github.com/digita-ai/dgt-shared/issues/129)) ([f5201b9](https://github.com/digita-ai/dgt-shared/commit/f5201b9c00e771783a84f261196c96a1410b7102))
+
+
+
 ### [0.10.3](https://github.com/digita-ai/dgt-shared/compare/v0.10.2...v0.10.3) (2021-12-22)
 
 **Note:** Version bump only for package @digita-ai/dgt-utils
