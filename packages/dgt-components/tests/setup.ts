@@ -28,6 +28,7 @@ define('list-item', ListItemComponent);
 define('separator-component', SeparatorComponent);
 define('checkbox-component', CheckboxComponent);
 define('webid-form', WebIdComponent);
+
 /**
  * Enable mocks for fetch.
  */
