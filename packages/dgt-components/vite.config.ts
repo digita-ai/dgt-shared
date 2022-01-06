@@ -25,18 +25,6 @@ export default ({ command, mode }) => {
           entry: resolve(__dirname, 'lib/index.ts'),
           name: '@digita-ai/dgt-components'
         },
-        rollupOptions: {
-          input: {
-            profileName: resolve(__dirname, 'lib/components/profile/profile-name.component.ts'),
-          },
-          output: [
-            {
-              entryFileNames: ({ facadeModuleId }) => facadeModuleId.split('/').pop().replace('.ts', '.js'),
-              format: 'esm',
-              dir: resolve(__dirname, 'dist')
-            },
-          ],
-        },
         outDir: '../dist'
       },
       define: {
