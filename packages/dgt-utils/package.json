@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "@types/node": "^14.14.14",
+    "xstate": "^4.26.1",
     "rxjs": "^7.4.0",
     "zone.js": "~0.8.26"
   },
@@ -76,10 +77,10 @@
     "testEnvironment": "jsdom",
     "coverageThreshold": {
       "global": {
-        "branches": 22.85,
-        "functions": 11.76,
-        "lines": 16.01,
-        "statements": 15.98
+        "branches": 44.55,
+        "functions": 30.68,
+        "lines": 34.32,
+        "statements": 36.39
       }
     },
     "coveragePathIgnorePatterns": [

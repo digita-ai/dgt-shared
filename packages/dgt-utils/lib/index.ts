@@ -26,3 +26,4 @@ export * from './i8n/translator';
 export * from './utils/debounce';
 export * from './utils/fulltext-match';
 export * from './utils/is-equal';
+export * from './router/router';
