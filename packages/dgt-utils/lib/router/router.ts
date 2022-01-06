@@ -1,5 +1,5 @@
-import { ArgumentError } from '../errors/models/argument-error';
 import { assign, EventObject, send } from 'xstate';
+import { ArgumentError } from '../errors/models/argument-error';
 
 /**
  * Route definition for use in the router
@@ -173,7 +173,9 @@ export const updateHistory = (path: string, title?: string): void => {
   }
 
   if (title) {
+
     updateTitle(title);
+
   }
 
 };
@@ -247,7 +249,9 @@ export const routerStateConfig = (routes: Route[]) => ({
                 const route = activeRoute(routes);
 
                 if (route?.title) {
+
                   updateTitle(route.title);
+
                 }
 
               },
