@@ -1,11 +1,4 @@
-
-button:disabled {
-  background-color: var(--colors-background-normal);
-  border-color: var(--colors-background-normal);
-  color: var(--colors-foreground-light);
-  cursor: inherit;
-}
-
+button,
 a.btn,
 a.btn.primary button,
 button.primary {
@@ -43,6 +36,7 @@ button.outline {
 button svg {
   fill: var(--colors-foreground-inverse);
   max-height: 100%;
+  height: 100%;
 }
 
 button.inverse {
@@ -53,6 +47,10 @@ button.inverse svg {
   fill: var(--colors-primary-light);
 }
 
-button:disabled svg {
-  fill: var(--colors-foreground-light);
+/* stylelint-disable-next-line no-descending-specificity */
+button:disabled {
+  background-color: var(--colors-foreground-light);
+  border-color: var(--colors-foreground-light);
+  color: var(--colors-foreground-inverse);
+  cursor: unset;
 }

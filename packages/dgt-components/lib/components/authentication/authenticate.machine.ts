@@ -44,6 +44,7 @@ export enum AuthenticateStates {
   CHECKING_SESSION = '[AuthenticateState: Checking session]',
   AWAITING_WEBID   = '[AuthenticateState: Awaiting WebId]',
   CHECKING_WEBID   = '[AuthenticateState: Checking WebId]',
+  AWAITING_LOGIN   = '[AuthenticateState: Awaiting Login]',
   RETRIEVING_ISSUERS = '[AuthenticateState: Retrieving Issuers]',
   CHECKING_ISSUERS = '[AuthenticateState: Checking Issuers]',
   SELECTING_ISSUER = '[AuthenticateState: Selecting Issuer]',
@@ -62,7 +63,7 @@ export type AuthenticateState =
   { value: AuthenticateStates.CHECKING_SESSION | AuthenticateStates.AWAITING_WEBID;
     context: AuthenticateContext;
   } | {
-    value: AuthenticateStates.CHECKING_WEBID | AuthenticateStates.NO_TRUST;
+    value: AuthenticateStates.CHECKING_WEBID | AuthenticateStates.NO_TRUST | AuthenticateStates.AWAITING_LOGIN;
     context: AuthenticateContext & WithWebId;
   } | {
     value: AuthenticateStates.SELECTING_ISSUER;
@@ -79,6 +80,7 @@ export type AuthenticateState =
 
 export enum AuthenticateEvents {
   WEBID_ENTERED     = '[AuthenticateEvent: WebID entered]',
+  CLICKED_LOGIN     = '[AuthenticateEvent: Clicked Login]',
   SELECTED_ISSUER   = '[AuthenticateEvent: Selected Issuer]',
   LOGIN_SUCCESS     = '[AuthenticateEvent: Login success]',
   LOGIN_ERROR       = '[AuthenticateEvent: Login error]',
@@ -111,7 +113,19 @@ export class SelectedIssuerEvent implements EventObject {
 
 }
 
-export type AuthenticateEvent = LoginSuccessEvent | WebIdEnteredEvent | LoginErrorEvent | SelectedIssuerEvent;
+export class ClickedLoginEvent implements EventObject {
+
+  public type: AuthenticateEvents.CLICKED_LOGIN = AuthenticateEvents.CLICKED_LOGIN;
+  constructor(public webId: string) {}
+
+}
+
+export type AuthenticateEvent =
+  LoginSuccessEvent
+  | WebIdEnteredEvent
+  | LoginErrorEvent
+  | SelectedIssuerEvent
+  | ClickedLoginEvent;
 
 /* MACHINE */
 
@@ -133,6 +147,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
   states: {
 
     [AuthenticateStates.CHECKING_SESSION]: {
+      tags: [ 'loading' ],
       invoke: {
         src: () => solid.getSession(),
         onDone: {
@@ -153,9 +168,9 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
             target: AuthenticateStates.CHECKING_WEBID,
           },
           {
-            // otherwise, skip validation and go straight to retrieval of issuers
+            // otherwise, skip validation
             actions: assign({ webId: (c, event) => event.webId }),
-            target: AuthenticateStates.RETRIEVING_ISSUERS,
+            target: AuthenticateStates.AWAITING_LOGIN,
           },
         ],
         [AuthenticateEvents.SELECTED_ISSUER]: {
@@ -166,21 +181,45 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.CHECKING_WEBID]: {
+      on: {
+        [AuthenticateEvents.WEBID_ENTERED]: {
+          target: AuthenticateStates.CHECKING_WEBID,
+          actions: assign({ webId: (c, event) => event.webId }),
+        },
+      },
       invoke: {
-        src: (context) => context.webIdValidator(context.webId),
+        src: (context) => context.webIdValidator ? context.webIdValidator(context.webId) : Promise.resolve([]),
         onDone: [
           {
             cond: (c, event: DoneInvokeEvent<string[]>) => event.data?.length > 0,
             actions: send((c, event) => new LoginErrorEvent('WebID validation returned results', event.data)),
             target: AuthenticateStates.AWAITING_WEBID,
           },
-          { target: AuthenticateStates.RETRIEVING_ISSUERS },
+          {
+            target: AuthenticateStates.AWAITING_LOGIN,
+          },
         ],
         onError: { actions: send((c, event) => new LoginErrorEvent('Error while validating WebID', event.data)) },
       },
     },
 
+    [AuthenticateStates.AWAITING_LOGIN]: {
+      on: {
+        [AuthenticateEvents.CLICKED_LOGIN]: {
+          target: AuthenticateStates.RETRIEVING_ISSUERS,
+        },
+        [AuthenticateEvents.WEBID_ENTERED]: {
+          // validate webId when validator is set
+          cond: (context) => context.webIdValidator !== undefined,
+          actions: assign({ webId: (c, event) => event.webId }),
+          target: AuthenticateStates.CHECKING_WEBID,
+        },
+      },
+
+    },
+
     [AuthenticateStates.RETRIEVING_ISSUERS]: {
+      tags: [ 'loading' ],
       invoke: {
         src: (context) => solid.getIssuers(context.webId),
         onDone: {
@@ -194,6 +233,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.CHECKING_ISSUERS]: {
+      tags: [ 'loading' ],
       always: [
         {
           cond: (context) => context.issuers.length === 0,
@@ -211,6 +251,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.SELECTING_ISSUER]: {
+      tags: [ 'loading' ],
       on: {
         [AuthenticateEvents.SELECTED_ISSUER]: {
           actions: assign({ issuer: (context, event) => event.issuer }),
@@ -220,6 +261,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.AUTHENTICATING]: {
+      tags: [ 'loading' ],
       invoke: {
         src: (context) => solid.loginWithIssuer(context.issuer),
         onError: {

@@ -13,5 +13,6 @@
   "DGTMap",
   "ArgumentError",
   "HttpError",
-  "HttpClient"
+  "HttpClient",
+  "EventObject"
 ]

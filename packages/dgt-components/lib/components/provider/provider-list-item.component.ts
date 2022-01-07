@@ -1,6 +1,7 @@
 import { html, internalProperty, property, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 export class ProviderListItemComponent extends RxLitElement {
 
@@ -18,10 +19,10 @@ export class ProviderListItemComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      <div class="logo">
-        <img src="${this.icon}">
+      <div class="logo" part="provider-logo">
+        ${this.icon.includes('<svg') ? unsafeSVG(this.icon) : html`<img src="${this.icon}"/>`}
       </div>
-      <p>${ this.description }</p>
+      <p part="provider-description">${ this.description }</p>
  `;
 
   }
@@ -33,6 +34,7 @@ export class ProviderListItemComponent extends RxLitElement {
       :host {
         display: flex;
         align-items: center;
+        gap: var(--gap-normal);
         background: var(--colors-background-light);
         margin: var(--gap-small) 0;
         padding: var(--gap-small);
@@ -40,10 +42,23 @@ export class ProviderListItemComponent extends RxLitElement {
         cursor: pointer;
       }
 
-      img {
-        background-color: transparent;
-        margin-right: var(--gap-small);
+      .logo {
         width: var(--gap-large);
+        height: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .logo > img, .logo > svg {
+        fill: inherit;
+        object-fit: scale-down;
+        flex: 1 1;
+        max-width: 100%;
+        height: 100%;
+      }
+
+      p {
+        margin: 0;
       }
       `,
     ];

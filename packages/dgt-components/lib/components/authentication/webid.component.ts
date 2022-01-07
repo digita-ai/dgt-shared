@@ -1,17 +1,22 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
+import { debounce } from 'debounce';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { Translator } from '../../services/i18n/translator';
+
 export class WebIdComponent extends RxLitElement {
 
   @property({ type: String }) textLabel = 'WebID';
   @property({ type: String }) textPlaceholder = 'Please enter your WebID ...';
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
-  @property({ type: Array }) validationResults: string[] = [];
+  @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property({ type: Boolean }) disableLogin = true; // disable button by default
   @property({ type: Translator }) translator?: Translator;
 
   constructor() {
@@ -32,31 +37,51 @@ export class WebIdComponent extends RxLitElement {
 
   };
 
+  onWebIdChange = debounce((target: HTMLInputElement): void => {
+
+    this.dispatchEvent(new CustomEvent('change-webid', {
+      detail: target.value,
+    }));
+
+  }, 300);
+
   onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
-
-  onAlertDismissed = (event: CustomEvent): void => {
-
-    this.dispatchEvent(new CustomEvent(event.type, { detail: event.detail }));
-
-  };
 
   render(): TemplateResult {
 
     return html`
     <slot name="before"></slot>
-    <form @submit="${this.onSubmit}">
-      ${this.validationResults?.length > 0
-    ? html`<alert-component
-        @dismiss="${this.onAlertDismissed}"
-        exportparts="validation-alert"
-        .translator="${this.translator}"
-        .alert="${{ message: this.validationResults[0], type: 'warning' }}">
-      </alert-component>`
-    : ''}
+    <form @submit="${this.onSubmit}" part="webid-form">
+
       <label part="webid-label" for="webid">${this.textLabel}</label>
-      <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" />
+      <div class="webid-input-container" part="webid-input-container">
+
+        <div class="webid-input-button-container">
+          <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+          <button
+            part="webid-button"
+            class="primary"
+            disabled
+            ?disabled="${this.disableLogin}">
+        ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
+          </button>
+        </div>
+
+        
+        ${this.validationResults?.length > 0
+    ? html`
+        <alert-component
+          hideDismiss
+          hideIcon
+          exportparts="alert"
+          .translator="${this.translator}"
+          .alert="${{ message: this.validationResults[0], type: 'warning' }}">
+        </alert-component>`
+    : ''}
+
+      </div>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
-      <button part="webid-button" class="dark">${this.textButton}</button>
+
     </form>
     <slot name="after"></slot>
     `;
@@ -79,11 +104,25 @@ export class WebIdComponent extends RxLitElement {
           border-radius: var(--border-large);
           height: var(--button-height);
         }
-
+        .webid-input-container {
+          display: flex;
+          flex-direction: column;
+        }
+        ::part(alert) {
+          padding: var(--gap-small);
+        }
+        .webid-input-button-container {
+          display: flex;
+        }
+        .webid-input-button-container input {
+          flex: 1 1;
+        }
+        .webid-input-button-container button {
+          width: 75px;
+        }
         input  {
           padding: var(--gap-normal);
         }
-
         a {
           font-size: var(--font-size-small);
           padding: var(--gap-tiny);

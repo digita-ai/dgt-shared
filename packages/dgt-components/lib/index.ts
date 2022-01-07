@@ -3,7 +3,6 @@
  */
 export * from './components/alerts/alert';
 export * from './components/alerts/alert.component';
-export * from './components/base/base.component';
 export * from './components/cards/card.component';
 export * from './components/authentication/authenticate.component';
 export * from './components/authentication/authenticate.machine';
@@ -19,10 +18,6 @@ export * from './components/forms/form.events';
 export * from './components/header/content-header.component';
 export * from './components/list-item/list-item.component';
 export * from './components/loading/loading.component';
-export * from './components/profile/profile-contact.component';
-export * from './components/profile/profile-name.component';
-export * from './components/profile/profile-payslip.component';
-export * from './components/profile/credential.component';
 export * from './components/provider/provider-list-item.component';
 export * from './components/provider/provider-list.component';
 export * from './components/separator/separator.component';
@@ -36,7 +31,6 @@ export * from './components/state/state';
 export * from './components/source/source-list.component';
 export * from './components/source/source.component';
 export * from './components/checkbox/checkbox.component';
-export * from './components/barcode/barcode.component';
 export * from './models/holder.model';
 export * from './models/invite.model';
 export * from './models/issuer.model';
