@@ -77,10 +77,10 @@
     "testEnvironment": "jsdom",
     "coverageThreshold": {
       "global": {
-        "branches": 44.55,
-        "functions": 30.68,
-        "lines": 34.32,
-        "statements": 36.39
+        "branches": 22.85,
+        "functions": 13.33,
+        "lines": 17.09,
+        "statements": 16.99
       }
     },
     "coveragePathIgnorePatterns": [
