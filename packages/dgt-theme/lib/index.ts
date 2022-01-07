@@ -32,6 +32,8 @@ export { default as Checkbox } from './icons/Checkbox.svg?raw';
 export { default as Database } from './icons/Database.svg?raw';
 export { default as QR } from './icons/QR.svg?raw';
 export { default as Open } from './icons/Open.svg?raw';
+export { default as Document } from './icons/Document.svg?raw';
+export { default as Arrow } from './icons/Arrow.svg?raw';
 
 /**
  * Export theme
