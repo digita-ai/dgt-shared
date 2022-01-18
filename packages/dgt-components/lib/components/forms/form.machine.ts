@@ -1,5 +1,4 @@
 import { DoneInvokeEvent, MachineConfig, send, StateSchema } from 'xstate';
-import { map } from 'rxjs/operators';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
 import { addValidationResults, FormEvent, FormEvents, FormValidatedEvent, update } from './form.events';

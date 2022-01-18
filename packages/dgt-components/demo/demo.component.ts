@@ -5,7 +5,6 @@ import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component
 import { createMachine, interpret, Interpreter, StateMachine } from 'xstate';
 import { FormContext, FormStateSchema, FormState, formMachine } from '../lib/components/forms/form.machine';
 import { FormEvent, FormUpdatedEvent } from '../lib/components/forms/form.events';
-import { of } from 'rxjs';
 import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
