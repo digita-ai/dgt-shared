@@ -1,13 +1,12 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
-import { Interpreter, StateSchema } from 'xstate';
+import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
-import { State } from '../state/state';
-import { FormContext, FormRootStates, FormState, FormStates, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -115,7 +114,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
       // Subscribes to data in the actor's context.
       this.subscribe('showLoading', from(this.actor).pipe(
-        map((state) => state.matches({ [FormSubmissionStates.SUBMITTING]: {} }) || state.matches({
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
           },
@@ -124,8 +123,8 @@ export class FormElementComponent<T> extends RxLitElement {
 
       // Subscribes to data in the actor's context.
       this.subscribe('lockInput', from(this.actor).pipe(
-        map((state) => state.matches({ [FormSubmissionStates.SUBMITTING]: {} })
-        || state.matches({ [FormSubmissionStates.SUBMITTED]:{} })),
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)
+        || state.matches(FormSubmissionStates.SUBMITTED)),
       ));
 
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
@@ -148,7 +147,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   bindActorToInput(
     slot: HTMLSlotElement,
-    actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>,
+    actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>,
     field: keyof T,
     data: T,
   ): void {

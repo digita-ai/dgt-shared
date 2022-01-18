@@ -81,8 +81,11 @@ export interface FormStateSchema<T> extends StateSchema<FormContext<T>> {
 }
 
 export interface FormState<T> {
+  value:
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: Partial<{ [key in FormSubmissionStates]: any; }>;
+  { [FormSubmissionStates.NOT_SUBMITTED]: any }
+  | FormSubmissionStates.SUBMITTING
+  | FormSubmissionStates.SUBMITTED;
   context: FormContext<T>;
 }
 
