@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Purpose } from '../../models/purpose.model';
 import { define } from '../../util/define';
-import { ConsentResultComponent } from './consent-result.component';
+import { ConsentRequestComponent } from './consent-request.component';
 
 const purpose: Purpose = {
   uri: 'https://purpose.uri/',
@@ -10,15 +10,15 @@ const purpose: Purpose = {
   icon: 'https://icon.uri/',
 };
 
-describe('ConsentResultComponent', () => {
+describe('ConsentRequestComponent', () => {
 
-  let component: ConsentResultComponent;
+  let component: ConsentRequestComponent;
 
   beforeEach(() => {
 
-    define('consent-result', ConsentResultComponent);
+    define('consent-request', ConsentRequestComponent);
 
-    component = window.document.createElement('consent-result') as ConsentResultComponent;
+    component = window.document.createElement('consent-request') as ConsentRequestComponent;
     component.purpose = purpose;
 
   });
@@ -29,7 +29,7 @@ describe('ConsentResultComponent', () => {
     await component.updateComplete;
 
     expect(component).toBeTruthy();
-    expect(component).toBeInstanceOf(ConsentResultComponent);
+    expect(component).toBeInstanceOf(ConsentRequestComponent);
 
   });
 
