@@ -9,7 +9,7 @@ import { DemoComponent } from './demo.component';
 
 
 customElements.define('demo-auth', DemoAuthenticateComponent);
-customElements.define('nde-form-element', FormElementComponent);
+customElements.define('form-element', FormElementComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('list-item', ListItemComponent);
 customElements.define('demo-component', DemoComponent);

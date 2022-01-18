@@ -7,7 +7,7 @@ import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
 import { State } from '../state/state';
-import { FormContext, FormRootStates, FormStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormState, FormStates, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -92,7 +92,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>;
+  public actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -115,7 +115,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
       // Subscribes to data in the actor's context.
       this.subscribe('showLoading', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+        map((state) => state.matches({ [FormSubmissionStates.SUBMITTING]: {} }) || state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
           },
@@ -124,7 +124,8 @@ export class FormElementComponent<T> extends RxLitElement {
 
       // Subscribes to data in the actor's context.
       this.subscribe('lockInput', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches(FormSubmissionStates.SUBMITTED)),
+        map((state) => state.matches({ [FormSubmissionStates.SUBMITTING]: {} })
+        || state.matches({ [FormSubmissionStates.SUBMITTED]:{} })),
       ));
 
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
@@ -257,11 +258,9 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
-
         .loading svg .loadCircle {
           stroke: var(--colors-primary-normal);
         }
-
         .no-border, .no-border ::slotted(*) {
           border: none !important;
         }
@@ -275,10 +274,10 @@ export class FormElementComponent<T> extends RxLitElement {
           margin-bottom: var(--gap-small);
         }
         .form-element .content {
+          width: 100%;
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          background-color: var(--colors-background-light)
         }
         .form-element .content .action ::slotted(button){
           height: 100%;
@@ -288,13 +287,7 @@ export class FormElementComponent<T> extends RxLitElement {
           flex-direction: row;
           align-items: stretch;
           justify-content: space-between;
-          flex: 1 0;
-          border: var(--border-normal) solid var(--colors-foreground-normal);
-        }
-        .form-element .content .field ::slotted(input) {
-          padding: 0 var(--gap-normal);
-          flex: 1 0;
-          height: 44px;
+          width: 100%;
         }
         .form-element .content .field .icon {
           height: 100%;
