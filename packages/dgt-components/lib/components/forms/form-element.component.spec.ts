@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArgumentError } from '@digita-ai/dgt-utils';
 import { createMachine, interpret, Interpreter } from 'xstate';
+import { define } from '../../util/define';
+import { hydrate } from '../../util/hydrate';
 import { FormElementComponent } from './form-element.component';
-import { FormEvent, FormEvents } from './form.events';
-import { FormContext, formMachine, FormState, FormStateSchema } from './form.machine';
+import { FormEvent, FormEvents, FormSubmittedEvent } from './form.events';
+import { FormContext, formMachine, FormState, FormStateSchema, FormSubmissionStates } from './form.machine';
 
 interface TData {
   name: string;
@@ -33,9 +35,9 @@ describe('FormElementComponent', () => {
         }),
     );
 
+    define('form-element', hydrate(FormElementComponent)(machine));
     component = window.document.createElement('form-element') as FormElementComponent<TData>;
 
-    component.actor = machine;
     component.field = 'name';
     component.data = { uri: '', name: 'Test', description: 'description' };
 
@@ -200,12 +202,22 @@ describe('FormElementComponent', () => {
 
   it('should disable input when locked', async () => {
 
-    component.lockInput = true;
+    machine.send(new FormSubmittedEvent());
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(input.disabled).toBeTruthy();
+    machine.onTransition((state) => {
+
+      if (state.matches(FormSubmissionStates.SUBMITTED)) {
+
+        expect(input.disabled).toBeTruthy();
+
+      }
+
+    });
+
+    machine.start();
 
   });
 

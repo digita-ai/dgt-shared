@@ -8,6 +8,8 @@ import { FormEvent, FormUpdatedEvent } from '../lib/components/forms/form.events
 import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
+import { hydrate } from '../lib/util/hydrate';
+
 
 const emailValidator: FormValidator<{ email: string }> = async (context, event) => {
 
@@ -58,11 +60,10 @@ export class DemoComponent extends RxLitElement {
 
     // eslint-disable-next-line no-console,@typescript-eslint/no-unsafe-assignment
     this.formActor = interpret(this.formMachine, { devTools: true }).onTransition((s) => console.log(s.value));
+    this.formActor.start();
 
     define('checkbox-component', CheckboxComponent);
-    define('form-element', FormElementComponent);
-
-    this.formActor.start();
+    define('form-element', hydrate(FormElementComponent)(this.formActor));
 
   }
 
@@ -93,7 +94,7 @@ export class DemoComponent extends RxLitElement {
     <h1>form element component</h1>
     <form>
       <input placeholder="non form-element input field">
-      <form-element .actor="${this.formActor}" field="email">
+      <form-element field="email">
         <input slot="input" type="email" name="email" id="email" placeholder="enter e-mail address">
       </form-element>
       <button>Continue</button>

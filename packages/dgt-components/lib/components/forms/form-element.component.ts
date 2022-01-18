@@ -4,7 +4,7 @@ import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
 import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
 import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
@@ -87,58 +87,49 @@ export class FormElementComponent<T> extends RxLitElement {
   @internalProperty()
   public data: T;
 
-  /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
+  constructor(
+    private actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>
+  ) {
 
-  /**
-   * Hook called on every update after connection to the DOM.
-   */
-  updated(changed: PropertyValues): void {
+    super();
 
-    super.updated(changed);
+    // Subscribes to the field's validation results.
+    this.subscribe('validationResults', from(this.actor).pipe(
+      map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
+    ));
 
-    if(changed.has('actor') && this.actor) {
+    // Subscribes to data in the actor's context.
+    this.subscribe('data', from(this.actor).pipe(
+      map((state) => state.context?.data),
+    ));
 
-      // Subscribes to the field's validation results.
-      this.subscribe('validationResults', from(this.actor).pipe(
-        map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
-      ));
+    // Subscribes to data in the actor's context.
+    this.subscribe('showLoading', from(this.actor).pipe(
+      map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+        },
+      })),
+    ));
 
-      // Subscribes to data in the actor's context.
-      this.subscribe('data', from(this.actor).pipe(
-        map((state) => state.context?.data),
-      ));
-
-      // Subscribes to data in the actor's context.
-      this.subscribe('showLoading', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
-          },
-        })),
-      ));
-
-      // Subscribes to data in the actor's context.
-      this.subscribe('lockInput', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)
+    // Subscribes to data in the actor's context.
+    this.subscribe('lockInput', from(this.actor).pipe(
+      map((state) => state.matches(FormSubmissionStates.SUBMITTING)
         || state.matches(FormSubmissionStates.SUBMITTED)),
-      ));
+      tap((lock) => {
 
-      this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+        this.inputs?.forEach((element) => element.disabled = lock);
 
-    }
+      })
+    ));
 
-    /**
-     * Update the disabled state of the input elements.
-     */
-    if(changed.has('lockInput')) {
+  }
 
-      this.inputs?.forEach((element) => element.disabled = this.lockInput);
+  protected firstUpdated(changed: PropertyValues): void {
 
-    }
+    super.firstUpdated(changed);
+
+    this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
 
   }
 

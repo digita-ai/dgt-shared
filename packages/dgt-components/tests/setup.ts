@@ -17,7 +17,6 @@ import { define } from '../lib/util/define';
  * Register tags for components.
  */
 define('alert-component', AlertComponent);
-define('form-element', FormElementComponent);
 define('nde-sidebar-item', SidebarItemComponent);
 define('nde-sidebar-list-item', SidebarListItemComponent);
 define('nde-sidebar-list', SidebarListComponent);
