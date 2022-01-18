@@ -1,4 +1,4 @@
-import { MachineConfig, StateSchema } from 'xstate';
+import { DoneInvokeEvent, MachineConfig, send, StateSchema } from 'xstate';
 import { map } from 'rxjs/operators';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
@@ -184,9 +184,11 @@ export const formMachine = <T>(
             [FormValidationStates.VALIDATING]: {
               entry: update,
               invoke: {
-                src: (context, event) => validator(context, event).pipe(
-                  map((results) => ({ type: FormEvents.FORM_VALIDATED, results })),
-                ),
+                src: (context, event) => validator(context, event),
+                onDone: {
+                  actions: send((c, event: DoneInvokeEvent<FormValidatorResult[]>) =>
+                    new FormValidatedEvent(event.data)),
+                },
               },
               on: {
                 [FormEvents.FORM_VALIDATED]: [

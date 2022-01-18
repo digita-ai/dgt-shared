@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArgumentError } from '@digita-ai/dgt-utils';
-import { Observable, of } from 'rxjs';
 import { createMachine, interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
-import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents } from './form.events';
 import { FormContext, formMachine, FormState, FormStateSchema } from './form.machine';
 
@@ -23,10 +21,10 @@ describe('FormElementComponent', () => {
 
     machine = interpret(
       createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
-        (context: FormContext<TData>, event: FormEvent): Observable<FormValidatorResult[]> => of([
+        async (context: FormContext<TData>) => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ]),
+        ],
       ))
         .withContext({
           data: { uri: '', name: 'Test', description: 'description' },
@@ -232,7 +230,7 @@ describe('FormElementComponent', () => {
 
     const actor = interpret(
       createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
-        (context, event): any => of([])
+        async () => []
       ))
     );
 
