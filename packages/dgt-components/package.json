@@ -41,7 +41,7 @@
     "n3": "1.8.0",
     "rx-lit": "1.0.1",
     "rxjs": "^7.4.0",
-    "xstate": "^4.26.0"
+    "xstate": "^4.27.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
@@ -92,10 +92,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 64.7,
-        "functions": 63.53,
-        "lines": 76.28,
-        "statements": 75.41
+        "branches": 67.82,
+        "functions": 70.87,
+        "lines": 84.19,
+        "statements": 83.66
       }
     },
     "coveragePathIgnorePatterns": [
