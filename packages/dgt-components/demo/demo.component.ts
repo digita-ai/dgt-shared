@@ -10,9 +10,9 @@ import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
 
-const emailValidator: FormValidator<{ email: string }> = (context, event) => {
+const emailValidator: FormValidator<{ email: string }> = async (context, event) => {
 
-  if (!context.data) return of([]);
+  if (!context.data) return [];
 
   const { email } = context.data;
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -23,7 +23,7 @@ const emailValidator: FormValidator<{ email: string }> = (context, event) => {
 
     if (!email || email.length < 1) {
 
-      return of([ { message: 'This field is required', field: 'email' } ]);
+      return [ { message: 'This field is required', field: 'email' } ];
 
     }
 
@@ -31,13 +31,13 @@ const emailValidator: FormValidator<{ email: string }> = (context, event) => {
 
     if (!emailRegex.test(email)) {
 
-      return of([ { message: 'Please enter a valid e-mail', field: 'email' } ]);
+      return [ { message: 'Please enter a valid e-mail', field: 'email' } ];
 
     }
 
   }
 
-  return of([]);
+  return [];
 
 };
 
