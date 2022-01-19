@@ -72,7 +72,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
       @no-trust="${this.onNoTrust}"
       @create-webid="${this.onCreateWebId}"
       .translator="${this.translator}"
-      textButton="Log in to your account text test"
+      textButton="Log in to your account"
     >
       <h1 slot="beforeWebId">Enter your WebID (vertical view)</h1>
     </auth-flow>

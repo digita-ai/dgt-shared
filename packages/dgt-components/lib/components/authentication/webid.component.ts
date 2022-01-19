@@ -78,9 +78,7 @@ export class WebIdComponent extends RxLitElement {
             class="primary"
             disabled
             ?disabled="${this.disableLogin}">
-            <span>
               ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
-            </span>
           </button>
         </div>
 
