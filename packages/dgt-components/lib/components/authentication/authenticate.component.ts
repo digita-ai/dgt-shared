@@ -28,6 +28,7 @@ export class AuthenticateComponent extends RxLitElement {
   @property({ type: Boolean }) hideWebId = false;
   @property({ type: Boolean }) hideIssuers = false;
   @property({ type: Boolean }) hideCreateNewWebId = false;
+  @property({ type: String }) layout: 'horizontal' | 'vertical'  = 'horizontal';
   @property() webIdValidationResults: string[];
   @property({ type: Translator }) translator?: Translator;
 
@@ -147,6 +148,7 @@ export class AuthenticateComponent extends RxLitElement {
           .textButton="${this.textButton}"
           .validationResults="${this.webIdValidationResults}"
           .translator="${this.translator}"
+          .layout="${this.layout}"
         >
           <slot name="beforeWebId" slot="before"></slot>
           <slot name="afterWebId" slot="after"></slot>
