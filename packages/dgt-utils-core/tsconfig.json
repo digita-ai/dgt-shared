@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "lib",
     "outDir": "dist",
-    "module": "es2020",
+    "module": "commonjs",
     "target": "es2020",
   },
   "files": [ "node_modules/vite/client.d.ts" ],

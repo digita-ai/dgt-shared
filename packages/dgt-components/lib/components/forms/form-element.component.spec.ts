@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArgumentError } from '@digita-ai/dgt-utils';
-import { Observable, of } from 'rxjs';
-import { interpret, Interpreter, StateSchema } from 'xstate';
-import { State } from '../state/state';
+import { createMachine, interpret, Interpreter } from 'xstate';
+import { define } from '../../util/define';
+import { hydrate } from '../../util/hydrate';
 import { FormElementComponent } from './form-element.component';
-import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents } from './form.events';
-import { FormContext, formMachine, FormStates } from './form.machine';
+import { FormEvent, FormEvents, FormSubmittedEvent } from './form.events';
+import { FormContext, formMachine, FormState, FormStateSchema, FormSubmissionStates } from './form.machine';
 
 interface TData {
   name: string;
@@ -16,25 +16,18 @@ interface TData {
 describe('FormElementComponent', () => {
 
   let component: FormElementComponent<TData>;
-
-  let machine: Interpreter<
-  FormContext<TData>,
-  StateSchema<FormContext<TData>>,
-  FormEvent,
-  State<FormStates, FormContext<TData>>
-  >;
-
-  let input;
+  let machine: Interpreter<FormContext<TData>, FormStateSchema<TData>, FormEvent, FormState<TData>>;
+  let input: HTMLInputElement;
 
   beforeEach(() => {
 
     machine = interpret(
-      formMachine<TData>(
-        (context: FormContext<TData>, event: FormEvent): Observable<FormValidatorResult[]> => of([
+      createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
+        async (context: FormContext<TData>) => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ]),
-      )
+        ],
+      ))
         .withContext({
           data: { uri: '', name: 'Test', description: 'description' },
           original: { uri: '', name: 'Test', description: 'description' },
@@ -42,9 +35,9 @@ describe('FormElementComponent', () => {
         }),
     );
 
-    component = window.document.createElement('nde-form-element') as FormElementComponent<TData>;
+    define('form-element', hydrate(FormElementComponent)(machine));
+    component = window.document.createElement('form-element') as FormElementComponent<TData>;
 
-    component.actor = machine;
     component.field = 'name';
     component.data = { uri: '', name: 'Test', description: 'description' };
 
@@ -94,7 +87,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+    expect((window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
 
   });
 
@@ -132,7 +125,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    // const input = window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement;
+    // const input = window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement;
 
     input.value = 'Lorem';
     input.dispatchEvent(new Event('input'));
@@ -146,8 +139,8 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.results .result').length).toBe(1);
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.help[hidden]').length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.results .result').length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.help[hidden]').length).toBe(1);
 
   });
 
@@ -156,10 +149,10 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.help slot').assignedElements().length).toBe(1);
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.label slot').assignedElements().length).toBe(1);
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.icon slot').assignedElements().length).toBe(1);
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.action slot').assignedElements().length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.help slot').assignedElements().length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.label slot').assignedElements().length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.icon slot').assignedElements().length).toBe(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.action slot').assignedElements().length).toBe(1);
 
   });
 
@@ -170,7 +163,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(1);
 
   });
 
@@ -181,7 +174,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(0);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(0);
 
   });
 
@@ -192,7 +185,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(1);
 
   });
 
@@ -203,18 +196,28 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(0);
+    expect(window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(0);
 
   });
 
   it('should disable input when locked', async () => {
 
-    component.lockInput = true;
+    machine.send(new FormSubmittedEvent());
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(input.disabled).toBeTruthy();
+    machine.onTransition((state) => {
+
+      if (state.matches(FormSubmissionStates.SUBMITTED)) {
+
+        expect(input.disabled).toBeTruthy();
+
+      }
+
+    });
+
+    machine.start();
 
   });
 
@@ -232,12 +235,17 @@ describe('FormElementComponent', () => {
   describe('bindActorToInput', () => {
 
     const slot: HTMLSlotElement = {
-      ...window.document.createElement('input'),
+      ...window.document.createElement('input') as any,
       assignedElements: jest.fn(),
       assignedNodes: jest.fn(),
     };
 
-    const actor = interpret(formMachine<any>((context, event): any => of([])));
+    const actor = interpret(
+      createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
+        async () => []
+      ))
+    );
+
     const data = { name: '', description: '', uri: '' };
 
     it('should throw when slot in undefined', async() => {
@@ -275,4 +283,3 @@ describe('FormElementComponent', () => {
   });
 
 });
-

@@ -1,6 +1,5 @@
 import { Parser, Store } from 'n3';
 import { addListener, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
-import {FormElementComponent} from '../lib/components/forms/form-element.component';
 import {CardComponent} from '../lib/components/cards/card.component';
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
@@ -9,7 +8,6 @@ import { DemoComponent } from './demo.component';
 
 
 customElements.define('demo-auth', DemoAuthenticateComponent);
-customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('list-item', ListItemComponent);
 customElements.define('demo-component', DemoComponent);

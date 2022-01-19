@@ -1,8 +1,6 @@
-import { of } from 'rxjs';
-import { interpret, Interpreter } from 'xstate';
-import { State } from '../state/state';
+import { createMachine, interpret, Interpreter } from 'xstate';
 import { FormEvent, FormEvents } from './form.events';
-import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 interface TData {
   name: string;
@@ -11,17 +9,17 @@ interface TData {
 
 describe('FormMachine', () => {
 
-  let machine: Interpreter<FormContext<TData>, any, FormEvent, State<FormStates, FormContext<TData>>>;
+  let machine: Interpreter<FormContext<TData>, FormStateSchema<TData>, FormEvent, FormState<TData>>;
 
   beforeEach(() => {
 
+    const validator = async (context: FormContext<TData>, event: FormEvent) => [
+      ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
+      ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
+    ];
+
     machine = interpret(
-      formMachine(
-        (context: FormContext<TData>, event: FormEvent) => of([
-          ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
-          ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ]),
-      )
+      createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(validator))
         .withContext({
           data: { uri: '', name: 'Test' },
           original: { uri: '', name: 'Test' },
@@ -46,30 +44,47 @@ describe('FormMachine', () => {
 
     machine.start();
 
+    machine.onTransition((state) => {
+
+      if (state.matches(
+        submission === FormSubmissionStates.SUBMITTED ?
+          FormSubmissionStates.SUBMITTED :
+          {
+            [FormSubmissionStates.NOT_SUBMITTED]:{
+              [FormRootStates.CLEANLINESS]: cleanliness,
+              [FormRootStates.VALIDATION]: validation,
+            },
+          },
+      )) {
+
+        // Validation rules should be set correctly
+        expect(state.context.validation).toEqual(results);
+
+        // Data should be updated
+        expect(state.context.data).toEqual(data);
+
+        // States should be updated
+        expect(state.matches(
+          submission === FormSubmissionStates.SUBMITTED ?
+            FormSubmissionStates.SUBMITTED :
+            {
+              [FormSubmissionStates.NOT_SUBMITTED]:{
+                [FormRootStates.CLEANLINESS]: cleanliness,
+                [FormRootStates.VALIDATION]: validation,
+              },
+            },
+        )).toBeTruthy();
+
+      }
+
+    });
+
     // Send updates
     for(const update of updates) {
 
       machine.send(FormEvents.FORM_UPDATED, update);
 
     }
-
-    // Validation rules should be set correctly
-    expect(machine.state.context.validation).toEqual(results);
-
-    // Data should be updated
-    expect(machine.state.context.data).toEqual(data);
-
-    // States should be updated
-    expect(machine.state.matches(
-      submission === FormSubmissionStates.SUBMITTED ?
-        FormSubmissionStates.SUBMITTED :
-        {
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: cleanliness,
-            [FormRootStates.VALIDATION]: validation,
-          },
-        },
-    )).toBeTruthy();
 
   });
 
@@ -81,7 +96,7 @@ describe('FormMachine', () => {
 
     machine.onTransition((state) => {
 
-      if (state.matches(FormSubmissionStates.NOT_SUBMITTED)){
+      if (state.matches({ [FormSubmissionStates.NOT_SUBMITTED]: {} })){
 
         done();
 
@@ -132,15 +147,13 @@ describe('FormMachine', () => {
     const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
 
     machine = interpret(
-      formMachine(
-        (context: FormContext<TData>, event: FormEvent) => of([]),
+      createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
+        async () => [],
         submitter,
-      )
-        .withContext({
-          data: { uri: '', name: 'Test' },
-          original: { uri: '', name: 'Test' },
-          validation: [],
-        }),
+      )).withContext({
+        data: { uri: '', name: 'Test' },
+        original: { uri: '', name: 'Test' },
+      }),
     );
 
     machine.start();

@@ -1,13 +1,12 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
-import { Interpreter, StateSchema } from 'xstate';
+import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
-import { State } from '../state/state';
-import { FormContext, FormRootStates, FormStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -88,57 +87,49 @@ export class FormElementComponent<T> extends RxLitElement {
   @internalProperty()
   public data: T;
 
-  /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>;
+  constructor(
+    private actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>
+  ) {
 
-  /**
-   * Hook called on every update after connection to the DOM.
-   */
-  updated(changed: PropertyValues): void {
+    super();
 
-    super.updated(changed);
+    // Subscribes to the field's validation results.
+    this.subscribe('validationResults', from(this.actor).pipe(
+      map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
+    ));
 
-    if(changed.has('actor') && this.actor) {
+    // Subscribes to data in the actor's context.
+    this.subscribe('data', from(this.actor).pipe(
+      map((state) => state.context?.data),
+    ));
 
-      // Subscribes to the field's validation results.
-      this.subscribe('validationResults', from(this.actor).pipe(
-        map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
-      ));
+    // Subscribes to data in the actor's context.
+    this.subscribe('showLoading', from(this.actor).pipe(
+      map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+        },
+      })),
+    ));
 
-      // Subscribes to data in the actor's context.
-      this.subscribe('data', from(this.actor).pipe(
-        map((state) => state.context?.data),
-      ));
+    // Subscribes to data in the actor's context.
+    this.subscribe('lockInput', from(this.actor).pipe(
+      map((state) => state.matches(FormSubmissionStates.SUBMITTING)
+        || state.matches(FormSubmissionStates.SUBMITTED)),
+      tap((lock) => {
 
-      // Subscribes to data in the actor's context.
-      this.subscribe('showLoading', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
-          },
-        })),
-      ));
+        this.inputs?.forEach((element) => element.disabled = lock);
 
-      // Subscribes to data in the actor's context.
-      this.subscribe('lockInput', from(this.actor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches(FormSubmissionStates.SUBMITTED)),
-      ));
+      })
+    ));
 
-      this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+  }
 
-    }
+  protected firstUpdated(changed: PropertyValues): void {
 
-    /**
-     * Update the disabled state of the input elements.
-     */
-    if(changed.has('lockInput')) {
+    super.firstUpdated(changed);
 
-      this.inputs?.forEach((element) => element.disabled = this.lockInput);
-
-    }
+    this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
 
   }
 
@@ -147,7 +138,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   bindActorToInput(
     slot: HTMLSlotElement,
-    actor: Interpreter<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, State<FormStates, FormContext<T>>>,
+    actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>,
     field: keyof T,
     data: T,
   ): void {
@@ -257,11 +248,9 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
-
         .loading svg .loadCircle {
           stroke: var(--colors-primary-normal);
         }
-
         .no-border, .no-border ::slotted(*) {
           border: none !important;
         }
@@ -275,10 +264,10 @@ export class FormElementComponent<T> extends RxLitElement {
           margin-bottom: var(--gap-small);
         }
         .form-element .content {
+          width: 100%;
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          background-color: var(--colors-background-light)
         }
         .form-element .content .action ::slotted(button){
           height: 100%;
@@ -288,13 +277,7 @@ export class FormElementComponent<T> extends RxLitElement {
           flex-direction: row;
           align-items: stretch;
           justify-content: space-between;
-          flex: 1 0;
-          border: var(--border-normal) solid var(--colors-foreground-normal);
-        }
-        .form-element .content .field ::slotted(input) {
-          padding: 0 var(--gap-normal);
-          flex: 1 0;
-          height: 44px;
+          width: 100%;
         }
         .form-element .content .field .icon {
           height: 100%;

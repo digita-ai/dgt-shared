@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/digita-ai/dgt-shared/compare/v0.11.3...v0.12.0) (2022-01-18)
+
+
+### **Features**
+
+* refactor for form machine, component ([#140](https://github.com/digita-ai/dgt-shared/issues/140)) ([e234a32](https://github.com/digita-ai/dgt-shared/commit/e234a32dc35e15a80309722751c38e33ae1e246a))
+
+
+
+### [0.11.3](https://github.com/digita-ai/dgt-shared/compare/v0.11.2...v0.11.3) (2022-01-14)
+
+**Note:** Version bump only for package @digita-ai/dgt-components
+
+
+
+
+
 ### [0.11.2](https://github.com/digita-ai/dgt-shared/compare/v0.11.1...v0.11.2) (2022-01-12)
 
 

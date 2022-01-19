@@ -8,7 +8,7 @@ export interface FormValidatorResult {
   field: string;
 
   /**
-   * A message which indicate what's wrong.
+   * A descriptive validation message.
    */
   message: string;
 }
