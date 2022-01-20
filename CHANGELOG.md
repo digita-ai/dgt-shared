@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.0](https://github.com/digita-ai/dgt-shared/compare/v0.12.0...v0.13.0) (2022-01-20)
+
+
+### **Features**
+
+* support vertical view of authenticate component ([#141](https://github.com/digita-ai/dgt-shared/issues/141)) ([3fdf69f](https://github.com/digita-ai/dgt-shared/commit/3fdf69f7caa10e2ecf3b1536da5f84a893ae3bf9))
+
+
+
 ## [0.12.0](https://github.com/digita-ai/dgt-shared/compare/v0.11.3...v0.12.0) (2022-01-18)
 
 

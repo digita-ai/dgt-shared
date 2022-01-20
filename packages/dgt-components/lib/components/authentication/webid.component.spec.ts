@@ -35,6 +35,19 @@ describe('WebIdComponent', () => {
 
   });
 
+  it('should render vertically when layout is set to vertical', async () => {
+
+    component.layout = 'vertical';
+    component.validationResults = [ 'test' ];
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(
+      component.shadowRoot.querySelector('.webid-input-container').querySelector('alert-component')
+    ).toBeDefined();
+
+  });
+
   describe('onWebIdChange', () => {
 
     it('should dispatch change-webid CustomEvent', async () => {
