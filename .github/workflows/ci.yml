@@ -96,6 +96,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
   
+      - run: npm publish packages/semcom-components
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+  
       - run: npm publish packages/dgt-theme
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

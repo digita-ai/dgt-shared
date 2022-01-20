@@ -9,6 +9,10 @@
       "path": "packages/dgt-components"
     },
     {
+      "name": "semcom-components",
+      "path": "packages/semcom-components"
+    },
+    {
       "name": "dgt-theme",
       "path": "packages/dgt-theme"
     },
