@@ -24,4 +24,15 @@ describe('LoadingComponent', () => {
 
   });
 
+  it('should display the message is provided', async () => {
+
+    component.message = 'test message';
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    const message = component.shadowRoot.querySelector('p');
+    expect(message).toBeDefined();
+    expect(message.innerHTML).toContain('test message');
+
+  });
+
 });

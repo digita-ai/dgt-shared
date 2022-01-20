@@ -14,6 +14,7 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: String }) textPlaceholder = 'Please enter your WebID ...';
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
+  @property({ type: String }) layout: 'horizontal' | 'vertical'  = 'horizontal';
   @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
   @property({ type: Boolean }) disableLogin = true; // disable button by default
@@ -49,27 +50,8 @@ export class WebIdComponent extends RxLitElement {
 
   render(): TemplateResult {
 
-    return html`
-    <slot name="before"></slot>
-    <form @submit="${this.onSubmit}" part="webid-form">
-
-      <label part="webid-label" for="webid">${this.textLabel}</label>
-      <div class="webid-input-container" part="webid-input-container">
-
-        <div class="webid-input-button-container" part="webid-input-button-container">
-          <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
-          <button
-            part="webid-button"
-            class="primary"
-            disabled
-            ?disabled="${this.disableLogin}">
-        ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
-          </button>
-        </div>
-
-        
-        ${this.validationResults?.length > 0
-    ? html`
+    const alerts = this.validationResults?.length > 0
+      ? html`
         <alert-component
           hideDismiss
           hideIcon
@@ -77,7 +59,31 @@ export class WebIdComponent extends RxLitElement {
           .translator="${this.translator}"
           .alert="${{ message: this.validationResults[0], type: 'warning' }}">
         </alert-component>`
-    : ''}
+      : '';
+
+    return html`
+    <slot name="before"></slot>
+    <form @submit="${this.onSubmit}" part="webid-form">
+
+      <label part="webid-label" for="webid">${this.textLabel}</label>
+      <div class="webid-input-container" part="webid-input-container">
+
+        <div class="webid-input-button-container ${ this.layout }" part="webid-input-button-container">
+          <div class="webid-input-container" part="webid-input-container">
+            <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+            ${ this.layout === 'vertical' ? alerts : ''}
+          </div>  
+          <button
+            part="webid-button"
+            class="primary"
+            disabled
+            ?disabled="${this.disableLogin}">
+              ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
+          </button>
+        </div>
+
+
+        ${ this.layout === 'horizontal' ? alerts : ''}
 
       </div>
       <a part="webid-create" ?hidden="${this.hideCreateNewWebId}" @click="${this.onButtonCreateWebIDClick}">${this.textNoWebId}</a>
@@ -114,11 +120,21 @@ export class WebIdComponent extends RxLitElement {
         .webid-input-button-container {
           display: flex;
         }
-        .webid-input-button-container input {
+        .webid-input-button-container.vertical {
+          flex-direction: column;
+          gap: var(--gap-normal);
+        }
+        .webid-input-button-container.vertical > button {
+          width: 100%;
+        }
+        .webid-input-button-container .webid-input-container {
           flex: 1 1;
         }
         .webid-input-button-container button {
           width: 75px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         input  {
           padding: var(--gap-normal);
