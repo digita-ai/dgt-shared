@@ -3,6 +3,7 @@ import { send, assign, log } from 'xstate/lib/actions';
 import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { Session } from '../../models/session.model';
+import { checkWebId } from './authenticate.services';
 
 /**
  * Validator function for WebIDs
@@ -184,18 +185,22 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
       on: {
         [AuthenticateEvents.WEBID_ENTERED]: {
           target: AuthenticateStates.CHECKING_WEBID,
-          actions: assign({ webId: (c, event) => event.webId }),
         },
       },
       invoke: {
-        src: (context) => context.webIdValidator ? context.webIdValidator(context.webId) : Promise.resolve([]),
+        src: checkWebId,
         onDone: [
           {
-            cond: (c, event: DoneInvokeEvent<string[]>) => event.data?.length > 0,
-            actions: send((c, event) => new LoginErrorEvent('WebID validation returned results', event.data)),
+            cond: (c, event: DoneInvokeEvent<{ webId: string; validationResults: string[] }>) =>
+              event.data?.validationResults?.length > 0,
+            actions: [
+              send((c, event) => new LoginErrorEvent('WebID validation returned results', event.data.validationResults)),
+              assign({ webId: (c, event) => event.data.webId }),
+            ],
             target: AuthenticateStates.AWAITING_WEBID,
           },
           {
+            actions: assign({ webId: (c, event) => event.data.webId }),
             target: AuthenticateStates.AWAITING_LOGIN,
           },
         ],
