@@ -1,5 +1,13 @@
 import fetch from 'cross-fetch';
 
+/**
+ *
+ * Function to add protocol prefix to uri if it is missing
+ *
+ * @param uri The uri to add the protocol prefix to
+ * @returns The given uri with the protocol prefix added
+ * @throws An error if the given uri is not a valid uri
+ */
 export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
   try {
