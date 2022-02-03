@@ -1,5 +1,4 @@
 import { ArgumentError } from '@digita-ai/dgt-utils';
-import { MockTranslator } from '../../services/i18n/mock-translator';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 
@@ -10,6 +9,10 @@ describe('AlertComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement('alert-component') as AlertComponent;
+
+    (component.translator as unknown) = {
+      translate: (key: string) => key,
+    };
 
   });
 
@@ -48,8 +51,6 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MockTranslator('en-GB');
-
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -65,8 +66,6 @@ describe('AlertComponent', () => {
       type: 'success',
       message: 'foo',
     };
-
-    component.translator = new MockTranslator('en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;

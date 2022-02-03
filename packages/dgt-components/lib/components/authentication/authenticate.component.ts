@@ -5,12 +5,12 @@ import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Theme, DigitaBlue } from '@digita-ai/dgt-theme';
 import { SolidService } from '@digita-ai/inrupt-solid-service';
+import { Translator } from '@digita-ai/dgt-utils';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
 import { LoadingComponent } from '../loading/loading.component';
 import { define } from '../../util/define';
-import { Translator } from '../../services/i18n/translator';
 import { WebIdComponent } from './webid.component';
 import { AuthenticateContext, AuthenticateEvent, AuthenticateEvents, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, ClickedLoginEvent, SelectedIssuerEvent, WebIdEnteredEvent, WebIdValidator } from './authenticate.machine';
 
