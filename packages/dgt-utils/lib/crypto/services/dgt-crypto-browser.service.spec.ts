@@ -1,28 +1,14 @@
-/**
- * @jest-environment node
- */
-
-import * as path from 'path';
-import { ComponentsManager } from 'componentsjs';
 import { DGTCryptoBrowserService } from './dgt-crypto-browser.service';
+import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 
 describe('DGTCryptoBrowserService', () => {
 
   let service: DGTCryptoBrowserService;
+  const mockLogger: DGTLoggerService = { debug: jest.fn() } as any;
 
   beforeEach(async () => {
 
-    const mainModulePath = path.join(__dirname, '../../../');
-    const configPath = path.join(mainModulePath, 'config/config-test.json');
-
-    const manager = await ComponentsManager.build({
-      mainModulePath,
-      logLevel: 'silly',
-    });
-
-    await manager.configRegistry.register(configPath);
-
-    service = await manager.instantiate('urn:dgt-utils:test:DGTCryptoBrowserService');
+    service = new DGTCryptoBrowserService(mockLogger);
 
   });
 
