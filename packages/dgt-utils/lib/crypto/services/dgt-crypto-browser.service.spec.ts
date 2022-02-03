@@ -1,5 +1,5 @@
-import { DGTCryptoBrowserService } from './dgt-crypto-browser.service';
 import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
+import { DGTCryptoBrowserService } from './dgt-crypto-browser.service';
 
 describe('DGTCryptoBrowserService', () => {
 
