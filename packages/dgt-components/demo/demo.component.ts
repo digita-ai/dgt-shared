@@ -76,7 +76,6 @@ export class DemoComponent extends RxLitElement {
   async connectedCallback(): Promise<void> {
 
     this.translator = await getTranslatorFor(navigator.language);
-    console.log(this.translator.translate('example-translation'));
     // set global translator
     setTranslator(this.translator);
     // to use in other components:
