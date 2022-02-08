@@ -6,7 +6,7 @@ import { TranslatorFactory } from './models/translator-factory';
 
 describe('main', () => {
 
-  const translator = new MemoryTranslator('test-translator', 'en-GB');
+  const translator = new MemoryTranslator('en-GB');
   const translatorFactory = new MemoryTranslatorFactory();
 
   beforeEach(() => {
@@ -32,7 +32,7 @@ describe('main', () => {
     it('should set the global translator', () => {
 
       const get = getTranslator();
-      const newTranslator = new MemoryTranslator('test-translator', 'en-GB');
+      const newTranslator = new MemoryTranslator('en-GB');
       setTranslator(newTranslator);
       const newGet = getTranslator();
       expect(get).toEqual(translator);
@@ -46,29 +46,24 @@ describe('main', () => {
 
   describe('getTranslatorFor', () => {
 
-    it('should create a translator with a label when given a string', () => {
+    it('should create a translator with a label when given a string', async () => {
 
-      const testTranslator = getTranslatorFor('test-translator', 'en-GB');
-
-      expect(testTranslator['label']).toEqual('test-translator');
+      const testTranslator = await getTranslatorFor('en-GB');
       expect(testTranslator.getLang()).toEqual('en-GB');
 
     });
 
-    it('should create a translator with a label based on constructor name when given an instance of a class', () => {
+    it('should create a translator with a label based on constructor name when given an instance of a class', async () => {
 
-      const testClass = { constructor: { name: 'test-constructor-name' } };
-      const testTranslator = getTranslatorFor(testClass, 'en-GB');
-
-      expect(testTranslator['label']).toEqual('test-constructor-name');
+      const testTranslator = await getTranslatorFor('en-GB');
       expect(testTranslator.getLang()).toEqual('en-GB');
 
     });
 
-    it('should error when no translatorFactory is set', () => {
+    it('should error when no translatorFactory is set', async () => {
 
       setTranslatorFactory((undefined as unknown) as TranslatorFactory);
-      expect(() => getTranslatorFor('test-translator', 'en-GB')).toThrow('No TranslatorFactory was set to create translators.');
+      await expect(getTranslatorFor('en-GB')).rejects.toThrow('No TranslatorFactory was set to create translators.');
 
     });
 
@@ -76,14 +71,14 @@ describe('main', () => {
 
   describe('setTranslatorFactory', () => {
 
-    it('should set the translator factory', () => {
+    it('should set the translator factory', async () => {
 
-      const testTranslator = getTranslatorFor('test-translator', 'en-GB');
+      const testTranslator = await getTranslatorFor('en-GB');
       expect(testTranslator instanceof MemoryTranslator).toEqual(true);
 
       setTranslatorFactory(new MemoryTranslatorFactory());
 
-      const newTranslator = getTranslatorFor('test-translator', 'en-US');
+      const newTranslator = await getTranslatorFor('en-US');
       expect(newTranslator instanceof MemoryTranslator).toEqual(true);
 
     });

@@ -10,5 +10,5 @@ export interface TranslatorFactory {
    * @param label - A label that is used to identify the given translator.
    * @param language - The language tag.
    */
-  createTranslator: (label: string, language: string) => Translator;
+  createTranslator: (language: string) => Translator | Promise<Translator>;
 }

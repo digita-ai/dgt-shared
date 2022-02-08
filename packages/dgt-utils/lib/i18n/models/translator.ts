@@ -21,12 +21,13 @@ export abstract class Translator extends EventTarget {
   protected loaded = false;
 
   constructor(
-    protected readonly label: string,
-    public lang: string
+    public lang: string,
+    protected translations?: { [key: string]: string }
   ) {
 
     super();
-    this.setLang(lang);
+
+    this.setLang(lang, translations);
 
   }
 
@@ -66,6 +67,6 @@ export abstract class Translator extends EventTarget {
    *
    * @param lang The new language to use
    */
-  abstract setLang(lang: string): Promise<void>;
+  abstract setLang(lang: string, translations?: { [key: string]: string }): Promise<void>;
 
 }

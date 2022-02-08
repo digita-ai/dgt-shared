@@ -6,9 +6,9 @@ import { TranslatorFactory } from '../models/translator-factory';
  */
 export class MemoryTranslatorFactory implements TranslatorFactory {
 
-  createTranslator(label: string, language: string): MemoryTranslator {
+  createTranslator(language: string): MemoryTranslator {
 
-    return new MemoryTranslator(label, language);
+    return new MemoryTranslator(language);
 
   }
 

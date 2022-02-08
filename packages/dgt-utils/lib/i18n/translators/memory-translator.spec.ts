@@ -19,7 +19,7 @@ describe('MemoryTranslator', () => {
 
     fetchMock.mockResponse(mockResponse);
 
-    service = new MemoryTranslator('label', 'en-GB');
+    service = new MemoryTranslator('en-GB');
 
   });
 

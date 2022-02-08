@@ -24,14 +24,13 @@ export const setTranslator = (newTranslator: Translator): void => {
 };
 
 /**
- * Gets a translator instance for the given class instance.
+ * Gets a translator instance for the given language
  *
- * @param loggable - A class instance or a class string name.
+ * @param language - The given language to use.
  */
-export const getTranslatorFor = (
-  loggable: string | { constructor: { name: string } },
+export const getTranslatorFor = async (
   language: string,
-): Translator => {
+): Promise<Translator> => {
 
   if (!translatorFactory) {
 
@@ -39,7 +38,7 @@ export const getTranslatorFor = (
 
   }
 
-  return translatorFactory.createTranslator(typeof loggable === 'string' ? loggable : loggable.constructor.name, language);
+  return await translatorFactory.createTranslator(language);
 
 };
 

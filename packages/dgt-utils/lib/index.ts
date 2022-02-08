@@ -27,3 +27,4 @@ export * from './i18n/models/translator';
 export * from './i18n/models/translator-factory';
 export * from './i18n/translators/memory-translator';
 export * from './i18n/factories/memory-translator-factory';
+export * from './i18n/factories/cached-translator-factory';
