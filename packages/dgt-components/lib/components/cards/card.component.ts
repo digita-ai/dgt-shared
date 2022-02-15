@@ -35,7 +35,7 @@ export class CardComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
-        .large-card {
+        :host {
           display: flex;
           flex-direction: column;
           gap: 0;
@@ -70,7 +70,6 @@ export class CardComponent extends LitElement {
     const classes = { 'reduced-top-padding': this.hideImage };
 
     return html`
-      <div class="large-card" part="card">
 
         ${!this.hideHeader
     ? html`
@@ -100,8 +99,6 @@ export class CardComponent extends LitElement {
         `
     : html``
 }
-
-      </div>
     `;
 
   }
