@@ -74,19 +74,19 @@ export class CardComponent extends LitElement {
 
         ${!this.hideHeader
     ? html`
-            <card-header>
-              <slot name="icon" slot="icon"></slot>
-              <slot name="title" slot="title"></slot>
-              <slot name="subtitle" slot="subtitle"></slot>
-              <slot name="actions" slot="actions"></slot>
+            <card-header part="card-header">
+              <slot name="icon" slot="icon" part="icon"></slot>
+              <slot name="title" slot="title" part="title"></slot>
+              <slot name="subtitle" slot="subtitle" part="subtitle"></slot>
+              <slot name="actions" slot="actions" part="actions"></slot>
             </card-header>
           `
     : html``
 }
         ${!this.hideImage
     ? html`
-          <div class="image">
-            <slot name="image"></slot>
+          <div class="image" part="image-container">
+            <slot name="image" part="image"></slot>
           </div>
         `
     : html``
@@ -94,7 +94,7 @@ export class CardComponent extends LitElement {
 
         ${!this.hideContent
     ? html`
-          <div class="content ${classMap(classes)}">
+          <div class="content ${classMap(classes)}" part="content">
             <slot name="content"></slot>
           </div>
         `
