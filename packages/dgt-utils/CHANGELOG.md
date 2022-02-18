@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.0](https://github.com/digita-ai/dgt-shared/compare/v0.15.0...v0.16.0) (2022-02-18)
+
+
+### **Features**
+
+* use logger pattern for translator ([#145](https://github.com/digita-ai/dgt-shared/issues/145)) ([9f4520a](https://github.com/digita-ai/dgt-shared/commit/9f4520a60ba4d245abbf618ca768a49a1e4d9e25))
+
+
+
 ## [0.15.0](https://github.com/digita-ai/dgt-shared/compare/v0.14.0...v0.15.0) (2022-02-15)
 
 
