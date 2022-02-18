@@ -35,7 +35,7 @@ export class CardComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
-        .large-card {
+        :host {
           display: flex;
           flex-direction: column;
           gap: 0;
@@ -70,11 +70,10 @@ export class CardComponent extends LitElement {
     const classes = { 'reduced-top-padding': this.hideImage };
 
     return html`
-      <div class="large-card">
 
         ${!this.hideHeader
     ? html`
-            <card-header>
+            <card-header part="card-header">
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>
@@ -85,7 +84,7 @@ export class CardComponent extends LitElement {
 }
         ${!this.hideImage
     ? html`
-          <div class="image">
+          <div class="image" part="image-container">
             <slot name="image"></slot>
           </div>
         `
@@ -94,14 +93,12 @@ export class CardComponent extends LitElement {
 
         ${!this.hideContent
     ? html`
-          <div class="content ${classMap(classes)}">
+          <div class="content ${classMap(classes)}" part="content-container">
             <slot name="content"></slot>
           </div>
         `
     : html``
 }
-
-      </div>
     `;
 
   }

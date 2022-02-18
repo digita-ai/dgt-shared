@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.0](https://github.com/digita-ai/dgt-shared/compare/v0.14.0...v0.15.0) (2022-02-15)
+
+
+### **Features**
+
+* add parts to card component ([#148](https://github.com/digita-ai/dgt-shared/issues/148)) ([d97dccd](https://github.com/digita-ai/dgt-shared/commit/d97dccd296ea87ce48b9a5e1a01bf10f7c5d88f2))
+
+
+
+## [0.14.0](https://github.com/digita-ai/dgt-shared/compare/v0.13.0...v0.14.0) (2022-02-08)
+
+
+### **Features**
+
+* automatically prefix protocol to WebIDs ([#143](https://github.com/digita-ai/dgt-shared/issues/143)) ([efd2fe2](https://github.com/digita-ai/dgt-shared/commit/efd2fe22a3c65734bec30caed2e9819ab108ea92))
+
+
+
 ## [0.13.0](https://github.com/digita-ai/dgt-shared/compare/v0.12.0...v0.13.0) (2022-01-20)
 
 
