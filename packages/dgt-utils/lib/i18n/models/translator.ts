@@ -1,4 +1,3 @@
-
 export const TRANSLATIONS_LOADED = 'TRANSLATIONS_LOADED';
 
 export class TranslationsLoadedEvent extends CustomEvent<unknown> {
@@ -20,6 +19,17 @@ export abstract class Translator extends EventTarget {
    * Whether the translations have loaded
    */
   protected loaded = false;
+
+  constructor(
+    public lang: string,
+    protected translations?: { [key: string]: string }
+  ) {
+
+    super();
+
+    this.setLang(lang, translations);
+
+  }
 
   addEventListener(
     type: string,
@@ -57,6 +67,6 @@ export abstract class Translator extends EventTarget {
    *
    * @param lang The new language to use
    */
-  abstract setLang(lang: string): Promise<void>;
+  abstract setLang(lang: string, translations?: { [key: string]: string }): Promise<void>;
 
 }

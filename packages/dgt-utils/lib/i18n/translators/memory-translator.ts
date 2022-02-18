@@ -1,22 +1,10 @@
 import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
-import { TranslationsLoadedEvent, Translator } from './translator';
+import { TranslationsLoadedEvent, Translator } from '../models/translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
 export class MemoryTranslator extends Translator {
-
-  /**
-   * Instantiates a MemoryTranslator.
-   *
-   * @param lang The default locale to use when translating.
-   */
-  constructor(public lang: string) {
-
-    super();
-    this.setLang(lang);
-
-  }
 
   /**
    * Translates a key to a specific locale.
@@ -58,25 +46,28 @@ export class MemoryTranslator extends Translator {
    *
    * @param lang The new language to use
    */
-  async setLang(lang: string): Promise<void>{
+  async setLang(lang: string, translations?: { [key: string]: string }): Promise<void> {
 
-    this.loaded = false;
+    if (!translations) {
 
-    let translations: Promise<Strings>;
+      this.loaded = false;
 
-    try {
+      try {
 
-      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
-      this.lang = lang;
+        this.translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
+        this.lang = lang;
 
-    } catch(e) {
+      } catch(e) {
 
-      translations = await (await fetch(`${window.location.origin}/${this.lang}.json`)).json();
+        // eslint-disable-next-line no-console
+        console.error('Failed to load translations for language: ' + lang);
+
+      }
 
     }
 
     registerTranslateConfig({
-      loader: async () => translations,
+      loader: async () => this.translations,
     });
 
     await use(this.lang);

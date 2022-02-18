@@ -9,6 +9,7 @@ import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
 import { hydrate } from '../lib/util/hydrate';
+import { getTranslator, getTranslatorFor, MemoryTranslatorFactory, setTranslator, setTranslatorFactory, TRANSLATIONS_LOADED, Translator } from '@digita-ai/dgt-utils';
 
 
 const emailValidator: FormValidator<{ email: string }> = async (context, event) => {
@@ -49,6 +50,8 @@ export class DemoComponent extends RxLitElement {
   // eslint-disable-next-line max-len
   private formActor: Interpreter<FormContext<{ email: string }>, FormStateSchema<{ email: string }>, FormEvent, FormState<{ email: string }>>;
 
+  private translator: Translator;
+
   constructor() {
     super();
 
@@ -64,6 +67,21 @@ export class DemoComponent extends RxLitElement {
 
     define('checkbox-component', CheckboxComponent);
     define('form-element', hydrate(FormElementComponent)(this.formActor));
+
+    // create single translator
+    setTranslatorFactory(new MemoryTranslatorFactory);
+
+  }
+
+  async connectedCallback(): Promise<void> {
+
+    this.translator = await getTranslatorFor(navigator.language);
+    // set global translator
+    setTranslator(this.translator);
+    // to use in other components:
+    this.translator = getTranslator();
+
+    super.connectedCallback();
 
   }
 
@@ -84,6 +102,8 @@ export class DemoComponent extends RxLitElement {
   render() {
 
     return html`
+    <h1>translator</h1>
+    <p>${this.translator.translate('example-translation')}</p>
     <h1>checkbox component</h1>
     <form>
       <checkbox-component @change="${this.onCheckboxClicked}">I agree</checkbox-component>

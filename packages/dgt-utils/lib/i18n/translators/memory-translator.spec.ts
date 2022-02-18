@@ -1,6 +1,6 @@
 import fetchMock from 'jest-fetch-mock';
+import { TRANSLATIONS_LOADED } from '../models/translator';
 import { MemoryTranslator } from './memory-translator';
-import { TRANSLATIONS_LOADED } from './translator';
 
 describe('MemoryTranslator', () => {
 

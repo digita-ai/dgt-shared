@@ -28,6 +28,7 @@
     ".componentsignore"
   ],
   "dependencies": {
+    "@appnest/lit-translate": "^1.1.18",
     "@types/node": "^14.14.14",
     "rxjs": "^7.4.0",
     "xstate": "^4.26.1",
@@ -75,12 +76,18 @@
     "displayName": "components",
     "preset": "@digita-ai/jest-config",
     "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/tests/setup.ts"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(lit-html|@appnest/lit-translate)/)"
+    ],
     "coverageThreshold": {
       "global": {
-        "branches": 44.55,
-        "functions": 35.8,
-        "lines": 41.35,
-        "statements": 43
+        "branches": 41.66,
+        "functions": 42.85,
+        "lines": 48.5,
+        "statements": 50
       }
     },
     "coveragePathIgnorePatterns": [

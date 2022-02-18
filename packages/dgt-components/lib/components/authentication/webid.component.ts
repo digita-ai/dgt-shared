@@ -4,9 +4,9 @@ import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { debounce } from 'debounce';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { Translator } from '@digita-ai/dgt-utils';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
-import { Translator } from '../../services/i18n/translator';
 
 export class WebIdComponent extends RxLitElement {
 

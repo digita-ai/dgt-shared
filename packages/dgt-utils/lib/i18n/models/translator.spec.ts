@@ -1,13 +1,14 @@
-import { MockTranslator } from './mock-translator';
+/* eslint-disable @typescript-eslint/dot-notation */
+import { MemoryTranslator } from '../translators/memory-translator';
 import { TRANSLATIONS_LOADED } from './translator';
 
 describe('Translator', () => {
 
-  let service: MockTranslator;
+  let service: MemoryTranslator;
 
   beforeEach(async () => {
 
-    service = new MockTranslator('en-GB');
+    service = new MemoryTranslator('en-GB');
 
   });
 
@@ -27,7 +28,7 @@ describe('Translator', () => {
 
     it('should not dispatch event when loaded is false', () => {
 
-      service.loaded = false;
+      service['loaded'] = false;
       service.dispatchEvent = jest.fn();
       service.addEventListener(TRANSLATIONS_LOADED, () => undefined);
       expect(service.dispatchEvent).not.toHaveBeenCalled();

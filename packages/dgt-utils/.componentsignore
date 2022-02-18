@@ -14,5 +14,7 @@
   "ArgumentError",
   "HttpError",
   "HttpClient",
-  "EventObject"
+  "EventObject",
+  "EventTarget",
+  "CustomEvent"
 ]
