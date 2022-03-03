@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.2](https://github.com/digita-ai/dgt-shared/compare/v0.16.0...v0.16.2) (2022-03-03)
+
+
+### **Bug Fixes**
+
+* router parameter matching for paths with /.* ([#150](https://github.com/digita-ai/dgt-shared/issues/150)) ([be85643](https://github.com/digita-ai/dgt-shared/commit/be85643fd7d854b17b6b8b3f5ba6dbcd5ae95b99))
+
+
+
 ### [0.16.1](https://github.com/digita-ai/dgt-shared/compare/v0.16.0...v0.16.1) (2022-03-03)
 
 
