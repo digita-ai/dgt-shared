@@ -122,6 +122,20 @@ describe('Router', () => {
 
     });
 
+    it('should not match greedy on /.* routes', async () => {
+
+      delete window.location;
+      (window.location as any) = new URL('http://localhost/onePart/12345/filler/testing?search=test#test');
+
+      const testRoute: Route = {
+        path: '/{{partOne}}/{{numbers}}/.*',
+        targets: [],
+      };
+
+      expect(urlVariables(testRoute).pathParams.get('numbers')).toBe('12345');
+
+    });
+
     it('should error when no match was found for every variable', () => {
 
       const invalidRoute: Route = {
