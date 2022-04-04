@@ -1,10 +1,13 @@
 import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { TranslationsLoadedEvent, Translator } from '../models/translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
 export class MemoryTranslator extends Translator {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   /**
    * Translates a key to a specific locale.
@@ -13,7 +16,7 @@ export class MemoryTranslator extends Translator {
    * @param locale The locale to which the message should be translated. Overrides the default locale.
    * @returns The translated text.
    *
-   * @throws {@link Error}
+   * @throws { @link Error }
    * This error is thrown when either no locale or key have been given.
    */
 
@@ -21,10 +24,12 @@ export class MemoryTranslator extends Translator {
 
     if (!key) {
 
+      this.logger.warn('No key given');
       throw new Error('Argument key should be set.');
 
     }
 
+    this.logger.info('Translating', key);
     return get(key, values, config);
 
   }

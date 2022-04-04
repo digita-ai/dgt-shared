@@ -3,6 +3,7 @@ import { createMachine, DoneEvent, interpret, Interpreter, State, StateMachine }
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { Theme, DigitaBlue } from '@digita-ai/dgt-theme';
 import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { Translator } from '@digita-ai/dgt-utils';
@@ -18,6 +19,7 @@ export class AuthenticateComponent extends RxLitElement {
 
   private actor: Interpreter<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent, AuthenticateState>;
   private machine: StateMachine<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent, AuthenticateState>;
+  private logger: Logger =  getLoggerFor(this, 5, 5);
 
   @internalProperty()
   state?: State<AuthenticateContext>;
@@ -99,6 +101,7 @@ export class AuthenticateComponent extends RxLitElement {
 
   onSubmit = (event: CustomEvent): void => {
 
+    this.logger.info('onSubmit', event);
     event.preventDefault();
     this.actor.send(new ClickedLoginEvent(event.detail));
 
@@ -106,12 +109,18 @@ export class AuthenticateComponent extends RxLitElement {
 
   onWebIdChange = (event: CustomEvent): void => {
 
+    this.logger.info('onWebIdChange', event);
     event.preventDefault();
     this.actor.send(new WebIdEnteredEvent(event.detail));
 
   };
 
-  onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true })); };
+  onButtonCreateWebIDClick = (): void => {
+
+    this.logger.info('onButtonCreateWebIDClick');
+    this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true }));
+
+  };
 
   render(): TemplateResult {
 

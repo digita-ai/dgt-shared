@@ -1,11 +1,14 @@
 import { css, html, property, LitElement, unsafeCSS, TemplateResult, CSSResultArray } from 'lit-element';
 import { Theme } from '@digita-ai/dgt-theme';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Source } from '../../models/source.model';
 
 /**
  * An Invite Source renders a source with which a user can connect.
  */
 export class SourceComponent extends LitElement {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   @property({ type: Object })
   private source: Source;
@@ -15,6 +18,7 @@ export class SourceComponent extends LitElement {
 
   onSourceSelected = (): void => {
 
+    this.logger.info('onSourceSelected', this.source);
     this.dispatchEvent(new CustomEvent('source-selected', { detail: this.source }));
 
   };

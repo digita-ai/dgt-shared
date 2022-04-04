@@ -1,14 +1,17 @@
 import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 
 /**
  * A component which represents a sidebar list item.
  */
 export class SidebarListComponent extends RxLitElement {
 
+  private logger = getLoggerFor(this, 5, 5);
+
   /**
-   * Selects clicked list item and deslected all other list items.
+   * Selects clicked list item and deselected all other list items.
    *
    */
   select(event: MouseEvent){
@@ -23,6 +26,7 @@ export class SidebarListComponent extends RxLitElement {
 
       }
 
+      this.logger.info('Selected: ', element);
       element.setAttribute('selected', '');
 
     }

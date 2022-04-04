@@ -31,6 +31,7 @@
     "@appnest/lit-translate": "^1.1.18",
     "@digita-ai/dgt-theme": "0.16.2",
     "@digita-ai/dgt-utils": "0.16.2",
+    "@digita-ai/handlersjs-logging": "^0.8.5",
     "@digita-ai/inrupt-solid-service": "^0.9.2",
     "@digita-ai/semcom-core": "^0.9.5",
     "@digita-ai/semcom-sdk": "^0.9.5",

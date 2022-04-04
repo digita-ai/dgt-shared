@@ -1,7 +1,7 @@
 import { css, html, property, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
-import { DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
+import { Translator } from '@digita-ai/dgt-utils';
 
 /**
  * A component which represents a sidebar.
@@ -13,12 +13,6 @@ export class SidebarComponent extends RxLitElement {
    */
   @property({ type: Translator })
   public translator: Translator;
-
-  /**
-   * The component's translator.
-   */
-  @property({ type: DGTLoggerService })
-  public logger: DGTLoggerService;
 
   /**
    * Renders the component as HTML.
