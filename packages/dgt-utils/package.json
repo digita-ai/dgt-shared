@@ -87,8 +87,8 @@
       "global": {
         "branches": 41.66,
         "functions": 42.85,
-        "lines": 48.5,
-        "statements": 50
+        "lines": 48.33,
+        "statements": 49.84
       }
     },
     "coveragePathIgnorePatterns": [
