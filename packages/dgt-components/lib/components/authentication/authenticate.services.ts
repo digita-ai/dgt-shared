@@ -25,7 +25,7 @@ Promise<{ webId: string; validationResults: string[] }> => {
 
   } catch(e){
 
-    logger.error('Validation failed: invalid uri', e);
+    logger.verbose('Validation failed: invalid uri', e);
     validationResults.push('common.webid-validation.invalid-uri');
 
   }

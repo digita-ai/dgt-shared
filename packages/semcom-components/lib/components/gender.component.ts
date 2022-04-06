@@ -1,6 +1,6 @@
 /* eslint-disable no-console -- is a web component */
 import { NamedNode, Store } from 'n3';
-import { css, CSSResult, html, property, PropertyValues, TemplateResult } from 'lit-element';
+import { CSSResult, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { ComponentDataTypes } from '@digita-ai/semcom-core';
 import { BaseComponent } from './base.component';
@@ -20,11 +20,15 @@ export class GenderComponent extends BaseComponent {
 
     if (!event || !event.detail || !event.detail.data) {
 
+      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
+
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
     }
 
     if (event.detail.type !== 'quads') {
+
+      this.logger.verbose('Unexpected response type.', event.detail.type);
 
       throw new Error('Unexpected response type.');
 
@@ -33,6 +37,8 @@ export class GenderComponent extends BaseComponent {
     const store = new Store(event.detail.data);
 
     this.gender = store.getQuads(null, this.genderPredicate, null, null)[0]?.object.value.split('#')[1];
+
+    this.logger.info('Gender retrieved: ', this.gender);
 
   }
 
@@ -44,6 +50,8 @@ export class GenderComponent extends BaseComponent {
   update(changed: PropertyValues): void {
 
     super.update(changed);
+
+    this.logger.info('Updating properties', changed);
 
     if (changed.has('entry') && this.entry) this.readData(this.entry, 'quads');
 

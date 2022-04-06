@@ -30,6 +30,7 @@ export class MemoryTranslator extends Translator {
     }
 
     this.logger.info('Translating', key);
+
     return get(key, values, config);
 
   }

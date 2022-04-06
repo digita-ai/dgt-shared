@@ -26,11 +26,15 @@ export class PayslipComponent extends BaseComponent {
 
     if (!event || !event.detail || !event.detail.data) {
 
+      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
+
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
     }
 
     if (event.detail.type !== 'quads') {
+
+      this.logger.verbose('Unexpected response type.', event.detail.type);
 
       throw new Error('Unexpected response type.');
 
@@ -60,6 +64,8 @@ export class PayslipComponent extends BaseComponent {
   update(changed: PropertyValues): void {
 
     super.update(changed);
+
+    this.logger.info('Updating properties', changed);
 
     if (changed.has('entry') && this.entry) this.readData(this.entry, 'quads');
 

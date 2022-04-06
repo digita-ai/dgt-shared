@@ -1,3 +1,4 @@
+import { getLogger } from '@digita-ai/handlersjs-logging';
 import { assign, EventObject, send } from 'xstate';
 import { ArgumentError } from '../errors/models/argument-error';
 
@@ -53,6 +54,8 @@ export const matchPath = (match: string): boolean => {
   // !path also checks empty strings, which are allowed here
   if (match === undefined || match === null) {
 
+    getLogger().error('Argument path should be set.', match);
+
     throw new ArgumentError('Argument path should be set.', match);
 
   }
@@ -60,6 +63,8 @@ export const matchPath = (match: string): boolean => {
   const regex = new RegExp(`^${match.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
   const matches =  window.location.pathname.match(regex);
+
+  getLogger().info('Returning matches for path: ', { matches, regex });
 
   return !!matches && matches.length > 0;
 
@@ -89,6 +94,8 @@ export const urlVariables = (route: Route): UrlVariables => {
     // this check might not be necessary
     if (matches.length !== parts.length) {
 
+      getLogger().error('No match for every variable', { parts, matches });
+
       throw new ArgumentError('No match for every variable', { parts, matches });
 
     }
@@ -102,6 +109,8 @@ export const urlVariables = (route: Route): UrlVariables => {
     });
 
   }
+
+  getLogger().info('Returning variables for route: ', { route, pathParams, searchParams, hash });
 
   return {
     searchParams,
