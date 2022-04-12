@@ -29,7 +29,7 @@
   ],
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
-    "@digita-ai/handlersjs-logging": "^0.8.5",
+    "@digita-ai/handlersjs-logging": "^0.9.0",
     "@types/node": "^14.14.14",
     "rxjs": "^7.4.0",
     "xstate": "^4.26.1",
@@ -85,10 +85,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 41.66,
-        "functions": 42.85,
-        "lines": 48.5,
-        "statements": 50
+        "branches": 56.33,
+        "functions": 48.86,
+        "lines": 62.78,
+        "statements": 62.96
       }
     },
     "coveragePathIgnorePatterns": [
