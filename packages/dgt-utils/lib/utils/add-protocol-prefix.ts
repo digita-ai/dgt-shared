@@ -15,10 +15,10 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
     try {
 
+      getLogger().info('Adding protocol prefix to https uri', uri);
+
       const httpsUri = `https://${uri}`;
       await fetch(httpsUri, { method: 'HEAD' });
-
-      getLogger().info('Adding protocol prefix to https uri', uri);
 
       return httpsUri;
 
