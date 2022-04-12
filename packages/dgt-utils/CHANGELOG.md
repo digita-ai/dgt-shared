@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.3](https://github.com/digita-ai/dgt-shared/compare/v0.16.2...v0.16.3) (2022-04-04)
+
+
+### **Bug Fixes**
+
+* remove cross fetch import in favour of normal fetch ([#152](https://github.com/digita-ai/dgt-shared/issues/152)) ([9a81ec1](https://github.com/digita-ai/dgt-shared/commit/9a81ec178578d3e4ef38b79ed8ab2e36e3942ab0))
+
+
+
 ### [0.16.2](https://github.com/digita-ai/dgt-shared/compare/v0.16.0...v0.16.2) (2022-03-03)
 
 
