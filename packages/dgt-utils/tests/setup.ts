@@ -7,7 +7,7 @@ fetchMock.enableMocks();
 fetchMock.mockIf(/.*\.json$/, '{}');
 
 jest.mock('@digita-ai/handlersjs-logging', () => ({
-    ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
-    getLogger: () => new ConsoleLogger('UTILS', 6, 6),
-    getLoggerFor: () => new ConsoleLogger('UTILS', 6, 6),
-  }));  
+  ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
+  getLogger: () => new ConsoleLogger('UTILS', 6, 6),
+  getLoggerFor: () => new ConsoleLogger('UTILS', 6, 6),
+}));
