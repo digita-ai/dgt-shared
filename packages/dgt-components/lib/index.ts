@@ -18,6 +18,7 @@ export * from './components/forms/form.events';
 export * from './components/header/content-header.component';
 export * from './components/list-item/list-item.component';
 export * from './components/loading/loading.component';
+export * from './components/progress-bar/progress-bar.component';
 export * from './components/provider/provider-list-item.component';
 export * from './components/provider/provider-list.component';
 export * from './components/separator/separator.component';
