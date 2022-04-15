@@ -1,6 +1,7 @@
 {
   "name": "@digita-ai/dgt-utils-core",
   "version": "0.16.4",
+  "license": "agpl-3.0",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc",
     "build:dev": "npm run build",

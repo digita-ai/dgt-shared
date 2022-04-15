@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "license": "agpl-3.0",
   "scripts": {
     "clean": "npm run clean:locks && npm run clean:modules",
     "clean:locks": "npm i --package-locks-only && lerna exec 'npm i --package-locks-only'",
