@@ -119,6 +119,20 @@ export class DemoComponent extends RxLitElement {
       </form-element>
       <button>Continue</button>
     </form>
+
+    <div class="progress-bars">
+      <h1>Progress bar</h1>
+      <progress-bar doUpdate="${true}">
+        <div class="selected"></div>
+        <div></div>
+        <div></div>
+      </progress-bar>
+      <progress-bar doUpdate="${true}">
+        <div></div>
+        <div class="selected"></div>
+        <div></div>
+      </progress-bar>
+    </div>
   `;
 
   }
@@ -141,6 +155,11 @@ export class DemoComponent extends RxLitElement {
       input {
         width: 100%;
         box-sizing: border-box;
+      }
+      .progress-bars {
+        background-color: #333;
+        padding: var(--gap-normal);
+        color: white;
       }
       `,
     ];
