@@ -22,10 +22,13 @@ env:
 
 jobs:
   test:
+
     name: Run tests
+
     runs-on: ubuntu-latest
 
     steps:
+    
       - uses: actions/checkout@v2
 
       - name: Extract tag
@@ -45,17 +48,17 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
-      - name: Install dependencies
-        run: npm run bootstrap
+      - run: npm run bootstrap
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
-      
+
       - run: npm run lint:all
 
-      - run: npm run test:all
+      - run: npm run test:ci
 
   release:
     name: Create release
@@ -117,4 +120,3 @@ jobs:
       - run: npm publish packages/dgt-utils-core
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
