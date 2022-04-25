@@ -159,7 +159,10 @@ export class AuthenticateComponent extends RxLitElement {
           <slot name="afterWebId" slot="after"></slot>
         </webid-form>
        ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
-        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list>`
+        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}">
+          <slot name="beforeIssuers" slot="before"></slot>
+          <slot name="afterIssuers" slot="after"></slot>
+        </provider-list>`
     : html`<loading-component part="loading"></loading-component>` }
     `}`;
 
