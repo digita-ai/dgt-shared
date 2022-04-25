@@ -44,14 +44,17 @@ describe('AuthenticateServices', () => {
 
       event.webId = 'example.com/profile/card#me';
 
+      (utils as any).addProtocolPrefix = jest.fn().mockResolvedValueOnce('https://example.com/profile/card#me');
+
       const response = checkWebId(context, event);
 
       await expect(response).resolves.toBeDefined();
 
       const result = await response;
 
-      expect(result.webId).toContain('http');
       expect(result.validationResults).toHaveLength(0);
+      expect(result.webId).toContain('http');
+      expect((utils as any).addProtocolPrefix).toHaveBeenCalledTimes(1);
 
     });
 
