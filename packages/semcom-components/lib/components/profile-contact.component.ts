@@ -33,6 +33,8 @@ export class ProfileContactComponent extends BaseComponent {
 
     super.update(changed);
 
+    this.logger.info('Updating properties', changed);
+
     if (changed.has('entry') && this.entry) {
 
       this.readData(this.entry, 'quads');
@@ -62,6 +64,8 @@ export class ProfileContactComponent extends BaseComponent {
   handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
     if (!event || !event.detail || !event.detail.data) {
+
+      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
 
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 

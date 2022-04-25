@@ -1,7 +1,10 @@
+import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { ArgumentError } from '../../errors/models/argument-error';
 
 /** A service to check the validity of parameters */
 export class DGTParameterCheckerService {
+
+  protected logger: Logger = getLoggerFor(this, 5, 5);
 
   /**
    * Check if variables are null
@@ -17,6 +20,7 @@ export class DGTParameterCheckerService {
     this.checkParametersNotNullHelper(parameterList, depth);
 
   }
+
   private checkParametersNotNullHelper(parameterList: any, depth = 0, previous = ''): void {
 
     if (depth >= 0 && parameterList && Object.entries(parameterList).length > 0) {
@@ -27,6 +31,8 @@ export class DGTParameterCheckerService {
         const value = entry[1];
 
         if (!value && value !== 0) {
+
+          this.logger.verbose(previous + key + ' should be set', value);
 
           throw new ArgumentError(previous + key + ' should be set', value);
 

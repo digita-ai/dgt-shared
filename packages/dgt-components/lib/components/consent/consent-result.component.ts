@@ -1,10 +1,13 @@
 import { css, CSSResultArray, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Theme, Location } from '@digita-ai/dgt-theme';
+import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { predicateTranslations } from '../../models/predicate-translations';
 import { Purpose } from '../../models/purpose.model';
 
 export class ConsentResultComponent extends LitElement {
+
+  private logger = getLoggerFor(this, 5, 5);
 
   @property({ type: String })
   public title: string;
@@ -18,7 +21,13 @@ export class ConsentResultComponent extends LitElement {
   @property({ type: Object })
   public purpose: Purpose;
 
-  onButtonClick = (): boolean => this.dispatchEvent(new CustomEvent('button-clicked'));
+  onButtonClick = (): boolean => {
+
+    this.logger.info('onButtonClick');
+
+    return this.dispatchEvent(new CustomEvent('button-clicked'));
+
+  };
 
   render(): TemplateResult {
 

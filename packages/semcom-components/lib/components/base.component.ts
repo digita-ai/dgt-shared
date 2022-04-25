@@ -2,6 +2,7 @@
 import { Component, ComponentDataTypes } from '@digita-ai/semcom-core';
 import { ComponentAppendEvent, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
 import { property } from 'lit-element';
+import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { RxLitElement } from 'rx-lit';
 
 /**
@@ -10,6 +11,7 @@ import { RxLitElement } from 'rx-lit';
 export abstract class BaseComponent extends RxLitElement implements Component {
 
   @property({ type: String }) entry?: string;
+  protected logger: Logger = getLoggerFor(this, 5, 5);
 
   /**
    * Instantiates a `BaseComponent`, and adds an event listener to handle `ComponentResponseEvent`s.
@@ -40,9 +42,12 @@ export abstract class BaseComponent extends RxLitElement implements Component {
 
     if (!uri) {
 
+      this.logger.verbose('Argument uri was not set for reading data.');
       throw new Error('Argument uri should be set.');
 
     }
+
+    this.logger.info('Reading data: ', { uri, type, mime });
 
     this.dispatchEvent(new ComponentReadEvent({
       detail: { uri, type, mime },
@@ -60,15 +65,19 @@ export abstract class BaseComponent extends RxLitElement implements Component {
 
     if (!uri) {
 
+      this.logger.verbose('Argument uri was not set for writing data.');
       throw new Error('Argument uri should be set.');
 
     }
 
     if (!data) {
 
+      this.logger.verbose('Argument data was not set for writing data.');
       throw new Error('Argument data should be set.');
 
     }
+
+    this.logger.info('Writing data to: ', { uri, data, type });
 
     this.dispatchEvent(new ComponentWriteEvent({
       detail: { uri, data, type },
@@ -86,15 +95,19 @@ export abstract class BaseComponent extends RxLitElement implements Component {
 
     if (!uri) {
 
+      this.logger.verbose('Argument uri was not set for appending data.');
       throw new Error('Argument uri should be set.');
 
     }
 
     if (!data) {
 
+      this.logger.verbose('Argument data was not set for appending data.');
       throw new Error('Argument data should be set.');
 
     }
+
+    this.logger.info('Appending data: ', { uri, data, type });
 
     this.dispatchEvent(new ComponentAppendEvent({
       detail: { uri, data, type },
@@ -110,7 +123,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   connectedCallback(): void {
 
     super.connectedCallback();
-    console.debug(`[${this.tagName}] Element connected`);
+    this.logger.debug(`[${this.tagName}] Element connected`);
 
   }
 
@@ -118,7 +131,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   disconnectedCallback(): void {
 
     super.disconnectedCallback();
-    console.debug(`[${this.tagName}] Element disconnected`);
+    this.logger.debug(`[${this.tagName}] Element disconnected`);
 
   }
 
@@ -126,7 +139,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   adoptedCallback(): void {
 
     // super.adoptedCallback();
-    console.debug(`[${this.tagName}] Element moved to other DOM`);
+    this.logger.debug(`[${this.tagName}] Element moved to other DOM`);
 
   }
 
@@ -134,7 +147,7 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
 
     super.attributeChangedCallback(name, oldValue, newValue);
-    console.debug(`[${this.tagName}] Changed ${name} attribute from "${oldValue}" to "${newValue}"`);
+    this.logger.debug(`[${this.tagName}] Changed ${name} attribute from "${oldValue}" to "${newValue}"`);
 
   }
 

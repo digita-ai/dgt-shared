@@ -38,6 +38,7 @@
     "@digita-ai/dgt-components": "0.11.1",
     "@digita-ai/dgt-theme": "0.11.1",
     "@digita-ai/dgt-utils": "0.11.1",
+    "@digita-ai/handlersjs-logging": "^0.9.0",
     "@digita-ai/semcom-core": "0.10.0",
     "@digita-ai/semcom-sdk": "0.10.0",
     "buffer": "6.0.3",
