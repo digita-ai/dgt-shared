@@ -1,6 +1,7 @@
 {
   "name": "@digita-ai/dgt-utils",
-  "version": "0.16.3",
+  "version": "0.16.5",
+  "license": "ISC",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
@@ -62,7 +63,6 @@
     "url": "https://github.com/digita-ai/dgt-shared/issues"
   },
   "author": "Wouter Janssens",
-  "license": "ISC",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {

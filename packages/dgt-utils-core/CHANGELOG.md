@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.5](https://github.com/digita-ai/dgt-shared/compare/v0.16.4...v0.16.5) (2022-04-25)
+
+**Note:** Version bump only for package @digita-ai/dgt-utils-core
+
+
+
+
+
+### [0.16.4](https://github.com/digita-ai/dgt-shared/compare/v0.16.3...v0.16.4) (2022-04-14)
+
+**Note:** Version bump only for package @digita-ai/dgt-utils-core
+
+
+
+
+
 ### [0.16.3](https://github.com/digita-ai/dgt-shared/compare/v0.16.2...v0.16.3) (2022-04-04)
 
 **Note:** Version bump only for package @digita-ai/dgt-utils-core
