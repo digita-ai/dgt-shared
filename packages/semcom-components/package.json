@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/semcom-components",
-  "version": "0.16.4",
+  "version": "0.16.5",
   "description": "Collection of Semantic Components",
   "author": "Wouter Termont <wouter.termont@digita.ai>",
   "main": "./dist/semcom-components.umd.js",
