@@ -182,6 +182,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
     },
 
     [AuthenticateStates.CHECKING_WEBID]: {
+      tags: [ 'validating' ],
       on: {
         [AuthenticateEvents.WEBID_ENTERED]: {
           target: AuthenticateStates.CHECKING_WEBID,
