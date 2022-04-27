@@ -75,10 +75,9 @@ export class WebIdComponent extends RxLitElement {
           <div class="webid-input-container" part="webid-input-container">
             <div class="input-container">
               <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
-              ${ this.layout === 'vertical' ? alerts : ''}
               <loading-component ?hidden="${!this.validating}" part="loading"></loading-component>
             </div>
-            
+            ${ this.layout === 'vertical' ? alerts : ''}
           </div>  
           <button
             part="webid-button"
