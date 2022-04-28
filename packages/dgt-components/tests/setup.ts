@@ -1,4 +1,5 @@
 import fetchMock from 'jest-fetch-mock';
+import { ConsoleLogger } from '@digita-ai/handlersjs-logging';
 import { AlertComponent } from '../lib/components/alerts/alert.component';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { SidebarListItemComponent } from '../lib/components/sidebar/sidebar-list-item.component';
@@ -32,3 +33,9 @@ define('webid-form', WebIdComponent);
  * Enable mocks for fetch.
  */
 fetchMock.enableMocks();
+
+jest.mock('@digita-ai/handlersjs-logging', () => ({
+  ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
+  getLogger: () => new ConsoleLogger('COMP', 6, 6),
+  getLoggerFor: () => new ConsoleLogger('COMP', 6, 6),
+}));

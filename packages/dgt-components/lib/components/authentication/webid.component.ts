@@ -5,6 +5,7 @@ import { Theme } from '@digita-ai/dgt-theme';
 import { debounce } from 'debounce';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Translator } from '@digita-ai/dgt-utils';
+import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 
@@ -20,6 +21,8 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: Boolean }) disableLogin = true; // disable button by default
   @property({ type: Translator }) translator?: Translator;
 
+  private logger: Logger = getLoggerFor(this, 5, 5);
+
   constructor() {
 
     super();
@@ -32,6 +35,8 @@ export class WebIdComponent extends RxLitElement {
 
     event.preventDefault();
 
+    this.logger.info('onSubmit', event.target);
+
     this.dispatchEvent(new CustomEvent('submit-webid', {
       detail: event.target.querySelector<HTMLInputElement>('input[name=webid]').value,
     }));
@@ -40,13 +45,20 @@ export class WebIdComponent extends RxLitElement {
 
   onWebIdChange = debounce((target: HTMLInputElement): void => {
 
+    this.logger.info('onWebIdChange', target);
+
     this.dispatchEvent(new CustomEvent('change-webid', {
       detail: target.value,
     }));
 
   }, 300);
 
-  onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
+  onButtonCreateWebIDClick = (): void => {
+
+    this.logger.info('onButtonCreateWebIDClick');
+    this.dispatchEvent(new CustomEvent('create-webid'));
+
+  };
 
   render(): TemplateResult {
 

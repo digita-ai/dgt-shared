@@ -35,6 +35,8 @@ export class ProfileNameComponent extends BaseComponent {
 
     super.update(changed);
 
+    this.logger.info('Updating properties', changed);
+
     if (changed.has('entry') && this.entry) {
 
       this.readData(this.entry, 'quads');
@@ -65,6 +67,8 @@ export class ProfileNameComponent extends BaseComponent {
 
     if (!event || !event.detail || !event.detail.data) {
 
+      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
+
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
     }
@@ -76,6 +80,8 @@ export class ProfileNameComponent extends BaseComponent {
     const honorific = store.getQuads(null, new NamedNode(`${this.n}honorific-prefix`), null, null)[0]?.object.value;
     const image = store.getQuads(null, new NamedNode(`${this.n}hasPhoto`), null, null)[0]?.object.value;
 
+    this.logger.info('Following data was retrieved:', { fullName, nick, honorific, image });
+
     this.image = undefined;
 
     try {
@@ -83,7 +89,10 @@ export class ProfileNameComponent extends BaseComponent {
       this.image = new URL(image);
 
     } catch {
+
+      this.logger.warn('Could not parse image URL.');
       // Do nothing
+
     }
 
     this.formActor = interpret(formMachine<ProfileNameComponentForm>(

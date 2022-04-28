@@ -1,6 +1,6 @@
 
 import { NamedNode, Store } from 'n3';
-import { css, html, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { ComponentResponseEvent } from '@digita-ai/semcom-sdk';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Image, Theme } from '@digita-ai/dgt-theme';
@@ -31,6 +31,8 @@ export class CredentialComponent extends BaseComponent {
 
     super.update(changed);
 
+    this.logger.info('Updating properties', changed);
+
     if (changed.has('entry') && this.entry) {
 
       this.readData(this.entry, 'quads');
@@ -47,6 +49,8 @@ export class CredentialComponent extends BaseComponent {
   handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
     if (!event || !event.detail || !event.detail.data) {
+
+      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
 
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
@@ -68,9 +72,11 @@ export class CredentialComponent extends BaseComponent {
 
     this.credentials = tempCredentials;
 
+    this.logger.info('Credentials retrieved', this.credentials);
+
   }
 
-  static get styles() {
+  static get styles(): CSSResult[]{
 
     return [
       unsafeCSS(Theme),

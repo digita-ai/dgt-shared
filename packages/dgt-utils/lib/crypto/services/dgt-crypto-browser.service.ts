@@ -1,12 +1,11 @@
 import { forkJoin, from, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { DGTLoggerService } from '../../logging/services/dgt-logger.service';
 import { DGTCryptoKeyPair } from '../models/dgt-crypto-key-pair.model';
 import { DGTCryptoService } from './dgt-crypto.service';
 
 export class DGTCryptoBrowserService extends DGTCryptoService {
 
-  constructor(private logger: DGTLoggerService) {
+  constructor() {
 
     super();
 
@@ -39,14 +38,14 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
 
         }),
         tap((res) =>
-          this.logger.debug(DGTCryptoBrowserService.name, 'Generated keypair', { res })),
+          this.logger.debug('Generated keypair', { res })),
       );
 
   }
 
   digest(data: Uint8Array): Observable<ArrayBuffer> {
 
-    this.logger.debug(DGTCryptoBrowserService.name, 'Calculating digest', { data });
+    this.logger.debug('Calculating digest', { data });
 
     return from(crypto.subtle.digest({ name: 'SHA-256' }, data));
 
@@ -54,7 +53,7 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
 
   generateRandomNumbers(length: number): number[] {
 
-    this.logger.debug(DGTCryptoBrowserService.name, 'Generating random numbers', { length });
+    this.logger.debug('Generating random numbers', { length });
 
     return Array.from(crypto.getRandomValues(new Uint8Array(length)));
 
