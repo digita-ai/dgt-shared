@@ -28,14 +28,3 @@ define('list-item', ListItemComponent);
 define('separator-component', SeparatorComponent);
 define('checkbox-component', CheckboxComponent);
 define('webid-form', WebIdComponent);
-
-/**
- * Enable mocks for fetch.
- */
-fetchMock.enableMocks();
-
-jest.mock('@digita-ai/handlersjs-logging', () => ({
-  ... jest.requireActual('@digita-ai/handlersjs-logging') as any,
-  getLogger: () => new ConsoleLogger('COMP', 6, 6),
-  getLoggerFor: () => new ConsoleLogger('COMP', 6, 6),
-}));

@@ -35,8 +35,6 @@ export class InputComponent extends BaseComponent {
 
     if (!event) {
 
-      this.logger.verbose('Argument event should be set.');
-
       throw new Error('Argument event should be set.');
 
     }
