@@ -19,8 +19,8 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
   @property({ type: Boolean }) disableLogin = true; // disable button by default
-  @property({ type: Translator }) translator?: Translator;
   @property({ type: Boolean }) validating = false;
+  @property({ type: Translator }) translator?: Translator;
 
   constructor() {
 
