@@ -1,7 +1,5 @@
-import fetchMock from 'jest-fetch-mock';
-import { ConsoleLogger } from '@digita-ai/handlersjs-logging';
+
 import { AlertComponent } from '../lib/components/alerts/alert.component';
-import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { SidebarListItemComponent } from '../lib/components/sidebar/sidebar-list-item.component';
 import { SidebarListComponent } from '../lib/components/sidebar/sidebar-list.component';
 import { ContentHeaderComponent } from '../lib/components/header/content-header.component';
