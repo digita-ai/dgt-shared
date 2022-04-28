@@ -136,6 +136,10 @@ export class WebIdComponent extends RxLitElement {
           align-items: center;
           justify-content: center;
         }
+
+        .webid-input-button-container button:hover:enabled {
+          background-color: var(--colors-primary-light);
+        }
         input  {
           padding: var(--gap-normal);
         }
