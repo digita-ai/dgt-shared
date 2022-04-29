@@ -179,7 +179,7 @@ export class WebIdComponent extends RxLitElement {
           height: var(--gap-normal);
           width: var(--gap-normal);
           display: block;
-          padding: var(--gap-small);
+          padding-right: var(--gap-normal);
           flex: 1 0;
         }
 
