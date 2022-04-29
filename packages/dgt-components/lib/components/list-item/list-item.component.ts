@@ -1,4 +1,4 @@
-import { css, html, LitElement, unsafeCSS } from 'lit-element';
+import { css, html, LitElement, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
 import { Theme } from '@digita-ai/dgt-theme';
 
 /**
@@ -9,7 +9,7 @@ export class ListItemComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -45,7 +45,7 @@ export class ListItemComponent extends LitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="icon">

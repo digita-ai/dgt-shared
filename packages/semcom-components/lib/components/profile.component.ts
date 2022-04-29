@@ -25,8 +25,6 @@ export class ProfileComponent extends BaseComponent {
 
     super.update(changed);
 
-    this.logger.info('Updating properties', changed);
-
     if (changed.has('entry') && this.entry) this.readData(this.entry, 'quads');
 
   }
@@ -40,15 +38,11 @@ export class ProfileComponent extends BaseComponent {
 
     if (!event || !event.detail || !event.detail.data) {
 
-      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
-
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
     }
 
     if (event.detail.type !== 'quads') {
-
-      this.logger.verbose('Unexpected response type.', event.detail.type);
 
       throw new Error('Unexpected response type.');
 
@@ -78,8 +72,6 @@ export class ProfileComponent extends BaseComponent {
       this.emails?.push(store.getQuads(new NamedNode(mail.object.value), new NamedNode(`${n}value`), null, null)[0]?.object.value.split(':')[1]);
 
     });
-
-    this.logger.info('Profile data set');
 
   }
 
