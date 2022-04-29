@@ -111,7 +111,11 @@ export class AuthenticateComponent extends RxLitElement {
 
   };
 
-  onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true })); };
+  onButtonCreateWebIDClick = (): void => {
+
+    this.dispatchEvent(new CustomEvent('create-webid', { bubbles: true }));
+
+  };
 
   render(): TemplateResult {
 

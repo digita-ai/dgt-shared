@@ -22,10 +22,13 @@ env:
 
 jobs:
   test:
+
     name: Run tests
+
     runs-on: ubuntu-latest
 
     steps:
+    
       - uses: actions/checkout@v2
 
       - name: Extract tag
@@ -45,14 +48,17 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: npm run build:all
-      
+
       - run: npm run lint:all
 
-      - run: npm run test:all
+      - run: npm run test:ci
 
   release:
     name: Create release
@@ -88,27 +94,29 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
   
-      - run: npm run bootstrap
+      - name: Install dependencies
+        run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm run build:all
   
       - run: npm publish packages/dgt-components
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm publish packages/semcom-components
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm publish packages/dgt-theme
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm publish packages/dgt-utils
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm publish packages/dgt-utils-core
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
+          NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}

@@ -1,5 +1,5 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
-import { DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
+import { Translator } from '@digita-ai/dgt-utils';
 import { Checkbox, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ifDefined } from 'lit-html/directives/if-defined';
@@ -8,12 +8,6 @@ import { ifDefined } from 'lit-html/directives/if-defined';
  * A component which shows the details of a single alert.
  */
 export class CheckboxComponent extends LitElement {
-
-  /**
-   * The component's logger.
-   */
-  @property({ type: DGTLoggerService })
-  public logger: DGTLoggerService;
 
   /**
    * The component's translator.

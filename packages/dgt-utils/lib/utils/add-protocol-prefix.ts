@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 /**
  *
  * Function to add protocol prefix to uri if it is missing

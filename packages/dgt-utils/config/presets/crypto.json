@@ -5,10 +5,7 @@
   "@graph": [
     {
       "@id": "urn:dgt-utils:test:DGTCryptoBrowserService",
-      "@type": "DGTCryptoBrowserService",
-      "logger": {
-        "@id": "urn:dgt-utils:test:DGTLoggerService"
-      }
+      "@type": "DGTCryptoBrowserService"
     }
   ]
 }

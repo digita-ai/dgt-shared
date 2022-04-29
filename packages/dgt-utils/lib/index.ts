@@ -2,9 +2,6 @@
  * Public API Surface of dgt-utils
  */
 export * from './collections/models/dgt-map.model';
-export * from './logging/models/dgt-logger-level.model';
-export * from './logging/services/dgt-logger.service';
-export * from './logging/services/dgt-logger-console.service';
 export * from './crypto/services/dgt-crypto.service';
 export * from './crypto/services/dgt-crypto-browser.service';
 export * from './crypto/models/dgt-crypto-key.model';

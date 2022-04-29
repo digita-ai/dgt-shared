@@ -1,4 +1,4 @@
-import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
+import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig } from '@appnest/lit-translate';
 import { TranslationsLoadedEvent, Translator } from '../models/translator';
 
 /**
@@ -13,7 +13,7 @@ export class MemoryTranslator extends Translator {
    * @param locale The locale to which the message should be translated. Overrides the default locale.
    * @returns The translated text.
    *
-   * @throws {@link Error}
+   * @throws { @link Error }
    * This error is thrown when either no locale or key have been given.
    */
 

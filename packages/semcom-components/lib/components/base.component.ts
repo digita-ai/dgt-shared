@@ -110,7 +110,6 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   connectedCallback(): void {
 
     super.connectedCallback();
-    console.debug(`[${this.tagName}] Element connected`);
 
   }
 
@@ -118,7 +117,6 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   disconnectedCallback(): void {
 
     super.disconnectedCallback();
-    console.debug(`[${this.tagName}] Element disconnected`);
 
   }
 
@@ -126,7 +124,6 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   adoptedCallback(): void {
 
     // super.adoptedCallback();
-    console.debug(`[${this.tagName}] Element moved to other DOM`);
 
   }
 
@@ -134,7 +131,6 @@ export abstract class BaseComponent extends RxLitElement implements Component {
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
 
     super.attributeChangedCallback(name, oldValue, newValue);
-    console.debug(`[${this.tagName}] Changed ${name} attribute from "${oldValue}" to "${newValue}"`);
 
   }
 

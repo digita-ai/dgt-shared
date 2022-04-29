@@ -1,5 +1,5 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
-import { ArgumentError, DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
+import { ArgumentError, Translator } from '@digita-ai/dgt-utils';
 import { Bell, Cross, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
@@ -9,10 +9,6 @@ import { Alert } from './alert';
  */
 export class AlertComponent extends LitElement {
 
-  /**
-   * The component's logger.
-   */
-  @property({ type: DGTLoggerService }) logger?: DGTLoggerService;
   /**
    * The component's translator.
    */
@@ -40,8 +36,6 @@ export class AlertComponent extends LitElement {
    * Dispatches an event to dismiss the alert.
    */
   dismiss(): void {
-
-    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
 
     if (!this.alert) {
 

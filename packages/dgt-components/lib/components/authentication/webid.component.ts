@@ -46,7 +46,11 @@ export class WebIdComponent extends RxLitElement {
 
   }, 300);
 
-  onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
+  onButtonCreateWebIDClick = (): void => {
+
+    this.dispatchEvent(new CustomEvent('create-webid'));
+
+  };
 
   render(): TemplateResult {
 

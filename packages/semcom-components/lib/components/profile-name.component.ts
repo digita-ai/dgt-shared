@@ -83,7 +83,9 @@ export class ProfileNameComponent extends BaseComponent {
       this.image = new URL(image);
 
     } catch {
+
       // Do nothing
+
     }
 
     this.formActor = interpret(formMachine<ProfileNameComponentForm>(
