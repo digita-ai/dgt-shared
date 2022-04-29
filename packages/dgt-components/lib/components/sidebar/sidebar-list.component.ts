@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS } from 'lit-element';
+import { css, html, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 
@@ -8,7 +8,7 @@ import { Theme } from '@digita-ai/dgt-theme';
 export class SidebarListComponent extends RxLitElement {
 
   /**
-   * Selects clicked list item and deslected all other list items.
+   * Selects clicked list item and deselected all other list items.
    *
    */
   select(event: MouseEvent){
@@ -34,7 +34,7 @@ export class SidebarListComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <slot name="title" @click="${this.select}"></slot>
@@ -48,7 +48,7 @@ export class SidebarListComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

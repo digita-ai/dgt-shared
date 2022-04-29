@@ -1,7 +1,7 @@
-import { css, html, property, unsafeCSS } from 'lit-element';
+import { css, html, property, unsafeCSS, TemplateResult, CSSResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
-import { DGTLoggerService, Translator } from '@digita-ai/dgt-utils';
+import { Translator } from '@digita-ai/dgt-utils';
 
 /**
  * A component which represents a sidebar.
@@ -15,17 +15,11 @@ export class SidebarComponent extends RxLitElement {
   public translator: Translator;
 
   /**
-   * The component's translator.
-   */
-  @property({ type: DGTLoggerService })
-  public logger: DGTLoggerService;
-
-  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="sidebar primary">
@@ -38,7 +32,7 @@ export class SidebarComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

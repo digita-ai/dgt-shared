@@ -37,8 +37,8 @@ export class ProgressBarComponent extends LitElement {
         dot.className = 'dot';
         dot.style.height = '20px';
         dot.style.width = '20px';
-        dot.style.background = element.classList.contains('selected') ? 'var(--colors-foreground-inverse)' : 'var(--colors-primary-gradient)';
-        dot.style.border = '2px solid var(--colors-foreground-inverse)';
+        dot.style.background = element.classList.contains('selected') ? 'var(--colors-foreground-normal)' : 'var(--colors-background-normal)';
+        dot.style.border = '2px solid var(--colors-foreground-normal)';
         dot.style.zIndex = '10';
         dot.style.borderRadius = '50%';
         dot.style.display = 'inline-block';
@@ -83,7 +83,7 @@ export class ProgressBarComponent extends LitElement {
         width: calc(100% - 20px - 20px);
         position: absolute;
         top: 12px;
-        border-bottom: 1px dashed var(--colors-foreground-inverse);
+        border-bottom: 1px dashed var(--colors-foreground-normal);
         margin-left: 20px;
       }
       .steps {

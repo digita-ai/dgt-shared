@@ -1,7 +1,7 @@
 {
   "name": "@digita-ai/dgt-utils",
-  "version": "0.16.4",
-  "license": "agpl-3.0",
+  "version": "0.17.0",
+  "license": "ISC",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
@@ -62,7 +62,6 @@
     "url": "https://github.com/digita-ai/dgt-shared/issues"
   },
   "author": "Wouter Janssens",
-  "license": "ISC",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
@@ -85,10 +84,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 41.66,
-        "functions": 42.85,
-        "lines": 48.33,
-        "statements": 49.84
+        "branches": 56.33,
+        "functions": 47.56,
+        "lines": 61.96,
+        "statements": 62.26
       }
     },
     "coveragePathIgnorePatterns": [

@@ -26,8 +26,6 @@ export class BarcodeComponent extends BaseComponent {
    */
   handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
-    console.log('handleResponse');
-
     if (!event || !event.detail || !event.detail.data) {
 
       throw new Error('Arguments event, event.detail, and event.detail.data should be set.');
@@ -35,9 +33,7 @@ export class BarcodeComponent extends BaseComponent {
     }
 
     const store = new Store(event.detail.data);
-
     const quad = store.getQuads(null, 'http://schema.org/membershipNumber', null, null)[0];
-
     const program = store.getQuads(quad.subject, 'http://schema.org/programName', null, null)[0];
     const hostingOrganization = store.getQuads(quad.subject, 'http://schema.org/hostingOrganization', null, null)[0];
 

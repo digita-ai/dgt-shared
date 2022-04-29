@@ -17,9 +17,17 @@ export class ConsentRequestComponent extends LitElement {
   @property() textIAgree = 'I agree';
   @property() textContinue = 'Continue';
 
-  onButtonClick = (): void => { this.dispatchEvent(new CustomEvent('consent-given')); };
+  onButtonClick = (): void => {
 
-  onConsentCheck = (): void => { this.checked = !this.checked; };
+    this.dispatchEvent(new CustomEvent('consent-given'));
+
+  };
+
+  onConsentCheck = (): void => {
+
+    this.checked = !this.checked;
+
+  };
 
   render(): TemplateResult {
 

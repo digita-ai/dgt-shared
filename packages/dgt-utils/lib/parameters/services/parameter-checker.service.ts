@@ -17,6 +17,7 @@ export class DGTParameterCheckerService {
     this.checkParametersNotNullHelper(parameterList, depth);
 
   }
+
   private checkParametersNotNullHelper(parameterList: any, depth = 0, previous = ''): void {
 
     if (depth >= 0 && parameterList && Object.entries(parameterList).length > 0) {

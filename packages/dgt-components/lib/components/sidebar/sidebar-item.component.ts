@@ -1,4 +1,4 @@
-import { css, html, property, unsafeCSS } from 'lit-element';
+import { css, html, property, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 
@@ -24,7 +24,7 @@ export class SidebarItemComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="content-container ${this.showBorder ? ' border': ''}${this.padding ? ' padding' : ''}">
@@ -37,7 +37,7 @@ export class SidebarItemComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

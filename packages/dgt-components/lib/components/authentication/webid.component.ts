@@ -49,7 +49,11 @@ export class WebIdComponent extends RxLitElement {
 
   }, 300);
 
-  onButtonCreateWebIDClick = (): void => { this.dispatchEvent(new CustomEvent('create-webid')); };
+  onButtonCreateWebIDClick = (): void => {
+
+    this.dispatchEvent(new CustomEvent('create-webid'));
+
+  };
 
   render(): TemplateResult {
 
@@ -110,7 +114,6 @@ export class WebIdComponent extends RxLitElement {
           flex-direction: column;
           gap: var(--gap-normal);
         }
-
         button {
           width: 100%;
           border-radius: var(--border-large);
@@ -142,6 +145,10 @@ export class WebIdComponent extends RxLitElement {
           align-items: center;
           justify-content: center;
         }
+        .webid-input-button-container button:hover:enabled {
+          background-color: var(--colors-primary-light);
+          border: 2px solid var(--colors-primary-light);
+        }
         input  {
           padding: var(--gap-normal);
           width: 100%;
@@ -160,7 +167,11 @@ export class WebIdComponent extends RxLitElement {
           align-self: flex-end;
           cursor: pointer;
         }
-
+        
+        a:hover {
+          color: var(--colors-primary-dark);
+        }
+        
         h1 {
           margin: var(--gap-large) var(--gap-normal);
           font-size: var(--font-size-header-normal);
@@ -168,7 +179,7 @@ export class WebIdComponent extends RxLitElement {
           font-weight: bold;
           text-align: center;
         }
-
+        
         .input-container {
           display: flex;
           align-items: center;
@@ -182,7 +193,7 @@ export class WebIdComponent extends RxLitElement {
           padding-right: var(--gap-normal);
           flex: 1 0;
         }
-
+        
         `,
     ];
 
