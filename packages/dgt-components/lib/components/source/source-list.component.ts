@@ -1,12 +1,9 @@
 import { css, CSSResultArray, html, internalProperty, LitElement, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@digita-ai/dgt-theme';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Source } from '../../models/source.model';
 import { SourceComponent } from './source.component';
 
 export class SourceListComponent extends LitElement {
-
-  private logger = getLoggerFor(this, 5, 5);
 
   @property({ type: Array })
   public sources: Source[];
@@ -34,8 +31,6 @@ export class SourceListComponent extends LitElement {
   updated(changed: PropertyValues): void {
 
     super.updated(changed);
-
-    this.logger.info('Updated', changed);
 
     if (changed.has('sources') || changed.has('query')) {
 

@@ -20,15 +20,11 @@ export class GenderComponent extends BaseComponent {
 
     if (!event || !event.detail || !event.detail.data) {
 
-      this.logger.verbose('Argument event || !event.detail || !event.detail.quads should be set.');
-
       throw new Error('Argument event || !event.detail || !event.detail.quads should be set.');
 
     }
 
     if (event.detail.type !== 'quads') {
-
-      this.logger.verbose('Unexpected response type.', event.detail.type);
 
       throw new Error('Unexpected response type.');
 
@@ -37,8 +33,6 @@ export class GenderComponent extends BaseComponent {
     const store = new Store(event.detail.data);
 
     this.gender = store.getQuads(null, this.genderPredicate, null, null)[0]?.object.value.split('#')[1];
-
-    this.logger.info('Gender retrieved: ', this.gender);
 
   }
 
@@ -50,8 +44,6 @@ export class GenderComponent extends BaseComponent {
   update(changed: PropertyValues): void {
 
     super.update(changed);
-
-    this.logger.info('Updating properties', changed);
 
     if (changed.has('entry') && this.entry) this.readData(this.entry, 'quads');
 

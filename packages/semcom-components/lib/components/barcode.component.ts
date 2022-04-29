@@ -26,21 +26,14 @@ export class BarcodeComponent extends BaseComponent {
    */
   handleResponse<D extends keyof ComponentDataTypes>(event: ComponentResponseEvent<D>): void {
 
-    this.logger.info('handleResponse');
-
     if (!event || !event.detail || !event.detail.data) {
-
-      this.logger.verbose('Arguments event, event.detail, and event.detail.data should be set.');
 
       throw new Error('Arguments event, event.detail, and event.detail.data should be set.');
 
     }
 
     const store = new Store(event.detail.data);
-
-    this.logger.info('Receiving quads from store');
     const quad = store.getQuads(null, 'http://schema.org/membershipNumber', null, null)[0];
-
     const program = store.getQuads(quad.subject, 'http://schema.org/programName', null, null)[0];
     const hostingOrganization = store.getQuads(quad.subject, 'http://schema.org/hostingOrganization', null, null)[0];
 
@@ -62,7 +55,6 @@ export class BarcodeComponent extends BaseComponent {
 
     }
 
-    this.logger.info('updated', changed);
     super.updated(changed);
 
   }

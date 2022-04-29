@@ -1,6 +1,5 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { ArgumentError, Translator } from '@digita-ai/dgt-utils';
-import { getLoggerFor, Logger } from '@digita-ai/handlersjs-logging';
 import { Bell, Cross, Theme } from '@digita-ai/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
@@ -10,10 +9,6 @@ import { Alert } from './alert';
  */
 export class AlertComponent extends LitElement {
 
-  /**
-   * The component's logger.
-   */
-  private logger: Logger = getLoggerFor(this, 5, 5);
   /**
    * The component's translator.
    */
@@ -42,11 +37,7 @@ export class AlertComponent extends LitElement {
    */
   dismiss(): void {
 
-    this.logger.debug('Dismissing alert', this.alert);
-
     if (!this.alert) {
-
-      this.logger.warn('No alert to dismiss');
 
       throw new ArgumentError('Argument this.alert should be set.', this.alert);
 
@@ -65,8 +56,6 @@ export class AlertComponent extends LitElement {
 
     const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
-
-    this.logger.info(`Rendering alert of type: ${type}, with message: ${message}`, this.alert);
 
     return html`
     <div part="alert" class="alert ${ type }">

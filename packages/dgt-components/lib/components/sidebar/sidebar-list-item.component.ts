@@ -1,4 +1,4 @@
-import { css, html, internalProperty, property, unsafeCSS } from 'lit-element';
+import { css, html, internalProperty, property, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { classMap } from 'lit-html/directives/class-map';
@@ -25,7 +25,7 @@ export class SidebarListItemComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <li class="item ${classMap(this.classes())}">
@@ -41,7 +41,7 @@ export class SidebarListItemComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

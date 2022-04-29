@@ -6,7 +6,6 @@ import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/dgt-theme';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
@@ -15,8 +14,6 @@ import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
  * A component which shows the details of a single collection.
  */
 export class FormElementComponent<T> extends RxLitElement {
-
-  private logger = getLoggerFor(this, 5, 5);
 
   /**
    * All input elements slotted in the form element.
@@ -130,8 +127,6 @@ export class FormElementComponent<T> extends RxLitElement {
 
   protected firstUpdated(changed: PropertyValues): void {
 
-    this.logger.info('firstUpdated', changed);
-
     super.firstUpdated(changed);
 
     this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
@@ -150,28 +145,24 @@ export class FormElementComponent<T> extends RxLitElement {
 
     if (!slot) {
 
-      this.logger.warn('bindActorToInput', 'No slot found.');
       throw new ArgumentError('Argument slot should be set.', slot);
 
     }
 
     if (!actor) {
 
-      this.logger.warn('bindActorToInput', 'No actor found.');
       throw new ArgumentError('Argument actor should be set.', actor);
 
     }
 
     if (!field) {
 
-      this.logger.warn('bindActorToInput', 'No field found.');
       throw new ArgumentError('Argument field should be set.', field);
 
     }
 
     if (!data) {
 
-      this.logger.warn('bindActorToInput', 'No data found.');
       throw new ArgumentError('Argument data should be set.', data);
 
     }
@@ -195,8 +186,6 @@ export class FormElementComponent<T> extends RxLitElement {
         element.addEventListener('keypress', (event) => {
 
           if (event.key === 'Enter') {
-
-            this.logger.info('bindActorToInput', 'Enter pressed, submitting form');
 
             actor.send({ type: FormEvents.FORM_SUBMITTED });
 
