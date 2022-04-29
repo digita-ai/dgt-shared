@@ -144,12 +144,12 @@ export class WebIdComponent extends RxLitElement {
         }
         input  {
           padding: var(--gap-normal);
-          width:100%;
+          width: 100%;
           border: none;
         }
 
         input:focus-visible{
-          outline:none;
+          outline: none;
         }
 
         a {
@@ -180,7 +180,7 @@ export class WebIdComponent extends RxLitElement {
           width: var(--gap-normal);
           display: block;
           padding: var(--gap-small);
-          flex: 1 1 0%;
+          flex: 1 0;
         }
 
         `,
