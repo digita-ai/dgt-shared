@@ -183,7 +183,7 @@ export class WebIdComponent extends RxLitElement {
         .input-container {
           display: flex;
           align-items: center;
-          background-color: white;
+          background-color: var(--colors-background-light);
         }
 
         loading-component {
