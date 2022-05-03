@@ -7,6 +7,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Translator } from '@digita-ai/dgt-utils';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
+import { LoadingComponent } from '../loading/loading.component';
 
 export class WebIdComponent extends RxLitElement {
 
@@ -18,6 +19,7 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
   @property({ type: Boolean }) disableLogin = true; // disable button by default
+  @property({ type: Boolean }) validating = false;
   @property({ type: Translator }) translator?: Translator;
 
   constructor() {
@@ -25,6 +27,7 @@ export class WebIdComponent extends RxLitElement {
     super();
 
     define('alert-component', AlertComponent);
+    define('loading-component', LoadingComponent);
 
   }
 
@@ -74,7 +77,10 @@ export class WebIdComponent extends RxLitElement {
 
         <div class="webid-input-button-container ${ this.layout }" part="webid-input-button-container">
           <div class="webid-input-container" part="webid-input-container">
-            <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+            <div class="input-container">
+              <input part="webid-input" type="text" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+              <loading-component ?hidden="${!this.validating}" part="loading"></loading-component>
+            </div>
             ${ this.layout === 'vertical' ? alerts : ''}
           </div>  
           <button
@@ -145,7 +151,14 @@ export class WebIdComponent extends RxLitElement {
         }
         input  {
           padding: var(--gap-normal);
+          width: 100%;
+          border: none;
         }
+
+        input:focus-visible{
+          outline: none;
+        }
+
         a {
           font-size: var(--font-size-small);
           padding: var(--gap-tiny);
@@ -154,9 +167,11 @@ export class WebIdComponent extends RxLitElement {
           align-self: flex-end;
           cursor: pointer;
         }
+        
         a:hover {
           color: var(--colors-primary-dark);
         }
+        
         h1 {
           margin: var(--gap-large) var(--gap-normal);
           font-size: var(--font-size-header-normal);
@@ -164,6 +179,21 @@ export class WebIdComponent extends RxLitElement {
           font-weight: bold;
           text-align: center;
         }
+        
+        .input-container {
+          display: flex;
+          align-items: center;
+          background-color: var(--colors-background-light);
+        }
+
+        loading-component {
+          height: var(--gap-normal);
+          width: var(--gap-normal);
+          display: block;
+          padding-right: var(--gap-normal);
+          flex: 1 0;
+        }
+        
         `,
     ];
 

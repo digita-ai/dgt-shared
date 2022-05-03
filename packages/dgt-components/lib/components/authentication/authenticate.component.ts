@@ -25,6 +25,9 @@ export class AuthenticateComponent extends RxLitElement {
   @internalProperty()
   issuers?: Issuer[];
 
+  @internalProperty()
+  validating = false;
+
   @property({ type: Boolean }) hideWebId = false;
   @property({ type: Boolean }) hideIssuers = false;
   @property({ type: Boolean }) hideCreateNewWebId = false;
@@ -65,6 +68,7 @@ export class AuthenticateComponent extends RxLitElement {
 
     this.subscribe('state', from(this.actor));
     this.subscribe('issuers', from(this.actor).pipe(map((state) => state.context.issuers)));
+    this.subscribe('validating', from(this.actor).pipe(map((state) => state.hasTag('validating'))));
 
     this.subscribe('webIdValidationResults', from(this.actor).pipe(map((state) => {
 
@@ -152,13 +156,17 @@ export class AuthenticateComponent extends RxLitElement {
           .textButton="${this.textButton}"
           .validationResults="${this.webIdValidationResults}"
           .translator="${this.translator}"
+          ?validating="${this.validating}"
           .layout="${this.layout}"
         >
           <slot name="beforeWebId" slot="before"></slot>
           <slot name="afterWebId" slot="after"></slot>
         </webid-form>
        ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
-        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}"></provider-list>`
+        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}">
+          <slot name="beforeIssuers" slot="before"></slot>
+          <slot name="afterIssuers" slot="after"></slot>
+        </provider-list>`
     : html`<loading-component part="loading"></loading-component>` }
     `}`;
 
