@@ -19,7 +19,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * All input elements slotted in the form element.
    */
   @internalProperty()
-  inputs: HTMLInputElement[];
+  inputs: (HTMLInputElement | HTMLTextAreaElement)[];
 
   /**
    * The slot element which contains the input field.
@@ -168,8 +168,8 @@ export class FormElementComponent<T> extends RxLitElement {
     }
 
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
-      (element) => element instanceof HTMLInputElement,
-    ).map((element) => element as HTMLInputElement);
+      (element) => element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement,
+    ).map((element) => element as HTMLInputElement | HTMLTextAreaElement);
 
     this.inputs?.forEach((element) => {
 
@@ -183,7 +183,7 @@ export class FormElementComponent<T> extends RxLitElement {
       // Listen for Enter presses to submit
       if (this.submitOnEnter) {
 
-        element.addEventListener('keypress', (event) => {
+        element.addEventListener('keypress', (event: KeyboardEvent) => {
 
           if (event.key === 'Enter') {
 
