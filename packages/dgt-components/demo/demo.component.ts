@@ -46,9 +46,9 @@ const emailValidator: FormValidator<{ email: string }> = async (context, event) 
 export class DemoComponent extends RxLitElement {
 
   // eslint-disable-next-line max-len
-  private formMachine: StateMachine<FormContext<{ email: string }>, FormStateSchema<{ email: string }>, FormEvent, FormState<{ email: string }>>;
+  private formMachine: StateMachine<FormContext<{ email: string, textareaField: string }>, FormStateSchema<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>;
   // eslint-disable-next-line max-len
-  private formActor: Interpreter<FormContext<{ email: string }>, FormStateSchema<{ email: string }>, FormEvent, FormState<{ email: string }>>;
+  private formActor: Interpreter<FormContext<{ email: string, textareaField: string }>, FormStateSchema<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>;
 
   private translator: Translator;
 
@@ -56,9 +56,9 @@ export class DemoComponent extends RxLitElement {
     super();
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.formMachine = createMachine<FormContext<{ email: string }>, FormEvent, FormState<{ email: string }>>(formMachine<{ email: string }>(emailValidator)).withContext({
-      data: { email: '' },
-      original: { email: '' },
+    this.formMachine = createMachine<FormContext<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>(formMachine<{ email: string, textareaField: string }>(emailValidator)).withContext({
+      data: { email: '', textareaField: '' },
+      original: { email: '', textareaField: '' },
     });
 
     // eslint-disable-next-line no-console,@typescript-eslint/no-unsafe-assignment
@@ -116,6 +116,9 @@ export class DemoComponent extends RxLitElement {
       <input placeholder="non form-element input field">
       <form-element field="email">
         <input slot="input" type="email" name="email" id="email" placeholder="enter e-mail address">
+      </form-element>
+      <form-element field="textareaField">
+        <textarea slot="input">GRA</textarea>
       </form-element>
       <button>Continue</button>
     </form>
