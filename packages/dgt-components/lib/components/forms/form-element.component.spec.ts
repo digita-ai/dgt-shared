@@ -17,7 +17,7 @@ describe('FormElementComponent', () => {
 
   let component: FormElementComponent<TData>;
   let machine: Interpreter<FormContext<TData>, FormStateSchema<TData>, FormEvent, FormState<TData>>;
-  let input: HTMLInputElement;
+  let input: HTMLInputElement | HTMLTextAreaElement;
 
   beforeEach(() => {
 
