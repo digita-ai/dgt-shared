@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.0](https://github.com/digita-ai/dgt-shared/compare/v0.17.0...v0.18.0) (2022-05-16)
+
+
+### **Features**
+
+* add textarea support to form component ([#165](https://github.com/digita-ai/dgt-shared/issues/165)) ([50331a5](https://github.com/digita-ai/dgt-shared/commit/50331a507953f3ef2e0e85fd866ff4d4135bf1e7))
+
+
+
 ## [0.17.0](https://github.com/digita-ai/dgt-shared/compare/v0.16.7...v0.17.0) (2022-04-29)
 
 
