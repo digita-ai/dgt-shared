@@ -90,41 +90,52 @@ export class FormElementComponent<T> extends RxLitElement {
   @internalProperty()
   public data: T;
 
-  constructor(
-    private actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>
-  ) {
+  /**
+   * The actor controlling this component.
+   */
+  @property({ type: Object })
+  actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
 
-    super();
+  /**
+   * Hook called on every update after connection to the DOM.
+   */
+  updated(changed: PropertyValues): void {
 
-    // Subscribes to the field's validation results.
-    this.subscribe('validationResults', from(this.actor).pipe(
-      map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
-    ));
+    super.updated(changed);
 
-    // Subscribes to data in the actor's context.
-    this.subscribe('data', from(this.actor).pipe(
-      map((state) => state.context?.data),
-    ));
+    if(changed.has('actor') && this.actor) {
 
-    // Subscribes to data in the actor's context.
-    this.subscribe('showLoading', from(this.actor).pipe(
-      map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
-        [FormSubmissionStates.NOT_SUBMITTED]:{
-          [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
-        },
-      })),
-    ));
+      // Subscribes to the field's validation results.
+      this.subscribe('validationResults', from(this.actor).pipe(
+        map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
+      ));
 
-    // Subscribes to data in the actor's context.
-    this.subscribe('lockInput', from(this.actor).pipe(
-      map((state) => state.matches(FormSubmissionStates.SUBMITTING)
+      // Subscribes to data in the actor's context.
+      this.subscribe('data', from(this.actor).pipe(
+        map((state) => state.context?.data),
+      ));
+
+      // Subscribes to data in the actor's context.
+      this.subscribe('showLoading', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+          },
+        })),
+      ));
+
+      // Subscribes to data in the actor's context.
+      this.subscribe('lockInput', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)
         || state.matches(FormSubmissionStates.SUBMITTED)),
-      tap((lock) => {
+        tap((lock) => {
 
-        this.inputs?.forEach((element) => element.disabled = lock);
+          this.inputs?.forEach((element) => element.disabled = lock);
 
-      })
-    ));
+        })
+      ));
+
+    }
 
   }
 
