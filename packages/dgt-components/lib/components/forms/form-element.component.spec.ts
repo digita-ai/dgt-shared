@@ -19,7 +19,7 @@ describe('FormElementComponent', () => {
   let machine: Interpreter<FormContext<TData>, FormStateSchema<TData>, FormEvent, FormState<TData>>;
   let input: HTMLInputElement | HTMLTextAreaElement;
 
-  beforeEach(() => {
+  beforeEach(async () => {
 
     machine = interpret(
       createMachine<FormContext<TData>, FormEvent, FormState<TData>>(formMachine<TData>(
@@ -38,6 +38,7 @@ describe('FormElementComponent', () => {
     define('form-element', hydrate(FormElementComponent)(machine));
     component = window.document.createElement('form-element') as FormElementComponent<TData>;
 
+    component.actor = machine;
     component.field = 'name';
     component.data = { uri: '', name: 'Test', description: 'description' };
 
@@ -68,6 +69,9 @@ describe('FormElementComponent', () => {
 
     jest.clearAllMocks();
 
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
   });
 
   afterEach(() => {
@@ -87,7 +91,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect((window.document.body.getElementsByTagName('form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+    expect((component.shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
 
   });
 
