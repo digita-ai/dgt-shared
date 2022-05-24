@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/dgt-utils-core",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "license": "ISC",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc",
