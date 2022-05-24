@@ -1,12 +1,9 @@
 import { css, CSSResultArray, html, internalProperty, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@digita-ai/dgt-theme';
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListItemComponent } from './provider-list-item.component';
 
 export class ProviderListComponent extends LitElement {
-
-  private logger = getLoggerFor(this, 5, 5);
 
   @property({ type: Array })
   public providers: Issuer[];
@@ -24,7 +21,6 @@ export class ProviderListComponent extends LitElement {
 
   onIssuerSelected = (issuer: Issuer) => (): void => {
 
-    this.logger.info('Issuer selected', issuer);
     this.buttonsEnabled = false;
     this.dispatchEvent(new CustomEvent('issuer-selected', { detail: issuer }));
 

@@ -74,6 +74,7 @@ export class DemoAuthenticateComponent extends RxLitElement {
       .translator="${this.translator}"
       textButton="Log in to your account"
     >
+      <h1 slot="beforeIssuers">Select an identity provider to log in</h1>
       <h1 slot="beforeWebId">Enter your WebID (vertical view)</h1>
     </auth-flow>
   `;

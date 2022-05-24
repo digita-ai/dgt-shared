@@ -1,4 +1,3 @@
-import { getLoggerFor } from '@digita-ai/handlersjs-logging';
 import { MemoryTranslator } from '../translators/memory-translator';
 import { TranslatorFactory } from '../models/translator-factory';
 
@@ -7,11 +6,7 @@ import { TranslatorFactory } from '../models/translator-factory';
  */
 export class MemoryTranslatorFactory implements TranslatorFactory {
 
-  private logger = getLoggerFor(this, 5, 5);
-
   createTranslator(language: string): MemoryTranslator {
-
-    this.logger.info('Creating translator', language);
 
     return new MemoryTranslator(language);
 

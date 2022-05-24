@@ -13,8 +13,6 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
 
   generateKeyPair(): Observable<DGTCryptoKeyPair> {
 
-    this.logger.debug(DGTCryptoBrowserService.name, 'Generating key pair');
-
     return from(crypto.subtle.generateKey(
       {
         name: 'RSASSA-PKCS1-v1_5',
@@ -37,23 +35,17 @@ export class DGTCryptoBrowserService extends DGTCryptoService {
           return { publicKey: publicJwk, privateKey: privateJwk };
 
         }),
-        tap((res) =>
-          this.logger.debug('Generated keypair', { res })),
       );
 
   }
 
   digest(data: Uint8Array): Observable<ArrayBuffer> {
 
-    this.logger.debug('Calculating digest', { data });
-
     return from(crypto.subtle.digest({ name: 'SHA-256' }, data));
 
   }
 
   generateRandomNumbers(length: number): number[] {
-
-    this.logger.debug('Generating random numbers', { length });
 
     return Array.from(crypto.getRandomValues(new Uint8Array(length)));
 

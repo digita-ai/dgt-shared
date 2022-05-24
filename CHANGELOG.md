@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.0](https://github.com/digita-ai/dgt-shared/compare/v0.17.0...v0.18.0) (2022-05-16)
+
+
+### **Features**
+
+* add textarea support to form component ([#165](https://github.com/digita-ai/dgt-shared/issues/165)) ([50331a5](https://github.com/digita-ai/dgt-shared/commit/50331a507953f3ef2e0e85fd866ff4d4135bf1e7))
+
+
+
+## [0.17.0](https://github.com/digita-ai/dgt-shared/compare/v0.16.7...v0.17.0) (2022-04-29)
+
+
+### **Features**
+
+* add console logger  ([#153](https://github.com/digita-ai/dgt-shared/issues/153)) ([dcdb72d](https://github.com/digita-ai/dgt-shared/commit/dcdb72d54e5d9f06f22a699b18002ccef32d9877))
+
+
+### **Bug Fixes**
+
+* remove handlersjs logger from front-end packages ([#164](https://github.com/digita-ai/dgt-shared/issues/164)) ([c406468](https://github.com/digita-ai/dgt-shared/commit/c406468fb1342528715bb0b859a9d1b2a599df6d))
+
+
+
 ### [0.16.7](https://github.com/digita-ai/dgt-shared/compare/v0.16.6...v0.16.7) (2022-04-25)
 
 **Note:** Version bump only for package root
