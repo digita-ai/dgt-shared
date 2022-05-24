@@ -132,15 +132,13 @@ export class FormElementComponent<T> extends RxLitElement {
         })
       ));
 
+      if (this.inputSlot && this.field && this.data) {
+
+        this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+
+      }
+
     }
-
-  }
-
-  protected firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
 
   }
 
