@@ -66,7 +66,7 @@ export class DemoComponent extends RxLitElement {
     this.formActor.start();
 
     define('checkbox-component', CheckboxComponent);
-    define('form-element', hydrate(FormElementComponent)(this.formActor));
+    define('form-element', FormElementComponent);
 
     // create single translator
     setTranslatorFactory(new MemoryTranslatorFactory);
@@ -114,12 +114,25 @@ export class DemoComponent extends RxLitElement {
     <h1>form element component</h1>
     <form>
       <input placeholder="non form-element input field">
-      <form-element field="email">
+      <form-element field="email" .actor=${this.formActor}>
         <input slot="input" type="email" name="email" id="email" placeholder="enter e-mail address">
       </form-element>
-      <form-element field="textareaField">
+      <form-element field="textareaField" .actor=${this.formActor}>
         <textarea slot="input">GRA</textarea>
       </form-element>
+      <form-element field="select" .actor=${this.formActor}>
+        <select required slot="input" name="select" id="select">
+          <option value="first">first</option>
+          <option value="second">second</option>
+        </select>
+      </form-element>
+      <div>
+        <select id="non-form-select">
+          <option value="non">non</option>
+          <option value="form">form</option>
+          <option value="select">select</option>
+        </select>
+      </div>
       <button>Continue</button>
     </form>
 
