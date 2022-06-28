@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme, Arrow } from '@digita-ai/dgt-theme';
 import { debounce } from 'debounce';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Translator } from '@digita-ai/dgt-utils';
@@ -89,6 +89,9 @@ export class WebIdComponent extends RxLitElement {
             disabled
             ?disabled="${this.disableLogin}">
               ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
+            <div class="button-icon-right">
+              ${unsafeSVG(Arrow)}
+            </div>
           </button>
         </div>
 
@@ -148,6 +151,9 @@ export class WebIdComponent extends RxLitElement {
         .webid-input-button-container button:hover:enabled {
           background-color: var(--colors-primary-light);
           border: 2px solid var(--colors-primary-light);
+        }
+        .button-icon-right {
+          display: none;
         }
         input  {
           padding: var(--gap-normal);
