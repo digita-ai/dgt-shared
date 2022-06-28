@@ -240,8 +240,8 @@ export class FormElementComponent<T> extends RxLitElement {
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
         <slot name="help"></slot>
       </div>
-      <div class="results" ?hidden="${!this.validationResults || this.validationResults.length === 0}">
-        ${this.validationResults?.map((result) => html`<div class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
+      <div part="results" class="results" ?hidden="${!this.validationResults || this.validationResults.length === 0}">
+        ${this.validationResults?.map((result) => html`<div part="result" class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
       </div>
     </div>
   `;
