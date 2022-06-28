@@ -89,7 +89,7 @@ export class WebIdComponent extends RxLitElement {
             disabled
             ?disabled="${this.disableLogin}">
               ${this.textButton.includes('<svg') ? unsafeSVG(this.textButton) : this.textButton}
-            <div class="button-icon-right">
+            <div part="button-icon">
               ${unsafeSVG(Arrow)}
             </div>
           </button>
@@ -152,9 +152,7 @@ export class WebIdComponent extends RxLitElement {
           background-color: var(--colors-primary-light);
           border: 2px solid var(--colors-primary-light);
         }
-        .button-icon-right {
-          display: none;
-        }
+        
         input  {
           padding: var(--gap-normal);
           width: 100%;
