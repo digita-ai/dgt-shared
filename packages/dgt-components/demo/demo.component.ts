@@ -43,12 +43,18 @@ const emailValidator: FormValidator<{ email: string }> = async (context, event) 
 
 };
 
+export type DemoFormModel = {
+  email: string,
+  textareaField: string,
+  select: string,
+};
+
 export class DemoComponent extends RxLitElement {
 
   // eslint-disable-next-line max-len
-  private formMachine: StateMachine<FormContext<{ email: string, textareaField: string }>, FormStateSchema<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>;
+  private formMachine: StateMachine<FormContext<DemoFormModel>, FormStateSchema<DemoFormModel>, FormEvent, FormState<DemoFormModel>>;
   // eslint-disable-next-line max-len
-  private formActor: Interpreter<FormContext<{ email: string, textareaField: string }>, FormStateSchema<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>;
+  private formActor: Interpreter<FormContext<DemoFormModel>, FormStateSchema<DemoFormModel>, FormEvent, FormState<DemoFormModel>>;
 
   private translator: Translator;
 
@@ -56,17 +62,20 @@ export class DemoComponent extends RxLitElement {
     super();
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    this.formMachine = createMachine<FormContext<{ email: string, textareaField: string }>, FormEvent, FormState<{ email: string, textareaField: string }>>(formMachine<{ email: string, textareaField: string }>(emailValidator)).withContext({
-      data: { email: '', textareaField: '' },
-      original: { email: '', textareaField: '' },
+    this.formMachine = createMachine<FormContext<DemoFormModel>, FormEvent, FormState<DemoFormModel>>(formMachine<DemoFormModel>(emailValidator)).withContext({
+      data: { email: '', textareaField: '', select: 'first' },
+      original: { email: '', textareaField: '', select: 'first' },
     });
 
     // eslint-disable-next-line no-console,@typescript-eslint/no-unsafe-assignment
-    this.formActor = interpret(this.formMachine, { devTools: true }).onTransition((s) => console.log(s.value));
+    this.formActor = interpret(this.formMachine, { devTools: true }).onTransition((s) => {
+      console.log(s.value);
+      console.log('data', s.context.data)
+    });
     this.formActor.start();
 
     define('checkbox-component', CheckboxComponent);
-    define('form-element', hydrate(FormElementComponent)(this.formActor));
+    define('form-element', FormElementComponent);
 
     // create single translator
     setTranslatorFactory(new MemoryTranslatorFactory);
@@ -114,12 +123,25 @@ export class DemoComponent extends RxLitElement {
     <h1>form element component</h1>
     <form>
       <input placeholder="non form-element input field">
-      <form-element field="email">
+      <form-element field="email" .actor=${this.formActor}>
         <input slot="input" type="email" name="email" id="email" placeholder="enter e-mail address">
       </form-element>
-      <form-element field="textareaField">
+      <form-element field="textareaField" .actor=${this.formActor}>
         <textarea slot="input">GRA</textarea>
       </form-element>
+      <form-element field="select" .actor=${this.formActor}>
+        <select required slot="input" name="select" id="select">
+          <option value="first">first</option>
+          <option value="second">second</option>
+        </select>
+      </form-element>
+      <div>
+        <select id="non-form-select">
+          <option value="non">non</option>
+          <option value="form">form</option>
+          <option value="select">select</option>
+        </select>
+      </div>
       <button>Continue</button>
     </form>
 
