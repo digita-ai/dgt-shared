@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.0](https://github.com/digita-ai/dgt-shared/compare/v0.18.2...v0.19.0) (2022-06-20)
+
+
+### **Features**
+
+* make select elements compatible with form element component ([#171](https://github.com/digita-ai/dgt-shared/issues/171)) ([05d2b67](https://github.com/digita-ai/dgt-shared/commit/05d2b67bf1120d03106d5328c1c10c5d9fffeb4f))
+* set webid form input type to url ([#170](https://github.com/digita-ai/dgt-shared/issues/170)) ([22ff867](https://github.com/digita-ai/dgt-shared/commit/22ff867819134af70fee4047b1dce04930cdd0d8))
+
+
+
+### [0.18.2](https://github.com/digita-ai/dgt-shared/compare/v0.18.1...v0.18.2) (2022-05-24)
+
+
+### **Bug Fixes**
+
+* remove first updated form element ([#168](https://github.com/digita-ai/dgt-shared/issues/168)) ([943c959](https://github.com/digita-ai/dgt-shared/commit/943c959f01eaad44b954322a2b5c37afdef2e5f6))
+
+
+
 ### [0.18.1](https://github.com/digita-ai/dgt-shared/compare/v0.18.0...v0.18.1) (2022-05-24)
 
 **Note:** Version bump only for package root

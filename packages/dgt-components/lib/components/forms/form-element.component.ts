@@ -19,7 +19,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * All input elements slotted in the form element.
    */
   @internalProperty()
-  inputs: (HTMLInputElement | HTMLTextAreaElement)[];
+  inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[] = [];
 
   /**
    * The slot element which contains the input field.
@@ -132,15 +132,13 @@ export class FormElementComponent<T> extends RxLitElement {
         })
       ));
 
+      if (this.inputSlot && this.field && this.data) {
+
+        this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+
+      }
+
     }
-
-  }
-
-  protected firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
 
   }
 
@@ -179,8 +177,9 @@ export class FormElementComponent<T> extends RxLitElement {
     }
 
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
-      (element) => element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement,
-    ).map((element) => element as HTMLInputElement | HTMLTextAreaElement);
+      (element) => element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
+      || element instanceof HTMLSelectElement,
+    ).map((element) => element as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement);
 
     this.inputs?.forEach((element) => {
 
