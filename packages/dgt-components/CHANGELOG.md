@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.0](https://github.com/digita-ai/dgt-shared/compare/v0.19.0...v0.20.0) (2022-06-29)
+
+
+### **Features**
+
+* add arrow to webid form button ([#172](https://github.com/digita-ai/dgt-shared/issues/172)) ([3cc8038](https://github.com/digita-ai/dgt-shared/commit/3cc803810951a8e6a7bdda0d9d56451dc1d2807a))
+
+
+
 ## [0.19.0](https://github.com/digita-ai/dgt-shared/compare/v0.18.2...v0.19.0) (2022-06-20)
 
 
