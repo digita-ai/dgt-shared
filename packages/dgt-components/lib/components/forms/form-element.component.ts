@@ -191,7 +191,7 @@ export class FormElementComponent<T> extends RxLitElement {
       element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
 
       // Listen for Enter presses to submit
-      if (this.submitOnEnter) {
+      if (this.submitOnEnter && !(element instanceof HTMLTextAreaElement)) {
 
         element.addEventListener('keypress', (event: KeyboardEvent) => {
 
