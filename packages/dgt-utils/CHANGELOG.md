@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.21.0](https://github.com/digita-ai/dgt-shared/compare/v0.20.0...v0.21.0) (2022-07-12)
+
+
+### **Features**
+
+* remove unused classes from dgt-utils ([#174](https://github.com/digita-ai/dgt-shared/issues/174)) ([e98734a](https://github.com/digita-ai/dgt-shared/commit/e98734ad72ea2a6d3fecb2160aa717ee7d66fa1a))
+
+
+
 ## [0.20.0](https://github.com/digita-ai/dgt-shared/compare/v0.19.0...v0.20.0) (2022-06-29)
 
 **Note:** Version bump only for package @digita-ai/dgt-utils
