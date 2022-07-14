@@ -1,21 +1,20 @@
-import fetchMock from 'jest-fetch-mock';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import crossFetch from 'cross-fetch';
 import { addProtocolPrefix } from './add-protocol-prefix';
 
+// Mock the default export
+jest.mock('cross-fetch', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 const MOCK_URI = 'example.com';
-
-fetchMock.enableMocks();
-
-beforeEach(() => {
-
-  fetchMock.resetMocks();
-
-});
 
 describe('addProtocolPrefix()', () => {
 
   it('should return uri with https when https is working', async () => {
 
-    fetchMock.mockResponseOnce(JSON.stringify({ uri: 'https://' + MOCK_URI }));
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce(JSON.stringify({ uri: 'https://' + MOCK_URI }));
 
     const response = addProtocolPrefix(MOCK_URI);
 
@@ -25,8 +24,8 @@ describe('addProtocolPrefix()', () => {
 
   it('should return uri with http when https is not working', async () => {
 
-    fetchMock.mockRejectOnce();
-    fetchMock.mockResponseOnce(JSON.stringify({ uri: 'http://' + MOCK_URI }));
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce(JSON.stringify({ uri: 'http://' + MOCK_URI }));
 
     const response = addProtocolPrefix(MOCK_URI);
 
@@ -34,9 +33,10 @@ describe('addProtocolPrefix()', () => {
 
   });
 
-  it('should throw when uri cannot be fetched', async () => {
+  it('should throw when both http and https uris cannot be fetched', async () => {
 
-    fetchMock.mockReject();
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
 
     const response = addProtocolPrefix(MOCK_URI);
 
@@ -45,4 +45,3 @@ describe('addProtocolPrefix()', () => {
   });
 
 });
-
