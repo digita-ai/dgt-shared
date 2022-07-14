@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 /**
  *
  * Function to add protocol prefix to uri if it is missing
@@ -33,4 +35,3 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
   }
 
 };
-
