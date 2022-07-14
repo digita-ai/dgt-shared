@@ -35,4 +35,3 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
   }
 
 };
-
