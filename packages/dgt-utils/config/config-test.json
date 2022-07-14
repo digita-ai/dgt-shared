@@ -4,7 +4,6 @@
   ],
   "import": [
     "files-dadu:config/presets/logger.json", 
-    "files-dadu:config/presets/crypto.json", 
     "files-dadu:config/presets/parameters.json"
   ],
   "@graph": [

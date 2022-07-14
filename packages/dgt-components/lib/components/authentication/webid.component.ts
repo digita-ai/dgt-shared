@@ -70,7 +70,7 @@ export class WebIdComponent extends RxLitElement {
 
     return html`
     <slot name="before"></slot>
-    <form @submit="${this.onSubmit}" part="webid-form">
+    <form @submit="${this.onSubmit}" part="webid-form" novalidate>
 
       <label part="webid-label" for="webid">${this.textLabel}</label>
       <div class="webid-input-container" part="webid-input-container">
