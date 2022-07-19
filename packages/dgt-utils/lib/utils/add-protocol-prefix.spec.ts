@@ -12,6 +12,14 @@ const MOCK_URI = 'example.com';
 
 describe('addProtocolPrefix()', () => {
 
+  it('should return uri when uri is complete', async () => {
+
+    const response = addProtocolPrefix('https://' + MOCK_URI);
+
+    await expect(response).resolves.toBe('https://' + MOCK_URI);
+
+  });
+
   it('should return uri with https when https is working', async () => {
 
     ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce(JSON.stringify({ uri: 'https://' + MOCK_URI }));

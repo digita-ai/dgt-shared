@@ -12,6 +12,8 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
   try {
 
+    if (uri.match('^https?://'))  return uri ;
+
     try {
 
       const httpsUri = `https://${uri}`;
@@ -35,3 +37,4 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
   }
 
 };
+
