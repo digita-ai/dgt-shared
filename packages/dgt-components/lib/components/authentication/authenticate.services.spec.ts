@@ -60,7 +60,9 @@ describe('AuthenticateServices', () => {
 
     it('should return given uri when prefix was given and uri is valid', async () => {
 
-      event.webId = 'https://example.com/profile/card#me';
+      event.webId = 'http://example.com/profile/card#me';
+
+      (utils as any).addProtocolPrefix = jest.fn().mockResolvedValueOnce('http://example.com/profile/card#me');
 
       const response = checkWebId(context, event);
 
@@ -70,6 +72,7 @@ describe('AuthenticateServices', () => {
 
       expect(result.webId).toBe(event.webId);
       expect(result.validationResults).toHaveLength(0);
+      expect((utils as any).addProtocolPrefix).toHaveBeenCalledTimes(1);
 
     });
 
