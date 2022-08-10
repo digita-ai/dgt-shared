@@ -16,7 +16,7 @@ Promise<{ webId: string; validationResults: string[] }> => {
 
   try {
 
-    webId = await addProtocolPrefix(event.webId);
+    webId = await addProtocolPrefix(webId);
     validationResults = await context.webIdValidator(webId);
 
   } catch(e){

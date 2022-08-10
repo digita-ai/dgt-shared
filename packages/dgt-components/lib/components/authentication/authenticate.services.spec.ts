@@ -1,93 +1,53 @@
-import *  as utils  from '@digita-ai/dgt-utils';
-import { AuthenticateContext, AuthenticateEvents, WebIdEnteredEvent, WebIdValidator }  from './authenticate.machine';
+import * as utils from '@digita-ai/dgt-utils';
+import { AuthenticateContext, WebIdEnteredEvent }  from './authenticate.machine';
 import { checkWebId } from './authenticate.services';
+
+jest.mock('@digita-ai/dgt-utils', () => ({
+  addProtocolPrefix: jest.fn().mockResolvedValue('https://example.com/profile/card'),
+}));
 
 describe('AuthenticateServices', () => {
 
-  let context: AuthenticateContext;
-  let event: WebIdEnteredEvent;
-
-  const webIdValidator: WebIdValidator = async (webId: string) => {
-
-    const results: string[] = [];
-
-    try {
-
-      new URL(webId);
-
-    } catch {
-
-      results.push('common.webid-validation.invalid-uri');
-
-    }
-
-    return results;
-
-  };
+  const prefixedUri = 'https://example.com/profile/card';
+  let mockContext: AuthenticateContext;
+  let mockEvent: WebIdEnteredEvent;
+  let mockWebIdValidator: jest.Mock;
 
   beforeEach(() => {
 
-    context = {
-      webIdValidator,
-    };
-
-    event = {
-      webId: 'example.com/profile/card#me',
-      type: AuthenticateEvents.WEBID_ENTERED,
-    };
+    mockWebIdValidator = jest.fn().mockResolvedValue([]);
+    mockContext = { webIdValidator: mockWebIdValidator };
+    mockEvent = { webId: prefixedUri.split('//')[1] } as unknown as WebIdEnteredEvent;
 
   });
 
   describe('checkWebId', () => {
 
-    it('should return with prefix when no prefix was given and uri is valid', async () => {
+    it('should call addProtocolPrefix() and context.webIdValidator() and return their values', async () => {
 
-      event.webId = 'example.com/profile/card#me';
+      const addProtocolSpy = jest.spyOn(utils, 'addProtocolPrefix');
+      const result = checkWebId(mockContext, mockEvent);
 
-      (utils as any).addProtocolPrefix = jest.fn().mockResolvedValueOnce('https://example.com/profile/card#me');
+      await expect(result).resolves.toMatchObject({
+        webId: prefixedUri,
+        validationResults: [],
+      });
 
-      const response = checkWebId(context, event);
-
-      await expect(response).resolves.toBeDefined();
-
-      const result = await response;
-
-      expect(result.validationResults).toHaveLength(0);
-      expect(result.webId).toContain('http');
-      expect((utils as any).addProtocolPrefix).toHaveBeenCalledTimes(1);
-
-    });
-
-    it('should return given uri when prefix was given and uri is valid', async () => {
-
-      event.webId = 'http://example.com/profile/card#me';
-
-      (utils as any).addProtocolPrefix = jest.fn().mockResolvedValueOnce('http://example.com/profile/card#me');
-
-      const response = checkWebId(context, event);
-
-      await expect(response).resolves.toBeDefined();
-
-      const result = await response;
-
-      expect(result.webId).toBe(event.webId);
-      expect(result.validationResults).toHaveLength(0);
-      expect((utils as any).addProtocolPrefix).toHaveBeenCalledTimes(1);
+      expect(addProtocolSpy).toHaveBeenCalledTimes(1);
+      expect(addProtocolSpy).toHaveBeenCalledWith(mockEvent.webId);
+      expect(mockWebIdValidator).toHaveBeenCalledTimes(1);
+      expect(mockWebIdValidator).toHaveBeenCalledWith(prefixedUri);
 
     });
 
-    it('should return given uri and append validationResults when addProtocolPrefix throws', async () => {
+    it('should return original webid and add a value to validationResults when addProtocolPrefix throws', async () => {
 
-      (utils as any).addProtocolPrefix = jest.fn().mockRejectedValueOnce('error');
+      jest.spyOn(utils, 'addProtocolPrefix').mockRejectedValueOnce('');
 
-      const response = checkWebId(context, event);
-
-      await expect(response).resolves.toBeDefined();
-
-      const result = await response;
-
-      expect(result.webId).toBe(event.webId);
-      expect(result.validationResults).toHaveLength(1);
+      await expect(checkWebId(mockContext, mockEvent)).resolves.toMatchObject({
+        webId: mockEvent.webId,
+        validationResults: [ expect.any(String) ],
+      });
 
     });
 

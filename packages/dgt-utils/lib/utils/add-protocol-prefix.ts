@@ -10,23 +10,21 @@ import fetch from 'cross-fetch';
  */
 export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
-  try {
+  if (uri.match('^https?://')) return uri ;
 
-    if (uri.match('^https?://'))  return uri ;
+  try {
 
     try {
 
       const httpsUri = `https://${uri}`;
-      await fetch(httpsUri, { method: 'HEAD' });
 
-      return httpsUri;
+      return await fetch(httpsUri, { method: 'HEAD' }).then(() => httpsUri);
 
     } catch(e) {
 
       const httpUri = `http://${uri}`;
-      await fetch(httpUri, { method: 'HEAD' });
 
-      return httpUri;
+      return await fetch(httpUri, { method: 'HEAD' }).then(() => httpUri);
 
     }
 
