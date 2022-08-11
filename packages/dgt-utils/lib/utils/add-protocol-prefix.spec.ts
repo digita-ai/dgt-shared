@@ -8,39 +8,41 @@ jest.mock('cross-fetch', () => ({
   default: jest.fn(),
 }));
 
-const MOCK_URI = 'example.com';
+const nonPrefixedUri = 'example.com';
+const httpsUri = `https://${nonPrefixedUri}`;
+const httpUri = `http://${nonPrefixedUri}`;
 
 describe('addProtocolPrefix()', () => {
 
-  it('should return uri with https when https is working', async () => {
+  it('should return uri when uri already is prefixed', async () => {
 
-    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce(JSON.stringify({ uri: 'https://' + MOCK_URI }));
-
-    const response = addProtocolPrefix(MOCK_URI);
-
-    await expect(response).resolves.toBe('https://' + MOCK_URI);
+    await expect(addProtocolPrefix(httpsUri)).resolves.toBe(httpsUri);
+    await expect(addProtocolPrefix(httpUri)).resolves.toBe(httpUri);
 
   });
 
-  it('should return uri with http when https is not working', async () => {
+  it('should return uri prefixed with https if HEAD request succeeds', async () => {
 
-    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
-    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce(JSON.stringify({ uri: 'http://' + MOCK_URI }));
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce('');
 
-    const response = addProtocolPrefix(MOCK_URI);
+    await expect(addProtocolPrefix(nonPrefixedUri)).resolves.toBe(httpsUri);
 
-    await expect(response).resolves.toBe('http://' + MOCK_URI);
+  });
+
+  it('should return uri prefixed with http if HEAD request succeeds', async () => {
+
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('');
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockResolvedValueOnce('');
+
+    await expect(addProtocolPrefix(nonPrefixedUri)).resolves.toBe(httpUri);
 
   });
 
   it('should throw when both http and https uris cannot be fetched', async () => {
 
-    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
-    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValueOnce('addr_not_found');
+    ((crossFetch as unknown) as jest.MockInstance<any, any>).mockRejectedValue('');
 
-    const response = addProtocolPrefix(MOCK_URI);
-
-    await expect(response).rejects.toThrow(`Could not add protocol prefix to ${MOCK_URI}`);
+    await expect(addProtocolPrefix(nonPrefixedUri)).rejects.toThrow(`Could not add protocol prefix to ${nonPrefixedUri}`);
 
   });
 
