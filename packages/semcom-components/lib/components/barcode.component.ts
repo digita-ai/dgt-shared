@@ -63,7 +63,7 @@ export class BarcodeComponent extends BaseComponent {
 
     return html`
       ${this.program && !this.hideProgram ? html`
-        <nde-card ?hideImage="${ true }">
+        <card-component ?hideImage="${ true }">
           <div slot="title">${this.program}</div>
           <div slot="subtitle">This is your barcode</div>
           <div slot="icon">
@@ -75,7 +75,7 @@ export class BarcodeComponent extends BaseComponent {
             </div>
             ${this.hostingOrganization ? html`<a target="_blank" .href="${this.hostingOrganization}" class="btn primary">${unsafeSVG(Open)} <div>More information</div></a>` : ``}
           </div>
-        </nde-card>
+        </card-component>
       ` : ''}
     `;
 

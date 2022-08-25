@@ -6,7 +6,7 @@ describe('SidebarListItemComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-sidebar-list-item') as SidebarListItemComponent;
+    component = window.document.createElement('sidebar-list-item') as SidebarListItemComponent;
 
   });
 
@@ -29,7 +29,7 @@ describe('SidebarListItemComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-sidebar-list-item')[0].shadowRoot.querySelectorAll<HTMLLIElement>('.item.selected').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('sidebar-list-item')[0].shadowRoot.querySelectorAll<HTMLLIElement>('.item.selected').length).toEqual(1);
 
   });
 

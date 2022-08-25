@@ -149,7 +149,7 @@ export class ProfileNameComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card ?hideImage="${ this.image === undefined }">
+    <card-component ?hideImage="${ this.image === undefined }">
       <div slot="title">Names</div>
       <div slot="subtitle">Your names</div>
       <div slot="icon">
@@ -157,33 +157,33 @@ export class ProfileNameComponent extends BaseComponent {
       </div>
       ${this.image ? html `<img slot="image" src="${this.image.toString()}">` : ''}
       <div slot="content">
-        <nde-form-element .actor="${this.formActor}" field="image">
+        <form-element .actor="${this.formActor}" field="image">
           <label slot="label" for="image">
             Image
           </label>
           <input type="text" slot="input" name="image"/>
-        </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" field="honorific">
+        </form-element>
+        <form-element .actor="${this.formActor}" field="honorific">
           <label slot="label" for="honorific">
             Honorific
           </label>
           <input type="text" slot="input" name="honorific"/>
-        </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" field="fullName">
+        </form-element>
+        <form-element .actor="${this.formActor}" field="fullName">
           <label slot="label" for="fullName">
             Full name
           </label>
           <input type="text" slot="input" name="fullName"/>
-        </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" field="nick">
+        </form-element>
+        <form-element .actor="${this.formActor}" field="nick">
           <label slot="label" for="nick">
             Nickname
           </label>
           <input type="text" slot="input" name="nick"/>
-        </nde-form-element>
+        </form-element>
         <button class="primary" @click="${this.handleSave}" .disabled="${!this.canSave}">Save</button>
         </div>
-      </nde-card>
+      </card-component>
       ` : html``;
 
   }

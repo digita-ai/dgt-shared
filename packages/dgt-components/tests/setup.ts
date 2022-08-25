@@ -16,11 +16,11 @@ import { define } from '../lib/util/define';
  * Register tags for components.
  */
 define('alert-component', AlertComponent);
-define('nde-sidebar-item', SidebarItemComponent);
-define('nde-sidebar-list-item', SidebarListItemComponent);
-define('nde-sidebar-list', SidebarListComponent);
-define('nde-sidebar', SidebarComponent);
-define('nde-large-card', CardComponent);
+define('sidebar-item', SidebarItemComponent);
+define('sidebar-list-item', SidebarListItemComponent);
+define('sidebar-list', SidebarListComponent);
+define('sidebar-component', SidebarComponent);
+define('large-card', CardComponent);
 define('card-header', ContentHeaderComponent);
 define('list-item', ListItemComponent);
 define('separator-component', SeparatorComponent);

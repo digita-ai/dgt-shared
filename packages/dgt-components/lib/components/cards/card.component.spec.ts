@@ -3,7 +3,7 @@ import { CardComponent } from './card.component';
 describe('CardComponent', () => {
 
   let component: CardComponent;
-  const tag = 'nde-large-card';
+  const tag = 'large-card';
 
   beforeEach(() => {
 

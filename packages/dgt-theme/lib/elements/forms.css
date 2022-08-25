@@ -4,16 +4,16 @@ form {
   align-items: stretch;
 }
 
-form nde-form-element {
+form form-element {
   margin-bottom: var(--gap-large);
   display: block;
 }
 
-form nde-form-element:last-child {
+form form-element:last-child {
   margin-bottom: 0;
 }
 
-nde-form-element input {
+form-element input {
   color: var(--colors-foreground-normal);
   border: none;
   font-size: var(--font-size-small);
@@ -23,7 +23,7 @@ nde-form-element input {
   width: 100%;
 }
 
-nde-form-element input:disabled {
+form-element input:disabled {
   color: var(--colors-foreground-light);
 }
 
@@ -37,12 +37,12 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--colors-foreground-normal) !important;
 }
 
-nde-form-element div[slot="icon"] svg {
+form-element div[slot="icon"] svg {
   max-height: var(--gap-normal);
   max-width: var(--gap-normal);
 }
 
-nde-form-element div[slot="help"] {
+form-element div[slot="help"] {
   font-size: var(--font-size-small);
   color: var(--colors-foreground-light);
 }

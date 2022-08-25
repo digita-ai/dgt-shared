@@ -8,7 +8,7 @@ import { ProgressBarComponent } from '../lib/components/progress-bar/progress-ba
 
 
 customElements.define('demo-auth', DemoAuthenticateComponent);
-customElements.define('nde-card', CardComponent);
+customElements.define('card-component', CardComponent);
 customElements.define('list-item', ListItemComponent);
 customElements.define('demo-component', DemoComponent);
 customElements.define('progress-bar', ProgressBarComponent);

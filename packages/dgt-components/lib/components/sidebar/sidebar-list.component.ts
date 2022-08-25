@@ -13,7 +13,7 @@ export class SidebarListComponent extends RxLitElement {
    */
   select(event: MouseEvent){
 
-    const element = event.composedPath().find((el: Element) => el.localName === 'nde-sidebar-list-item') as Element;
+    const element = event.composedPath().find((el: Element) => el.localName === 'sidebar-list-item') as Element;
 
     if(element && !element.hasAttribute('isTitle')){
 

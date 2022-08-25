@@ -22,12 +22,12 @@ customElements.define('credential-component', CredentialComponent);
 customElements.define('profile-contact-component', ProfileContactComponent);
 customElements.define('profile-name-component', ProfileNameComponent);
 customElements.define('profile-payslip-component', ProfilePayslipComponent);
-customElements.define('nde-form-element', FormElementComponent);
-customElements.define('nde-card', CardComponent);
+customElements.define('form-element', FormElementComponent);
+customElements.define('card-component', CardComponent);
 customElements.define('card-header', ContentHeaderComponent);
-customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
-customElements.define('nde-sidebar-list', SidebarListComponent);
-customElements.define('nde-sidebar-item', SidebarItemComponent);
+customElements.define('sidebar-list-item', SidebarListItemComponent);
+customElements.define('sidebar-list', SidebarListComponent);
+customElements.define('sidebar-item', SidebarItemComponent);
 
 const parser = new Parser();
 
