@@ -108,7 +108,7 @@ export class CredentialComponent extends BaseComponent {
 
     return this.credentials && this.credentials.length > 0 ? html`
         
-    <nde-card .showImage="${ false }">
+    <card-component .showImage="${ false }">
       <div slot="title">Credentials</div>
       <div slot="subtitle">Your credentials</div>
       <div slot="icon">
@@ -126,7 +126,7 @@ export class CredentialComponent extends BaseComponent {
           </div>
         `)}
       </div>
-    </nde-card>
+    </card-component>
       ` : html``;
 
   }

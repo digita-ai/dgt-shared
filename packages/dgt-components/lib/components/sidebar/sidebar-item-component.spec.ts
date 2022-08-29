@@ -6,7 +6,7 @@ describe('SidebarItemComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-sidebar-item') as SidebarItemComponent;
+    component = window.document.createElement('sidebar-item') as SidebarItemComponent;
 
   });
 
@@ -27,8 +27,8 @@ describe('SidebarItemComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.padding').length).toEqual(1);
-    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.border').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.padding').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.border').length).toEqual(1);
 
   });
 

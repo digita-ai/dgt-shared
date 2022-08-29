@@ -12,7 +12,7 @@ describe('SidebarListComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-sidebar-list') as SidebarListComponent;
+    component = window.document.createElement('sidebar-list') as SidebarListComponent;
 
   });
 
@@ -25,7 +25,7 @@ describe('SidebarListComponent', () => {
   it('should call select when select is clicked', async () => {
 
     const event = document.createEvent('MouseEvent');
-    const el = document.createElement('nde-sidebar-list-item');
+    const el = document.createElement('sidebar-list-item');
 
     expect(el.hasAttribute('selected')).toBeFalsy();
 
@@ -49,7 +49,7 @@ describe('SidebarListComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const select = window.document.body.getElementsByTagName('nde-sidebar-list')[0].shadowRoot.querySelector('slot[name="item"]') as HTMLElement;
+    const select = window.document.body.getElementsByTagName('sidebar-list')[0].shadowRoot.querySelector('slot[name="item"]') as HTMLElement;
     select.click();
 
     expect(selectSpy).toHaveBeenCalledTimes(1);

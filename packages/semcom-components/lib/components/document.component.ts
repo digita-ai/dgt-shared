@@ -89,7 +89,7 @@ export class DocumentComponent extends BaseComponent {
 
     return this.documents && this.documents.length > 0 ? html `
 
-    <nde-card hideImage>
+    <card-component hideImage>
       <div slot="title">Documents</div>
       <div slot="subtitle">These are your documents</div>
       <div slot="icon">
@@ -110,7 +110,7 @@ export class DocumentComponent extends BaseComponent {
             </div>
         </a>`)}
       </div>
-      </nde-card>
+      </card-component>
     `: html``;
 
   }

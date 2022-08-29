@@ -154,28 +154,28 @@ export class ProfileContactComponent extends BaseComponent {
 
     return this.formActor ? html`
         
-    <nde-card hideImage>
+    <card-component hideImage>
       <div slot="title">Contact information</div>
       <div slot="subtitle">Your email address and phone number</div>
       <div slot="icon">
         ${unsafeSVG(Image)}
       </div>
       <div slot="content">
-        <nde-form-element .actor="${this.formActor}" field="email">
+        <form-element .actor="${this.formActor}" field="email">
           <label slot="label" for="email">
             Email address
           </label>
           <input type="text" slot="input" name="email"/>
-        </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" field="phone">
+        </form-element>
+        <form-element .actor="${this.formActor}" field="phone">
           <label slot="label" for="phone">
             Phone
           </label>
           <input type="text" slot="input" name="phone"/>
-        </nde-form-element>
+        </form-element>
         <button class="primary" @click="${this.handleSave}" .disabled="${!this.canSave}">Save</button>
         </div>
-      </nde-card>
+      </card-component>
       ` : html``;
 
   }
