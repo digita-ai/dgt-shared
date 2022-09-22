@@ -39,6 +39,8 @@ export class ContentHeaderComponent extends LitElement {
       unsafeCSS(Theme),
       css`
         :host {
+          box-sizing: border-box;
+          width: 100%;
           height: 99px;
           padding: 0px var(--gap-large);
           background-color: var( --colors-background-light);
@@ -54,6 +56,10 @@ export class ContentHeaderComponent extends LitElement {
           background-color: var(--colors-primary-dark);
           color: var(--colors-foreground-inverse);
           fill: var(--colors-foreground-inverse);
+        }
+        content-header-component {
+          position: absolute;
+          width: 100%;
         }
         .icon {
           font-size: 25px;
@@ -84,7 +90,7 @@ export class ContentHeaderComponent extends LitElement {
           line-height: var(--gap-normal);
         }
         .actions {
-          margin-right: var(--gap-normal);
+          margin: 0;
           display: flex;
           flex-direction: row;
         }
@@ -99,7 +105,6 @@ export class ContentHeaderComponent extends LitElement {
           fill: var(--colors-primary-light);
           color: var(--colors-primary-light);
           cursor: pointer;
-          margin-left: var(--gap-normal);
         }
         :host.inverse .actions ::slotted(*) {
           fill: var(--colors-foreground-inverse);
