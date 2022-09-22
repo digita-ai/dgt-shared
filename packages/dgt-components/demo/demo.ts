@@ -5,13 +5,17 @@ import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';
 import { DemoComponent } from './demo.component';
 import { ProgressBarComponent } from '../lib/components/progress-bar/progress-bar.component';
+import { hydrate } from '../lib/util/hydrate';
+import { define } from '../lib/util/define';
+import { ContentHeaderComponent } from '../lib/components/header/content-header.component';
 
 
-customElements.define('demo-auth', DemoAuthenticateComponent);
-customElements.define('card-component', CardComponent);
-customElements.define('list-item', ListItemComponent);
-customElements.define('demo-component', DemoComponent);
-customElements.define('progress-bar', ProgressBarComponent);
+define('demo-auth', DemoAuthenticateComponent);
+define('card-component', CardComponent);
+define('list-item', ListItemComponent);
+define('demo-component', DemoComponent);
+define('progress-bar', ProgressBarComponent);
+define('content-header-component', hydrate(ContentHeaderComponent)());
 
 const parser = new Parser();
 

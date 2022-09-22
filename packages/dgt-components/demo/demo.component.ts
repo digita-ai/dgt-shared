@@ -8,7 +8,6 @@ import { FormEvent, FormUpdatedEvent } from '../lib/components/forms/form.events
 import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
-import { hydrate } from '../lib/util/hydrate';
 import { getTranslator, getTranslatorFor, MemoryTranslatorFactory, setTranslator, setTranslatorFactory, TRANSLATIONS_LOADED, Translator } from '@digita-ai/dgt-utils';
 
 
@@ -170,6 +169,10 @@ export class DemoComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
       form {
         display: flex;
         flex-direction: column;

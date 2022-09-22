@@ -7,18 +7,33 @@
   <link href="./styles.module.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;1,100;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <!-- just a placeholder for serving in develop -->
   <script>window.global = window;</script>
   <script type="module" src="./demo.ts"></script>
-  <demo-component></demo-component>
-  <demo-auth></demo-auth>
-  <list-item>
-    <div slot="icon"><img style="height: 50px" src="./itsme.svg"></div>
-    <div slot="text">Lorem</div>
-    <div slot="action"><img style="height: 50px" src="./itsme.svg"></div>
-  </list-item>
+</head>
+<body style="width:100%">  
+  <content-header-component style="margin:0;">
+    <div slot="icon">I</div>
+    <div slot="actions"> 
+      <a class="business" href="https://get.use.id/business">A</a>
+    </div>
+    <div slot="actions"> 
+      <a class="business" href="https://get.use.id/business">B</a>
+    </div>
+    <div slot="actions"> 
+      <a class="business" href="https://get.use.id/business">C</a>
+    </div>
+    <div class="language" slot="actions">
+      <span>EN</span>
+    </div>
+  </content-header-component>
+  <div style="width:550px;margin:auto;padding:40px 0;">
+    <demo-component></demo-component>
+    <demo-auth></demo-auth>
+    <list-item>
+      <div slot="icon"><img style="height: 50px" src="./itsme.svg"></div>
+      <div slot="text">Lorem</div>
+      <div slot="action"><img style="height: 50px" src="./itsme.svg"></div>
+    </list-item>
+  </div>
 </body>
 </html>
