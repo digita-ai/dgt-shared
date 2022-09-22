@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.21.1](https://github.com/digita-ai/dgt-shared/compare/v0.21.0...v0.21.1) (2022-09-22)
+
+
+### **Bug Fixes**
+
+* remove unnecessary margin from content header actions ([#182](https://github.com/digita-ai/dgt-shared/issues/182)) ([cf4151a](https://github.com/digita-ai/dgt-shared/commit/cf4151ae1b6580e111b25ee35f2ecf24f6933741))
+
+
+
 ## [0.21.0](https://github.com/digita-ai/dgt-shared/compare/v0.20.0...v0.21.0) (2022-07-12)
 
 **Note:** Version bump only for package @digita-ai/dgt-components
