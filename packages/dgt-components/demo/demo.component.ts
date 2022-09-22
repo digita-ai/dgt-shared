@@ -2,14 +2,12 @@ import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/dgt-theme';
 import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component';
-import { ContentHeaderComponent } from '../lib/components/header/content-header.component';
 import { createMachine, interpret, Interpreter, StateMachine } from 'xstate';
 import { FormContext, FormStateSchema, FormState, formMachine } from '../lib/components/forms/form.machine';
 import { FormEvent, FormUpdatedEvent } from '../lib/components/forms/form.events';
 import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
-import { hydrate } from '../lib/util/hydrate';
 import { getTranslator, getTranslatorFor, MemoryTranslatorFactory, setTranslator, setTranslatorFactory, TRANSLATIONS_LOADED, Translator } from '@digita-ai/dgt-utils';
 
 
@@ -77,7 +75,6 @@ export class DemoComponent extends RxLitElement {
 
     define('checkbox-component', CheckboxComponent);
     define('form-element', FormElementComponent);
-
 
     // create single translator
     setTranslatorFactory(new MemoryTranslatorFactory);
