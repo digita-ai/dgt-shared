@@ -169,6 +169,10 @@ export class DemoComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+      h1 {
+        margin: 0;
+        padding: 0;
+      }
       form {
         display: flex;
         flex-direction: column;
