@@ -25,7 +25,7 @@
     "dist"
   ],
   "dependencies": {
-    "@types/node": "^14.14.14",
+    "@types/node": "^14.18.28",
     "rxjs": "^7.4.0",
     "zone.js": "~0.8.26"
   },
