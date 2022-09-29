@@ -44,7 +44,7 @@
     "lit-element": "^2.4.0",
     "n3": "1.10.0",
     "rx-lit": "1.0.1",
-    "vite": "2.2.3",
+    "vite": "2.9.15",
     "xstate": "^4.26.0"
   },
   "devDependencies": {
