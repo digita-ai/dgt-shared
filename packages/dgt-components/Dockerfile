@@ -9,7 +9,7 @@ RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
 COPY . .
 RUN npm run build
 
-FROM nginx:stable-alpine
+FROM nginx:1.23.1-alpine
 LABEL org.opencontainers.image.source=https://github.com/digita-ai/dgt-platform
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 EXPOSE 80
