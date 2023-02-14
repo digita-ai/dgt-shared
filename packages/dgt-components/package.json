@@ -42,7 +42,7 @@
     "n3": "1.8.0",
     "rx-lit": "1.0.1",
     "rxjs": "^7.4.0",
-    "xstate": "4.27.0"
+    "xstate": "4.35.4"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
