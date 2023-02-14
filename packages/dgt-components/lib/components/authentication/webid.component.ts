@@ -84,6 +84,7 @@ export class WebIdComponent extends RxLitElement {
             ${ this.layout === 'vertical' ? alerts : ''}
           </div>  
           <button
+            tabindex="0"
             part="webid-button"
             class="primary"
             disabled
@@ -121,6 +122,9 @@ export class WebIdComponent extends RxLitElement {
           width: 100%;
           border-radius: var(--border-large);
           height: var(--button-height);
+        }
+        button::not(disabled):hover, button::not(disabled):focus {
+          background-color: #518df5;
         }
         .webid-input-container {
           display: flex;

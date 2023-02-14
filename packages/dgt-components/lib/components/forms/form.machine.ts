@@ -1,4 +1,4 @@
-import { DoneInvokeEvent, MachineConfig, send, StateSchema } from 'xstate';
+import { ActionObject, DoneInvokeEvent, MachineConfig, send, StateSchema } from 'xstate';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
 import { addValidationResults, FormEvent, FormEvents, FormValidatedEvent, update } from './form.events';
@@ -98,7 +98,7 @@ export interface FormState<T> {
 export const formMachine = <T>(
   validator: FormValidator<T>,
   submitter: FormSubmitter<T> = async (context) => context.data,
-): MachineConfig<FormContext<T>, StateSchema<FormContext<T>>, FormEvent> => ({
+): MachineConfig<FormContext<T>, StateSchema<FormContext<T>>, FormEvent, ActionObject<FormContext<T>, FormEvent>> => ({
   id: FormActors.FORM_MACHINE,
   initial: FormSubmissionStates.NOT_SUBMITTED,
   states: {
