@@ -46,7 +46,7 @@
     "n3": "1.10.0",
     "rx-lit": "1.0.1",
     "vite": "2.2.3",
-    "xstate": "^4.26.0"
+    "xstate": "4.27.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.4",
