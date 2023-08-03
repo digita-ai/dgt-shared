@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/dgt-utils-core",
+  "name": "@useid/dgt-utils-core",
   "version": "0.21.2",
   "license": "ISC",
   "scripts": {
@@ -31,7 +31,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.3",
+    "@useid/typescript-config": "^0.6.2",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
@@ -48,11 +48,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "url": "ssh://git@github.com/useid/dgt-shared.git",
     "directory": "shared/dgt-utils-core"
   },
   "bugs": {
-    "url": "https://github.com/digita-ai/dgt-shared/issues"
+    "url": "https://github.com/useid/dgt-shared/issues"
   },
   "author": "Wouter Janssens",
   "ignorePatterns": [
@@ -63,7 +63,7 @@
   ],
   "jest": {
     "displayName": "dgt-utils-core",
-    "preset": "@digita-ai/jest-config",
+    "preset": "@useid/jest-config",
     "testEnvironment": "jsdom",
     "coverageThreshold": {
       "global": {

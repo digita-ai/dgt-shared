@@ -1,5 +1,5 @@
 import { css, html, property, LitElement, unsafeCSS, TemplateResult, CSSResultArray } from 'lit-element';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { Source } from '../../models/source.model';
 
 /**

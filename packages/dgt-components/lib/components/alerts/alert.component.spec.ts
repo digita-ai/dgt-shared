@@ -1,4 +1,4 @@
-import { ArgumentError } from '@digita-ai/dgt-utils';
+import { ArgumentError } from '@useid/dgt-utils';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 

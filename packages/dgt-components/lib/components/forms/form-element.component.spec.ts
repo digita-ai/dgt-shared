@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ArgumentError } from '@digita-ai/dgt-utils';
+import { ArgumentError } from '@useid/dgt-utils';
 import { createMachine, interpret, Interpreter } from 'xstate';
 import { define } from '../../util/define';
 import { hydrate } from '../../util/hydrate';

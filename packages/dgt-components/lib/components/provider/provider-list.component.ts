@@ -1,5 +1,5 @@
 import { css, CSSResultArray, html, internalProperty, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListItemComponent } from './provider-list-item.component';
 

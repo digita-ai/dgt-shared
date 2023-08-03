@@ -3,9 +3,9 @@ import { createMachine, DoneEvent, interpret, Interpreter, State, StateMachine }
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Theme, DigitaBlue } from '@digita-ai/dgt-theme';
-import { SolidService } from '@digita-ai/inrupt-solid-service';
-import { Translator } from '@digita-ai/dgt-utils';
+import { Theme, DigitaBlue } from '@useid/dgt-theme';
+import { SolidService } from '@useid/inrupt-solid-service';
+import { Translator } from '@useid/dgt-utils';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';

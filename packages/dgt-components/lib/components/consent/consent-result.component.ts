@@ -1,6 +1,6 @@
 import { css, CSSResultArray, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Theme, Location } from '@digita-ai/dgt-theme';
+import { Theme, Location } from '@useid/dgt-theme';
 import { predicateTranslations } from '../../models/predicate-translations';
 import { Purpose } from '../../models/purpose.model';
 

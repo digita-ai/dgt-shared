@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Arrow } from '@digita-ai/dgt-theme';
+import { Theme, Arrow } from '@useid/dgt-theme';
 import { debounce } from 'debounce';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Translator } from '@digita-ai/dgt-utils';
+import { Translator } from '@useid/dgt-utils';
 import { define } from '../../util/define';
 import { AlertComponent } from '../alerts/alert.component';
 import { LoadingComponent } from '../loading/loading.component';

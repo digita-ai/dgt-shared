@@ -1,7 +1,7 @@
 import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Login, Theme } from '@digita-ai/dgt-theme';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Login, Theme } from '@useid/dgt-theme';
+import { SolidSDKService } from '@useid/inrupt-solid-service';
 import { AuthenticateComponent } from '../lib/components/authentication/authenticate.component';
 import { hydrate } from '../lib/util/hydrate';
 import { WebIdValidator } from '../lib/components/authentication/authenticate.machine';

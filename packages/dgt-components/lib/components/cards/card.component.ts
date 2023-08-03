@@ -1,4 +1,4 @@
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ContentHeaderComponent } from '../header/content-header.component';

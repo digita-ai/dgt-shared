@@ -1,11 +1,11 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
+import { ArgumentError, Translator, debounce } from '@useid/dgt-utils';
 import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Loading, Theme } from '@digita-ai/dgt-theme';
+import { Loading, Theme } from '@useid/dgt-theme';
 import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';

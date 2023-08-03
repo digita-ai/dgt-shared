@@ -1,6 +1,6 @@
 import { css, html, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { CheckboxComponent } from '../lib/components/checkbox/checkbox.component';
 import { createMachine, interpret, Interpreter, StateMachine } from 'xstate';
 import { FormContext, FormStateSchema, FormState, formMachine } from '../lib/components/forms/form.machine';
@@ -8,7 +8,7 @@ import { FormEvent, FormUpdatedEvent } from '../lib/components/forms/form.events
 import { FormValidator } from '../lib/components/forms/form-validator';
 import { FormElementComponent } from '../lib/components/forms/form-element.component';
 import { define } from '../lib/util/define';
-import { getTranslator, getTranslatorFor, MemoryTranslatorFactory, setTranslator, setTranslatorFactory, TRANSLATIONS_LOADED, Translator } from '@digita-ai/dgt-utils';
+import { getTranslator, getTranslatorFor, MemoryTranslatorFactory, setTranslator, setTranslatorFactory, TRANSLATIONS_LOADED, Translator } from '@useid/dgt-utils';
 
 
 const emailValidator: FormValidator<{ email: string }> = async (context, event) => {

@@ -1,6 +1,6 @@
 import { DoneInvokeEvent, ErrorPlatformEvent, EventObject, MachineConfig, StateSchema } from 'xstate';
 import { send, assign, log } from 'xstate/lib/actions';
-import { SolidService } from '@digita-ai/inrupt-solid-service';
+import { SolidService } from '@useid/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { Session } from '../../models/session.model';
 import { checkWebId } from './authenticate.services';

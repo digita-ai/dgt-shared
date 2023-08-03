@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/dgt-utils",
+  "name": "@useid/dgt-utils",
   "version": "0.21.2",
   "license": "ISC",
   "scripts": {
@@ -36,7 +36,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.3",
+    "@useid/typescript-config": "^0.6.2",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
@@ -55,26 +55,26 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com/digita-ai/dgt-shared.git",
+    "url": "ssh://git@github.com/useid/dgt-shared.git",
     "directory": "shared/dgt-utils"
   },
   "bugs": {
-    "url": "https://github.com/digita-ai/dgt-shared/issues"
+    "url": "https://github.com/useid/dgt-shared/issues"
   },
   "author": "Wouter Janssens",
-  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils",
   "lsd:components": "dist/components/components.jsonld",
   "lsd:contexts": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
   "lsd:importPaths": {
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/": "dist/components/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/config/": "config/",
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/dist/": "dist/"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/dist/": "dist/"
   },
   "jest": {
     "displayName": "components",
-    "preset": "@digita-ai/jest-config",
+    "preset": "@useid/jest-config",
     "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/tests/setup.ts"

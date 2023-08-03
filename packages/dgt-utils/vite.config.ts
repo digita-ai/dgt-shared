@@ -7,7 +7,7 @@ export default defineConfig({
       target: 'es2015',
       lib: {
           entry: path.resolve(__dirname, 'lib/index.ts'),
-          name: '@digita-ai/dgt-utils'
+          name: '@useid/dgt-utils'
       },
       outDir: '../dist'
   }

@@ -1,6 +1,6 @@
 import { css, html, internalProperty, property, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { classMap } from 'lit-html/directives/class-map';
 
 /**

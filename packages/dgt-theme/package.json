@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/dgt-theme",
+  "name": "@useid/dgt-theme",
   "version": "0.21.2",
   "description": "Theme for Digita projects.",
   "author": "Wouter Janssens <wouter@digita.ai>",
@@ -23,7 +23,7 @@
     "lint:staged": "lint-staged"
   },
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.3",
+    "@useid/typescript-config": "^0.6.2",
     "@types/node": "^15.0.2",
     "normalize.css": "8.0.1",
     "rimraf": "^3.0.2",
@@ -38,11 +38,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digita-ai/dgt-shared.git",
+    "url": "git+https://github.com/useid/dgt-shared.git",
     "directory": "packages/dgt-theme"
   },
   "bugs": {
-    "url": "https://github.com/digita-ai/dgt-shared/issues"
+    "url": "https://github.com/useid/dgt-shared/issues"
   },
   "ignorePatterns": [
     "node_modules",

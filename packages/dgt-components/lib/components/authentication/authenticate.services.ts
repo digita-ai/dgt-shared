@@ -1,4 +1,4 @@
-import { addProtocolPrefix } from '@digita-ai/dgt-utils';
+import { addProtocolPrefix } from '@useid/dgt-utils';
 import { AuthenticateContext, WebIdEnteredEvent } from './authenticate.machine';
 
 /**

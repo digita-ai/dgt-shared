@@ -1,5 +1,5 @@
 import { Parser, Store } from 'n3';
-import { addListener, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@digita-ai/semcom-sdk';
+import { addListener, ComponentEventTypes, ComponentReadEvent, ComponentResponseEvent, ComponentWriteEvent } from '@useid/semcom-sdk';
 import { CardComponent } from '../lib/components/cards/card.component';
 import { DemoAuthenticateComponent } from './demo-authenticate.component';
 import { ListItemComponent } from '../lib/components/list-item/list-item.component';

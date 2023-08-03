@@ -1,6 +1,6 @@
 import { html, property, unsafeCSS, css, CSSResult, TemplateResult, LitElement } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Theme, Loading } from '@digita-ai/dgt-theme';
+import { Theme, Loading } from '@useid/dgt-theme';
 
 export class LoadingComponent extends LitElement {
 

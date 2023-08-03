@@ -1,6 +1,6 @@
 import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
-import { ArgumentError, Translator } from '@digita-ai/dgt-utils';
-import { Bell, Cross, Theme } from '@digita-ai/dgt-theme';
+import { ArgumentError, Translator } from '@useid/dgt-utils';
+import { Bell, Cross, Theme } from '@useid/dgt-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
