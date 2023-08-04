@@ -99,19 +99,28 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
       - run: npm run build:all
-  
-      - run: npm publish packages/dgt-components
+
+      - run: |
+          cd packages/dgt-theme
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
-  
-      - run: npm publish packages/dgt-theme
+
+      - run: |
+          cd packages/dgt-utils-core
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
-  
-      - run: npm publish packages/dgt-utils
+
+      - run: |
+          packages/dgt-utils
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
-  
-      - run: npm publish packages/dgt-utils-core
+
+      - run: |
+          packages/dgt-components
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
+
