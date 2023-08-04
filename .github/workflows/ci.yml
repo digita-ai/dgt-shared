@@ -46,7 +46,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://npm.pkg.github.com
 
       - run: npm run bootstrap
@@ -90,7 +90,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 18
           registry-url: https://npm.pkg.github.com/
 
       - name: Install dependencies
@@ -100,18 +100,26 @@ jobs:
   
       - run: npm run build:all
   
-      - run: npm publish packages/dgt-components
+      - run: |
+          cd packages/dgt-components
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
-      - run: npm publish packages/dgt-theme
+      - run: |
+          cd packages/dgt-theme
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
-      - run: npm publish packages/dgt-utils
+      - run: |
+          cd packages/dgt-utils
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
   
-      - run: npm publish packages/dgt-utils-core
+      - run: |
+          cd packages/dgt-utils-core
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
