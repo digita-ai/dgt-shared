@@ -43,6 +43,7 @@ export type TypeCheck<T> = (value: unknown) => value is T;
 /**
  * Shorthand type assertion function for `value === null`.
  */
+// eslint-disable-next-line no-null/no-null
 export const isNull: TypeCheck<null> = (value: unknown): value is null => value === null;
 
 /**
@@ -56,6 +57,7 @@ export const isUndefined: TypeCheck<undefined> = (value: unknown): value is unde
 // eslint-disable-next-line prefer-arrow/prefer-arrow-functions -- does not work with type parameter
 export function isDefined <V> (value: V): value is Exclude<V, null | undefined> {
 
+  // eslint-disable-next-line no-null/no-null
   return value !== null && value !== undefined;
 
 }
@@ -95,5 +97,6 @@ export const isFunction: TypeCheck<Function> = (value: unknown): value is Functi
  * Shorthand type assertion function for `typeof value === object && value !== null`.
  */
 export const isObject: TypeCheck<Record<string | number | symbol, unknown>> =
+// eslint-disable-next-line no-null/no-null
 (value: unknown): value is Record<string | number | symbol, unknown> => typeof value === 'object' && value !== null;
 
