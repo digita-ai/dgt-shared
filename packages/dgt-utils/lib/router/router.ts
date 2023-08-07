@@ -50,7 +50,8 @@ export interface UrlVariables {
  */
 export const matchPath = (match: string): boolean => {
 
-  // !path also checks empty strings, which are allowed here
+  // !match also checks empty strings, which are allowed here
+  // eslint-disable-next-line no-null/no-null
   if (match === undefined || match === null) {
 
     throw new ArgumentError('Argument path should be set.', match);
@@ -134,8 +135,8 @@ export const activeRoute = (routes: Route[]): Route & UrlVariables => {
   }
 
   return {
-    ...route,
-    ...urlVariables(route),
+    ... route,
+    ... urlVariables(route),
   };
 
 };
@@ -230,6 +231,7 @@ export const ROUTER = '[AppState: Router]';
  * StateNodeConfig for the router
  * Resolves URL path to a state
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const routerStateConfig = (routes: Route[]) => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
@@ -264,6 +266,7 @@ export const routerStateConfig = (routes: Route[]) => ({
   },
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const routerEventsConfig = () => ({
   [RouterEvents.NAVIGATE]: {
     target: [ `#${RouterStates.NAVIGATING}` ],

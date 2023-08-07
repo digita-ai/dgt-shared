@@ -57,7 +57,7 @@ export class MemoryTranslator extends Translator {
         this.translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
         this.lang = lang;
 
-      } catch(e) {
+      } catch (e) {
 
         // eslint-disable-next-line no-console
         console.error('Failed to load translations for language: ' + lang);

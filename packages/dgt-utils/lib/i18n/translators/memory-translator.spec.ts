@@ -41,7 +41,7 @@ describe('MemoryTranslator', () => {
 
       const value = service.translate('foo.foo');
 
-      expect(value).toEqual('Foo');
+      expect(value).toBe('Foo');
 
     });
 
@@ -49,7 +49,7 @@ describe('MemoryTranslator', () => {
 
       const value = service.translate('foo.bar');
 
-      expect(value).toEqual('Bar');
+      expect(value).toBe('Bar');
 
     });
 
@@ -57,7 +57,7 @@ describe('MemoryTranslator', () => {
 
       const value = service.translate('lorem');
 
-      expect(value).toEqual('[lorem]');
+      expect(value).toBe('[lorem]');
 
     });
 
@@ -79,6 +79,7 @@ describe('MemoryTranslator', () => {
       fetchMock.mockIf(/en-GB/, mockResponse);
 
       await service.setLang(newLang);
+
       expect(service.lang).not.toEqual(newLang);
 
     });
@@ -100,6 +101,7 @@ describe('MemoryTranslator', () => {
       });
 
       await service.setLang(newLang);
+
       expect(service.lang).not.toEqual(newLang);
 
     });
@@ -107,19 +109,22 @@ describe('MemoryTranslator', () => {
     it('should set new language correctly', async () => {
 
       await service.setLang('nl-BE');
-      expect(service.getLang()).toEqual('nl-BE');
+
+      expect(service.getLang()).toBe('nl-BE');
 
     });
 
-    it('should fire event when done', (done) => {
+    it('should fire event when done', async () => {
 
-      service.addEventListener(TRANSLATIONS_LOADED, () => {
+      const prom = new Promise<void>((resolve) => {
 
-        done();
+        service.addEventListener(TRANSLATIONS_LOADED, () => resolve());
 
       });
 
-      service.setLang('nl-BE');
+      await service.setLang('nl-BE');
+
+      await expect(prom).resolves.toBeUndefined();
 
     });
 

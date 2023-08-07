@@ -91,23 +91,25 @@ describe('Router', () => {
       // window.location.pathname = '/test/12345/testing'
       const result = urlVariables(route);
 
-      expect(result.pathParams.get('partOne')).toEqual('test');
-      expect(result.pathParams.get('numbers')).toEqual('12345');
-      expect(result.pathParams.get('partTwo')).toEqual('testing');
+      expect(result.pathParams.get('partOne')).toBe('test');
+      expect(result.pathParams.get('numbers')).toBe('12345');
+      expect(result.pathParams.get('partTwo')).toBe('testing');
 
     });
 
     it('should return correct searchParams', () => {
 
       const result = urlVariables(route);
-      expect(result.searchParams.get('search')).toEqual('test');
+
+      expect(result.searchParams.get('search')).toBe('test');
 
     });
 
     it('should return correct hash', () => {
 
       const result = urlVariables(route);
-      expect(result.hash).toEqual('#test');
+
+      expect(result.hash).toBe('#test');
 
     });
 
@@ -118,7 +120,7 @@ describe('Router', () => {
         targets: [],
       };
 
-      expect(urlVariables(routeWithoutParams).pathParams.size).toEqual(0);
+      expect(urlVariables(routeWithoutParams).pathParams.size).toBe(0);
 
     });
 
@@ -164,41 +166,52 @@ describe('Router', () => {
 
     it('should call replaceState when path matches current URL', () => {
 
+      const spy = jest.spyOn(history, 'replaceState');
       updateHistory(path, title);
-      expect(history.replaceState).toHaveBeenCalledWith({}, title, path);
+
+      expect(spy).toHaveBeenCalledWith({}, title, path);
 
     });
 
     it('should call replaceState with empty title when title is not set', () => {
 
+      const spy = jest.spyOn(history, 'replaceState');
       updateHistory(path, '');
-      expect(history.replaceState).toHaveBeenCalledWith({}, '', path);
+
+      expect(spy).toHaveBeenCalledWith({}, '', path);
 
     });
 
     it('should call pushState when path is different from current URL', () => {
 
+      const spy = jest.spyOn(history, 'pushState');
       updateHistory(differentPath, title);
-      expect(history.pushState).toHaveBeenCalledWith({}, title, differentPath);
+
+      expect(spy).toHaveBeenCalledWith({}, title, differentPath);
 
     });
 
     it('should call pushState with empty title when title is not set', () => {
 
+      const spy = jest.spyOn(history, 'pushState');
       updateHistory(differentPath, '');
-      expect(history.pushState).toHaveBeenCalledWith({}, '', differentPath);
+
+      expect(spy).toHaveBeenCalledWith({}, '', differentPath);
 
     });
 
     it('should persist query parameters and hashes', () => {
 
+      const spy = jest.spyOn(history, 'pushState');
       const queryPath = `${differentPath}?lang=en`;
       updateHistory(queryPath, '');
-      expect(history.pushState).toHaveBeenCalledWith({}, '', queryPath);
+
+      expect(spy).toHaveBeenCalledWith({}, '', queryPath);
 
       const hashPath = `${differentPath}#me`;
       updateHistory(hashPath, '');
-      expect(history.pushState).toHaveBeenCalledWith({}, '', hashPath);
+
+      expect(spy).toHaveBeenCalledWith({}, '', hashPath);
 
     });
 
@@ -209,8 +222,11 @@ describe('Router', () => {
     it('should set document.title', () => {
 
       document.title = '';
-      expect(document.title).toEqual('');
+
+      expect(document.title).toBe('');
+
       updateTitle(title);
+
       expect(document.title).toEqual(title);
 
     });
@@ -230,9 +246,9 @@ describe('Router', () => {
     it('invoke.src should always resolve', async () => {
 
       const config = routerStateConfig(routes);
+      const result = config[ROUTER].states[RouterStates.NAVIGATING].invoke.src();
 
-      expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.src())
-        .resolves.toEqual(undefined);
+      await expect(result).resolves.toBeUndefined();
 
     });
 
@@ -265,6 +281,7 @@ describe('Router', () => {
     it('should create', () => {
 
       const event = new NavigateEvent(path);
+
       expect(event).toBeTruthy();
       expect(event.path).toEqual(path);
 
@@ -277,6 +294,7 @@ describe('Router', () => {
     it('should create', () => {
 
       const event = new NavigatedEvent(path, title);
+
       expect(event).toBeTruthy();
       expect(event.path).toEqual(path);
       expect(event.title).toEqual(title);
@@ -290,9 +308,10 @@ describe('Router', () => {
     it('should return NAVIGATE event config', () => {
 
       const result = routerEventsConfig();
+
       expect(result).toEqual(expect.objectContaining({ [RouterEvents.NAVIGATE]: expect.objectContaining({}) }));
       expect(result[RouterEvents.NAVIGATE].target).toContain(`#${RouterStates.NAVIGATING}`);
-      expect((result[RouterEvents.NAVIGATE].actions[0].assignment as any).path(undefined, new NavigateEvent('path'))).toEqual('path');
+      expect((result[RouterEvents.NAVIGATE].actions[0].assignment as any).path(undefined, new NavigateEvent('path'))).toBe('path');
 
       expect((result[RouterEvents.NAVIGATE].actions[0].assignment as any).path(undefined, new NavigateEvent()))
         .toEqual(window.location.pathname);
@@ -302,8 +321,9 @@ describe('Router', () => {
     it('should return NAVIGATED event config', () => {
 
       const result = routerEventsConfig();
+
       expect(result).toEqual(expect.objectContaining({ [RouterEvents.NAVIGATED]: expect.objectContaining({}) }));
-      expect(result[RouterEvents.NAVIGATED].actions[0](undefined, new NavigatedEvent('test', 'test'))).toEqual(undefined);
+      expect(result[RouterEvents.NAVIGATED].actions[0](undefined, new NavigatedEvent('test', 'test'))).toBeUndefined();
 
     });
 

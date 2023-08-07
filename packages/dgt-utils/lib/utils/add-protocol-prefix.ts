@@ -20,7 +20,7 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
       return await fetch(httpsUri, { method: 'HEAD' }).then(() => httpsUri);
 
-    } catch(e) {
+    } catch (e) {
 
       const httpUri = `http://${uri}`;
 
@@ -28,7 +28,7 @@ export const addProtocolPrefix = async (uri: string): Promise<string> => {
 
     }
 
-  } catch(e) {
+  } catch (e) {
 
     throw new Error(`Could not add protocol prefix to ${uri}`);
 

@@ -12,13 +12,13 @@ export class DGTParameterCheckerService {
    * by default the function will not check objects inside of objects
    * @throws ArgumentError if null values are found
    */
-  checkParametersNotNull(parameterList: any, depth = 0): void {
+  checkParametersNotNull(parameterList: Record<string, any>, depth = 0): void {
 
     this.checkParametersNotNullHelper(parameterList, depth);
 
   }
 
-  private checkParametersNotNullHelper(parameterList: any, depth = 0, previous = ''): void {
+  private checkParametersNotNullHelper(parameterList: Record<string, any>, depth = 0, previous = ''): void {
 
     if (depth >= 0 && parameterList && Object.entries(parameterList).length > 0) {
 
@@ -35,7 +35,8 @@ export class DGTParameterCheckerService {
 
         if (value && typeof value === 'object') {
 
-          this.checkParametersNotNullHelper({ ...value }, depth - 1, previous + key + '.');
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          this.checkParametersNotNullHelper({ ... value }, depth - 1, previous + key + '.');
 
         }
 

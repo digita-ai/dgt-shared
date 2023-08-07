@@ -2,7 +2,7 @@
 import fetchMock from 'jest-fetch-mock';
 import { CachedTranslatorFactory } from './cached-translator-factory';
 
-describe('', () => {
+describe('CachedTranslatorFactory', () => {
 
   let factory: CachedTranslatorFactory;
 
@@ -15,14 +15,17 @@ describe('', () => {
   it('should create translator with correct language', async () => {
 
     const translator = await factory.createTranslator('en');
-    expect(translator.getLang()).toEqual('en');
+
+    expect(translator.getLang()).toBe('en');
 
   });
 
   it('should set translations when creating translator', async () => {
 
     expect(factory['translations']).toBeUndefined();
+
     await factory.createTranslator('en');
+
     expect(factory['translations']).toBeTruthy();
 
   });
@@ -40,7 +43,7 @@ describe('', () => {
 
     }
 
-    expect(fetchMock.mock.calls.length).toEqual(1);
+    expect(fetchMock.mock.calls).toHaveLength(1);
 
   });
 

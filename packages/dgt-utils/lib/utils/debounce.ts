@@ -6,7 +6,11 @@
  * @param immediate Ignores the timeout.
  * @returns The debounced function.
  */
-export const debounce = (func: () => void, wait: number, immediate = false) => {
+export const debounce = (
+  func: () => void,
+  wait: number,
+  immediate = false,
+): () => void => {
 
   let timeout: NodeJS.Timeout;
 
@@ -25,7 +29,7 @@ export const debounce = (func: () => void, wait: number, immediate = false) => {
     // Executes the function after a timeout.
     timeout = setTimeout(() => {
 
-      timeout = null;
+      timeout = undefined;
 
       if (!immediate) {
 

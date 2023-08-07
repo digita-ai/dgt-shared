@@ -22,11 +22,12 @@ export abstract class Translator extends EventTarget {
 
   constructor(
     public lang: string,
-    protected translations?: { [key: string]: string }
+    protected translations?: { [key: string]: string },
   ) {
 
     super();
 
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.setLang(lang, translations);
 
   }
@@ -34,12 +35,12 @@ export abstract class Translator extends EventTarget {
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void {
 
     super.addEventListener(type, listener, options);
 
-    if(this.loaded) {
+    if (this.loaded) {
 
       this.dispatchEvent(new TranslationsLoadedEvent());
 

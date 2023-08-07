@@ -87,6 +87,7 @@ export class DGTMap<T, S> {
 
     const foundTuple = this.array.find((tuple) => isEqual(key, tuple.key));
 
+    // eslint-disable-next-line no-null/no-null
     if (foundTuple !== null && foundTuple !== undefined) {
 
       res = true;
