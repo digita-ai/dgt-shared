@@ -38,10 +38,12 @@ describe('ContentHeaderComponent', () => {
     await component.updateComplete;
 
     const titleSlot = window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="title"]');
-    expect(titleSlot.assignedElements()[0].innerHTML).toEqual('Foo');
+
+    expect(titleSlot.assignedElements()[0].innerHTML).toBe('Foo');
 
     const subtitleSlot = window.document.body.getElementsByTagName('card-header')[0].shadowRoot.querySelector<HTMLSlotElement>('slot[name="subtitle"]');
-    expect(subtitleSlot.assignedElements()[0].innerHTML).toEqual('Bar');
+
+    expect(subtitleSlot.assignedElements()[0].innerHTML).toBe('Bar');
 
   });
 

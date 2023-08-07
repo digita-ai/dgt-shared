@@ -27,8 +27,8 @@ describe('SidebarItemComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.padding').length).toEqual(1);
-    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.border').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.padding')).toHaveLength(1);
+    expect(window.document.body.getElementsByTagName('sidebar-item')[0].shadowRoot.querySelectorAll('.border')).toHaveLength(1);
 
   });
 

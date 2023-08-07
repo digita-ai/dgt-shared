@@ -35,7 +35,7 @@ export class SourceListComponent extends LitElement {
     if (changed.has('sources') || changed.has('query')) {
 
       this.filteredSources = this.sources?.filter(
-        (source) => source.description.toLowerCase().includes(this.query.trim().toLowerCase())
+        (source) => source.description.toLowerCase().includes(this.query.trim().toLowerCase()),
       );
 
     }

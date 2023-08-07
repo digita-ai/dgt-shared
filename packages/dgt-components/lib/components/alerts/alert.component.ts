@@ -18,19 +18,19 @@ export class AlertComponent extends LitElement {
    * The collection which will be rendered by the component.
    */
   @property({ type: Object })
-  alert: Alert;
+    alert: Alert;
 
   /**
    * Whether the icon should be hidden.
    */
   @property({ type: Boolean })
-  hideIcon = false;
+    hideIcon = false;
 
   /**
    * Whether the dismiss icon should be hidden.
    */
   @property({ type: Boolean })
-  hideDismiss = false;
+    hideDismiss = false;
 
   /**
    * Dispatches an event to dismiss the alert.
@@ -61,7 +61,7 @@ export class AlertComponent extends LitElement {
     <div part="alert" class="alert ${ type }">
       <div class="icon" ?hidden="${this.hideIcon}">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }" ?hidden="${this.hideDismiss}">${ unsafeSVG(Cross) }</div>
+      <div class="dismiss" @click="${() => this.dismiss() }" ?hidden="${this.hideDismiss}">${ unsafeSVG(Cross) }</div>
     </div>
   `;
 

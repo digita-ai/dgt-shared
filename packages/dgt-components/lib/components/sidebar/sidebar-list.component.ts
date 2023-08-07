@@ -11,13 +11,14 @@ export class SidebarListComponent extends RxLitElement {
    * Selects clicked list item and deselected all other list items.
    *
    */
-  select(event: MouseEvent){
+  select(event: MouseEvent): void {
 
-    const element = event.composedPath().find((el: Element) => el.localName === 'sidebar-list-item') as Element;
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const element = event.composedPath().find((el: Element) => el.localName === 'sidebar-list-item') as unknown as Element;
 
-    if(element && !element.hasAttribute('isTitle')){
+    if (element && !element.hasAttribute('isTitle')){
 
-      for(let i = 0; i < this.children.length; i++) {
+      for (let i = 0; i < this.children.length; i++) {
 
         this.children.item(i).removeAttribute('selected');
 
@@ -37,9 +38,9 @@ export class SidebarListComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-    <slot name="title" @click="${this.select}"></slot>
+    <slot name="title" @click="${(ev: MouseEvent) => this.select(ev)}"></slot>
     <div class="list">
-      <slot name="item" @click="${this.select}"></slot>
+      <slot name="item" @click="${(ev: MouseEvent) => this.select(ev)}"></slot>
     </div>
   `;
 

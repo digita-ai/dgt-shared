@@ -19,7 +19,7 @@ Promise<{ webId: string; validationResults: string[] }> => {
     webId = await addProtocolPrefix(webId);
     validationResults = await context.webIdValidator(webId);
 
-  } catch(e){
+  } catch (e){
 
     validationResults.push('common.webid-validation.invalid-uri');
 

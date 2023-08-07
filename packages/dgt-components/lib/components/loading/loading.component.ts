@@ -5,7 +5,7 @@ import { Theme, Loading } from '@useid/dgt-theme';
 export class LoadingComponent extends LitElement {
 
   @property({ type: String })
-  message: string;
+    message: string;
 
   constructor() {
 

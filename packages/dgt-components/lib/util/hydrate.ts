@@ -1,7 +1,8 @@
 
-export const hydrate = (ctor: CustomElementConstructor) => (...params: any[]): CustomElementConstructor =>
+export const hydrate = (ctor: CustomElementConstructor) => (... params: any[]): CustomElementConstructor =>
   class extends ctor {
 
-    constructor() { super(...params); }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    constructor() { super(... params); }
 
   };

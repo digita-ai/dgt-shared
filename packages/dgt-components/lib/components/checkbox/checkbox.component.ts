@@ -24,7 +24,7 @@ export class CheckboxComponent extends LitElement {
   private toggle = (event: Event): void => {
 
     this.toggleAttribute('checked');
-    this.dispatchEvent(new Event('change', { ...event }));
+    this.dispatchEvent(new Event('change', { ... event }));
 
   };
 

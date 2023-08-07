@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Alert } from '../alerts/alert';
 import { WebIdComponent } from './webid.component';
 
 describe('WebIdComponent', () => {
@@ -16,7 +16,7 @@ describe('WebIdComponent', () => {
     input.value = webId;
     input.name = 'webid';
 
-    form =  document.createElement('form');
+    form = document.createElement('form');
     form.appendChild(input);
 
     component = window.document.createElement('webid-form') as WebIdComponent;
@@ -43,7 +43,7 @@ describe('WebIdComponent', () => {
     await component.updateComplete;
 
     expect(
-      component.shadowRoot.querySelector('.webid-input-container').querySelector('alert-component')
+      component.shadowRoot.querySelector('.webid-input-container').querySelector('alert-component'),
     ).toBeDefined();
 
   });
@@ -53,14 +53,8 @@ describe('WebIdComponent', () => {
     it('should dispatch change-webid CustomEvent', async () => {
 
       jest.useFakeTimers();
-
       component.dispatchEvent = jest.fn();
-
-      component.onWebIdChange({
-        preventDefault: jest.fn(),
-        target: input,
-      } as any);
-
+      component.onWebIdChange(input);
       jest.advanceTimersByTime(500);
 
       expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('change-webid', {
@@ -80,7 +74,7 @@ describe('WebIdComponent', () => {
       component.onSubmit({
         preventDefault: jest.fn(),
         target: form,
-      } as any);
+      } as unknown as Event & { target: HTMLFormElement });
 
       expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('submit-webid', {
         detail: webId,

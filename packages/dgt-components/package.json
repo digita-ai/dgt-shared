@@ -20,7 +20,7 @@
     "start": "npm run start:watch",
     "start:watch": "vite --port 4000",
     "build": "rimraf ./dist && vite build --mode semcom  && vite build --mode bundle && tsc",
-    "lint": "eslint .",
+    "lint": "eslint . --quiet",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
     "test": "jest",

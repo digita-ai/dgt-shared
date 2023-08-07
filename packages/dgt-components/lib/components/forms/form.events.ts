@@ -22,7 +22,7 @@ export enum FormEvents {
 export class FormUpdatedEvent implements Event<FormEvents> {
 
   type: FormEvents.FORM_UPDATED = FormEvents.FORM_UPDATED;
-  constructor(public field: string,  public value: string) {}
+  constructor(public field: string, public value: string) {}
 
 }
 
@@ -59,12 +59,12 @@ export type FormEvent = FormUpdatedEvent | FormSubmittedEvent | FormValidatedEve
  */
 export const update = assign<FormContext<any>, FormUpdatedEvent>({
   data: (context: FormContext<any>, event: FormUpdatedEvent) =>
-    (typeof context.data === 'object' ? { ...context.data ? context.data : {}, [event.field]: event.value } : event.value),
+    (typeof context.data === 'object' ? { ... context.data ? context.data : {}, [event.field]: event.value } : event.value),
 });
 
 /**
  * Adds validation data to context.
  */
 export const addValidationResults = assign<FormContext<unknown>, FormValidatedEvent>({
-  validation: (context, event: FormValidatedEvent) => [ ...event.results ],
+  validation: (context, event: FormValidatedEvent) => [ ... event.results ],
 });

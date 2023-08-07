@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 /* eslint-disable @typescript-eslint/ban-types */
 import { html, unsafeCSS, css, TemplateResult, CSSResultArray, property } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
@@ -15,7 +16,7 @@ export class WebIdComponent extends RxLitElement {
   @property({ type: String }) textPlaceholder = 'Please enter your WebID ...';
   @property({ type: String }) textNoWebId = 'No WebID yet?';
   @property({ type: String }) textButton = 'Connect';
-  @property({ type: String }) layout: 'horizontal' | 'vertical'  = 'horizontal';
+  @property({ type: String }) layout: 'horizontal' | 'vertical' = 'horizontal';
   @property({ type: Array }) validationResults: string[];
   @property({ type: Boolean }) hideCreateNewWebId = false;
   @property({ type: Boolean }) disableLogin = true; // disable button by default
@@ -78,7 +79,7 @@ export class WebIdComponent extends RxLitElement {
         <div class="webid-input-button-container ${ this.layout }" part="webid-input-button-container">
           <div class="webid-input-container" part="webid-input-container">
             <div class="input-container">
-              <input part="webid-input" type="url" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => { this.onWebIdChange(event.target as HTMLInputElement); }}"/>
+              <input part="webid-input" type="url" id="webid" name="webid" placeholder="${this.textPlaceholder}" @input="${(event: InputEvent) => this.onWebIdChange(event.target as unknown as HTMLInputElement)}"/>
               <loading-component ?hidden="${!this.validating}" part="loading"></loading-component>
             </div>
             ${ this.layout === 'vertical' ? alerts : ''}

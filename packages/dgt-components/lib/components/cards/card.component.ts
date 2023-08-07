@@ -1,5 +1,5 @@
 import { Theme } from '@useid/dgt-theme';
-import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { css, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ContentHeaderComponent } from '../header/content-header.component';
 
@@ -30,7 +30,7 @@ export class CardComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -65,7 +65,7 @@ export class CardComponent extends LitElement {
 
   }
 
-  render() {
+  render(): TemplateResult {
 
     const classes = { 'reduced-top-padding': this.hideImage };
 
