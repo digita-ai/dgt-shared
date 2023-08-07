@@ -10,6 +10,7 @@ describe('AuthenticateMachine', () => {
   const solidService = {
     getSession: jest.fn(async () => { throw new Error(); }), // mock failing of session restore
     getIssuers: jest.fn(async () => []),
+    loginWithIssuer: jest.fn(),
   } as any;
 
   beforeEach(() => {
