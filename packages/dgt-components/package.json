@@ -1,6 +1,6 @@
 {
   "name": "@useid/dgt-components",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "description": "Collection of Semantic Components.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/dgt-components.umd.js",
@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
-    "@useid/dgt-theme": "0.22.0",
-    "@useid/dgt-utils": "0.22.0",
+    "@useid/dgt-theme": "0.22.1",
+    "@useid/dgt-utils": "0.22.1",
     "@useid/inrupt-solid-service": "^0.26.0",
     "buffer": "6.0.3",
     "debounce": "^1.2.1",

@@ -1,6 +1,6 @@
 {
   "name": "@useid/dgt-utils-core",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "license": "ISC",
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc",
