@@ -113,13 +113,13 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: |
-          packages/dgt-utils
+          cd packages/dgt-utils
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
 
       - run: |
-          packages/dgt-components
+          cd packages/dgt-components
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GA_TOKEN }}
