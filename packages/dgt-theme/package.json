@@ -3,13 +3,14 @@
   "version": "0.21.2",
   "description": "Theme for Digita projects.",
   "author": "Wouter Janssens <wouter@digita.ai>",
-  "main": "./dist/dgt-theme.umd.js",
   "license": "agpl-3.0",
+  "type": "commonjs",
   "types": "./dist/index.d.ts",
-  "module": "./dist/dgt-theme.es.js",
+  "main": "./dist/dgt-theme.mjs",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "import": "./dist/dgt-theme.es.js",
+      "import": "./dist/dgt-theme.mjs",
       "require": "./dist/dgt-theme.umd.js"
     }
   },

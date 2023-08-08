@@ -2,6 +2,18 @@
   "name": "@useid/dgt-utils",
   "version": "0.21.2",
   "license": "ISC",
+  "type": "commonjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": "./dist/dgt-utils.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
     "build:dev": "npm run build",
@@ -13,21 +25,6 @@
     "test:watch": "jest --watch --no-coverage",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/dgt-utils.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/dgt-utils.es.js",
-      "require": "./dist/index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "dist",
-    "config",
-    ".componentsignore"
-  ],
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
     "rxjs": "^7.4.0",
@@ -71,30 +68,5 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/components/": "dist/components/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/config/": "config/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/dist/": "dist/"
-  },
-  "jest": {
-    "displayName": "components",
-    "preset": "@useid/jest-config",
-    "testEnvironment": "jsdom",
-    "setupFiles": [
-      "<rootDir>/tests/setup.ts"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!(lit-html|@appnest/lit-translate)/)"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 58.57,
-        "functions": 51.94,
-        "lines": 63.3,
-        "statements": 63.88
-      }
-    },
-    "coveragePathIgnorePatterns": [
-      "<rootDir>/dist/",
-      "<rootDir>/node_modules/",
-      "<rootDir>/.*\\.conf(ig)?.ts",
-      "<rootDir>/lib/index.ts"
-    ]
-  }
+  } 
 }

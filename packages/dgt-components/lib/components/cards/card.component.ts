@@ -1,5 +1,5 @@
 import { Theme } from '@useid/dgt-theme';
-import { css, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { ContentHeaderComponent } from '../header/content-header.component';
 
