@@ -1,6 +1,6 @@
 {
   "name": "@useid/dgt-theme",
-  "version": "0.21.2",
+  "version": "0.22.0",
   "description": "Theme for Digita projects.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "agpl-3.0",
@@ -24,8 +24,8 @@
     "lint:staged": "lint-staged"
   },
   "devDependencies": {
-    "@useid/typescript-config": "^0.8.1",
     "@types/node": "^18.16.5",
+    "@useid/typescript-config": "^0.8.1",
     "normalize.css": "8.0.1",
     "rimraf": "^3.0.2",
     "stylelint": "^13.12.0",
