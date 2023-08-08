@@ -13,9 +13,9 @@ describe('FormMachine', () => {
 
   beforeEach(() => {
 
-    const validator = async (context: FormContext<TData>, event: FormEvent) => [
-      ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
-      ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
+    const validator = async (context: FormContext<TData>) => [
+      ... context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
+      ... context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
     ];
 
     machine = interpret(
@@ -40,31 +40,13 @@ describe('FormMachine', () => {
     [ [ { field: 'uri', value: 'foo' } ], FormCleanlinessStates.DIRTY, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.VALID, [], { uri: 'foo', name: 'Test' } ],
     [ [ { field: 'uri', value: '' } ], FormCleanlinessStates.PRISTINE, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.INVALID, [ { field: 'uri', message: 'demo-form.uri.required' } ], { uri: '', name: 'Test' } ],
     [ [ { field: 'name', value: '' } ], FormCleanlinessStates.DIRTY, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.INVALID, [ { field: 'name', message: 'demo-form.name.required' }, { field: 'uri', message: 'demo-form.uri.required' } ], { uri: '', name: '' } ],
-  ])('should handle form updates correctly', (updates, cleanliness, submission, validation, results, data) => {
+  ])('should handle form updates correctly', async (updates, cleanliness, submission, validation, results, data) => {
 
-    machine.start();
+    const prom = new Promise<void>((resolve) => {
 
-    machine.onTransition((state) => {
+      machine.onTransition((state) => {
 
-      if (state.matches(
-        submission === FormSubmissionStates.SUBMITTED ?
-          FormSubmissionStates.SUBMITTED :
-          {
-            [FormSubmissionStates.NOT_SUBMITTED]:{
-              [FormRootStates.CLEANLINESS]: cleanliness,
-              [FormRootStates.VALIDATION]: validation,
-            },
-          },
-      )) {
-
-        // Validation rules should be set correctly
-        expect(state.context.validation).toEqual(results);
-
-        // Data should be updated
-        expect(state.context.data).toEqual(data);
-
-        // States should be updated
-        expect(state.matches(
+        if (state.matches(
           submission === FormSubmissionStates.SUBMITTED ?
             FormSubmissionStates.SUBMITTED :
             {
@@ -73,38 +55,55 @@ describe('FormMachine', () => {
                 [FormRootStates.VALIDATION]: validation,
               },
             },
-        )).toBeTruthy();
+        )) {
 
-      }
+          resolve();
+
+        }
+
+      });
 
     });
 
+    machine.start();
+
     // Send updates
-    for(const update of updates) {
+    for (const update of updates) {
 
       machine.send(FormEvents.FORM_UPDATED, update);
 
     }
 
+    await expect(prom).resolves.toBeUndefined();
+
+    // Validation rules should be set correctly
+    expect(machine.state.context.validation).toEqual(results);
+    // Data should be updated
+    expect(machine.state.context.data).toEqual(data);
+
   });
 
-  it('should submit when form is valid', (done) => {
+  it('should submit when form is valid', async () => {
 
-    machine.start();
+    const prom = new Promise<void>((resolve) => {
 
-    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'foo' });
+      machine.onTransition((state) => {
 
-    machine.onTransition((state) => {
+        if (state.matches({ [FormSubmissionStates.NOT_SUBMITTED]: {} })){
 
-      if (state.matches({ [FormSubmissionStates.NOT_SUBMITTED]: {} })){
+          resolve();
 
-        done();
+        }
 
-      }
+      });
 
     });
 
+    machine.start();
+    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'foo' });
     machine.send(FormEvents.FORM_SUBMITTED);
+
+    await expect(prom).resolves.toBeUndefined();
 
   });
 
@@ -118,31 +117,36 @@ describe('FormMachine', () => {
 
   });
 
-  it('should not be submitted if form is invalid', (done) => {
+  it('should not be submitted if form is invalid', async () => {
 
-    machine.start();
+    const prom = new Promise<void>((resolve) => {
 
-    machine.onTransition((state) => {
+      machine.onTransition((state) => {
 
-      if (state.matches({
-        [FormSubmissionStates.NOT_SUBMITTED]:{
-          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
-          [FormRootStates.VALIDATION]: FormValidationStates.NOT_VALIDATED,
-        },
-      })) {
+        if (state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
+            [FormRootStates.VALIDATION]: FormValidationStates.NOT_VALIDATED,
+          },
+        })) {
 
-        done();
+          resolve();
 
-      }
+        }
+
+      });
 
     });
 
+    machine.start();
     machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: null });
     machine.send(FormEvents.FORM_SUBMITTED);
 
+    await expect(prom).resolves.toBeUndefined();
+
   });
 
-  it('should run submitter when submitting', (done) => {
+  it('should run submitter when submitting', async () => {
 
     const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
 
@@ -156,21 +160,26 @@ describe('FormMachine', () => {
       }),
     );
 
-    machine.start();
+    const prom = new Promise<void>((resolve) => {
 
-    machine.onTransition((state) => {
+      machine.onTransition((state) => {
 
-      if (state.matches(FormSubmissionStates.SUBMITTED)){
+        if (state.matches(FormSubmissionStates.SUBMITTED)){
 
-        expect(submitter).toHaveBeenCalledTimes(1);
-        done();
+          resolve();
 
-      }
+        }
+
+      });
 
     });
 
+    machine.start();
     machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'bla' });
     machine.send(FormEvents.FORM_SUBMITTED);
+
+    await expect(prom).resolves.toBeUndefined();
+    expect(submitter).toHaveBeenCalledTimes(1);
 
   });
 

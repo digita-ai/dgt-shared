@@ -24,7 +24,7 @@ export enum FormActors {
  * State references of the root parallel states of the form machine.
  */
 export enum FormRootStates {
-  CLEANLINESS   = '[FormState: Cleanliness]',
+  CLEANLINESS = '[FormState: Cleanliness]',
   VALIDATION = '[FormState: Validation]',
 }
 
@@ -34,16 +34,16 @@ export enum FormRootStates {
 export enum FormSubmissionStates {
   NOT_SUBMITTED = '[FormState: Not submitted]',
   SUBMITTING = '[FormState: Submitting]',
-  SUBMITTED  = '[FormState: Submitted]',
+  SUBMITTED = '[FormState: Submitted]',
 }
 
 /**
  * State references of the cleanliness sub-state.
  */
 export enum FormCleanlinessStates {
-  PRISTINE   = '[FormState: Pristine]',
+  PRISTINE = '[FormState: Pristine]',
   CHECKING_CLEANLINESS = '[FormState: Checking cleanliness]',
-  DIRTY      = '[FormState: Dirty]',
+  DIRTY = '[FormState: Dirty]',
 }
 
 /**
@@ -52,8 +52,8 @@ export enum FormCleanlinessStates {
 export enum FormValidationStates {
   NOT_VALIDATED = '[FormState: Not validated]',
   VALIDATING = '[FormState: Validating]',
-  VALID      = '[FormState: Valid]',
-  INVALID    = '[FormState: Invalid]',
+  VALID = '[FormState: Valid]',
+  INVALID = '[FormState: Invalid]',
 }
 /**
  * Generic state schema.

@@ -1,6 +1,6 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/dgt-utils/^0.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@useid/dgt-utils/^0.0.0/components/context.jsonld"
   ],
   "import": [
     "files-dadu:config/presets/logger.json", 

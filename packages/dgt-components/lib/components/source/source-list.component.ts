@@ -1,5 +1,5 @@
 import { css, CSSResultArray, html, internalProperty, LitElement, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 import { Source } from '../../models/source.model';
 import { SourceComponent } from './source.component';
 
@@ -35,7 +35,7 @@ export class SourceListComponent extends LitElement {
     if (changed.has('sources') || changed.has('query')) {
 
       this.filteredSources = this.sources?.filter(
-        (source) => source.description.toLowerCase().includes(this.query.trim().toLowerCase())
+        (source) => source.description.toLowerCase().includes(this.query.trim().toLowerCase()),
       );
 
     }

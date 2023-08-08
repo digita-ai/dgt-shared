@@ -29,7 +29,7 @@ describe('SidebarListItemComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(window.document.body.getElementsByTagName('sidebar-list-item')[0].shadowRoot.querySelectorAll<HTMLLIElement>('.item.selected').length).toEqual(1);
+    expect(window.document.body.getElementsByTagName('sidebar-list-item')[0].shadowRoot.querySelectorAll<HTMLLIElement>('.item.selected')).toHaveLength(1);
 
   });
 

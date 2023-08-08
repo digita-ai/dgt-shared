@@ -30,6 +30,7 @@ describe('LoadingComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
     const message = component.shadowRoot.querySelector('p');
+
     expect(message).toBeDefined();
     expect(message.innerHTML).toContain('test message');
 

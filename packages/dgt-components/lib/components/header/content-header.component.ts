@@ -1,5 +1,5 @@
 import { css, html, LitElement, unsafeCSS, CSSResult, TemplateResult } from 'lit-element';
-import { Theme } from '@digita-ai/dgt-theme';
+import { Theme } from '@useid/dgt-theme';
 
 /**
  * A component which represents a content header.

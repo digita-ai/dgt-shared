@@ -3,9 +3,9 @@ import { createMachine, DoneEvent, interpret, Interpreter, State, StateMachine }
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Theme, DigitaBlue } from '@digita-ai/dgt-theme';
-import { SolidService } from '@digita-ai/inrupt-solid-service';
-import { Translator } from '@digita-ai/dgt-utils';
+import { Theme, DigitaBlue } from '@useid/dgt-theme';
+import { SolidService } from '@useid/inrupt-solid-service';
+import { Translator } from '@useid/dgt-utils';
 import { Issuer } from '../../models/issuer.model';
 import { ProviderListComponent } from '../provider/provider-list.component';
 import { SeparatorComponent } from '../separator/separator.component';
@@ -20,18 +20,18 @@ export class AuthenticateComponent extends RxLitElement {
   private machine: StateMachine<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent, AuthenticateState>;
 
   @internalProperty()
-  state?: State<AuthenticateContext>;
+    state?: State<AuthenticateContext>;
 
   @internalProperty()
-  issuers?: Issuer[];
+    issuers?: Issuer[];
 
   @internalProperty()
-  validating = false;
+    validating = false;
 
   @property({ type: Boolean }) hideWebId = false;
   @property({ type: Boolean }) hideIssuers = false;
   @property({ type: Boolean }) hideCreateNewWebId = false;
-  @property({ type: String }) layout: 'horizontal' | 'vertical'  = 'horizontal';
+  @property({ type: String }) layout: 'horizontal' | 'vertical' = 'horizontal';
   @property() webIdValidationResults: string[];
   @property({ type: Translator }) translator?: Translator;
 
@@ -101,14 +101,14 @@ export class AuthenticateComponent extends RxLitElement {
 
   }
 
-  onSubmit = (event: CustomEvent): void => {
+  onSubmit = (event: CustomEvent<string>): void => {
 
     event.preventDefault();
     this.actor.send(new ClickedLoginEvent(event.detail));
 
   };
 
-  onWebIdChange = (event: CustomEvent): void => {
+  onWebIdChange = (event: CustomEvent<string>): void => {
 
     event.preventDefault();
     this.actor.send(new WebIdEnteredEvent(event.detail));
@@ -129,7 +129,7 @@ export class AuthenticateComponent extends RxLitElement {
         <provider-list
           exportparts="provider, provider-description, provider-logo"
           ?hidden="${this.hideIssuers}"
-          @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}"
+          @issuer-selected="${(event: CustomEvent<Issuer>) => this.actor.send(new SelectedIssuerEvent(event.detail))}"
           .providers="${this.predefinedIssuers}"
         >
           <slot name="beforeIssuers" slot="before"></slot>
@@ -163,7 +163,7 @@ export class AuthenticateComponent extends RxLitElement {
           <slot name="afterWebId" slot="after"></slot>
         </webid-form>
        ` : html` ${ this.state?.matches(AuthenticateStates.SELECTING_ISSUER) ? html`
-        <provider-list @issuer-selected="${(event: CustomEvent) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}">
+        <provider-list @issuer-selected="${(event: CustomEvent<Issuer>) => this.actor.send(new SelectedIssuerEvent(event.detail))}" .providers="${this.issuers}">
           <slot name="beforeIssuers" slot="before"></slot>
           <slot name="afterIssuers" slot="after"></slot>
         </provider-list>`

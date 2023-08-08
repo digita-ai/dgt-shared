@@ -1,4 +1,4 @@
-import { addProtocolPrefix } from '@digita-ai/dgt-utils';
+import { addProtocolPrefix } from '@useid/dgt-utils';
 import { AuthenticateContext, WebIdEnteredEvent } from './authenticate.machine';
 
 /**
@@ -19,7 +19,7 @@ Promise<{ webId: string; validationResults: string[] }> => {
     webId = await addProtocolPrefix(webId);
     validationResults = await context.webIdValidator(webId);
 
-  } catch(e){
+  } catch (e){
 
     validationResults.push('common.webid-validation.invalid-uri');
 

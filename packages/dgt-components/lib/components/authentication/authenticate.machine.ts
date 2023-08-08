@@ -1,6 +1,6 @@
 import { DoneInvokeEvent, ErrorPlatformEvent, EventObject, MachineConfig, StateSchema } from 'xstate';
 import { send, assign, log } from 'xstate/lib/actions';
-import { SolidService } from '@digita-ai/inrupt-solid-service';
+import { SolidService } from '@useid/inrupt-solid-service';
 import { Issuer } from '../../models/issuer.model';
 import { Session } from '../../models/session.model';
 import { checkWebId } from './authenticate.services';
@@ -43,15 +43,15 @@ export interface WithSession extends AuthenticateContext {
 
 export enum AuthenticateStates {
   CHECKING_SESSION = '[AuthenticateState: Checking session]',
-  AWAITING_WEBID   = '[AuthenticateState: Awaiting WebId]',
-  CHECKING_WEBID   = '[AuthenticateState: Checking WebId]',
-  AWAITING_LOGIN   = '[AuthenticateState: Awaiting Login]',
+  AWAITING_WEBID = '[AuthenticateState: Awaiting WebId]',
+  CHECKING_WEBID = '[AuthenticateState: Checking WebId]',
+  AWAITING_LOGIN = '[AuthenticateState: Awaiting Login]',
   RETRIEVING_ISSUERS = '[AuthenticateState: Retrieving Issuers]',
   CHECKING_ISSUERS = '[AuthenticateState: Checking Issuers]',
   SELECTING_ISSUER = '[AuthenticateState: Selecting Issuer]',
-  AUTHENTICATING   = '[AuthenticateState: Authenticating]',
-  AUTHENTICATED    = '[AuthenticateState: Authenticated]',
-  NO_TRUST         = '[AuthenticateState: No Trust]',
+  AUTHENTICATING = '[AuthenticateState: Authenticating]',
+  AUTHENTICATED = '[AuthenticateState: Authenticated]',
+  NO_TRUST = '[AuthenticateState: No Trust]',
 }
 
 export interface AuthenticateStateSchema extends StateSchema<AuthenticateContext> {
@@ -80,11 +80,11 @@ export type AuthenticateState =
 /* EVENTS */
 
 export enum AuthenticateEvents {
-  WEBID_ENTERED     = '[AuthenticateEvent: WebID entered]',
-  CLICKED_LOGIN     = '[AuthenticateEvent: Clicked Login]',
-  SELECTED_ISSUER   = '[AuthenticateEvent: Selected Issuer]',
-  LOGIN_SUCCESS     = '[AuthenticateEvent: Login success]',
-  LOGIN_ERROR       = '[AuthenticateEvent: Login error]',
+  WEBID_ENTERED = '[AuthenticateEvent: WebID entered]',
+  CLICKED_LOGIN = '[AuthenticateEvent: Clicked Login]',
+  SELECTED_ISSUER = '[AuthenticateEvent: Selected Issuer]',
+  LOGIN_SUCCESS = '[AuthenticateEvent: Login success]',
+  LOGIN_ERROR = '[AuthenticateEvent: Login error]',
 }
 
 export class WebIdEnteredEvent implements EventObject {
@@ -138,7 +138,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
   on: {
     [AuthenticateEvents.LOGIN_ERROR]: {
       actions: [
-        log((context, event) => `Login error:`),
+        log(() => `Login error:`),
         log((context, event) => event),
       ],
       target: AuthenticateStates.AWAITING_WEBID,
@@ -195,7 +195,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
             cond: (c, event: DoneInvokeEvent<{ webId: string; validationResults: string[] }>) =>
               event.data?.validationResults?.length > 0,
             actions: [
-              send((c, event) => new LoginErrorEvent('WebID validation returned results', event.data.validationResults)),
+              send((c, event: DoneInvokeEvent<{ webId: string; validationResults: string[] }>) => new LoginErrorEvent('WebID validation returned results', event.data.validationResults)),
               assign({ webId: (c, event) => event.data.webId }),
             ],
             target: AuthenticateStates.AWAITING_WEBID,
@@ -205,7 +205,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
             target: AuthenticateStates.AWAITING_LOGIN,
           },
         ],
-        onError: { actions: send((c, event) => new LoginErrorEvent('Error while validating WebID', event.data)) },
+        onError: { actions: send((c, event: DoneInvokeEvent<string[]>) => new LoginErrorEvent('Error while validating WebID', event.data)) },
       },
     },
 
@@ -247,7 +247,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
         },
         {
           cond: (context) => context.issuers.length === 1,
-          actions: assign({ issuer: (context, event) => context.issuers[0] }),
+          actions: assign({ issuer: (context) => context.issuers[0] }),
           target: AuthenticateStates.AUTHENTICATING,
         },
         {
@@ -271,7 +271,7 @@ MachineConfig<AuthenticateContext, AuthenticateStateSchema, AuthenticateEvent> =
       invoke: {
         src: (context) => solid.loginWithIssuer(context.issuer),
         onError: {
-          actions: send((context, event) => new LoginErrorEvent('Login failed')),
+          actions: send(() => new LoginErrorEvent('Login failed')),
         },
       },
     },

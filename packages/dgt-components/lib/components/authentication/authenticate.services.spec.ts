@@ -1,8 +1,8 @@
-import * as utils from '@digita-ai/dgt-utils';
+import * as utils from '@useid/dgt-utils';
 import { AuthenticateContext, WebIdEnteredEvent }  from './authenticate.machine';
 import { checkWebId } from './authenticate.services';
 
-jest.mock('@digita-ai/dgt-utils', () => ({
+jest.mock('@useid/dgt-utils', () => ({
   addProtocolPrefix: jest.fn().mockResolvedValue('https://example.com/profile/card'),
 }));
 

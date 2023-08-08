@@ -1,11 +1,11 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator, debounce } from '@digita-ai/dgt-utils';
+import { ArgumentError, Translator, debounce } from '@useid/dgt-utils';
 import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Loading, Theme } from '@digita-ai/dgt-theme';
+import { Loading, Theme } from '@useid/dgt-theme';
 import { FormContext, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
@@ -19,13 +19,13 @@ export class FormElementComponent<T> extends RxLitElement {
    * All input elements slotted in the form element.
    */
   @internalProperty()
-  inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[] = [];
+    inputs: (HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement)[] = [];
 
   /**
    * The slot element which contains the input field.
    */
   @query('slot[name="input"]')
-  inputSlot: HTMLSlotElement;
+    inputSlot: HTMLSlotElement;
 
   /**
    * Decides whether a border should be shown around the content
@@ -91,7 +91,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
+    actor: Interpreter<FormContext<T>, FormStateSchema<T>, FormEvent, FormState<T>>;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -100,7 +100,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
     super.updated(changed);
 
-    if(changed.has('actor') && this.actor) {
+    if (changed.has('actor') && this.actor) {
 
       // Subscribes to the field's validation results.
       this.subscribe('validationResults', from(this.actor).pipe(
@@ -129,7 +129,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
           this.inputs?.forEach((element) => element.disabled = lock);
 
-        })
+        }),
       ));
 
       if (this.inputSlot && this.field && this.data) {
@@ -179,6 +179,7 @@ export class FormElementComponent<T> extends RxLitElement {
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
       (element) => element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement
       || element instanceof HTMLSelectElement,
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     ).map((element) => element as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement);
 
     this.inputs?.forEach((element) => {
@@ -188,6 +189,7 @@ export class FormElementComponent<T> extends RxLitElement {
       element.value = typeof fieldData === 'string' ? fieldData : '';
 
       // Send event when input field's value changes.
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
 
       // Listen for Enter presses to submit

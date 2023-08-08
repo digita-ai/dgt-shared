@@ -21,6 +21,7 @@ describe('main', () => {
     it('should return the global translator', () => {
 
       const get = getTranslator();
+
       expect(get).toEqual(translator);
 
     });
@@ -35,6 +36,7 @@ describe('main', () => {
       const newTranslator = new MemoryTranslator('en-GB');
       setTranslator(newTranslator);
       const newGet = getTranslator();
+
       expect(get).toEqual(translator);
       expect(get).not.toEqual(newTranslator);
       expect(newGet).not.toEqual(translator);
@@ -49,20 +51,23 @@ describe('main', () => {
     it('should create a translator with a label when given a string', async () => {
 
       const testTranslator = await getTranslatorFor('en-GB');
-      expect(testTranslator.getLang()).toEqual('en-GB');
+
+      expect(testTranslator.getLang()).toBe('en-GB');
 
     });
 
     it('should create a translator with a label based on constructor name when given an instance of a class', async () => {
 
       const testTranslator = await getTranslatorFor('en-GB');
-      expect(testTranslator.getLang()).toEqual('en-GB');
+
+      expect(testTranslator.getLang()).toBe('en-GB');
 
     });
 
     it('should error when no translatorFactory is set', async () => {
 
       setTranslatorFactory((undefined as unknown) as TranslatorFactory);
+
       await expect(getTranslatorFor('en-GB')).rejects.toThrow('No TranslatorFactory was set to create translators.');
 
     });
@@ -74,12 +79,14 @@ describe('main', () => {
     it('should set the translator factory', async () => {
 
       const testTranslator = await getTranslatorFor('en-GB');
-      expect(testTranslator instanceof MemoryTranslator).toEqual(true);
+
+      expect(testTranslator instanceof MemoryTranslator).toBe(true);
 
       setTranslatorFactory(new MemoryTranslatorFactory());
 
       const newTranslator = await getTranslatorFor('en-US');
-      expect(newTranslator instanceof MemoryTranslator).toEqual(true);
+
+      expect(newTranslator instanceof MemoryTranslator).toBe(true);
 
     });
 

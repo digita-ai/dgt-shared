@@ -1,9 +1,10 @@
 {
-  "extends": "@digita-ai/typescript-config/tsconfig.spec.json",
+  "extends": "@useid/typescript-config/tsconfig.spec.json",
   "compilerOptions": {
     "baseUrl": "lib",
     "outDir": "dist",
-    //
+    "module": "commonjs",
+    "target": "es2015",
     "types": [
       "jest",
       "n3",
@@ -16,7 +17,6 @@
     "strict": false
   },
   "files": [ 
-    "node_modules/vite/client.d.ts",
     "tests/setup.ts"
   ],
   "types": [

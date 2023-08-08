@@ -1,4 +1,4 @@
-import { ArgumentError } from '@digita-ai/dgt-utils';
+import { ArgumentError } from '@useid/dgt-utils';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 
@@ -116,14 +116,17 @@ describe('AlertComponent', () => {
     };
 
     component.dismiss = jest.fn();
-
+    const spy = jest.spyOn(component, 'dismiss');
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
+    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') ;
+
+    expect(dismiss).not.toBeNull();
+
     dismiss.click();
 
-    expect(component.dismiss).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledTimes(1);
 
   });
 
@@ -135,22 +138,24 @@ describe('AlertComponent', () => {
     };
 
     component.dispatchEvent = jest.fn();
-
+    const spy = jest.spyOn(component, 'dispatchEvent');
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
+    const dismiss = window.document.body.getElementsByTagName('alert-component')[0].shadowRoot.querySelector('.dismiss') ;
+
+    expect(dismiss).not.toBeNull();
+
     dismiss.click();
 
-    expect(component.dispatchEvent).toHaveBeenCalledTimes(1);
-    expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent<Alert>('dismiss', { detail: component.alert }));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(new CustomEvent<Alert>('dismiss', { detail: component.alert }));
 
   });
 
   it('should throw error when dismiss is clicked when no alert is set', async () => {
 
-    component.alert = null;
-
+    component.alert = undefined as unknown as Alert;
     window.document.body.appendChild(component);
     await component.updateComplete;
 

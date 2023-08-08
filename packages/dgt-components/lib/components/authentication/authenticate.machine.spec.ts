@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createMachine, interpret, Interpreter, StateMachine } from 'xstate';
+import { SolidService } from '@useid/inrupt-solid-service';
+import { Issuer } from '../../models/issuer.model';
 import { AuthenticateContext, AuthenticateEvent, authenticateMachine, AuthenticateState, AuthenticateStates, AuthenticateStateSchema, ClickedLoginEvent, WebIdEnteredEvent } from './authenticate.machine';
 
 describe('AuthenticateMachine', () => {
@@ -10,7 +12,14 @@ describe('AuthenticateMachine', () => {
   const solidService = {
     getSession: jest.fn(async () => { throw new Error(); }), // mock failing of session restore
     getIssuers: jest.fn(async () => []),
-  } as any;
+    loginWithIssuer: jest.fn(),
+  } as unknown as SolidService;
+
+  const mockIssuer: Issuer = {
+    icon: 'https://issuer.uri/icon.png',
+    description: 'Issuer description',
+    uri: 'https://issuer.uri/',
+  };
 
   beforeEach(() => {
 
@@ -44,56 +53,74 @@ describe('AuthenticateMachine', () => {
 
     it('should transition to NO_TRUST when issuers is empty', async () => {
 
-      solidService.getIssuers = jest.fn(async () => []);
+      const prom = new Promise<void>((resolve) => {
 
-      actor.onTransition((state) => {
+        actor.onTransition((state) => {
 
-        if (state.matches(AuthenticateStates.NO_TRUST)) {
+          if (state.matches(AuthenticateStates.NO_TRUST)) {
 
-          expect(state.context.issuers.length).toEqual(0);
+            resolve();
 
-        }
+          }
+
+        });
 
       });
 
+      solidService.getIssuers = jest.fn(async () => []);
       actor.start();
+
+      await expect(prom).resolves.toBeUndefined();
+      expect(actor.state.context.issuers).toHaveLength(0);
 
     });
 
     it('should transition to AUTHENTICATING when single issuer', async () => {
 
-      solidService.getIssuers = jest.fn(async () => [ 'https://issuer.uri/' ]);
+      const prom = new Promise<void>((resolve) => {
 
-      actor.onTransition((state) => {
+        actor.onTransition((state) => {
 
-        if (state.matches(AuthenticateStates.AUTHENTICATING)) {
+          if (state.matches(AuthenticateStates.AUTHENTICATING)) {
 
-          expect(state.context.issuers.length).toEqual(1);
-          expect(state.context.issuer).toEqual('https://issuer.uri/');
+            resolve();
 
-        }
+          }
+
+        });
 
       });
 
+      jest.spyOn(solidService, 'getIssuers').mockResolvedValueOnce([ mockIssuer ]);
       actor.start();
+
+      await expect(prom).resolves.toBeUndefined();
+      expect(actor.state.context.issuers).toHaveLength(1);
+      expect(actor.state.context.issuer).toBe(mockIssuer);
 
     });
 
     it('should transition to SELECTING_ISSUER when multiple issuers', async () => {
 
-      solidService.getIssuers = jest.fn(async () => [ 'https://issuer1.uri/', 'https://issuer2.uri/' ]);
+      const prom = new Promise<void>((resolve) => {
 
-      actor.onTransition((state) => {
+        actor.onTransition((state) => {
 
-        if (state.matches(AuthenticateStates.SELECTING_ISSUER)) {
+          if (state.matches(AuthenticateStates.SELECTING_ISSUER)) {
 
-          expect(state.context.issuers.length).toBeGreaterThan(1);
+            resolve();
 
-        }
+          }
+
+        });
 
       });
 
+      jest.spyOn(solidService, 'getIssuers').mockResolvedValueOnce([ mockIssuer, mockIssuer ]);
       actor.start();
+
+      await expect(prom).resolves.toBeUndefined();
+      expect(actor.state.context.issuers?.length).toBeGreaterThan(1);
 
     });
 

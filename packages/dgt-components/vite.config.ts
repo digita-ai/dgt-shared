@@ -23,7 +23,7 @@ export default ({ command, mode }) => {
         target: 'es2015',
         lib: {
           entry: resolve(__dirname, 'lib/index.ts'),
-          name: '@digita-ai/dgt-components'
+          name: '@useid/dgt-components'
         },
         outDir: '../dist'
       },
@@ -38,7 +38,7 @@ export default ({ command, mode }) => {
         target: 'es2015',
         lib: {
           entry: resolve(__dirname, 'lib/index.ts'),
-          name: '@digita-ai/dgt-components'
+          name: '@useid/dgt-components'
         },
         outDir: '../dist'
       },

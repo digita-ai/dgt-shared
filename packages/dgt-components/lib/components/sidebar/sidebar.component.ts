@@ -1,7 +1,7 @@
 import { css, html, property, unsafeCSS, TemplateResult, CSSResult } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@digita-ai/dgt-theme';
-import { Translator } from '@digita-ai/dgt-utils';
+import { Theme } from '@useid/dgt-theme';
+import { Translator } from '@useid/dgt-utils';
 
 /**
  * A component which represents a sidebar.

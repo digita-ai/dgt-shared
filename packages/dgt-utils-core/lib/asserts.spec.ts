@@ -11,14 +11,14 @@ const definedChecks: [ string, TypeCheck<any>, unknown[] ][] = [
   [ 'isObject', isObject, [ {}, { 'some': 'field' }, { 1: 'other' }, { [Symbol('symbol')]: 'fields' } ] ],
 ];
 
-const definedValues = definedChecks.map(([ name, check, goodValues ]) => goodValues).flat();
+const definedValues = definedChecks.map(([ , , goodValues ]) => goodValues).flat();
 
 const undefinedChecks: [ string, TypeCheck<any>, unknown[] ][] = [
   [ 'isNull', isNull, [ null ] ],
   [ 'isUndefined', isUndefined, [ undefined ] ],
 ];
 
-const undefinedValues = undefinedChecks.map(([ name, check, goodValues ]) => goodValues).flat();
+const undefinedValues = undefinedChecks.map(([ , , goodValues ]) => goodValues).flat();
 
 const allChecks = definedChecks.concat(undefinedChecks).concat([ [ 'isDefined', isDefined, definedValues ] ]);
 
@@ -32,14 +32,17 @@ const badMessage = 'should return false if the passed value is %p.';
 describe('assert', () => {
 
   it('should complete if the condition is true', () => expect(() => assert(true)).toBeDefined());
-  it('should throw an error if the condition is false', () => expect(() => assert(false)).toThrowError('Assertion failed.'));
-  it('should throw a specific error if a message is specified', () => expect(() => assert(false, 'msg')).toThrowError('msg'));
+
+  it('should throw an error if the condition is false', () => expect(() => assert(false)).toThrow('Assertion failed.'));
+
+  it('should throw a specific error if a message is specified', () => expect(() => assert(false, 'msg')).toThrow('msg'));
 
 });
 
 describe.each(allChecks)('%s', (name, check: TypeCheck<any>, goodValues: unknown[]) => {
 
-  it.each(goodValues)(goodMessage, (value) => expect(check(value)).toBe(true));
-  it.each(exampleFilter(goodValues))(badMessage, (value) => expect(check(value)).toBe(false));
+  it.each(goodValues)(`${goodMessage}`, (value) => expect(check(value)).toBe(true));
+
+  it.each(exampleFilter(goodValues))(`${badMessage}`, (value) => expect(check(value)).toBe(false));
 
 });

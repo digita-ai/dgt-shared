@@ -6,6 +6,7 @@ describe('FormUpdatedEvent', () => {
   it('should initialize correctly', () => {
 
     const event = new FormUpdatedEvent('field', 'value');
+
     expect(event).toBeTruthy();
 
   });
@@ -17,6 +18,7 @@ describe('FormSubmittedEvent', () => {
   it('should initialize correctly', () => {
 
     const event = new FormSubmittedEvent();
+
     expect(event).toBeTruthy();
 
   });
@@ -33,6 +35,7 @@ describe('FormValidatedEvent', () => {
     ];
 
     const event = new FormValidatedEvent(results);
+
     expect(event).toBeTruthy();
 
   });
