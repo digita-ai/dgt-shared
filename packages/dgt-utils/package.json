@@ -1,6 +1,6 @@
 {
   "name": "@useid/dgt-utils",
-  "version": "0.22.2",
+  "version": "0.22.3",
   "license": "ISC",
   "type": "commonjs",
   "types": "./dist/index.d.ts",
