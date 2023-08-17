@@ -12,7 +12,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "config",
+    ".componentsignore"
   ],
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc && npm run build:components",
